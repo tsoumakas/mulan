@@ -43,7 +43,7 @@ import weka.classifiers.Classifier;
 @SuppressWarnings("serial")
 public class RAKEL extends AbstractMultiLabelClassifier
 {
-    double[][] sumVotesIncremental;
+    double[][] sumVotesIncremental; /* comment */
     double[][] lengthVotesIncremental;
     double[] sumVotes;
     double[] lengthVotes;
