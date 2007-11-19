@@ -29,18 +29,20 @@ public class testmlknn {
 		FileReader frTest = new FileReader(path + datastem + "-test.arff");
 		Instances testData = new Instances(frTest);
 		
-		Classifier mlknn = new MultiLabelKNN(14,2,1);
+		MultiLabelKNN mlknn = new MultiLabelKNN(14,2,1);
 		
-		mlknn.buildClassifier(trainData);
-
+		mlknn.buildClassifier(trainData);	
 		
-		 /*// show multilabel statistics 
-		Instances allData = new Instances(trainData);
-        for (int i=0; i<testData.numInstances(); i++)
-            allData.add(testData.instance(i));
+		mlknn.output();
+		
+		
+		/* // show multilabel statistics 
+		//Instances allData = new Instances(trainData);
+        //for (int i=0; i<testData.numInstances(); i++)
+        //    allData.add(testData.instance(i));
 
         Statistics stats = new Statistics();
-        stats.calculateStats(allData, numLabels);
+        stats.calculateStats(trainData, numLabels);
         System.out.println(stats.toString());
 		 
 		 /*  // Binary Relevance Classifier Evaluator eval; Evaluation results;
