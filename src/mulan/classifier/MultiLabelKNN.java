@@ -31,6 +31,7 @@ public class MultiLabelKNN extends AbstractMultiLabelClassifier{
 
 	//private int numLabels;
 	private int numofNeighbours;
+	private int predictors;
 	private double smooth;
 
 	public MultiLabelKNN(){}
@@ -46,66 +47,75 @@ public class MultiLabelKNN extends AbstractMultiLabelClassifier{
 		CondNProbabilities = new double [numLabels][numofNeighbours+1];
 	}
 
-	public void buildClassifier(Instances traindata) throws Exception{
-		//filtrarisma ton dedomenon kai perasma sti sinartisi
-		//ComputePrior gia ypologismo ton Prior Probabilities
+	public void buildClassifier(Instances train) throws Exception{
 		
-		Instances datalabels = transform(traindata,false);
-		
-		ComputePrior(datalabels);
-		ComputeCond (traindata);
+		predictors = train.numAttributes()- numLabels;
+
+		ComputePrior(train);
+		ComputeCond (train);
 
 	}
 
 	/**
-	 * Ypologizei tis prior probabilities tis kathe klasis dexete os eisodo ta
-	 * dedomena pou periexoun mono ta class attributes kai me vasi ayta
-	 * ypologizei to periexomeno ton pinakon PriorProbabilities kai
-	 * PriorNProbabilities
+	 * Computing Prior and PriorN Probabilities for each class of the training
+	 * set
 	 * 
-	 * @param filteredata
+	 * @param train :
+	 *            the training dataset
 	 */
-	private void ComputePrior(Instances datalabels){
-		double [] values; // piankas pou apothikeuei tis times gia kathe
-							// attribute, olon ton instances
-		int temp_Ci;
-		for(int i=0;i<datalabels.numAttributes();i++) {// i<numLabels
-				values = datalabels.attributeToDoubleArray(i);
-				temp_Ci=0;
-				for(int j=0 ;j< datalabels.numInstances();j++) // compute the sum
-					temp_Ci += (int) values[j];
-				PriorProbabilities[i]=  (smooth +temp_Ci)/(smooth*2+datalabels.numInstances());
-				PriorNProbabilities[i] = 1 - PriorProbabilities[i];
+	private void ComputePrior(Instances train) {
+		for (int i = 0; i < numLabels; i++) {
+			int temp_Ci = 0;
+			for (int j = 0; j < train.numInstances(); j++) {
+				double value = train.instance(j).value(predictors + i);
+				if (Utils.eq(value, 1.0)) {
+					temp_Ci++;
+				}
+			}
+			PriorProbabilities[i] = (smooth + temp_Ci)
+					/ (smooth * 2 + train.numInstances());
+			PriorNProbabilities[i] = 1 - PriorProbabilities[i];
 		}
 	}
 	
-	private void ComputeCond (Instances train) throws Exception{
-		//-1 einai o class index
-		//diladi den exei oristei clasi
-		//kai to covertree douleui giati vriskei  tinapostasi me vasi ta
-		//attributes apo 0 mexrin numattributes kai aplos prosperna tin
-		//klasi. alla afou einai -1 den ti vriskei pote
-		//System.out.println(datalabels.classIndex());
-		
-		//Instances attributes = transform(train,true);//transformation needed to perform neighbour search based on attributes
-		//Instances tempknn = null;
-		
+	private void ComputeCond(Instances train) throws Exception {
+		// -1 einai o class index
+		// diladi den exei oristei clasi
+		// kai to covertree douleui giati vriskei tinapostasi me vasi ta
+		// attributes apo 0 mexrin numattributes kai aplos prosperna tin
+		// klasi. alla afou einai -1 den ti vriskei pote
+		// System.out.println(datalabels.classIndex());
+
+		// Instances attributes = transform(train,true);//transformation needed
+		// to perform neighbour search based on attributes
+		// Instances tempknn = null;
+
 		CoverTree myCoverTree = new CoverTree();
+
 		System.out.println("CoverTree building started!");
 		System.out.println("---------------------------");
+		long startTime = System.currentTimeMillis();
+
 		myCoverTree.setInstances(train);
+
+		long endTime = System.currentTimeMillis();
+		System.out.println("Execution time : " + (endTime - startTime) + " ms");
 		System.out.println("CoverTree building completed!");
-		
+
 		// c[k] counts the number of training instances with label i whose k
 		// nearest neighbours contain exactly k instances with label i
 		int[][] temp_Ci = new int[numLabels][numofNeighbours + 1];
 		int[][] temp_NCi = new int[numLabels][numofNeighbours + 1];
-		 
+
+		
+		System.out.println("Neighbour claculation started!");
+		System.out.println("---------------------------");
+		long startTime2 = System.currentTimeMillis();
+		
 		for (int i = 0; i < train.numInstances(); i++) {
 			// it also counts the instance itself, so we compute one n more and
 			// then crop it
-			if(i%100==0)
-				System.out.println("Knn of 100 Instances calculated");
+			
 			Instances tempknn = new Instances(myCoverTree.kNearestNeighbours(
 					train.instance(i), numofNeighbours + 1));
 
@@ -114,25 +124,29 @@ public class MultiLabelKNN extends AbstractMultiLabelClassifier{
 				// compute sum of aces in KNN (starts from 1 to bypass the extra
 				// neighbour)
 				int tempaces = 0; // num of aces in Knn for l
-				//tempknn.numInstances()= numofNeighbours+1
-				for (int k = 1; k < tempknn.numInstances(); k++) { 
-					double value = tempknn.instance(k).value(
-							tempknn.numAttributes() - numLabels + j);
+				// tempknn.numInstances()= numofNeighbours+1
+				for (int k = 1; k < numofNeighbours + 1; k++) {
+					double value = tempknn.instance(k).value(predictors + j);
 					if (Utils.eq(value, 1.0)) {
 						tempaces++;
 					}
 				}
 				// raise the counter of temp_Ci[j][tempaces] //
 				// temp_NCi[j][tempaces] by 1
-				if ((train.instance(i).value(train.numAttributes() - numLabels
-						+ j)) == 1) {
+				if ((train.instance(i).value(predictors + j)) == 1) {
 					temp_Ci[j][tempaces]++;
 				} else {
 					temp_NCi[j][tempaces]++;
 				}
 			}
 		}
-		//finally compute CondProbabilities[i][..] for labels  based on temp_Ci array
+		
+		long endTime2 = System.currentTimeMillis();
+		System.out.println("Execution time : " + (endTime2 - startTime2) + " ms");
+		System.out.println("Neighbour claculation completed!");
+		
+		// finally compute CondProbabilities[i][..] for labels based on temp_Ci
+		// array
 		for (int i = 0; i < numLabels; i++) {
 			int temp1 = 0;
 			int temp2 = 0;
@@ -147,7 +161,6 @@ public class MultiLabelKNN extends AbstractMultiLabelClassifier{
 						/ (smooth * (numofNeighbours + 1) + temp2);
 			}
 		}
-		
 	}
 	
 	
@@ -182,8 +195,16 @@ public class MultiLabelKNN extends AbstractMultiLabelClassifier{
 
 	public void output(){
 		System.out.println("Computed Prior Probabilities");
-		for(int i=0;i<numLabels;i++)
+		for(int i=0;i<numLabels;i++){
 			System.out.println("Label "+ (i+1)+ ": " + PriorProbabilities[i]);
+		}
+		System.out.println("Computed Posterior Probabilities");
+		for(int i=0;i<numLabels;i++){
+			System.out.println("Label "+ (i+1));
+			for(int j=0;j<numofNeighbours+1;j++){
+				System.out.println(j + " neighbours: " + CondProbabilities[i][j]);
+			}
+		}
 	}
 
 }
