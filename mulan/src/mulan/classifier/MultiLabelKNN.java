@@ -96,7 +96,7 @@ public class MultiLabelKNN extends AbstractMultiLabelClassifier{
 		System.out.println("---------------------------");
 		long startTime = System.currentTimeMillis();
 
-		myCoverTree.setInstances(train ,numLabels );
+		myCoverTree.setInstances(train);
 
 		long endTime = System.currentTimeMillis();
 		System.out.println("Execution time : " + (endTime - startTime) + " ms");
@@ -209,3 +209,48 @@ public class MultiLabelKNN extends AbstractMultiLabelClassifier{
 }
 
 
+/** 
+ * Builds the tree on the given set of instances.
+ * P.S.: For internal use only. Outside classes 
+ * should call setInstances(). 
+ * @param insts The instances on which to build 
+ * the cover tree.
+ * @throws Exception If the supplied set of 
+ * Instances is empty, or if there are missing
+ * values. 
+ */
+/*
+protected void buildCoverTree(Instances insts,int numofclasses) throws Exception {
+  if (insts.numInstances() == 0)
+    throw new Exception(
+	  "CoverTree: Empty set of instances. Cannot build tree.");
+  checkMissing(insts);
+  if (m_EuclideanDistance == null)
+    m_DistanceFunction = m_EuclideanDistance = new EuclideanDistance(insts);
+  else
+    m_EuclideanDistance.setInstances(insts);
+  
+  Stack<DistanceNode> point_set = new Stack<DistanceNode>();
+  Stack<DistanceNode> consumed_set = new Stack<DistanceNode>();
+
+  Instance point_p = insts.instance(0); int p_idx = 0;
+  double max_dist=-1, dist=0.0; Instance max_q=point_p;
+  
+  for (int i = 1; i < insts.numInstances(); i++) {
+    DistanceNode temp = new DistanceNode();
+    temp.dist = new Stack<Double>();
+    
+    /*Instance tempInstance = new Instance(insts.instance(i));
+    if(i%1000==0)
+    System.out.println(tempInstance.numAttributes());
+    for(int j=0;j<numofclasses;j++)
+    tempInstance.deleteAttributeAt(insts.numAttributes()-1-numofclasses);
+    
+    if(i%1000==0)
+    System.out.println(tempInstance.numAttributes());*/
+    
+   /* dist = Math.sqrt(m_DistanceFunction.distance(point_p, insts.instance(i), Double.POSITIVE_INFINITY));
+    if(dist > max_dist) {
+      max_dist = dist; max_q = insts.instance(i);
+    }
+*/
