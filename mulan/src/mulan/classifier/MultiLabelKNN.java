@@ -12,7 +12,7 @@ import weka.core.Instances;
 import weka.core.Instance;
 import weka.core.Utils;
 import weka.core.neighboursearch.CoverTree;
-
+import weka.core.Attribute;
 
 
 
@@ -90,13 +90,23 @@ public class MultiLabelKNN extends AbstractMultiLabelClassifier{
 		// to perform neighbour search based on attributes
 		// Instances tempknn = null;
 		
+		Instances attributes = transform(train,true);//crop labels
+		
+		Attribute fakeclass = new Attribute("position"); //create new attr
+		attributes.insertAttributeAt(fakeclass, 0);
+		
+		for(int i=0 ; i < train.numInstances(); i++ )//give values
+			attributes.instance(i).setValue(0, i);
+		
+		attributes.setClassIndex(0);
+		
 		CoverTree myCoverTree = new CoverTree();
 
 		System.out.println("CoverTree building started!");
 		System.out.println("---------------------------");
 		long startTime = System.currentTimeMillis();
 
-		myCoverTree.setInstances(train);
+		myCoverTree.setInstances(attributes);
 
 		long endTime = System.currentTimeMillis();
 		System.out.println("Execution time : " + (endTime - startTime) + " ms");
@@ -115,17 +125,20 @@ public class MultiLabelKNN extends AbstractMultiLabelClassifier{
 		for (int i = 0; i < train.numInstances(); i++) {
 			// it also counts the instance itself, so we compute one n more and
 			// then crop it
+			if(i%200==0)
+				System.out.println(i+" neighbours calculated");
 			Instances tempknn = new Instances(myCoverTree.kNearestNeighbours(
-					train.instance(i), numofNeighbours + 1));
+					attributes.instance(i), numofNeighbours + 1));
 
 			// now compute values of temp_Ci and temp_NCi
 			for (int j = 0; j < numLabels; j++) {
 				// compute sum of aces in KNN (starts from 1 to bypass the extra
 				// neighbour)
-				int tempaces = 0; // num of aces in Knn for l
+				int tempaces = 0; // num of aces in Knn for j
 				// tempknn.numInstances()= numofNeighbours+1
 				for (int k = 1; k < numofNeighbours + 1; k++) {
-					double value = tempknn.instance(k).value(predictors + j);
+					int index = (int) tempknn.instance(k).value(0);
+					double value = train.instance(index).value(predictors + j);
 					if (Utils.eq(value, 1.0)) {
 						tempaces++;
 					}
@@ -151,7 +164,7 @@ public class MultiLabelKNN extends AbstractMultiLabelClassifier{
 			int temp2 = 0;
 			for (int j = 0; j < numofNeighbours + 1; j++) {
 				temp1 += temp_Ci[i][j];
-				temp2 += temp_Ci[i][j];
+				temp2 += temp_NCi[i][j];
 			}
 			for (int j = 0; j < numofNeighbours + 1; j++) {
 				CondProbabilities[i][j] = (smooth + temp_Ci[i][j])
@@ -202,6 +215,7 @@ public class MultiLabelKNN extends AbstractMultiLabelClassifier{
 			System.out.println("Label "+ (i+1));
 			for(int j=0;j<numofNeighbours+1;j++){
 				System.out.println(j + " neighbours: " + CondProbabilities[i][j]);
+				System.out.println(j + " neighbours: " + CondNProbabilities[i][j]);
 			}
 		}
 	}
@@ -209,48 +223,3 @@ public class MultiLabelKNN extends AbstractMultiLabelClassifier{
 }
 
 
-/** 
- * Builds the tree on the given set of instances.
- * P.S.: For internal use only. Outside classes 
- * should call setInstances(). 
- * @param insts The instances on which to build 
- * the cover tree.
- * @throws Exception If the supplied set of 
- * Instances is empty, or if there are missing
- * values. 
- */
-/*
-protected void buildCoverTree(Instances insts,int numofclasses) throws Exception {
-  if (insts.numInstances() == 0)
-    throw new Exception(
-	  "CoverTree: Empty set of instances. Cannot build tree.");
-  checkMissing(insts);
-  if (m_EuclideanDistance == null)
-    m_DistanceFunction = m_EuclideanDistance = new EuclideanDistance(insts);
-  else
-    m_EuclideanDistance.setInstances(insts);
-  
-  Stack<DistanceNode> point_set = new Stack<DistanceNode>();
-  Stack<DistanceNode> consumed_set = new Stack<DistanceNode>();
-
-  Instance point_p = insts.instance(0); int p_idx = 0;
-  double max_dist=-1, dist=0.0; Instance max_q=point_p;
-  
-  for (int i = 1; i < insts.numInstances(); i++) {
-    DistanceNode temp = new DistanceNode();
-    temp.dist = new Stack<Double>();
-    
-    /*Instance tempInstance = new Instance(insts.instance(i));
-    if(i%1000==0)
-    System.out.println(tempInstance.numAttributes());
-    for(int j=0;j<numofclasses;j++)
-    tempInstance.deleteAttributeAt(insts.numAttributes()-1-numofclasses);
-    
-    if(i%1000==0)
-    System.out.println(tempInstance.numAttributes());*/
-    
-   /* dist = Math.sqrt(m_DistanceFunction.distance(point_p, insts.instance(i), Double.POSITIVE_INFINITY));
-    if(dist > max_dist) {
-      max_dist = dist; max_q = insts.instance(i);
-    }
-*/
