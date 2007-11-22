@@ -89,14 +89,14 @@ public class MultiLabelKNN extends AbstractMultiLabelClassifier{
 		// Instances attributes = transform(train,true);//transformation needed
 		// to perform neighbour search based on attributes
 		// Instances tempknn = null;
-
+		
 		CoverTree myCoverTree = new CoverTree();
 
 		System.out.println("CoverTree building started!");
 		System.out.println("---------------------------");
 		long startTime = System.currentTimeMillis();
 
-		myCoverTree.setInstances(train);
+		myCoverTree.setInstances(train ,numLabels );
 
 		long endTime = System.currentTimeMillis();
 		System.out.println("Execution time : " + (endTime - startTime) + " ms");
@@ -115,7 +115,6 @@ public class MultiLabelKNN extends AbstractMultiLabelClassifier{
 		for (int i = 0; i < train.numInstances(); i++) {
 			// it also counts the instance itself, so we compute one n more and
 			// then crop it
-			
 			Instances tempknn = new Instances(myCoverTree.kNearestNeighbours(
 					train.instance(i), numofNeighbours + 1));
 
