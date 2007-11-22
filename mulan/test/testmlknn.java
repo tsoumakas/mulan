@@ -16,7 +16,7 @@ import weka.core.Instances;
 public class testmlknn {
 
 	public testmlknn() {
-	}
+	} 
 
 	public static void main(String[] args) throws Exception {
 		
@@ -36,7 +36,7 @@ public class testmlknn {
 		mlknn.output();
 		
 		
-		/* // show multilabel statistics 
+		 // show multilabel statistics 
 		//Instances allData = new Instances(trainData);
         //for (int i=0; i<testData.numInstances(); i++)
         //    allData.add(testData.instance(i));
