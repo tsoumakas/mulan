@@ -8,12 +8,13 @@ import weka.core.Instance;
 import weka.core.Utils;
 import weka.core.neighboursearch.CoverTree;
 import weka.core.Attribute;
+import weka.core.DistanceFunction;
+import weka.core.EuclideanDistance;
 
 /**
  * Class that implements the ML-KNN (Multi-Label K Nearest Neighbours )
  * algorithm
  * <p>
- * 
  * @author Eleftherios Spyromitros Xioufis
  */
 
@@ -28,30 +29,35 @@ public class MultiLabelKNN extends AbstractMultiLabelClassifier {
 	private int numofNeighbours;
 	private int predictors;
 	private double smooth;
+	private boolean dontnormalize;
 	private CoverTree mlCoverTree = null;
-	Instances train = null;
+	private Instances train = null;
 
 	public MultiLabelKNN() {
 	}
 
-	public MultiLabelKNN(int labels, int k, double s,Instances traindata) {
+	public MultiLabelKNN(int labels, int k, double s) {
 		numLabels = labels;
 		numofNeighbours = k;
 		smooth = s;
+		dontnormalize = true;
 		PriorProbabilities = new double[numLabels];
 		PriorNProbabilities = new double[numLabels];
 		CondProbabilities = new double[numLabels][numofNeighbours + 1];
 		CondNProbabilities = new double[numLabels][numofNeighbours + 1];
-		train=traindata; 
 	}
 
 	public void buildClassifier(Instances train) throws Exception {
-		
+		this.train=train;
 		predictors = train.numAttributes() - numLabels;
 
 		ComputePrior(train);
 		ComputeCond(train);
 
+	}
+	
+	public void setdontnormalize (boolean norm) {
+		dontnormalize = norm;
 	}
 
 	/**
@@ -90,11 +96,7 @@ public class MultiLabelKNN extends AbstractMultiLabelClassifier {
 		// klasi. alla afou einai -1 den ti vriskei pote
 		// System.out.println(datalabels.classIndex());
 
-		// Instances attributes = transform(train,true);//transformation needed
-		// to perform neighbour search based on attributes
-		// Instances tempknn = null;
-
-		Instances attributes = transform(train, true);// crop labels
+		Instances attributes = transform(train, true);// crop class labels
 
 		Attribute fakeclass = new Attribute("position"); // create new attr
 		attributes.insertAttributeAt(fakeclass, 0);
@@ -105,8 +107,13 @@ public class MultiLabelKNN extends AbstractMultiLabelClassifier {
 
 		attributes.setClassIndex(0);
 
+		//distance function intitiallization
+		EuclideanDistance dfunc = new EuclideanDistance();
+		dfunc.setDontNormalize(dontnormalize);
+		
 		mlCoverTree = new CoverTree();
-
+		mlCoverTree.setDistanceFunction(dfunc);
+		
 		mlCoverTree.setInstances(attributes);
 
 		// c[k] counts the number of training instances with label i whose k
@@ -120,7 +127,7 @@ public class MultiLabelKNN extends AbstractMultiLabelClassifier {
 			// it also counts the instance itself, so we compute one n more and
 			// then crop it
 			Instances tempknn = new Instances(mlCoverTree.kNearestNeighbours(
-					attributes.instance(i), numofNeighbours + 1));
+					attributes.instance(i), numofNeighbours + 1 ));
 
 			// now compute values of temp_Ci and temp_NCi for every class label
 			for (int j = 0; j < numLabels; j++) {
@@ -194,11 +201,11 @@ public class MultiLabelKNN extends AbstractMultiLabelClassifier {
 					* CondNProbabilities[i][tempaces];
 			if (value1/(value1+value2) >= 0.5){
 				predictions[i] = 1;
-				//confidences[i] = value1 / value1 + value2;
+				//confidences[i] = value1 / ( value1 + value2 );
 			}
 			else{
 				predictions[i] = 0;
-				//confidences[i] =1-( value1 / value1 + value2);
+				//confidences[i] =1-( value1 / ( value1 + value2));
 			}
 		}
 
