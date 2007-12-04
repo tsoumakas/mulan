@@ -33,6 +33,7 @@ public class ExampleBasedCrossValidation extends ExampleBasedEvaluation
 			fmeasure       += folds[i].fmeasure;
 			hammingLoss    += folds[i].hammingLoss;
 			subsetAccuracy += folds[i].subsetAccuracy;
+			//System.out.println((i+1)+" fold Hamming loss: "+ folds[i].hammingLoss);
 		}
 
 		int n = folds.length;

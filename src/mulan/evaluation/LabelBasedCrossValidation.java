@@ -21,10 +21,10 @@ public class LabelBasedCrossValidation extends LabelBasedEvaluation
 		
 		for(int i = 0; i < folds.length; i++)
 		{
-			accuracy[MICRO]  += folds[i].accuracy[MACRO];
-			recall[MICRO]    += folds[i].recall[MACRO];
-			precision[MICRO] += folds[i].precision[MACRO];
-			fmeasure[MICRO]  += folds[i].fmeasure[MACRO];
+			accuracy[MICRO]  += folds[i].accuracy[MICRO];
+			recall[MICRO]    += folds[i].recall[MICRO];
+			precision[MICRO] += folds[i].precision[MICRO];
+			fmeasure[MICRO]  += folds[i].fmeasure[MICRO];
 			
 			accuracy[MACRO]  += folds[i].accuracy[MACRO];
 			recall[MACRO]    += folds[i].recall[MACRO];
