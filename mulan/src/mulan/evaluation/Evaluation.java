@@ -8,13 +8,16 @@ public class Evaluation
 	protected LabelBasedEvaluation labelBased;
 
 	protected ExampleBasedEvaluation exampleBased;
+	
+	protected LabelRankingBasedEvaluation rankingBased;
 
 	
 	protected Evaluation(LabelBasedEvaluation labelBased,
-			ExampleBasedEvaluation exampleBased)
+			ExampleBasedEvaluation exampleBased,LabelRankingBasedEvaluation rankingBased )
 	{
 		this.labelBased = labelBased;
 		this.exampleBased = exampleBased;
+		this.rankingBased = rankingBased;
 	}
 	
 
@@ -31,10 +34,17 @@ public class Evaluation
 		return exampleBased;
 	}
 	
+	public LabelRankingBasedEvaluation getRankingBased()
+	{
+		return rankingBased;
+	}
+	
         public String toString() {
             String description = "";
 
             description += "HammingLoss    : " + exampleBased.hammingLoss() + "\n";
+            description += "One-error      : " + rankingBased.one_error() + "\n";
+            description += "Coverage      : " + rankingBased.coverage() + "\n";
             description += "SubsetAccuracy : " + exampleBased.subsetAccuracy() + "\n";
             labelBased.setAveragingMethod(LabelBasedEvaluation.MICRO);
             description += "MICRO\n";

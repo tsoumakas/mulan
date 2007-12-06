@@ -48,6 +48,7 @@ public class Evaluator
 		if (numFolds == -1) numFolds = dataset.numInstances();
 		LabelBasedEvaluation[]  labelBased = new LabelBasedEvaluation[numFolds]; 
 		ExampleBasedEvaluation[]  exampleBased = new ExampleBasedEvaluation[numFolds];
+		LabelRankingBasedEvaluation[] rankingBased=new LabelRankingBasedEvaluation[numFolds];
 		Random random = new Random(seed);
 		
 		Instances workingSet = new Instances(dataset);
@@ -62,11 +63,13 @@ public class Evaluator
 			Evaluation evaluation = evaluate(clone, test);
 			labelBased[i] = evaluation.getLabelBased();
 			exampleBased[i] = evaluation.getExampleBased();
+			rankingBased[i] = evaluation.getRankingBased();
 		}
 		
 		return new CrossValidation(
 				new LabelBasedCrossValidation(labelBased),
 				new ExampleBasedCrossValidation(exampleBased),
+				new LabelRankingBasedCrossValidation(rankingBased),
 				numFolds); 
 
 	}
@@ -114,7 +117,8 @@ public class Evaluator
 			threshold += increment;
 			evaluations[i] = new Evaluation(
 					new LabelBasedEvaluation(predictions),
-					new ExampleBasedEvaluation(predictions));
+					new ExampleBasedEvaluation(predictions),
+					new LabelRankingBasedEvaluation(predictions));
 		}
 		
 		return evaluations;
@@ -137,7 +141,8 @@ public class Evaluator
 	{
 		return new Evaluation(
 				new LabelBasedEvaluation(predictions),
-				new ExampleBasedEvaluation(predictions));
+				new ExampleBasedEvaluation(predictions),
+				new LabelRankingBasedEvaluation(predictions));
 	}
 	
 	

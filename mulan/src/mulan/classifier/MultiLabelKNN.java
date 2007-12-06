@@ -8,16 +8,15 @@ import weka.core.Instance;
 import weka.core.Utils;
 import weka.core.neighboursearch.CoverTree;
 import weka.core.Attribute;
-import weka.core.DistanceFunction;
 import weka.core.EuclideanDistance;
 
+@SuppressWarnings("serial")
 /**
  * Class that implements the ML-KNN (Multi-Label K Nearest Neighbours )
  * algorithm
  * <p>
  * @author Eleftherios Spyromitros Xioufis
  */
-
 public class MultiLabelKNN extends AbstractMultiLabelClassifier {
 
 	private double[] PriorProbabilities;
@@ -195,17 +194,16 @@ public class MultiLabelKNN extends AbstractMultiLabelClassifier {
 					tempaces++;
 				}
 			}
-			double value1 = PriorProbabilities[i]
+			double Prob_in = PriorProbabilities[i]
 					* CondProbabilities[i][tempaces];
-			double value2 = PriorNProbabilities[i]
+			double Prob_out = PriorNProbabilities[i]
 					* CondNProbabilities[i][tempaces];
-			if (value1/(value1+value2) >= 0.5){
+			confidences[i] = Prob_in / (Prob_in + Prob_out); // ranking function
+
+			if (confidences[i] >= 0.5) {
 				predictions[i] = 1;
-				//confidences[i] = value1 / ( value1 + value2 );
-			}
-			else{
+			} else {
 				predictions[i] = 0;
-				//confidences[i] =1-( value1 / ( value1 + value2));
 			}
 		}
 
