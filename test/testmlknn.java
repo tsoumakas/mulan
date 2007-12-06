@@ -29,29 +29,29 @@ public class testmlknn {
 		FileReader frTest = new FileReader(path + datastem + "-test.arff");
 		Instances testData = new Instances(frTest);
 
-		Instances allData = new Instances(trainData);
+		/*Instances allData = new Instances(trainData);
 		for (int i = 0; i < testData.numInstances(); i++)
-			allData.add(testData.instance(i));
+			allData.add(testData.instance(i));*/
 
 		int numLabels = 14;
 		// int numNeighbours = 2;
 
-		for (int i = 8; i <= 13; i++) {
+		for (int i = 10; i <= 10; i++) {
 			System.out.println("Calculating mlknn output for " + i
 					+ " neighbours");
 
 			MultiLabelKNN mlknn = new MultiLabelKNN(numLabels, i, 1);
 			mlknn.setdontnormalize(false);
 			
-			//mlknn.buildClassifier(trainData);
+			mlknn.buildClassifier(trainData);
 
 			// mlknn.output();
 
 			Evaluator eval;
 			Evaluation results;
 			eval = new Evaluator();
-			results = eval.crossValidate(mlknn, allData);
-		    //results = eval.evaluate(mlknn, testData);
+			//results = eval.crossValidate(mlknn, allData);
+		    results = eval.evaluate(mlknn, testData);
 			System.out.println(results.toString());
 			System.gc();
 

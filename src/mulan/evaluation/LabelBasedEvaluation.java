@@ -109,7 +109,7 @@ public class LabelBasedEvaluation extends EvaluationBase
             this.labelAccuracy         = new double[numLabels];
             this.labelRecall           = new double[numLabels];
             this.labelPrecision        = new double[numLabels];
-            this.labelFmeasure          = new double[numLabels];
+            this.labelFmeasure         = new double[numLabels];
 
 
             //Count TP, TN, FP, FN
