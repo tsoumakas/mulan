@@ -1,40 +1,35 @@
 package mulan.evaluation;
 
 import weka.core.Utils;
-import java.util.Arrays;
+import java.util.ArrayList;
 
 public class LabelRankingBasedEvaluation extends EvaluationBase {
-	
+
 	protected double one_error;
 	protected double coverage;
-	
-	protected double forgivenessRate;
+	protected double rloss;
+	protected double avg_precision;
 
-	
-	protected LabelRankingBasedEvaluation(BinaryPrediction[][] predictions,
-									 double forgivenessRate)
-	{
-		super(predictions);
-		this.forgivenessRate = forgivenessRate;
-		computeMeasures();
-	}
-	
-	protected LabelRankingBasedEvaluation(BinaryPrediction[][] predictions)
-	{
-		this(predictions, 1.0);
-	}
-	
-	protected LabelRankingBasedEvaluation(double forgivenessRate)
-	{
+	// apaiteitai apo tin cross-vallidation constructor xoris orismata
+	protected LabelRankingBasedEvaluation() {
 		super(null);
-		this.forgivenessRate = forgivenessRate;
 	}
-	
+
+	protected LabelRankingBasedEvaluation(BinaryPrediction[][] predictions) {
+		super(predictions);
+		// computeMeasures();
+		compute_one_error();
+		compute_coverage();
+		compute_rloss();
+		compute_avg_precision();
+	}
+
 	protected void computeMeasures() // throws Exception
 	{
-		// Reset in case of multiple calls
+	}
+
+	private void compute_one_error() {
 		one_error = 0;
-		coverage = 0;
 
 		int numLabels = numLabels();
 		int numInstances = numInstances();
@@ -52,57 +47,110 @@ public class LabelRankingBasedEvaluation extends EvaluationBase {
 				one_error++;
 			}
 		}
-		for (int i = 0; i < numInstances; i++){
-			int how_deep=0;
-			double ranks [] = new double[numLabels];
-			int indexes [] = new int[numLabels];
-			
-			//copy the rankings into new array
-			for (int j=0 ;j < numLabels; j++) {
+
+		one_error /= numInstances;
+	}
+
+	private void compute_coverage() {
+		coverage = 0;
+
+		int numLabels = numLabels();
+		int numInstances = numInstances();
+
+		for (int i = 0; i < numInstances; i++) {
+			int how_deep = 0;
+			double ranks[] = new double[numLabels];
+			int indexes[] = new int[numLabels];
+
+			// copy the rankings into new array
+			for (int j = 0; j < numLabels; j++) {
 				ranks[j] = predictions[i][j].confidenceTrue;
 			}
-			//sort the array of ranks
+			// sort the array of ranks
 			indexes = Utils.stableSort(ranks);
-			
-			if (i % 100 == 0) {
-				for (int k = 0; k < numLabels; k++) {
-					System.out.print(ranks[k] + " ");
+
+			for (int j = 0; j < numLabels; j++) {
+				if (predictions[i][j].actual == true) {
+					// find the position of jth label in the sorted array.
+					for (int k = 0; k < numLabels; k++) {
+						if (indexes[k] == j) {
+							if (how_deep < (numLabels - k - 1)) {
+								how_deep = numLabels - k - 1;
+							}
+						}
+					}
 				}
-				System.out.println();
-				for (int k = 0; k < numLabels; k++) {
-					System.out.print(indexes[k] + " ");
-				}
-				System.out.println();
+
 			}
-			
-			for (int j=0 ;j < numLabels; j++) {
-				if(predictions[i][j].actual == true && (numLabels - indexes[j]-1) > how_deep ){
-					//find ranking of label j -> position of j's ranking in ranks
-					//find j's ranking
-				   how_deep = numLabels - indexes[j] - 1;
-				}
-					
-			}
-			
 			coverage += how_deep;
-			
 		}
 
-		// Set final values
-		one_error /= numInstances;
 		coverage /= numInstances;
+
 	}
 
-	public double one_error()
-	{
+	private void compute_rloss() {
+		rloss = 0;
+
+		int numLabels = numLabels();
+		int numInstances = numInstances();
+
+		for (int i = 0; i < numInstances; i++) {
+
+			// indexes of true and false labels
+			ArrayList<Integer> true_indexes = new ArrayList<Integer>();
+			ArrayList<Integer> false_indexes = new ArrayList<Integer>();
+
+			// xorizi se true kai false labels apothikeuontas ta indexes
+			for (int j = 0; j < numLabels; j++) {
+				if (predictions[i][j].actual == true) {
+					true_indexes.add(j);
+				} else {
+					false_indexes.add(j);
+				}
+			}
+
+			int rolp = 0; // reversed ordered label pairs
+
+			for (int k = 0; k < true_indexes.size(); k++) {
+				for (int l = 0; l < false_indexes.size(); l++) {
+					if (predictions[i][true_indexes.get(k)].confidenceTrue <= predictions[i][false_indexes.get(l)].confidenceTrue) {
+						rolp++;
+					}
+				}
+			}
+			rloss += (double) rolp
+					/ (true_indexes.size() * false_indexes.size());
+		}
+
+		rloss /= numInstances;
+	}
+
+	private void compute_avg_precision() {
+		avg_precision = 0;
+		
+		int numLabels = numLabels();
+		int numInstances = numInstances();
+
+		avg_precision /= numInstances;
+	}
+
+	public double one_error() {
 		return one_error;
 	}
-	
-	public double coverage()
-	{
+
+	public double coverage() {
 		return coverage;
 	}
-	
+
+	public double rloss() {
+		return rloss;
+	}
+
+	public double avg_precision() {
+		return avg_precision;
+	}
+
 	@Override
 	public double accuracy() {
 		// TODO Auto-generated method stub
