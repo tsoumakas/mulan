@@ -43,9 +43,12 @@ public class Evaluation
             String description = "";
 
             description += "HammingLoss    : " + exampleBased.hammingLoss() + "\n";
-            description += "One-error      : " + rankingBased.one_error() + "\n";
-            description += "Coverage      : " + rankingBased.coverage() + "\n";
             description += "SubsetAccuracy : " + exampleBased.subsetAccuracy() + "\n";
+            description += "Ranking Based Measures\n";
+            description += "One-error      : " + rankingBased.one_error() + "\n";
+            description += "Coverage       : " + rankingBased.coverage() + "\n";
+            description += "Ranking Loss   : " + rankingBased.rloss() + "\n";
+            description += "Avg Precision  : " + rankingBased.avg_precision() + "\n";
             labelBased.setAveragingMethod(LabelBasedEvaluation.MICRO);
             description += "MICRO\n";
             description += "Precision : " + labelBased.precision() + "\n";
