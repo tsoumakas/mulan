@@ -36,22 +36,22 @@ public class testmlknn {
 		int numLabels = 14;
 		// int numNeighbours = 2;
 
-		for (int i = 7; i <= 7; i++) {
+		for (int i = 10; i <= 10; i++) {
 			System.out.println("Calculating mlknn output for " + i
 					+ " neighbours");
 
 			MultiLabelKNN mlknn = new MultiLabelKNN(numLabels, i, 1);
-			mlknn.setdontnormalize(true);
+			mlknn.setdontnormalize(false);
 			
-			mlknn.buildClassifier(trainData);
+			//mlknn.buildClassifier(trainData);
 
 			// mlknn.output();
 
 			Evaluator eval;
 			Evaluation results;
 			eval = new Evaluator();
-			//results = eval.crossValidate(mlknn, allData);
-		    results = eval.evaluate(mlknn, testData);
+			results = eval.crossValidate(mlknn, allData);
+		    //results = eval.evaluate(mlknn, testData);
 			System.out.println(results.toString());
 			System.gc();
 

@@ -114,7 +114,8 @@ public class LabelRankingBasedEvaluation extends EvaluationBase {
 
 			for (int k = 0; k < true_indexes.size(); k++) {
 				for (int l = 0; l < false_indexes.size(); l++) {
-					if (predictions[i][true_indexes.get(k)].confidenceTrue <= predictions[i][false_indexes.get(l)].confidenceTrue) {
+					if (predictions[i][true_indexes.get(k)].confidenceTrue <= predictions[i][false_indexes
+							.get(l)].confidenceTrue) {
 						rolp++;
 					}
 				}
@@ -128,10 +129,63 @@ public class LabelRankingBasedEvaluation extends EvaluationBase {
 
 	private void compute_avg_precision() {
 		avg_precision = 0;
-		
+
 		int numLabels = numLabels();
 		int numInstances = numInstances();
 
+		for (int i = 0; i < numInstances; i++) {
+
+			double ranks[] = new double[numLabels];
+			int indexes[] = new int[numLabels];
+
+			// copy the rankings into new array
+			for (int j = 0; j < numLabels; j++) {
+				ranks[j] = predictions[i][j].confidenceTrue;
+			}
+			// sort the array of ranks
+			indexes = Utils.stableSort(ranks);
+
+			// indexes of true and false labels
+			ArrayList<Integer> true_indexes = new ArrayList<Integer>();
+			ArrayList<Integer> false_indexes = new ArrayList<Integer>();
+
+			// xorizi se true kai false labels apothikeuontas ta indexes
+			for (int j = 0; j < numLabels; j++) {
+				if (predictions[i][j].actual == true) {
+					true_indexes.add(j);
+				} else {
+					false_indexes.add(j);
+				}
+			}
+
+			double rel_rankj = 0;
+
+			for (int j : true_indexes) {
+				int jrating = 0;
+				int ranked_abovet = 0;
+
+				// find rank of jth label in the array of ratings
+				for (int k = 0; k < numLabels; k++) {
+					if (indexes[k] == j) {
+						jrating = k;
+						break;
+					}
+				}
+				// count the actually true above ranked labels
+				for (int k = jrating + 1; k < numLabels; k++) {
+					if (predictions[i][indexes[k]].actual == true) {
+						ranked_abovet++;
+					}
+				}
+				int jrank = numLabels - jrating;
+				rel_rankj += (double) (ranked_abovet + 1) / jrank; //+1 to include the current label
+			}
+
+			// diairoume me to |Yi|
+			rel_rankj /= true_indexes.size();
+
+			avg_precision += rel_rankj;
+		}
 		avg_precision /= numInstances;
 	}
 
