@@ -14,6 +14,11 @@ import weka.core.Instances;
 import mulan.evaluation.Evaluation;
 import mulan.evaluation.Evaluator;
 
+/**
+ * Test class for the multi-label knn classifier
+ * @author Eleftherios Spyromitros - Xioufis
+ */
+
 public class testmlknn {
 
 	public testmlknn() {

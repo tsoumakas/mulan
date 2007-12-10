@@ -3,6 +3,13 @@ package mulan.evaluation;
 import weka.core.Utils;
 import java.util.ArrayList;
 
+/**
+ * Class implementing metrics which are defined based on the real-valued function f <br>
+ * which concern the ranking quality of proper labels of the instance.
+ * 
+ * @author Eleftherios Spyromitros - Xioufis
+ */
+
 public class LabelRankingBasedEvaluation extends EvaluationBase {
 
 	protected double one_error;
@@ -10,7 +17,9 @@ public class LabelRankingBasedEvaluation extends EvaluationBase {
 	protected double rloss;
 	protected double avg_precision;
 
-	// apaiteitai apo tin cross-vallidation constructor xoris orismata
+	/**
+	 * This constructor is needed by LabelRankingBasedCrossvalidation class
+	 */
 	protected LabelRankingBasedEvaluation() {
 		super(null);
 	}
@@ -28,6 +37,11 @@ public class LabelRankingBasedEvaluation extends EvaluationBase {
 	{
 	}
 
+	/**
+	 * One-error: evaluates how many times the top ranked label is not in the 
+	 * set of proper labels of the instance.<br><br>
+	 * The performance is perfect when one_error = 0
+	 */
 	private void compute_one_error() {
 		one_error = 0;
 
@@ -41,16 +55,19 @@ public class LabelRankingBasedEvaluation extends EvaluationBase {
 				if (predictions[i][j].confidenceTrue > predictions[i][top_rated].confidenceTrue)
 					top_rated = j;
 			}
-
 			// check if it is in the set of proper labels
 			if (predictions[i][top_rated].actual != true) {
 				one_error++;
 			}
 		}
-
 		one_error /= numInstances;
 	}
-
+	
+	/**
+	 * Coverage: evaluates how far we need, on the average, to go down to the list
+	 * of labels in order to cover all the proper labels of the instance.<br><br>
+	 * The smaller the value of coverage, the better the performance.
+	 */
 	private void compute_coverage() {
 		coverage = 0;
 
@@ -58,7 +75,8 @@ public class LabelRankingBasedEvaluation extends EvaluationBase {
 		int numInstances = numInstances();
 
 		for (int i = 0; i < numInstances; i++) {
-			int how_deep = 0;
+			int how_deep = 0; // to go down the sorted(based on ranking)list of labels
+			
 			double ranks[] = new double[numLabels];
 			int indexes[] = new int[numLabels];
 
@@ -84,9 +102,7 @@ public class LabelRankingBasedEvaluation extends EvaluationBase {
 			}
 			coverage += how_deep;
 		}
-
 		coverage /= numInstances;
-
 	}
 
 	private void compute_rloss() {
@@ -123,7 +139,6 @@ public class LabelRankingBasedEvaluation extends EvaluationBase {
 			rloss += (double) rolp
 					/ (true_indexes.size() * false_indexes.size());
 		}
-
 		rloss /= numInstances;
 	}
 
@@ -178,7 +193,11 @@ public class LabelRankingBasedEvaluation extends EvaluationBase {
 					}
 				}
 				int jrank = numLabels - jrating;
-				rel_rankj += (double) (ranked_abovet + 1) / jrank; //+1 to include the current label
+				rel_rankj += (double) (ranked_abovet + 1) / jrank; // +1 to
+				// include
+				// the
+				// current
+				// label
 			}
 
 			// diairoume me to |Yi|
