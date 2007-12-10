@@ -1,5 +1,9 @@
 package mulan.evaluation;
 
+/**
+ * @author Eleftherios Spyromitros - Xioufis
+ */
+
 public class LabelRankingBasedCrossValidation extends
 		LabelRankingBasedEvaluation {
 protected LabelRankingBasedEvaluation[] folds;

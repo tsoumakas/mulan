@@ -10,9 +10,8 @@ import weka.core.neighboursearch.CoverTree;
 import weka.core.Attribute;
 import weka.core.EuclideanDistance;
 
-@SuppressWarnings("serial")
 /**
- * Class that implements the ML-KNN (Multi-Label K Nearest Neighbours )
+ * class that implements the ML-KNN (Multi-Label K Nearest Neighbours )
  * algorithm
  * <p>
  * @author Eleftherios Spyromitros Xioufis
