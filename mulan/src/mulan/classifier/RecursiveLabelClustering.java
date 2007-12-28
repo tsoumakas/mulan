@@ -1,10 +1,6 @@
 /*
  * RecursiveLabelClustering.java
  *
- * Created on 23 Ιούνιος 2007, 9:08 μμ
- *
- * To change this template, choose Tools | Template Manager
- * and open the template in the editor.
  */
 
 package mulan.classifier;
