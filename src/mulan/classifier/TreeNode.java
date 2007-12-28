@@ -9,7 +9,6 @@ import weka.core.Instances;
 /*
  * TreeNode.java
  *
- * Created on 28 Ιούνιος 2007, 11:05 πμ
  */
 
 /**
