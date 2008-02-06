@@ -70,7 +70,7 @@ public class LabelPowersetClassifier extends AbstractMultiLabelClassifier
             // construct labelset
             double[] dblLabels = new double[numLabels];
             for (int j=0; j<numLabels; j++)
-                dblLabels[j] = train.instance(i).value(numPredictors + j);                         
+                dblLabels[j] = Double.parseDouble(train.attribute(numPredictors+j).value((int) train.instance(i).value(numPredictors + j)));                         
             LabelSet labelSet = new LabelSet(dblLabels);                   
             
             // add labelset if not already present
@@ -92,7 +92,7 @@ public class LabelPowersetClassifier extends AbstractMultiLabelClassifier
         for (int i = 0; i < newTrain.numInstances(); i++) {
             String strClass = "";
                 for (int j = 0; j < numLabels; j++)
-                    strClass = strClass + String.valueOf( (int) train.instance(i).
+                    strClass = strClass + train.attribute(train.numAttributes()-numLabels+j).value((int) train.instance(i).
                                       value(train.numAttributes() - numLabels + j));
                     newTrain.instance(i).setClassValue(strClass);
         }
@@ -135,7 +135,7 @@ public class LabelPowersetClassifier extends AbstractMultiLabelClassifier
      */
     protected double[] distributionFromBaseClassifier(Instance instance) throws Exception
     {
-        System.out.println("old instance:" + instance.toString());
+        //System.out.println("old instance:" + instance.toString());
         Instance newInstance;
         if (instance instanceof SparseInstance) 
             newInstance = (SparseInstance) instance.copy();            
@@ -147,7 +147,7 @@ public class LabelPowersetClassifier extends AbstractMultiLabelClassifier
         for (int i=0; i<numLabels-1; i++)
             newInstance.deleteAttributeAt(numAttributes-1-i);
         newInstance.setDataset(metadataTest);
-        System.out.println("new instance:" + newInstance.toString());
+        //System.out.println("new instance:" + newInstance.toString());
         
         return baseClassifier.distributionForInstance(newInstance); 		
     }
