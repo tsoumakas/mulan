@@ -69,8 +69,9 @@ public class MultiLabelKNN extends AbstractMultiLabelClassifier {
 		for (int i = 0; i < numLabels; i++) {
 			int temp_Ci = 0;
 			for (int j = 0; j < train.numInstances(); j++) {
-				double value = train.instance(j).value(predictors + i);
-				if (Utils.eq(value, 1.0)) {
+				//double value = train.instance(j).value(predictors + i);
+				double value = Double.parseDouble(train.attribute(predictors + i).value((int) train.instance(j).value(predictors + i)));
+                                if (Utils.eq(value, 1.0)) {
 					temp_Ci++;
 				}
 			}
@@ -135,14 +136,16 @@ public class MultiLabelKNN extends AbstractMultiLabelClassifier {
 				// tempknn.numInstances()= numofNeighbours+1
 				for (int k = 1; k < numofNeighbours + 1; k++) {
 					int index = (int) tempknn.instance(k).value(0);
-					double value = train.instance(index).value(predictors + j);
+					//double value = train.instance(index).value(predictors + j);
+                                        double value = Double.parseDouble(train.attribute(predictors + j).value((int) train.instance(index).value(predictors + j)));
 					if (Utils.eq(value, 1.0)) {
 						tempaces++;
 					}
 				}
 				// raise the counter of temp_Ci[j][tempaces] //
 				// temp_NCi[j][tempaces] by 1
-				if ((train.instance(i).value(predictors + j)) == 1) {
+				//if ((train.instance(i).value(predictors + j)) == 1) {
+				if (Utils.eq(Double.parseDouble(train.attribute(predictors + j).value((int) train.instance(i).value(predictors + j))), 1.0)) {
 					temp_Ci[j][tempaces]++;
 				} else {
 					temp_NCi[j][tempaces]++;
@@ -188,8 +191,9 @@ public class MultiLabelKNN extends AbstractMultiLabelClassifier {
 			int tempaces = 0; // num of aces in Knn for i
 			for (int k = 0; k < numofNeighbours; k++) {
 				int index = (int) knn.instance(k).value(0);
-				double value = train.instance(index).value(predictors + i);
-				if (Utils.eq(value, 1.0)) {
+				//double value = train.instance(index).value(predictors + i);
+                                double value = Double.parseDouble(train.attribute(predictors + i).value((int) train.instance(index).value(predictors + i)));
+                                if (Utils.eq(value, 1.0)) {
 					tempaces++;
 				}
 			}
