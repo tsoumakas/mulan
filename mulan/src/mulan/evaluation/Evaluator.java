@@ -88,7 +88,8 @@ public class Evaluator
 			for(int j = 0; j < classifier.getNumLabels(); j++)
 			{
 				int classIdx = dataset.numAttributes() - classifier.getNumLabels() + j;
-				boolean actual = Utils.eq(1, instance.value(classIdx));
+				String classValue = dataset.attribute(classIdx).value((int) instance.value(classIdx));
+                                boolean actual = classValue.equals("1");
 				predictions[i][j] = new BinaryPrediction(
 							result.getPrediction(j), 
 							actual, 
