@@ -88,7 +88,7 @@ public class BinaryRelevanceClassifier extends AbstractMultiLabelClassifier
 
 	protected Prediction makePrediction(Instance instance) throws Exception
 	{
-		double predictions[] = new double[numLabels];
+                double predictions[] = new double[numLabels];
 		double confidences[] = new double[numLabels];
 
 		for (int i = 0; i < numLabels; i++)
@@ -100,7 +100,7 @@ public class BinaryRelevanceClassifier extends AbstractMultiLabelClassifier
 					.distributionForInstance(newInstance);
 			int maxIndex = Utils.maxIndex(distribution);
 
-			// Ensure correct predictions both for  class values {0,1} and {1,0}
+			// Ensure correct predictions both for class values {0,1} and {1,0}
 			Attribute classAttribute = metadataTest[i].classAttribute();				
 			predictions[i] = Double.parseDouble(classAttribute.value(maxIndex));
 
