@@ -123,8 +123,8 @@ public class Statistics implements Serializable
             double[] dblLabels = new double[numLabels];
             for (int j=0; j<numLabels; j++)
             {
-            	double value = data.instance(i).value(numPredictors + j); 
-            	dblLabels[j] = value; 
+            	double value = Double.parseDouble(data.attribute(numPredictors+j).value((int) data.instance(i).value(numPredictors + j))); 
+                dblLabels[j] = value; 
                 
                 if (Utils.eq(value, 1.0))
                 {
