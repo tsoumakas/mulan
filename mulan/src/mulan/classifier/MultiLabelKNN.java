@@ -9,11 +9,13 @@ import weka.core.Utils;
 import weka.core.neighboursearch.CoverTree;
 import weka.core.Attribute;
 import weka.core.EuclideanDistance;
+import weka.core.neighboursearch.*;
 
 /**
  * class that implements the ML-KNN (Multi-Label K Nearest Neighbours )
  * algorithm
  * <p>
+ * 
  * @author Eleftherios Spyromitros Xioufis
  */
 public class MultiLabelKNN extends AbstractMultiLabelClassifier {
@@ -29,6 +31,8 @@ public class MultiLabelKNN extends AbstractMultiLabelClassifier {
 	private double smooth;
 	private boolean dontnormalize;
 	private CoverTree mlCoverTree = null;
+	private LinearNNSearch lnn = null;
+	private EuclideanDistance dfunc = null;
 	private Instances train = null;
 
 	public MultiLabelKNN() {
@@ -46,15 +50,19 @@ public class MultiLabelKNN extends AbstractMultiLabelClassifier {
 	}
 
 	public void buildClassifier(Instances train) throws Exception {
-		this.train=train;
+		this.train = train;
 		predictors = train.numAttributes() - numLabels;
+		
+		dfunc = new EuclideanDistance();
+		dfunc.setDontNormalize(dontnormalize);
+		dfunc.setAttributeIndices("first-"+predictors);
 
 		ComputePrior(train);
 		ComputeCond(train);
 
 	}
-	
-	public void setdontnormalize (boolean norm) {
+
+	public void setdontnormalize(boolean norm) {
 		dontnormalize = norm;
 	}
 
@@ -69,9 +77,9 @@ public class MultiLabelKNN extends AbstractMultiLabelClassifier {
 		for (int i = 0; i < numLabels; i++) {
 			int temp_Ci = 0;
 			for (int j = 0; j < train.numInstances(); j++) {
-				//double value = train.instance(j).value(predictors + i);
-				double value = Double.parseDouble(train.attribute(predictors + i).value((int) train.instance(j).value(predictors + i)));
-                                if (Utils.eq(value, 1.0)) {
+				//double value = Double.parseDouble(train.attribute(predictors + i).value((int) train.instance(j).value(predictors + i)));
+				double value = train.instance(j).value(predictors + i);
+				if (Utils.eq(value, 1.0)) {
 					temp_Ci++;
 				}
 			}
@@ -91,61 +99,77 @@ public class MultiLabelKNN extends AbstractMultiLabelClassifier {
 		// -1 einai o class index
 		// diladi den exei oristei clasi
 		// kai to covertree douleui giati vriskei tinapostasi me vasi ta
-		// attributes apo 0 mexrin numattributes kai aplos prosperna tin
+		// attributes apo 0 mexri numattributes kai aplos prosperna tin
 		// klasi. alla afou einai -1 den ti vriskei pote
 		// System.out.println(datalabels.classIndex());
 
-		Instances attributes = transform(train, true);// crop class labels
+		//Instances attributes = transform(train, true);// crop class labels
+		
+		//Attribute fakeclass = new Attribute("position"); // create new
+		// attribute
+		//attributes.insertAttributeAt(fakeclass, 0);
 
-		Attribute fakeclass = new Attribute("position"); // create new attr
-		attributes.insertAttributeAt(fakeclass, 0);
-
-		for (int i = 0; i < train.numInstances(); i++)
+		//for (int i = 0; i < train.numInstances(); i++)
 			// give values
-			attributes.instance(i).setValue(0, i);
+			//attributes.instance(i).setValue(0, i);
 
-		attributes.setClassIndex(0);
+		//attributes.setClassIndex(0);
 
-		//distance function intitiallization
-		EuclideanDistance dfunc = new EuclideanDistance();
-		dfunc.setDontNormalize(dontnormalize);
-		
-		mlCoverTree = new CoverTree();
-		mlCoverTree.setDistanceFunction(dfunc);
-		
-		mlCoverTree.setInstances(attributes);
+		// distance function intitiallization
+		//EuclideanDistance dfunc = new EuclideanDistance();
+		//dfunc.setDontNormalize(dontnormalize);
+		//dfunc.setAttributeIndices("2-last");
+
+		// mlCoverTree = new CoverTree();
+		// mlCoverTree.setDistanceFunction(dfunc);
+
+		// mlCoverTree.setInstances(attributes);
+
+		lnn = new LinearNNSearch();
+		//needed for prediction where identical instances may appear
+		//in buildclassifier it is no use because in knnsearch there
+		//is check if the target element is in the neighborhood
+		//lnn.setSkipIdentical(false); 
+		lnn.setDistanceFunction(dfunc);
+		// lnn.setMeasurePerformance(false);
+		lnn.setInstances(train);
 
 		// c[k] counts the number of training instances with label i whose k
 		// nearest neighbours contain exactly k instances with label i
 		int[][] temp_Ci = new int[numLabels][numofNeighbours + 1];
 		int[][] temp_NCi = new int[numLabels][numofNeighbours + 1];
 
-		
-
 		for (int i = 0; i < train.numInstances(); i++) {
 			// it also counts the instance itself, so we compute one n more and
 			// then crop it
-			Instances tempknn = new Instances(mlCoverTree.kNearestNeighbours(
-					attributes.instance(i), numofNeighbours + 1 ));
+			// Instances tempknn = new Instances(mlCoverTree.kNearestNeighbours(
+			// attributes.instance(i), numofNeighbours));
 
+			Instances tempknn = new Instances(lnn.kNearestNeighbours(train.instance(i), numofNeighbours));
+
+			/*
+			 * System.out.println(i+ "Instance of training set/n"); for (int j =
+			 * 0; j < numofNeighbours; j++) {
+			 * System.out.println(tempknn.instance(j) + "/n"); }
+			 */
 			// now compute values of temp_Ci and temp_NCi for every class label
 			for (int j = 0; j < numLabels; j++) {
 				// compute sum of aces in KNN (starts from 1 to bypass the extra
 				// neighbour)
 				int tempaces = 0; // num of aces in Knn for j
 				// tempknn.numInstances()= numofNeighbours+1
-				for (int k = 1; k < numofNeighbours + 1; k++) {
-					int index = (int) tempknn.instance(k).value(0);
-					//double value = train.instance(index).value(predictors + j);
-                                        double value = Double.parseDouble(train.attribute(predictors + j).value((int) train.instance(index).value(predictors + j)));
+				for (int k = 0; k < numofNeighbours; k++) {
+					//int index = (int) tempknn.instance(k).value(predictors + j);
+					//double value = Double.parseDouble(train.attribute(predictors + j).value((int) train.instance(index).value(predictors + j)));
+					double value = tempknn.instance(k).value(predictors + j);
 					if (Utils.eq(value, 1.0)) {
 						tempaces++;
 					}
 				}
-				// raise the counter of temp_Ci[j][tempaces] //
+				// raise the counter of temp_Ci[j][tempaces]
 				// temp_NCi[j][tempaces] by 1
-				//if ((train.instance(i).value(predictors + j)) == 1) {
-				if (Utils.eq(Double.parseDouble(train.attribute(predictors + j).value((int) train.instance(i).value(predictors + j))), 1.0)) {
+				//if (Utils.eq(Double.parseDouble(train.attribute(predictors + j).value((int) train.instance(i).value(predictors + j))), 1.0)) {
+				if ((train.instance(i).value(predictors + j)) == 1) {
 					temp_Ci[j][tempaces]++;
 				} else {
 					temp_NCi[j][tempaces]++;
@@ -178,22 +202,31 @@ public class MultiLabelKNN extends AbstractMultiLabelClassifier {
 
 		Instance instance2 = new Instance(instance);
 		// transform instance (delete class attributes)
-		for (int i = 0; i < numLabels; i++)
-			instance2.deleteAttributeAt(predictors + numLabels - i -1);
-		 // create new attr
-		instance2.insertAttributeAt(0);
+		//for (int i = 0; i < numLabels; i++)
+			//instance2.deleteAttributeAt(predictors + numLabels - i - 1);
+		// create new attribute at the beginning to match the training set
+		// instances
+		// this attribute is not used in the distance calculation
+		//instance2.insertAttributeAt(0);
+
+		// System.out.println(instance2 + "/n");
 
 		// identify knn
-		Instances knn = new Instances(mlCoverTree.kNearestNeighbours(instance2,
+		// Instances knn = new
+		// Instances(mlCoverTree.kNearestNeighbours(instance2,
+		// numofNeighbours));
+
+		Instances knn = new Instances(lnn.kNearestNeighbours(instance2,
 				numofNeighbours));
+
 		for (int i = 0; i < numLabels; i++) {
 			// compute sum of aces in KNN
 			int tempaces = 0; // num of aces in Knn for i
 			for (int k = 0; k < numofNeighbours; k++) {
-				int index = (int) knn.instance(k).value(0);
-				//double value = train.instance(index).value(predictors + i);
-                                double value = Double.parseDouble(train.attribute(predictors + i).value((int) train.instance(index).value(predictors + i)));
-                                if (Utils.eq(value, 1.0)) {
+				//int index = (int) knn.instance(k).value(0);
+				//double value = Double.parseDouble(train.attribute(predictors + i).value((int) train.instance(index).value(predictors + i)));
+				double value = knn.instance(k).value(predictors + i);
+				if (Utils.eq(value, 1.0)) {
 					tempaces++;
 				}
 			}
@@ -201,7 +234,8 @@ public class MultiLabelKNN extends AbstractMultiLabelClassifier {
 					* CondProbabilities[i][tempaces];
 			double Prob_out = PriorNProbabilities[i]
 					* CondNProbabilities[i][tempaces];
-			confidences[i] = Prob_in / (Prob_in + Prob_out); // ranking function
+			confidences[i] = Prob_in / (Prob_in + Prob_out); // ranking
+			// function
 
 			if (confidences[i] >= 0.5) {
 				predictions[i] = 1;
