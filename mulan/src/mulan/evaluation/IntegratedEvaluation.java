@@ -1,0 +1,464 @@
+package mulan.evaluation;
+
+import weka.core.Utils;
+import java.util.ArrayList;
+
+/**
+ * The purpose of this class is to provide a single point of reference for 
+ * the calculation of all evaluation metrics
+ * 
+ * @author greg
+ */
+public class IntegratedEvaluation {
+    
+    /**
+     * This is all the information needed to derive
+     * the measures and curves. 
+     * 
+     * The predictions array contains one entry for each test example (1st 
+     * dimension) and label (2nd dimension) containing a BinaryPrediction object 
+     */
+    protected BinaryPrediction[][] predictions;
+            
+    // Example based measures and parameters
+    protected double hammingLoss;
+    protected double subsetAccuracy;
+    protected double accuracy;
+    protected double recall;
+    protected double precision;
+    protected double fmeasure;    
+    protected double forgivenessRate=1.0;
+
+    // Label based measures for micro and micro averaging
+    /**
+     * Constant used as array index to retrieve corresponding measures
+     */
+    public final static int MACRO = 0;
+    public final static int MICRO = 1;
+
+    // -- Measures per specific label
+    protected double[] labelAccuracy;
+    protected double[] labelRecall;  
+    protected double[] labelPrecision;
+    protected double[] labelFmeasure;
+    
+    // -- Micro and macro average measures
+    // -- Note that accuracy is equivalent to hammingLoss
+    protected double microRecall;
+    protected double microPrecision;
+    protected double microFmeasure;
+    protected double microAccuracy;
+    protected double macroRecall;
+    protected double macroPrecision;
+    protected double macroFmeasure;
+    protected double macroAccuracy;    
+
+    // ranking measures
+    /**
+     * One-error: evaluates how many times the top ranked label is not in the 
+     * set of proper labels of the instance.<br><br>
+     * The performance is perfect when one_error = 0
+     */    
+    protected double one_error;
+    protected double coverage;
+    protected double rloss;
+    protected double avg_precision;
+    
+    
+    public IntegratedEvaluation(BinaryPrediction[][] predictions) {
+        this.predictions = predictions;
+    }
+    
+    protected double computeFMeasure(double precision, double recall)
+    {
+        if (Utils.eq(precision + recall, 0)) 
+            return 0;
+        else 
+            return 2 * precision * recall / (precision + recall);
+    }
+    
+    public void setForgivenessRate(double rate) {
+        forgivenessRate = rate;
+    }
+    
+    public double getForgivenessRate() {
+        return forgivenessRate;
+    }
+    
+    /**
+     * @return size of the testset. (total number of predictions)
+     */
+    protected int numInstances()
+    {
+        return predictions.length;
+    }
+
+    /**
+     * 
+     * @return total number of possible labels
+     */
+    protected int numLabels()
+    {
+        return predictions[0].length;
+    }    
+    
+    protected void computeMeasures() //throws Exception
+    {
+        int numLabels = numLabels();
+        int numInstances = numInstances();
+
+        // Reset measures in case of multiple calls
+        // -- example-based 
+        accuracy = 0;
+        hammingLoss = 0;
+        precision = 0;
+        recall = 0;
+        fmeasure = 0;
+        subsetAccuracy = 0;
+
+        // -- ranking
+        one_error = 0;
+        
+        // label-based counters
+        double[] falsePositives    = new double[numLabels];
+        double[] truePositives     = new double[numLabels];
+        double[] falseNegatives    = new double[numLabels];
+        double[] trueNegatives     = new double[numLabels];
+
+        labelAccuracy         = new double[numLabels];
+        labelRecall           = new double[numLabels];
+        labelPrecision        = new double[numLabels];
+        labelFmeasure         = new double[numLabels];
+            
+        for (int i = 0; i < numInstances; i++)
+        {
+            // Counter variables
+            //Counters are doubles to avoid typecasting
+            //when performing divisions. It makes the code a
+            //little cleaner but:
+            //TODO: run performance tests on counting with doubles
+            
+            // example-based counters
+            double setUnion = 0; // |Y or Z|
+            double setIntersection = 0; // |Y and Z|
+            double labelPredicted = 0; // |Z|
+            double labelActual = 0; // |Y|
+            double symmetricDifference = 0; // |Y xor Z|
+            boolean setsIdentical = true; // innocent until proven guilty
+
+            // ranking counters
+            int top_rated = 0; // index of top rated label
+            
+            //Do the counting
+            for (int j = 0; j < numLabels; j++)
+            {                
+                boolean actual = predictions[i][j].actual;
+                boolean predicted = predictions[i][j].predicted;
+
+                // example-based counters
+                if (predicted != actual)
+                {
+                    symmetricDifference++;
+                    if (setsIdentical)
+                        setsIdentical = false;
+                }
+
+                if (actual) labelActual++;
+                if (predicted) labelPredicted++;
+                if (predicted && actual) setIntersection++;
+                if (predicted || actual) setUnion++;
+
+                // label-based counters
+                if (actual && predicted) truePositives[j]++;
+                else if (!actual && !predicted) trueNegatives[j]++;
+                else if (predicted) falsePositives[j]++;
+                else falseNegatives[j]++;
+
+                // ranking counters
+                // find the top ranked label for every instance
+                // TODO: break ties randomly
+    	        if (predictions[i][j].confidenceTrue > predictions[i][top_rated].confidenceTrue)
+                    top_rated = j;
+            }
+
+            // example-based counters
+            if (setsIdentical) 
+                subsetAccuracy++;
+
+            if(Utils.eq(labelActual + labelPredicted, 0)) {
+                accuracy  += 1;
+                recall    += 1;
+                precision += 1;
+                fmeasure  += 1;
+            }
+            else {
+                if (Utils.eq(forgivenessRate, 1.0)) 
+                    accuracy += (setIntersection / setUnion);
+                else 
+                    accuracy += Math.pow(setIntersection / setUnion, forgivenessRate);
+
+                if (labelPredicted > 0) 
+                    precision += (setIntersection / labelPredicted);
+                if (labelActual > 0)    
+                    recall += (setIntersection / labelActual);
+            }
+            hammingLoss += (symmetricDifference / numLabels);
+            
+            // ranking counters
+            // check if top ranked label is in the set of actual labels
+            if (predictions[i][top_rated].actual != true) 
+                one_error++;
+        }
+
+        // Set final values for example-based measures
+        hammingLoss /= numInstances;
+        accuracy /= numInstances;
+        precision /= numInstances;
+        recall /= numInstances;
+        subsetAccuracy /= numInstances;
+        fmeasure = computeFMeasure(precision, recall);
+        
+        //Compute macro averaged label-based measures
+        for (int i = 0; i < numLabels; i++)
+        {
+            labelAccuracy[i] = (truePositives[i] + trueNegatives[i]) / numInstances; 
+
+            labelRecall[i] = truePositives[i] + falseNegatives[i] == 0 ? 0
+                            :truePositives[i] / (truePositives[i] + falseNegatives[i]);
+
+            labelPrecision[i] = truePositives[i] + falsePositives[i] == 0 ? 0
+                            :truePositives[i] / (truePositives[i] + falsePositives[i]);
+
+            labelFmeasure[i] = computeFMeasure(labelPrecision[i], labelRecall[i]);
+        }
+        macroAccuracy  = Utils.mean(labelAccuracy);
+        macroRecall = Utils.mean(labelRecall);
+        macroPrecision = Utils.mean(labelPrecision);
+        macroFmeasure = Utils.mean(labelFmeasure);
+
+        //Compute micro averaged measures
+        double tp = Utils.sum(truePositives);
+        double tn = Utils.sum(trueNegatives);
+        double fp = Utils.sum(falsePositives);
+        double fn = Utils.sum(falseNegatives);
+
+        microAccuracy = (tp + tn) / (numInstances * numLabels);
+        microRecall = tp + fn == 0 ? 0 : tp / (tp + fn);
+        microPrecision = tp + fp == 0 ? 0 : tp / (tp + fp);
+        microFmeasure = computeFMeasure(microPrecision, microRecall);
+        
+        // Finalize computation of ranking measures
+    	one_error /= numInstances;
+    }
+    
+    
+	
+	/**
+	 * Coverage: evaluates how far we need, on the average, to go down to the list
+	 * of labels in order to cover all the proper labels of the instance.<br><br>
+	 * The smaller the value of coverage, the better the performance.
+	 */
+	private void compute_coverage() {
+		coverage = 0;
+
+		int numLabels = numLabels();
+		int numInstances = numInstances();
+
+		for (int i = 0; i < numInstances; i++) {
+			int how_deep = 0; // to go down the sorted(based on ranking)list of labels
+			
+			double ranks[] = new double[numLabels];
+			int indexes[] = new int[numLabels];
+
+			// copy the rankings into new array
+			for (int j = 0; j < numLabels; j++) {
+				ranks[j] = predictions[i][j].confidenceTrue;
+			}
+			// sort the array of ranks
+			indexes = Utils.stableSort(ranks);
+
+			for (int j = 0; j < numLabels; j++) {
+				if (predictions[i][j].actual == true) {
+					// find the position of jth label in the sorted array.
+					for (int k = 0; k < numLabels; k++) {
+						if (indexes[k] == j) {
+							if (how_deep < (numLabels - k - 1)) {
+								how_deep = numLabels - k - 1;
+							}
+						}
+					}
+				}
+
+			}
+			coverage += how_deep;
+		}
+		coverage /= numInstances;
+	}
+
+	private void compute_rloss() {
+		rloss = 0;
+
+		int numLabels = numLabels();
+		int numInstances = numInstances();
+
+		for (int i = 0; i < numInstances; i++) {
+
+			// indexes of true and false labels
+			ArrayList<Integer> true_indexes = new ArrayList<Integer>();
+			ArrayList<Integer> false_indexes = new ArrayList<Integer>();
+
+			// xorizi se true kai false labels apothikeuontas ta indexes
+			for (int j = 0; j < numLabels; j++) {
+				if (predictions[i][j].actual == true) {
+					true_indexes.add(j);
+				} else {
+					false_indexes.add(j);
+				}
+			}
+
+			int rolp = 0; // reversed ordered label pairs
+
+			for (int k = 0; k < true_indexes.size(); k++) {
+				for (int l = 0; l < false_indexes.size(); l++) {
+					if (predictions[i][true_indexes.get(k)].confidenceTrue <= predictions[i][false_indexes
+							.get(l)].confidenceTrue) {
+						rolp++;
+					}
+				}
+			}
+			rloss += (double) rolp
+					/ (true_indexes.size() * false_indexes.size());
+		}
+		rloss /= numInstances;
+	}
+
+	private void compute_avg_precision() {
+		avg_precision = 0;
+
+		int numLabels = numLabels();
+		int numInstances = numInstances();
+
+		for (int i = 0; i < numInstances; i++) {
+
+			double ranks[] = new double[numLabels];
+			int indexes[] = new int[numLabels];
+
+			// copy the rankings into new array
+			for (int j = 0; j < numLabels; j++) {
+				ranks[j] = predictions[i][j].confidenceTrue;
+			}
+			// sort the array of ranks
+			indexes = Utils.stableSort(ranks);
+
+			// indexes of true and false labels
+			ArrayList<Integer> true_indexes = new ArrayList<Integer>();
+			ArrayList<Integer> false_indexes = new ArrayList<Integer>();
+
+			// xorizi se true kai false labels apothikeuontas ta indexes
+			for (int j = 0; j < numLabels; j++) {
+				if (predictions[i][j].actual == true) {
+					true_indexes.add(j);
+				} else {
+					false_indexes.add(j);
+				}
+			}
+
+			double rel_rankj = 0;
+
+			for (int j : true_indexes) {
+				int jrating = 0;
+				int ranked_abovet = 0;
+
+				// find rank of jth label in the array of ratings
+				for (int k = 0; k < numLabels; k++) {
+					if (indexes[k] == j) {
+						jrating = k;
+						break;
+					}
+				}
+				// count the actually true above ranked labels
+				for (int k = jrating + 1; k < numLabels; k++) {
+					if (predictions[i][indexes[k]].actual == true) {
+						ranked_abovet++;
+					}
+				}
+				int jrank = numLabels - jrating;
+				rel_rankj += (double) (ranked_abovet + 1) / jrank; // +1 to
+				// include
+				// the
+				// current
+				// label
+			}
+
+			// diairoume me to |Yi|
+			rel_rankj /= true_indexes.size();
+
+			avg_precision += rel_rankj;
+		}
+		avg_precision /= numInstances;
+	}
+
+     
+    // Methods used to obtain the calculated measures
+    // -- label-based measures
+        
+    public double microAccuracy()
+    {
+            return microAccuracy;
+    }
+
+    public double microFmeasure()
+    {
+            return microFmeasure;
+    }
+
+    public double microPrecision()
+    {
+            return microPrecision;
+    }
+
+    public double microRecall()
+    {
+            return microRecall;     
+    }
+    
+    public double macroAccuracy()
+    {
+            return macroAccuracy;
+    }
+
+    public double macroFmeasure()
+    {
+            return macroFmeasure;
+    }
+
+    public double macroPrecision()
+    {
+            return macroPrecision;
+    }
+
+    public double macroRecall()
+    {
+            return macroRecall;     
+    }    
+    
+    // -- ranking measures
+    
+    public double one_error() {
+            return one_error;
+    }
+
+    public double coverage() {
+            return coverage;
+    }
+
+    public double rloss() {
+            return rloss;
+    }
+
+    public double avg_precision() {
+            return avg_precision;
+    }
+
+    
+}
