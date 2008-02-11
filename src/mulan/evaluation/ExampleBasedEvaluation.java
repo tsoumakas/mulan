@@ -161,4 +161,17 @@ public class ExampleBasedEvaluation extends EvaluationBase
 	{
 		return recall;
 	}
+	
+	public String toString() {
+		String description = "";
+		description += "========Example Based Measures========\n";
+		description += "HammingLoss    : " + this.hammingLoss() + "\n";
+		description += "Accuracy    : " + this.accuracy() + "\n";
+		description += "Precision    : " + this.precision() + "\n";
+		description += "Recall    : " + this.recall() + "\n";
+		description += "Fmeasure    : " + this.fmeasure() + "\n";
+		description += "SubsetAccuracy : " + this.subsetAccuracy() + "\n";
+
+		return description;
+	}
 }
