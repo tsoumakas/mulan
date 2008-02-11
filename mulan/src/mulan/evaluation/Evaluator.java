@@ -153,5 +153,34 @@ public class Evaluator
 		BinaryPrediction[][] predictions = getPredictions(classifier, dataset);
 		return evaluate(predictions);
 	}
+	
+	public IntegratedEvaluation evaluateAll(MultiLabelClassifier classifier, Instances dataset)
+	throws Exception
+	{
+		BinaryPrediction[][] predictions = getPredictions(classifier, dataset);
+		return new IntegratedEvaluation(predictions);
+	}
+	
+	public ExampleBasedEvaluation evaluateExample(MultiLabelClassifier classifier, Instances dataset)
+	throws Exception
+	{
+		BinaryPrediction[][] predictions = getPredictions(classifier, dataset);
+		return new ExampleBasedEvaluation(predictions);
+	}
+	
+	public LabelRankingBasedEvaluation evaluateRanking(MultiLabelClassifier classifier, Instances dataset)
+	throws Exception
+	{
+		BinaryPrediction[][] predictions = getPredictions(classifier, dataset);
+		return new LabelRankingBasedEvaluation(predictions);
+	}
+	
+	public LabelBasedEvaluation evaluateLabel(MultiLabelClassifier classifier, Instances dataset)
+	throws Exception
+	{
+		BinaryPrediction[][] predictions = getPredictions(classifier, dataset);
+		return new LabelBasedEvaluation(predictions);
+	}
+	
 }
 
