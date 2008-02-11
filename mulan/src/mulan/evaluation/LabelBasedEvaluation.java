@@ -198,4 +198,22 @@ public class LabelBasedEvaluation extends EvaluationBase
 	{
 		return recall[averagingMethod];
 	}
+	
+	public String toString() {
+		String description = "";
+
+		description += "========Label Based Measures========\n";
+		setAveragingMethod(LabelBasedEvaluation.MICRO);
+		description += "MICRO\n";
+		description += "Precision : " + this.precision() + "\n";
+		description += "Recall    : " + this.recall() + "\n";
+		description += "F1        : " + this.fmeasure() + "\n";
+		setAveragingMethod(LabelBasedEvaluation.MACRO);
+		description += "MACRO\n";
+		description += "Precision : " + this.precision() + "\n";
+		description += "Recall    : " + this.recall() + "\n";
+		description += "F1        : " + this.fmeasure() + "\n";
+
+		return description;
+	}
 }
