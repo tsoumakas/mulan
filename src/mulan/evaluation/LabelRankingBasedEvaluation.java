@@ -4,7 +4,8 @@ import weka.core.Utils;
 import java.util.ArrayList;
 
 /**
- * Class implementing metrics which are defined based on the real-valued function f <br>
+ * Class implementing metrics which are defined based on the real-valued
+ * function f <br>
  * which concern the ranking quality of proper labels of the instance.
  * 
  * @author Eleftherios Spyromitros - Xioufis
@@ -26,24 +27,120 @@ public class LabelRankingBasedEvaluation extends EvaluationBase {
 
 	protected LabelRankingBasedEvaluation(BinaryPrediction[][] predictions) {
 		super(predictions);
-		// computeMeasures();
-		compute_one_error();
-		compute_coverage();
-		compute_rloss();
-		compute_avg_precision();
+		computeMeasures();
+		//compute_one_error2();
+		//compute_coverage();
+		//compute_rloss();
+		//compute_avg_precision();
 	}
 
 	protected void computeMeasures() // throws Exception
 	{
+		one_error = 0;
+		coverage = 0;
+		rloss = 0;
+		avg_precision = 0;
+
+		int numLabels = numLabels();
+		int numInstances = numInstances();
+
+		for (int i = 0; i < numInstances; i++) {
+			double ranks[] = new double[numLabels];
+			int sorted_ranks[] = new int[numLabels];
+
+			// copy the rankings into new array
+			for (int j = 0; j < numLabels; j++) {
+				ranks[j] = predictions[i][j].confidenceTrue;
+			}
+			// sort the array of ranks
+			sorted_ranks = Utils.stableSort(ranks);
+
+			// indexes of true and false labels
+			ArrayList<Integer> true_indexes = new ArrayList<Integer>();
+			ArrayList<Integer> false_indexes = new ArrayList<Integer>();
+
+			// xorizi se true kai false labels apothikeuontas ta indexes
+			for (int j = 0; j < numLabels; j++) {
+				if (predictions[i][j].actual == true) {
+					true_indexes.add(j);
+				} else {
+					false_indexes.add(j);
+				}
+			}
+
+			//======one error related============
+			int top_rated = sorted_ranks[numLabels - 1];
+			// check if the top rated label is in the set of proper labels
+			if (predictions[i][top_rated].actual != true) {
+				one_error++;
+			}
+			//======coverage related=============
+			int how_deep = 0;
+			for (int j = 0; j < numLabels; j++) {
+				if (predictions[i][sorted_ranks[j]].actual == true) {
+					how_deep = numLabels - j - 1;
+					break;
+				}
+			}
+			coverage += how_deep;
+
+			//======ranking loss related=============
+			int rolp = 0; // reversed ordered label pairs
+			for (int k = 0; k < true_indexes.size(); k++) {
+				for (int l = 0; l < false_indexes.size(); l++) {
+					if (predictions[i][true_indexes.get(k)].confidenceTrue <= predictions[i][false_indexes
+							.get(l)].confidenceTrue) {
+						rolp++;
+					}
+				}
+			}
+			rloss += (double) rolp / (true_indexes.size() * false_indexes.size());
+
+			//======average precision related related=============
+			double rel_rankj = 0;
+
+			for (int j : true_indexes) {
+				int jrating = 0;
+				int ranked_abovet = 0;
+
+				// find rank of jth label in the array of ratings
+				for (int k = 0; k < numLabels; k++) {
+					if (sorted_ranks[k] == j) {
+						jrating = k;
+						break;
+					}
+				}
+				// count the actually true above ranked labels
+				for (int k = jrating + 1; k < numLabels; k++) {
+					if (predictions[i][sorted_ranks[k]].actual == true) {
+						ranked_abovet++;
+					}
+				}
+				int jrank = numLabels - jrating;
+				rel_rankj += (double) (ranked_abovet + 1) / jrank; //+1to include the current label
+			}
+
+			// diairoume me to |Yi|
+			rel_rankj /= true_indexes.size();
+
+			avg_precision += rel_rankj;
+		}
+
+		one_error /= numInstances;
+		coverage /= numInstances;
+		rloss /= numInstances;
+		avg_precision /= numInstances;
 	}
 
 	/**
-	 * One-error: evaluates how many times the top ranked label is not in the 
-	 * set of proper labels of the instance.<br><br>
+	 * One-error: evaluates how many times the top ranked label is not in the
+	 * set of proper labels of the instance.<br>
+	 * <br>
 	 * The performance is perfect when one_error = 0
 	 */
 	private void compute_one_error() {
 		one_error = 0;
+		coverage = 0;
 
 		int numLabels = numLabels();
 		int numInstances = numInstances();
@@ -62,10 +159,37 @@ public class LabelRankingBasedEvaluation extends EvaluationBase {
 		}
 		one_error /= numInstances;
 	}
-	
+
+	private void compute_one_error2() {
+		one_error = 0;
+
+		int numLabels = numLabels();
+		int numInstances = numInstances();
+
+		for (int i = 0; i < numInstances; i++) {
+			double ranks[] = new double[numLabels];
+			int sorted_ranks[] = new int[numLabels];
+
+			// copy the rankings into new array
+			for (int j = 0; j < numLabels; j++) {
+				ranks[j] = predictions[i][j].confidenceTrue;
+			}
+			// sort the array of ranks
+			sorted_ranks = Utils.stableSort(ranks);
+
+			int top_rated = sorted_ranks[numLabels - 1];
+			// check if the top rated label is in the set of proper labels
+			if (predictions[i][top_rated].actual != true) {
+				one_error++;
+			}
+		}
+		one_error /= numInstances;
+	}
+
 	/**
-	 * Coverage: evaluates how far we need, on the average, to go down to the list
-	 * of labels in order to cover all the proper labels of the instance.<br><br>
+	 * Coverage: evaluates how far we need, on the average, to go down to the
+	 * list of labels in order to cover all the proper labels of the instance.<br>
+	 * <br>
 	 * The smaller the value of coverage, the better the performance.
 	 */
 	private void compute_coverage() {
@@ -76,7 +200,7 @@ public class LabelRankingBasedEvaluation extends EvaluationBase {
 
 		for (int i = 0; i < numInstances; i++) {
 			int how_deep = 0; // to go down the sorted(based on ranking)list of labels
-			
+
 			double ranks[] = new double[numLabels];
 			int indexes[] = new int[numLabels];
 
@@ -88,23 +212,23 @@ public class LabelRankingBasedEvaluation extends EvaluationBase {
 			indexes = Utils.stableSort(ranks);
 
 			for (int j = 0; j < numLabels; j++) {
-				if (predictions[i][j].actual == true) {
-					// find the position of jth label in the sorted array.
-					for (int k = 0; k < numLabels; k++) {
-						if (indexes[k] == j) {
-							if (how_deep < (numLabels - k - 1)) {
-								how_deep = numLabels - k - 1;
-							}
-						}
-					}
+				if (predictions[i][indexes[j]].actual == true) {
+					how_deep = numLabels - j - 1;
+					break;
 				}
-
 			}
 			coverage += how_deep;
 		}
 		coverage /= numInstances;
 	}
 
+	/**
+	 * Ranking Loss: evaluates the average fraction of label pairs that are
+	 * reversely ordered for the instance.<br>
+	 * <br>
+	 * The performance is perfect when rloss = 0. The smaller the value of
+	 * rloss, the better the performance.
+	 */
 	private void compute_rloss() {
 		rloss = 0;
 
@@ -136,12 +260,18 @@ public class LabelRankingBasedEvaluation extends EvaluationBase {
 					}
 				}
 			}
-			rloss += (double) rolp
-					/ (true_indexes.size() * false_indexes.size());
+			rloss += (double) rolp / (true_indexes.size() * false_indexes.size());
 		}
 		rloss /= numInstances;
 	}
 
+	/**
+	 * average precision: evaluates the average fraction of labels ranked above
+	 * a particular label y ∈ Y which actually are in Y.<br>
+	 * <br>
+	 * The performance is perfect when avgprec = 1. The bigger the value of
+	 * avgprec the better the performance.
+	 */
 	private void compute_avg_precision() {
 		avg_precision = 0;
 
@@ -193,11 +323,7 @@ public class LabelRankingBasedEvaluation extends EvaluationBase {
 					}
 				}
 				int jrank = numLabels - jrating;
-				rel_rankj += (double) (ranked_abovet + 1) / jrank; // +1 to
-				// include
-				// the
-				// current
-				// label
+				rel_rankj += (double) (ranked_abovet + 1) / jrank; //+1to include the current label
 			}
 
 			// diairoume me to |Yi|
@@ -246,6 +372,18 @@ public class LabelRankingBasedEvaluation extends EvaluationBase {
 	public double recall() {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	public String toString() {
+		String description = "";
+
+		description += "========Ranking Based Measures========\n";
+		description += "One-error      : " + this.one_error() + "\n";
+		description += "Coverage       : " + this.coverage() + "\n";
+		description += "Ranking Loss   : " + this.rloss() + "\n";
+		description += "Avg Precision  : " + this.avg_precision() + "\n";
+
+		return description;
 	}
 
 }
