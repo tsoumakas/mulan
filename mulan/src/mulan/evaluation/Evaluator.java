@@ -74,6 +74,33 @@ public class Evaluator
 
 	}
 	
+	public IntegratedCrossvalidation crossValidateAll(MultiLabelClassifier classifier, Instances dataset, int numFolds)
+	throws Exception
+	{
+		if (numFolds == -1) numFolds = dataset.numInstances();
+		IntegratedEvaluation[] integrated=new IntegratedEvaluation[numFolds];
+		Random random = new Random(seed);
+		
+		Instances workingSet = new Instances(dataset);
+		workingSet.randomize(random);
+		for(int i = 0; i < numFolds; i++)
+		{
+			Instances train = workingSet.trainCV(numFolds, i, random);  
+			Instances test  = workingSet.testCV(numFolds, i);
+			AbstractMultiLabelClassifier clone = 
+				(AbstractMultiLabelClassifier) Classifier.makeCopy((Classifier) classifier);
+			long start = System.currentTimeMillis();
+			clone.buildClassifier(train);
+			long end = System.currentTimeMillis();
+			System.out.print(i + "Buildclassifier Time: " + (end - start) + "\n");
+			start = System.currentTimeMillis();
+			integrated[i] = evaluateAll(clone, test);
+			end = System.currentTimeMillis();
+			System.out.print(i + "Evaluation Time: " + (end - start) + "\n");
+		}
+		return new IntegratedCrossvalidation(integrated); 
+	}
+	
 	protected BinaryPrediction[][] getPredictions(MultiLabelClassifier classifier, Instances dataset)
 	throws Exception
 	{
