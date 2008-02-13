@@ -140,11 +140,11 @@ public class LabelBasedEvaluation extends EvaluationBase
 
                     labelFmeasure[i] = computeFMeasure(labelPrecision[i], labelRecall[i]);
             }
-            this.accuracy[MACRO]  = Utils.mean(labelAccuracy);
+        this.accuracy[MACRO]  = Utils.mean(labelAccuracy);
 	    this.recall[MACRO]    = Utils.mean(labelRecall);
 	    this.precision[MACRO] = Utils.mean(labelPrecision);
 	    this.fmeasure[MACRO]  = Utils.mean(labelFmeasure);
-	    
+
 	    //Compute micro averaged measures
 	    double tp = Utils.sum(truePositives);
 	    double tn = Utils.sum(trueNegatives);

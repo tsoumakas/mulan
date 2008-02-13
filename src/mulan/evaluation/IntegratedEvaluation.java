@@ -58,6 +58,8 @@ public class IntegratedEvaluation {
 	protected double rloss;
 	protected double avg_precision;
 
+	public IntegratedEvaluation(){}
+	
 	public IntegratedEvaluation(BinaryPrediction[][] predictions) {
 		this.predictions = predictions;
 		computeMeasures();
@@ -399,26 +401,28 @@ public class IntegratedEvaluation {
 		String description = "";
 
 		description += "========Example Based Measures========\n";
-		description += "HammingLoss    : " + this.hammingLoss() + "\n";
-		description += "Accuracy    : " + this.accuracy() + "\n";
+		description += "HammingLoss  : " + this.hammingLoss() + "\n";
+		description += "Accuracy     : " + this.accuracy() + "\n";
 		description += "Precision    : " + this.precision() + "\n";
-		description += "Recall    : " + this.recall() + "\n";
-		description += "Fmeasure    : " + this.fmeasure() + "\n";
+		description += "Recall       : " + this.recall() + "\n";
+		description += "Fmeasure     : " + this.fmeasure() + "\n";
 		description += "SubsetAccuracy : " + this.subsetAccuracy() + "\n";
 		description += "========Label Based Measures========\n";
 		description += "MICRO\n";
-		description += "Precision : " + this.microPrecision() + "\n";
-		description += "Recall    : " + this.microRecall() + "\n";
-		description += "F1        : " + this.microFmeasure() + "\n";
+		description += "Accuracy     : " + this.microAccuracy() + "\n";
+		description += "Precision    : " + this.microPrecision() + "\n";
+		description += "Recall       : " + this.microRecall() + "\n";
+		description += "F1           : " + this.microFmeasure() + "\n";
 		description += "MACRO\n";
-		description += "Precision : " + this.macroPrecision() + "\n";
-		description += "Recall    : " + this.macroRecall() + "\n";
-		description += "F1        : " + this.macroFmeasure() + "\n";
+		description += "Accuracy     : " + this.macroAccuracy() + "\n";
+		description += "Precision    : " + this.macroPrecision() + "\n";
+		description += "Recall       : " + this.macroRecall() + "\n";
+		description += "F1           : " + this.macroFmeasure() + "\n";
 		description += "========Ranking Based Measures========\n";
-		description += "One-error      : " + this.one_error() + "\n";
-		description += "Coverage       : " + this.coverage() + "\n";
-		description += "Ranking Loss   : " + this.rloss() + "\n";
-		description += "Avg Precision  : " + this.avg_precision() + "\n";
+		description += "One-error    : " + this.one_error() + "\n";
+		description += "Coverage     : " + this.coverage() + "\n";
+		description += "Ranking Loss : " + this.rloss() + "\n";
+		description += "AvgPrecision : " + this.avg_precision() + "\n";
 
 		return description;
 	}
