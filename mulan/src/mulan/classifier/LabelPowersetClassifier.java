@@ -16,14 +16,11 @@ package mulan.classifier;
  *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-import java.util.Arrays;
-import java.util.HashSet;
-import mulan.*;
+import mulan.Transformations;
+import mulan.LabelSet;
 import weka.classifiers.Classifier;
-import weka.core.FastVector;
 import weka.core.Instance;
 import weka.core.Instances;
-import weka.core.Attribute;
 import weka.core.SparseInstance;
 import weka.core.Utils;
 import weka.filters.Filter;
@@ -59,44 +56,9 @@ public class LabelPowersetClassifier extends AbstractMultiLabelClassifier
         if (baseClassifier == null) baseClassifier = defaultClassifier(); 
         metadataTrain = new Instances(train, 0);
 
-        Instances newTrain = null;
-
-        // gather distinct label combinations
-        HashSet<LabelSet> labelSets = new HashSet();
-        int numInstances = train.numInstances(); 
-        int numPredictors = train.numAttributes() - numLabels;
-        for (int i=0; i<numInstances; i++)
-        {
-            // construct labelset
-            double[] dblLabels = new double[numLabels];
-            for (int j=0; j<numLabels; j++)
-                dblLabels[j] = Double.parseDouble(train.attribute(numPredictors+j).value((int) train.instance(i).value(numPredictors + j)));                         
-            LabelSet labelSet = new LabelSet(dblLabels);                   
-            
-            // add labelset if not already present
-            labelSets.add(labelSet);
-        }
-
-        // construct class attribute
-        FastVector classValues = new FastVector(numLabels);
-        for(LabelSet subset : labelSets)
-            classValues.addElement(subset.toBitString());
-        Attribute newClass = new Attribute("class", classValues);
-
-        // create new instances
-        newTrain = removeAllLabels(train); 
-        newTrain.insertAttributeAt(newClass, newTrain.numAttributes());
-        newTrain.setClassIndex(newTrain.numAttributes() - 1);
-
-        // add class values
-        for (int i = 0; i < newTrain.numInstances(); i++) {
-            String strClass = "";
-                for (int j = 0; j < numLabels; j++)
-                    strClass = strClass + train.attribute(train.numAttributes()-numLabels+j).value((int) train.instance(i).
-                                      value(train.numAttributes() - numLabels + j));
-                    newTrain.instance(i).setClassValue(strClass);
-        }
-
+        Transformations trans = new Transformations(numLabels);
+        Instances newTrain = trans.LabelPowerset(train);
+        
         // build classifier on new dataset
         baseClassifier.buildClassifier(newTrain);
 
