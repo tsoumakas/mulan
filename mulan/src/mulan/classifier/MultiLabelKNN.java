@@ -10,10 +10,10 @@ import weka.core.neighboursearch.LinearNNSearch;
  * class that implements the ML-KNN (Multi-Label K Nearest Neighbours )
  * algorithm
  * <p>
- * @author Eleftherios Spyromitros Xioufis
+ * @author Eleftherios Spyromitros Xioufis 
  * @version $Revision: 1.1 $
  */
-@SuppressWarnings("serial")
+@SuppressWarnings("serial")//testing svn notify
 public class MultiLabelKNN extends AbstractMultiLabelClassifier {
 
 	private double[] PriorProbabilities;
