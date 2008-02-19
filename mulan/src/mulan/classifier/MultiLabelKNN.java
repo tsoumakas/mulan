@@ -13,7 +13,7 @@ import weka.core.neighboursearch.LinearNNSearch;
  * @author Eleftherios Spyromitros Xioufis 
  * @version $Revision: 1.1 $
  */
-@SuppressWarnings("serial")//testing svn notify No2
+@SuppressWarnings("serial")//testing svn notify No3
 public class MultiLabelKNN extends AbstractMultiLabelClassifier {
 
 	private double[] PriorProbabilities;
