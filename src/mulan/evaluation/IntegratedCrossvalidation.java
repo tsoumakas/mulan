@@ -6,6 +6,8 @@ import java.util.*;
  * CrossValidation - has identical semantics with Evaluation.
  * User is passed an instance of this class when calling
  * Evaluator.crossValidate() and friends.
+ * 
+ * @author lef
  */
 public class IntegratedCrossvalidation extends IntegratedEvaluation {
 	
@@ -13,13 +15,13 @@ public class IntegratedCrossvalidation extends IntegratedEvaluation {
 	
 	protected IntegratedEvaluation[] folds;
 	
-	double std_one_error;
-	double std_coverage;
-	double std_rloss;
-	double std_avg_precision;
+	// variables holding the standard deviation of each metric
+	protected double std_one_error;
+	protected double std_coverage;
+	protected double std_rloss;
+	protected double std_avg_precision;
 	
 	public IntegratedCrossvalidation(IntegratedEvaluation[] folds){
-		//super(null);
 		this.folds = folds;
 		computeMeasures();
 	}
@@ -30,14 +32,12 @@ public class IntegratedCrossvalidation extends IntegratedEvaluation {
 	
 	protected void computeMeasures()
 	{
-		//example based
-		accuracy       = 0;
-		recall         = 0;
-		precision      = 0;
-		fmeasure       = 0;
-		hammingLoss    = 0;
-		subsetAccuracy = 0;
 		//label based
+		int numLabels  = folds[0].numLabels();
+		labelAccuracy  = new double[numLabels];
+		labelRecall    = new double[numLabels];  
+		labelPrecision = new double[numLabels];
+		labelFmeasure  = new double[numLabels];
 		microRecall    = 0;
 		microPrecision = 0;
 		microFmeasure  = 0;
@@ -46,6 +46,13 @@ public class IntegratedCrossvalidation extends IntegratedEvaluation {
 		macroPrecision = 0;
 		macroFmeasure  = 0;
 		macroAccuracy  = 0;
+		//example based
+		accuracy       = 0;
+		recall         = 0;
+		precision      = 0;
+		fmeasure       = 0;
+		hammingLoss    = 0;
+		subsetAccuracy = 0;
 		//ranking based
 		one_error   = 0;
 		coverage    = 0;
@@ -54,15 +61,14 @@ public class IntegratedCrossvalidation extends IntegratedEvaluation {
 		
 		for(int i = 0; i < folds.length; i++)
 		{
-			//example based
-			accuracy       += folds[i].accuracy;
-			recall         += folds[i].recall;
-			precision      += folds[i].precision;
-			fmeasure       += folds[i].fmeasure;
-			hammingLoss    += folds[i].hammingLoss;
-			subsetAccuracy += folds[i].subsetAccuracy;
-			//System.out.println((i+1)+" fold Hamming loss: "+ folds[i].hammingLoss);
 			//label based
+			for(int j = 0; j < numLabels; j++)
+			{
+				labelAccuracy[j]  += folds[i].accuracy(j);
+				labelRecall[j]    += folds[i].recall(j);
+				labelPrecision[j] += folds[i].precision(j);
+				labelFmeasure[j]  += folds[i].precision(j);
+			}
 			microRecall    += folds[i].microRecall;
 			microPrecision += folds[i].microPrecision;
 			microFmeasure  += folds[i].microFmeasure;
@@ -71,6 +77,13 @@ public class IntegratedCrossvalidation extends IntegratedEvaluation {
 			macroPrecision += folds[i].macroPrecision;
 			macroFmeasure  += folds[i].macroFmeasure;
 			macroAccuracy  += folds[i].macroAccuracy;
+			//example based
+			accuracy       += folds[i].accuracy;
+			recall         += folds[i].recall;
+			precision      += folds[i].precision;
+			fmeasure       += folds[i].fmeasure;
+			hammingLoss    += folds[i].hammingLoss;
+			subsetAccuracy += folds[i].subsetAccuracy;
 			//ranking based
 			one_error       += folds[i].one_error;
 			coverage 		+= folds[i].coverage;
@@ -78,16 +91,15 @@ public class IntegratedCrossvalidation extends IntegratedEvaluation {
 			avg_precision   += folds[i].avg_precision;
 		}
 
-		
 		int n = folds.length;
-		//example based
-		accuracy       /= n;
-		recall         /= n;
-		precision      /= n;
-		fmeasure       /= n;
-		hammingLoss    /= n;
-		subsetAccuracy /= n;
 		//label-based
+		for(int i = 0; i < numLabels; i++)
+		{
+			labelAccuracy[i]  /= n;
+			labelRecall[i]    /= n;
+			labelPrecision[i] /= n;
+			labelFmeasure[i]  /= n;
+		}
 		microRecall    /= n;
 		microPrecision /= n;
 		microFmeasure  /= n;
@@ -96,6 +108,13 @@ public class IntegratedCrossvalidation extends IntegratedEvaluation {
 		macroPrecision /= n;
 		macroFmeasure  /= n;
 		macroAccuracy  /= n;
+		//example based
+		accuracy       /= n;
+		recall         /= n;
+		precision      /= n;
+		fmeasure       /= n;
+		hammingLoss    /= n;
+		subsetAccuracy /= n;
 		//ranking based
 		one_error       /= n;
 		coverage		/= n;
@@ -107,6 +126,8 @@ public class IntegratedCrossvalidation extends IntegratedEvaluation {
 		std_rloss = 0;
 		std_avg_precision = 0;
 
+		// calculation of standard deviation
+		// TODO: implement for other metrics too
 		for(int i =0;i < folds.length;i++){
 			std_one_error += Math.pow(folds[i].one_error - one_error,2);
 			std_coverage += Math.pow(folds[i].coverage - coverage,2);
@@ -118,9 +139,10 @@ public class IntegratedCrossvalidation extends IntegratedEvaluation {
 		std_rloss = Math.pow(std_rloss/n, 0.5);
 		std_avg_precision = Math.pow(std_avg_precision/n, 0.5);
 	}
+	
 	public String toString() {
 		String description = "";
-	
+		
 		description += "========Cross Validation========\n";
 		description += "========Example Based Measures========\n";
 		description += "HammingLoss    : " + this.hammingLoss() + "\n";
@@ -144,9 +166,9 @@ public class IntegratedCrossvalidation extends IntegratedEvaluation {
 		description += "One-error      : " + this.one_error() + " +- " + std_one_error  + "\n";
 		description += "Coverage       : " + this.coverage() + " +- " + std_coverage  + "\n";
 		description += "Ranking Loss   : " + this.rloss() + " +- " + std_rloss  + "\n";
-		description += "AvgPrecision   : " + this.avg_precision() + " +- " + std_avg_precision  + "\n";
-
+		description += "AvgPrecision   : " + this.avg_precision() + " +- " + std_avg_precision
+				+ "\n";
+				
 		return description;
 	}
-
 }
