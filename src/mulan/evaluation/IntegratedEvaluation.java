@@ -8,6 +8,7 @@ import java.util.ArrayList;
  * calculation of all evaluation metrics
  * 
  * @author greg
+ * @author lef
  */
 public class IntegratedEvaluation {
 
@@ -27,13 +28,6 @@ public class IntegratedEvaluation {
 	protected double precision;
 	protected double fmeasure;
 	protected double forgivenessRate = 1.0;
-
-	// Label based measures for micro and micro averaging
-	/**
-	 * Constant used as array index to retrieve corresponding measures
-	 */
-	public final static int MACRO = 0;
-	public final static int MICRO = 1;
 
 	// -- Measures per specific label
 	protected double[] labelAccuracy;
@@ -156,7 +150,7 @@ public class IntegratedEvaluation {
 			ArrayList<Integer> true_indexes = new ArrayList<Integer>();
 			ArrayList<Integer> false_indexes = new ArrayList<Integer>();
 
-			// xorizi se true kai false labels apothikeuontas ta indexes
+			// store the indexes of true and false labels separately
 			for (int j = 0; j < numLabels; j++) {
 				if (predictions[i][j].actual == true) {
 					true_indexes.add(j);
@@ -216,7 +210,7 @@ public class IntegratedEvaluation {
 				int jrank = numLabels - jrating;
 				rel_rankj += (double) (ranked_abovet + 1) / jrank; //+1to include the current label
 			}
-			// diairoume me to |Yi|
+			// division with |Yi|
 			rel_rankj /= true_indexes.size();
 			avg_precision += rel_rankj;
 
@@ -330,15 +324,15 @@ public class IntegratedEvaluation {
 	}
 
 	public double recall() {
-		return accuracy;
+		return recall;
 	}
 
 	public double precision() {
-		return accuracy;
+		return precision;
 	}
 
 	public double fmeasure() {
-		return accuracy;
+		return fmeasure;
 	}
 
 	public double subsetAccuracy() {
@@ -346,6 +340,26 @@ public class IntegratedEvaluation {
 	}
 
 	// -- label-based measures
+	
+	public double accuracy(int label)
+	{
+		return labelAccuracy[label];
+	}
+
+	public double recall(int label)
+	{
+		return labelRecall[label];
+	}
+	
+	public double precision(int label)
+	{
+		return labelPrecision[label];
+	}
+	
+	public double fmeasure(int label)
+	{
+		return labelFmeasure[label];
+	}
 
 	public double microAccuracy() {
 		return microAccuracy;
