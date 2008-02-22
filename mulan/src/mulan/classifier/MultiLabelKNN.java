@@ -3,45 +3,156 @@ package mulan.classifier;
 import weka.core.EuclideanDistance;
 import weka.core.Instance;
 import weka.core.Instances;
+import weka.core.TechnicalInformation;
 import weka.core.Utils;
+import weka.core.TechnicalInformation.Field;
+import weka.core.TechnicalInformation.Type;
 import weka.core.neighboursearch.LinearNNSearch;
 
 /**
- * class that implements the ML-KNN (Multi-Label K Nearest Neighbours )
- * algorithm
- * <p>
- * @author Eleftherios Spyromitros Xioufis 
- * @version $Revision: 1.1 $
+ * @author Eleftherios Spyromitros-Xioufis ( espyromi@csd.auth.gr )
+ * @version $Revision: 1.1 $ <!-- globalinfo-start -->
+ * 
+ * <pre>
+ * Class implementing the the ML-KNN (Multi-Label K Nearest Neighbours ) algorithm.
+ * The class is a translation of the pseudo-code made available by the authors,
+ * except for the option to use normalized Euclidean distance as a
+ * distance function.
+ * </pre>
+ * 
+ * For more information:
+ * 
+ * <pre>
+ * Zhang, M. and Zhou, Z. 2007. ML-KNN: A lazy learning approach to multi-label learning.
+ * Pattern Recogn. 40, 7 (Jul. 2007), 2038-2048. DOI=http://dx.doi.org/10.1016/j.patcog.2006.12.019
+ * </pre>
+ * 
+ * <!-- globalinfo-end -->
+ * 
+ * <!-- technical-bibtex-start --> BibTeX:
+ * 
+ * <pre>
+ * &#064;article{1234635,
+ *    author = {Min-Ling Zhang and Zhi-Hua Zhou},
+ *    title = {ML-KNN: A lazy learning approach to multi-label learning},
+ *    journal = {Pattern Recogn.},
+ *    volume = {40},
+ *    number = {7},
+ *    year = {2007},
+ *    issn = {0031-3203},
+ *    pages = {2038--2048},
+ *    doi = {http://dx.doi.org/10.1016/j.patcog.2006.12.019},
+ *    publisher = {Elsevier Science Inc.},
+ *    address = {New York, NY, USA},
+ * }
+ * </pre>
+ * 
+ * <p/> <!-- technical-bibtex-end -->
  */
-@SuppressWarnings("serial")//testing svn notify No3
+@SuppressWarnings("serial")
 public class MultiLabelKNN extends AbstractMultiLabelClassifier {
 
-	private double[] PriorProbabilities;
-	private double[] PriorNProbabilities;
-	private double[][] CondProbabilities;
-	private double[][] CondNProbabilities;
-
-	// private int numLabels;
-	private int numofNeighbours;
+	/**
+	 * Number of predictor attributes
+	 */
 	private int predictors;
+	/**
+	 * Number of neighbors used in the k-nearest neighbor algorithm
+	 */
+	private int numofNeighbours;
+	/**
+	 * Smoothing parameter controlling the strength of uniform prior <br>
+	 * (Default value is set to 1 which yields the Laplace smoothing).
+	 */
 	private double smooth;
-	private boolean dontnormalize;
+	/**
+	 * Whether to use normalized Euclidean distance
+	 */
+	private boolean dontNormalize;
+	/**
+	 * Class implementing the brute force search algorithm for nearest neighbour
+	 * search. Default value is true.
+	 */
 	private LinearNNSearch lnn = null;
+	/**
+	 * Implementing Euclidean distance (or similarity) function.
+	 */
 	private EuclideanDistance dfunc = null;
+	/**
+	 * The training instances
+	 */
 	private Instances train = null;
 
+	/**
+	 * A table holding the prior probability for an instance to belong in each
+	 * class
+	 */
+	private double[] PriorProbabilities;
+	/**
+	 * A table holding the prior probability for an instance not to belong in
+	 * each class
+	 */
+	private double[] PriorNProbabilities;
+	/**
+	 * A table holding the probability for an instance to belong in each class<br>
+	 * given that i:0..k of its neighbors belong to that class
+	 */
+	private double[][] CondProbabilities;
+	/**
+	 * A table holding the probability for an instance not to belong in each
+	 * class<br>
+	 * given that i:0..k of its neighbors belong to that class
+	 */
+	private double[][] CondNProbabilities;
+
+	/**
+	 * An empty constructor
+	 */
 	public MultiLabelKNN() {
 	}
 
+	/**
+	 * @param labels:
+	 *            the number of labels of the dataset
+	 * @param k :
+	 *            the number of neighbors
+	 * @param s :
+	 *            the smoothing factor
+	 */
 	public MultiLabelKNN(int labels, int k, double s) {
 		numLabels = labels;
 		numofNeighbours = k;
 		smooth = s;
-		dontnormalize = true;
+		dontNormalize = true;
 		PriorProbabilities = new double[numLabels];
 		PriorNProbabilities = new double[numLabels];
 		CondProbabilities = new double[numLabels][numofNeighbours + 1];
 		CondNProbabilities = new double[numLabels][numofNeighbours + 1];
+	}
+
+	/**
+	 * Returns an instance of a TechnicalInformation object, containing detailed
+	 * information about the technical background of this class, e.g., paper
+	 * reference or book this class is based on.
+	 * 
+	 * @return the technical information about this class
+	 */
+	public TechnicalInformation getTechnicalInformation() {
+		TechnicalInformation result;
+
+		result = new TechnicalInformation(Type.ARTICLE);
+		result.setValue(Field.AUTHOR, "Min-Ling Zhang and Zhi-Hua Zhou");
+		result.setValue(Field.TITLE, "ML-KNN: A lazy learning approach to multi-label learning");
+		result.setValue(Field.JOURNAL, "Pattern Recogn.");
+		result.setValue(Field.VOLUME, "40");
+		result.setValue(Field.NUMBER, "7");
+		result.setValue(Field.YEAR, "2007");
+		result.setValue(Field.ISSN, "0031-3203");
+		result.setValue(Field.PAGES, "2038--2048");
+		result.setValue(Field.PUBLISHER, "Elsevier Science Inc.");
+		result.setValue(Field.ADDRESS, "New York, NY, USA");
+
+		return result;
 	}
 
 	public void buildClassifier(Instances train) throws Exception {
@@ -49,7 +160,7 @@ public class MultiLabelKNN extends AbstractMultiLabelClassifier {
 		predictors = train.numAttributes() - numLabels;
 
 		dfunc = new EuclideanDistance();
-		dfunc.setDontNormalize(dontnormalize);
+		dfunc.setDontNormalize(dontNormalize);
 		dfunc.setAttributeIndices("first-" + predictors);
 
 		ComputePrior(train);
@@ -57,8 +168,8 @@ public class MultiLabelKNN extends AbstractMultiLabelClassifier {
 
 	}
 
-	public void setdontnormalize(boolean norm) {
-		dontnormalize = norm;
+	public void setDontNormalize(boolean norm) {
+		dontNormalize = norm;
 	}
 
 	/**
@@ -94,8 +205,8 @@ public class MultiLabelKNN extends AbstractMultiLabelClassifier {
 		lnn = new LinearNNSearch();
 		lnn.setDistanceFunction(dfunc);
 		lnn.setInstances(train);
-		// lnn.setMeasurePerformance(false);
-		// lnn.setSkipIdentical(true); this implementation doesn't need it
+		lnn.setMeasurePerformance(false);
+		// lnn.setSkipIdentical(true); // this implementation doesn't need it
 
 		// c[k] counts the number of training instances with label i whose k
 		// nearest neighbours contain exactly k instances with label i
@@ -118,8 +229,7 @@ public class MultiLabelKNN extends AbstractMultiLabelClassifier {
 						aces++;
 					}
 				}
-				// raise the counter of temp_Ci[j][aces] and temp_NCi[j][aces]
-				// by 1
+				// raise the counter of temp_Ci[j][aces] and temp_NCi[j][aces] by 1
 				if (Utils.eq(Double.parseDouble(train.attribute(predictors + j).value(
 						(int) train.instance(i).value(predictors + j))), 1.0)) {
 					temp_Ci[j][aces]++;
@@ -151,6 +261,8 @@ public class MultiLabelKNN extends AbstractMultiLabelClassifier {
 		double[] confidences = new double[numLabels];
 		double[] predictions = new double[numLabels];
 
+		setThreshold(0.5);
+
 		// for cross-validation where test-train instances belong to the same data set
 		Instance instance2 = new Instance(instance);
 
@@ -170,12 +282,12 @@ public class MultiLabelKNN extends AbstractMultiLabelClassifier {
 			double Prob_out = PriorNProbabilities[i] * CondNProbabilities[i][aces];
 			confidences[i] = Prob_in / (Prob_in + Prob_out); // ranking function
 
-			if (confidences[i] >= 0.5) {
-				predictions[i] = 1;
-			} else {
-				predictions[i] = 0;
-			}
+			/*
+			 * if (confidences[i] >= 0.5) { predictions[i] = 1; } else {
+			 * predictions[i] = 0; }
+			 */
 		}
+		predictions = labelsFromConfidences(confidences);
 		Prediction result = new Prediction(predictions, confidences);
 		return result;
 	}
