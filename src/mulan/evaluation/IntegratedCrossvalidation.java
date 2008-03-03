@@ -168,7 +168,14 @@ public class IntegratedCrossvalidation extends IntegratedEvaluation {
 		description += "Ranking Loss   : " + this.rloss() + " +- " + std_rloss  + "\n";
 		description += "AvgPrecision   : " + this.avg_precision() + " +- " + std_avg_precision
 				+ "\n";
-				
+		description += "========Per Class Measures========\n";
+		int numLabels = folds[0].numLabels();
+		for (int i = 0; i < numLabels; i++) {
+			description += "Label " + i + " Accuracy   :" + labelAccuracy[i] + "\n";
+			description += "Label " + i + " Precision  :" + labelPrecision[i] + "\n";
+			description += "Label " + i + " Recall     :" + labelRecall[i] + "\n";
+			description += "Label " + i + " F1         :" + labelFmeasure[i] + "\n";
+		}
 		return description;
 	}
 }
