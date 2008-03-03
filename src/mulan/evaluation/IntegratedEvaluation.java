@@ -437,7 +437,14 @@ public class IntegratedEvaluation {
 		description += "Coverage     : " + this.coverage() + "\n";
 		description += "Ranking Loss : " + this.rloss() + "\n";
 		description += "AvgPrecision : " + this.avg_precision() + "\n";
-
+		description += "========Per Class Measures========\n";
+		for (int i = 0; i < numLabels(); i++) {
+			description += "Label " + i + " Accuracy   :" + labelAccuracy[i] + "\n";
+			description += "Label " + i + " Precision  :" + labelPrecision[i] + "\n";
+			description += "Label " + i + " Recall     :" + labelRecall[i] + "\n";
+			description += "Label " + i + " F1         :" + labelFmeasure[i] + "\n";
+		}
+		
 		return description;
 	}
 
