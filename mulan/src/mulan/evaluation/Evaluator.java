@@ -127,14 +127,14 @@ public class Evaluator
 	}
 	
 
-	public Evaluation[] evaluateOverThreshold(BinaryPrediction[][] predictions,
+	public IntegratedEvaluation[] evaluateOverThreshold(BinaryPrediction[][] predictions,
 											  Instances dataset,
 											  double start,
 											  double increment,
 											  int steps)
 	throws Exception
 	{
-		Evaluation[] evaluations = new Evaluation[steps];
+		IntegratedEvaluation[] evaluations = new IntegratedEvaluation[steps];
 		
 		double threshold = start;
 		for(int i = 0; i < steps; i++)
@@ -143,17 +143,14 @@ public class Evaluator
 				for(int k = 0; k < predictions[0].length; k++)
 					predictions[j][k].predicted = predictions[j][k].confidenceTrue >= threshold;
 			threshold += increment;
-			evaluations[i] = new Evaluation(
-					new LabelBasedEvaluation(predictions),
-					new ExampleBasedEvaluation(predictions),
-					new LabelRankingBasedEvaluation(predictions));
+			evaluations[i] = new IntegratedEvaluation(predictions);
 		}
 		
 		return evaluations;
 		
 	}
 	
-	public Evaluation[] evaluateOverThreshold(MultiLabelClassifier classifier, 
+	public IntegratedEvaluation[] evaluateOverThreshold(MultiLabelClassifier classifier, 
 											  Instances dataset, 
 											  double start, 
 											  double increment, 
