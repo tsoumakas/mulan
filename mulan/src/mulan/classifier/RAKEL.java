@@ -16,14 +16,14 @@ package mulan.classifier;
  *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+import java.util.ArrayList;
 import java.util.Random;
 import java.util.Arrays;
 import java.util.HashSet;
 import mulan.*;
 import mulan.evaluation.BinaryPrediction;
 import mulan.evaluation.Evaluator;
-import mulan.evaluation.Evaluation;
-import mulan.evaluation.LabelBasedEvaluation;
+import mulan.evaluation.IntegratedEvaluation;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.SparseInstance;
@@ -56,7 +56,10 @@ public class RAKEL extends AbstractMultiLabelClassifier
     HashSet<String> combinations;		
     BinaryPrediction[][] predictions;
     boolean incremental =true;
-
+    boolean cvParamSelection=false;
+    int cvNumFolds, cvMinK, cvMaxK, cvStepK, cvMaxM, cvThresholdSteps;
+    double cvThresholdStart, cvThresholdIncrement;    
+    
     /**
     * Returns an instance of a TechnicalInformation object, containing 
     * detailed information about the technical background of this class,
@@ -69,7 +72,7 @@ public class RAKEL extends AbstractMultiLabelClassifier
         result.setValue(Field.AUTHOR, "Grigorios Tsoumakas, Ioannis Vlahavas");
         result.setValue(Field.TITLE, "Random k-Labelsets: An Ensemble Method for Multilabel Classification");
         result.setValue(Field.BOOKTITLE, "Proc. 18th European Conference on Machine Learning (ECML 2007)");
-        result.setValue(Field.PAGES, "XXX - XXX");
+        result.setValue(Field.PAGES, "406 - 417");
         result.setValue(Field.LOCATION, "Warsaw, Poland");
         result.setValue(Field.MONTH, "17-21 September");
         result.setValue(Field.YEAR, "2007");
@@ -120,48 +123,82 @@ public class RAKEL extends AbstractMultiLabelClassifier
             return b[m];
         }
         
-        public void cvParameterSelection(Instances data, int numFolds) throws Exception {
+ 
+        public void setParamSets(int numFolds, int minK, int maxK, int stepK, int maxM, double thresholdStart, double thresholdIncrement, int thresholdSteps){
+            cvNumFolds = numFolds;
+            cvMinK = minK;
+            cvMaxK = maxK;
+            cvStepK = stepK;
+            cvMaxM = maxM;
+            cvThresholdStart = thresholdStart;
+            cvThresholdIncrement = thresholdIncrement;
+            cvThresholdSteps = thresholdSteps;
+        }
+        
+        public void setParamSelectionViaCV(boolean flag){
+            cvParamSelection = flag;
+        }
+        
+        private void paramSelectionViaCV(Instances trainData) throws Exception {           
+            ArrayList []metric = new ArrayList[cvNumFolds];
+            //* Evaluate using X-fold CV
+            for (int f=0; f<cvNumFolds; f++)
+            {         
+                metric[f] = new ArrayList();
+                Instances foldTrainData = trainData.trainCV(cvNumFolds, f);
+                Instances foldTestData = trainData.testCV(cvNumFolds, f);
             
-            int best_k=0, best_m=0;
-            double best_t=0;
-            double bestHammingLoss = 1;
-            double bestFMeasure = 0;
-                       
-            int min_m=1, max_m=5, step_m=1;
-            int min_k=2, max_k=100, step_k=1;
-            
-            for (int f=0; f<numFolds; f++) 
-            {
-                Instances trainData = data.trainCV(numFolds, f);
-                Instances testData = data.testCV(numFolds, f);
-                
-                for (int k=2; k<Math.min(max_k,numLabels); k+=step_k) 
-                {
-                    RAKEL rakel = new RAKEL(numLabels, binomial(numLabels, k), k);
-                    rakel.setBaseClassifier(Classifier.makeCopy(baseClassifier));
-                    for (int m=0; m<binomial(numLabels, k); m++)
+                // rakel    
+                for (int k=cvMinK; k<=cvMaxK; k+=cvStepK)
+                {            
+                    RAKEL rakel = new RAKEL(numLabels,binomial(numLabels, k), k);
+                    rakel.setBaseClassifier(baseClassifier);
+                    int finalM = Math.min(binomial(numLabels,k),cvMaxM);
+                    for (int m=0; m<finalM; m++)
                     {
-                        rakel.updateClassifier(trainData, m);
+                        rakel.updateClassifier(foldTrainData, m);
                         Evaluator evaluator = new Evaluator();
-                        rakel.updatePredictions(testData, m);
+                        rakel.updatePredictions(foldTestData, m);
                         rakel.nullSubsetClassifier(m);
-                        Evaluation[] results = evaluator.evaluateOverThreshold(rakel.getPredictions(), testData, 0.1, 0.1, 9);
-                        for (int t=0; t<results.length; t++) 
-                        {
-                            results[t].getLabelBased().setAveragingMethod(LabelBasedEvaluation.MICRO);
-                            System.out.println("fold=" + f + 
-                                               ";model=" + m + ";t=0." + (t+1) + 
-                                                ";hl=" + results[t].getExampleBased().hammingLoss() +
-                                                ";pr=" + results[t].getLabelBased().precision() + 
-                                                ";re=" + results[t].getLabelBased().recall() +
-                                                ";f1=" + results[t].getLabelBased().fmeasure());
-                        }  
+                        IntegratedEvaluation[] results = evaluator.evaluateOverThreshold(rakel.getPredictions(), foldTestData, cvThresholdStart, cvThresholdIncrement, cvThresholdSteps);                      
+                        for (int t=0; t<results.length; t++)  {
+                            metric[f].add(results[t].hammingLoss());                                                        
+                        }
                     }
                 }
-                
-            }            
-        }
+            }
+            ArrayList finalResults = new ArrayList();
+            for (int i=0; i<metric[0].size(); i++) {                
+                double sum=0;
+                for (int f=0; f<cvNumFolds; f++)
+                    sum = sum + (Double) metric[f].get(i);
+                finalResults.add(sum/cvNumFolds);
+            }
+            
+            double minMetric=1; // HammingLoss
+            int counter=0;
+            for (int k=cvMinK; k<=cvMaxK; k+=cvStepK)
+            {            
+                int finalM = Math.min(binomial(numLabels,k),cvMaxM);
+                for (int m=0; m<finalM; m++)
+                {
+                    for (int t=0; t<cvThresholdSteps; t++)  {
+                        double avgMetric=0;
+                        for (int f=0; f<cvNumFolds; f++)
+                            avgMetric += (Double) metric[f].get(counter);
+                        avgMetric /= cvNumFolds;
+                        if (avgMetric < minMetric) {
+                            setSizeOfSubset(k);
+                            setNumModels(m);
+                            setThreshold(cvThresholdStart+cvThresholdIncrement*t);
+                            minMetric = avgMetric;
+                        }
+                        counter++;
+                    }
+                }
+            }
 
+        }        
         
         public void updatePredictions(Instances testData, int model) throws Exception {
 		if (predictions == null) {
@@ -191,7 +228,11 @@ public class RAKEL extends AbstractMultiLabelClassifier
         
         
 	public void buildClassifier(Instances trainData) throws Exception {
-		// need a structure to hold different combinations
+		if (cvParamSelection) {
+                    paramSelectionViaCV(trainData);
+                }
+            
+                // need a structure to hold different combinations
 		combinations = new HashSet<String>();		
 	
 		for (int i=0; i<numOfModels; i++)
