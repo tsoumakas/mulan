@@ -98,6 +98,10 @@ public class RAKEL extends AbstractMultiLabelClassifier
 		absoluteIndicesToRemove = new int[numOfModels][sizeOfSubset];
 	}
 	
+        public int getSizeOfSubset() {
+            return sizeOfSubset;
+        }
+        
 	public void setNumModels(int models) {
 		numOfModels = models;
 		classIndicesPerSubset = new int[numOfModels][sizeOfSubset];
@@ -106,6 +110,11 @@ public class RAKEL extends AbstractMultiLabelClassifier
 		metadataTest = new Instances[numOfModels];
 	}
 	
+        public int getNumModels() {
+            return numOfModels;
+        }
+                
+        
 	public BinaryPrediction[][] getPredictions() {
 		return predictions;
 	}
@@ -230,8 +239,12 @@ public class RAKEL extends AbstractMultiLabelClassifier
 	public void buildClassifier(Instances trainData) throws Exception {
 		if (cvParamSelection) {
                     paramSelectionViaCV(trainData);
+                    System.out.println("Selected Parameters\n" +
+                                       "Subset size     : " + getSizeOfSubset() + 
+                                       "Number of models: " + getNumModels() +
+                                       "Threshold       : " + getThreshold());
                 }
-            
+                
                 // need a structure to hold different combinations
 		combinations = new HashSet<String>();		
 	
