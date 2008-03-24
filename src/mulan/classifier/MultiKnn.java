@@ -86,7 +86,7 @@ public class MultiKnn extends AbstractMultiLabelClassifier {
 		}
 		int result = Utils.maxIndex(votes);
 
-		if (votes[result] >= noclass) // && votes[result] >= 5
+		if (votes[result] > noclass ) // && votes[result] >= 5
 			return result;
 		else
 			return -1;
@@ -109,6 +109,45 @@ public class MultiKnn extends AbstractMultiLabelClassifier {
 			}
 			//System.out.println(newtrain.numInstances());
 		} while (result != -1 && newtrain.numInstances() >= numofNeighbours);
+
+		Prediction results = new Prediction(predictions, confidences);
+		return results;
+	}
+	
+	public Prediction makePrediction2(Instance instance) throws Exception {
+		double[] confidences = new double[numLabels];
+		double[] predictions = new double[numLabels];
+
+		LinearNNSearch lnn = new LinearNNSearch();
+		lnn.setDistanceFunction(dfunc);
+		lnn.setInstances(train);
+		lnn.setMeasurePerformance(false);
+
+		double[] votes = new double[numLabels];
+
+		// for cross-validation where test-train instances belong to the same data set
+		Instance instance2 = new Instance(instance);
+
+		Instances knn = new Instances(lnn.kNearestNeighbours(instance2, numofNeighbours));
+
+		for (int i = 0; i < numLabels; i++) {
+				int aces = 0; // num of aces in Knn for i
+				for (int k = 0; k < numofNeighbours; k++) {
+					double value = Double.parseDouble(train.attribute(predictors + i).value(
+							(int) knn.instance(k).value(predictors + i)));
+					if (Utils.eq(value, 1.0)) {
+						aces++;
+					}
+				}
+				votes[i] = aces; 
+		}
+		
+		for (int i = 0; i < numLabels; i++){
+			if (votes[i]>numofNeighbours/2){
+				predictions[i]=1.0;
+				sumedlabels++;
+			}
+		}
 
 		Prediction results = new Prediction(predictions, confidences);
 		return results;
