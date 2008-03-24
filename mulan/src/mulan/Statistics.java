@@ -180,6 +180,16 @@ public class Statistics implements Serializable
     }
            
     /** 
+     * returns the prior probabilities of the labels
+     */
+    public double[] priors() {
+        double[] pr = new double[numLabels];
+        for (int i=0; i<numLabels; i++)
+            pr[i] = examplesPerLabel[i]/numInstances;
+        return pr;
+    }
+
+    /** 
      * returns the label cardinality of the dataset
      */
     public double cardinality() {
