@@ -89,14 +89,14 @@ public class Evaluator
 			Instances test  = workingSet.testCV(numFolds, i);
 			AbstractMultiLabelClassifier clone = 
 				(AbstractMultiLabelClassifier) Classifier.makeCopy((Classifier) classifier);
-			long start = System.currentTimeMillis();
+			//long start = System.currentTimeMillis();
 			clone.buildClassifier(train);
-			long end = System.currentTimeMillis();
-			System.out.print(i + "Buildclassifier Time: " + (end - start) + "\n");
-			start = System.currentTimeMillis();
+			//long end = System.currentTimeMillis();
+			//System.out.print(i + "Buildclassifier Time: " + (end - start) + "\n");
+			//start = System.currentTimeMillis();
 			integrated[i] = evaluateAll(clone, test);
-			end = System.currentTimeMillis();
-			System.out.print(i + "Evaluation Time: " + (end - start) + "\n");
+			//end = System.currentTimeMillis();
+			//System.out.print(i + "Evaluation Time: " + (end - start) + "\n");
 		}
 		return new IntegratedCrossvalidation(integrated); 
 	}
