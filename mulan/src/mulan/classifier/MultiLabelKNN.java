@@ -1,5 +1,7 @@
 package mulan.classifier;
 
+import java.util.Random;
+
 import weka.core.EuclideanDistance;
 import weka.core.Instance;
 import weka.core.Instances;
@@ -9,11 +11,15 @@ import weka.core.neighboursearch.LinearNNSearch;
  * Superclass of all KNN based multi-label algorithms
  * 
  * @author Eleftherios Spyromitros-Xioufis ( espyromi@csd.auth.gr )
- *
+ * 
  */
 @SuppressWarnings("serial")
 public class MultiLabelKNN extends AbstractMultiLabelClassifier {
-	
+
+	/**
+	 * Random number generator. 
+	 */
+	Random random = null; 
 	/**
 	 * Sum of predicted labels for all instances
 	 */
@@ -43,13 +49,14 @@ public class MultiLabelKNN extends AbstractMultiLabelClassifier {
 	 * The training instances
 	 */
 	protected Instances train = null;
-	
-	public MultiLabelKNN(){
+
+	public MultiLabelKNN() {
 	}
-	
+
 	public MultiLabelKNN(int numLabels, int numOfNeighbors) {
 		super(numLabels);
 		this.numOfNeighbors = numOfNeighbors;
+		random = new Random(1); // seed is always 1 to reproduce results
 	}
 
 	public void buildClassifier(Instances train) throws Exception {
@@ -62,20 +69,35 @@ public class MultiLabelKNN extends AbstractMultiLabelClassifier {
 	}
 
 	/**
+	 * Derive output labels from distribution. Override in subclasses to alter
+	 * default behavior.
+	 */
+	protected double[] labelsFromConfidences(double[] confidences) {
+		double[] result = new double[confidences.length];
+		for (int i = 0; i < result.length; i++) {
+			if (confidences[i] > threshold) {
+				result[i] = 1.0;
+			} else if (confidences[i] == threshold) {
+				result[i] = random.nextInt(2);
+			}
+		}
+		return result;
+	}
+
+	/**
 	 * @return the dontNormalize
 	 */
 	public boolean isDontNormalize() {
 		return dontNormalize;
 	}
 
-
 	/**
-	 * @param dontNormalize the dontNormalize to set
+	 * @param dontNormalize
+	 *            the dontNormalize to set
 	 */
 	public void setDontNormalize(boolean dontNormalize) {
 		this.dontNormalize = dontNormalize;
 	}
-
 
 	/**
 	 * @return the sumedLabels
@@ -84,7 +106,6 @@ public class MultiLabelKNN extends AbstractMultiLabelClassifier {
 		return sumedLabels;
 	}
 
-
 	/**
 	 * @return the predictors
 	 */
@@ -92,14 +113,12 @@ public class MultiLabelKNN extends AbstractMultiLabelClassifier {
 		return predictors;
 	}
 
-
 	/**
 	 * @return the numOfNeighbors
 	 */
 	public int getNumOfNeighbors() {
 		return numOfNeighbors;
 	}
-
 
 	@Override
 	protected Prediction makePrediction(Instance instance) throws Exception {
