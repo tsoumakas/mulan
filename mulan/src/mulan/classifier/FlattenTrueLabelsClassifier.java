@@ -1,5 +1,4 @@
 package mulan.classifier;
-import mulan.*;
 import weka.classifiers.Classifier;
 import weka.core.Attribute;
 import weka.core.FastVector;

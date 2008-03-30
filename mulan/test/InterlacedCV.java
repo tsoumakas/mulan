@@ -1,13 +1,10 @@
 import java.util.Random;
+
 import mulan.classifier.AbstractMultiLabelClassifier;
-import mulan.evaluation.CrossValidation;
 import mulan.evaluation.Evaluation;
 import mulan.evaluation.Evaluator;
-import mulan.evaluation.ExampleBasedCrossValidation;
 import mulan.evaluation.ExampleBasedEvaluation;
-import mulan.evaluation.LabelBasedCrossValidation;
 import mulan.evaluation.LabelBasedEvaluation;
-
 import weka.classifiers.Classifier;
 import weka.core.Instances;
 

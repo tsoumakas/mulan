@@ -1,13 +1,12 @@
 package mulan.evaluation;
 import java.util.Random;
+
 import mulan.classifier.AbstractMultiLabelClassifier;
 import mulan.classifier.MultiLabelClassifier;
 import mulan.classifier.Prediction;
-
 import weka.classifiers.Classifier;
 import weka.core.Instance;
 import weka.core.Instances;
-import weka.core.Utils;
 
 
 /**

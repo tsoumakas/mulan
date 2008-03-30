@@ -1,13 +1,11 @@
 package mulan.evaluation;
 
-import java.util.*;
-
 /**
  * CrossValidation - has identical semantics with Evaluation.
  * User is passed an instance of this class when calling
  * Evaluator.crossValidate() and friends.
  * 
- * @author lef
+ * @author Eleftherios Spyromitros-Xioufis ( espyromi@csd.auth.gr )
  */
 public class IntegratedCrossvalidation extends IntegratedEvaluation {
 	

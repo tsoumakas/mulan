@@ -8,7 +8,7 @@ import weka.core.neighboursearch.LinearNNSearch;
 /**
  * Superclass of all KNN based multi-label algorithms
  * 
- * @author lefman
+ * @author Eleftherios Spyromitros-Xioufis ( espyromi@csd.auth.gr )
  *
  */
 @SuppressWarnings("serial")
