@@ -448,4 +448,18 @@ public class IntegratedEvaluation {
 		return description;
 	}
 
+	//method for easier data extraction
+	public String toExcel(){
+		String output = "";
+		
+		output += hammingLoss()+ ";" + accuracy()+ ";" + precision()+ ";";
+		output += recall() + ";" + fmeasure() + ";" + subsetAccuracy() + ";";
+		output += microAccuracy() + ";" + microPrecision() + ";" + microRecall() + ";";
+		output += microFmeasure() + ";" + macroAccuracy()+ ";" + macroPrecision() + ";";
+		output += macroRecall() + ";" + macroFmeasure() + ";" + one_error()+ ";";
+		output += coverage() + ";" + rloss() + ";" + avg_precision();
+		
+		return output;
+	}
+	
 }
