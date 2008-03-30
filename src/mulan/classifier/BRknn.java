@@ -52,14 +52,9 @@ public class BRknn extends MultiLabelKNN {
 
 		for (int i = 0; i < numLabels; i++) {
 			confidences[i] = (double) votes[i] / numOfNeighbors;
-			if (confidences[i] >= 0.5) {
-				predictions[i] = 1.0;
-				sumedLabels++;
-			}
-			//else if(confidences[i] == 0.5){
-			//	predictions[i] = Math.round(Math.random());
-			//}
 		}
+		
+		predictions = labelsFromConfidences(confidences);
 
 		Prediction results = new Prediction(predictions, confidences);
 		return results;

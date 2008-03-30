@@ -1,6 +1,6 @@
 import java.io.FileReader;
 
-import mulan.classifier.BRknn;
+import mulan.classifier.*;
 import mulan.evaluation.*;
 import weka.core.Instances;
 
@@ -18,7 +18,9 @@ public class TestMultiLabelKNN {
 	public static void main(String[] args) throws Exception {
 		
 		String path = "E:/Documents and Settings/lefman/Desktop/my workspace/datasets/";
-		String datastem = "scene";
+		String datastem = "yeast";
+		//String datastem = "scene";
+		//String datastem = "genbase10";
 
 		FileReader frTrain = new FileReader(path + datastem + "-train.arff");
 		Instances trainData = new Instances(frTrain);
@@ -29,8 +31,8 @@ public class TestMultiLabelKNN {
 		for (int i = 0; i < testData.numInstances(); i++)
 			allData.add(testData.instance(i));
 
-		int numLabels = 6;
-		// int numNeighbours = 2;
+		int numLabels = 14;
+		//int numLabels2 = 6;
 		
 	   //Statistics stats = new Statistics();
        // stats.calculateStats(allData, numLabels);
@@ -39,8 +41,11 @@ public class TestMultiLabelKNN {
 		for (int i = 1; i <= 30; i++) {
 			//System.out.println("Calculating mlknn output for " + i + " neighbours");
 
-			BRknn mlknn = new BRknn(numLabels,i);
-			//mlknn.setDontNormalize(true);
+			MultiLabelKNN BRknn = new BRknn(numLabels,i);
+			BRknn.setDontNormalize(false);
+			
+			//MultiLabelKNN Mlknn = new Mlknn(numLabels2,i,1);
+			//BRknn.setDontNormalize(false);
 
 			//long start = System.currentTimeMillis();
 			//mlknn.buildClassifier(trainData);
@@ -49,9 +54,10 @@ public class TestMultiLabelKNN {
 		    //System.out.print("Buildclassifier Time: " + (end - start) + "\n");
 
 			Evaluator eval;
-			IntegratedEvaluation results;
+			//IntegratedEvaluation results;
+			IntegratedCrossvalidation results;
 			eval = new Evaluator();
-			results = eval.crossValidateAll(mlknn, allData,10);
+			results = eval.crossValidateAll(BRknn, allData,10);
 
 			//start = System.currentTimeMillis();
 			//results = eval.evaluateAll(mlknn, testData);
@@ -61,7 +67,7 @@ public class TestMultiLabelKNN {
 			//System.out.println("Average labels predicted: " + (double) mlknn.sumedlabels / trainData.numInstances());
 			//System.out.println(results.toString());
 			
-			System.out.println(i + "," + "simpleknn" + "," + datastem + "," + results.toExcel());
+			System.out.println(i + ";" + "BRknn" + ";" + datastem + ";" + results.toExcel());
 			System.gc();
 
 			//mlknn.output(); //outputs prior and conditional probabilities
