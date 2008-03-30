@@ -1,11 +1,9 @@
 package mulan.classifier;
 import java.util.Vector;
-import mulan.*;
 
-import weka.classifiers.functions.LibSVM;
+import mulan.LabelSet;
 import weka.core.Instance;
 import weka.core.Instances;
-import weka.core.Utils;
 
 
 @SuppressWarnings("serial")

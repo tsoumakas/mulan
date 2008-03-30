@@ -17,22 +17,23 @@ package mulan.classifier;
  */
 
 import java.util.ArrayList;
-import java.util.Random;
 import java.util.Arrays;
 import java.util.HashSet;
-import mulan.*;
+import java.util.Random;
+
 import mulan.evaluation.BinaryPrediction;
 import mulan.evaluation.Evaluator;
 import mulan.evaluation.IntegratedEvaluation;
+import weka.classifiers.Classifier;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.SparseInstance;
 import weka.core.TechnicalInformation;
-import weka.core.TechnicalInformation.*;
 import weka.core.Utils;
+import weka.core.TechnicalInformation.Field;
+import weka.core.TechnicalInformation.Type;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.Remove;
-import weka.classifiers.Classifier;
 
 /**
  * Class that implements the RAKEL (Random k-labelsets) algorithm <p>
