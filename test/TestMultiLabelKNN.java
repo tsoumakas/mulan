@@ -1,8 +1,7 @@
 import java.io.FileReader;
 
-import mulan.classifier.MultiKnn;
-import mulan.evaluation.Evaluator;
-import mulan.evaluation.IntegratedCrossvalidation;
+import mulan.classifier.BRknn;
+import mulan.evaluation.*;
 import weka.core.Instances;
 
 /**
@@ -11,15 +10,15 @@ import weka.core.Instances;
  * @author Eleftherios Spyromitros - Xioufis
  */
 
-public class testmultiknn {
+public class TestMultiLabelKNN {
 
-	public testmultiknn() {
+	public TestMultiLabelKNN() {
 	}
 
 	public static void main(String[] args) throws Exception {
-
+		
 		String path = "E:/Documents and Settings/lefman/Desktop/my workspace/datasets/";
-		String datastem = "yeast";
+		String datastem = "scene";
 
 		FileReader frTrain = new FileReader(path + datastem + "-train.arff");
 		Instances trainData = new Instances(frTrain);
@@ -30,27 +29,27 @@ public class testmultiknn {
 		for (int i = 0; i < testData.numInstances(); i++)
 			allData.add(testData.instance(i));
 
-		int numLabels = 14;
+		int numLabels = 6;
 		// int numNeighbours = 2;
 		
 	   //Statistics stats = new Statistics();
        // stats.calculateStats(allData, numLabels);
        // System.out.println(stats.toString());
 
-		for (int i = 10; i <= 10; i++) {
-			System.out.println("Calculating mlknn output for " + i + " neighbours");
+		for (int i = 1; i <= 30; i++) {
+			//System.out.println("Calculating mlknn output for " + i + " neighbours");
 
-			MultiKnn mlknn = new MultiKnn(numLabels, trainData ,i);
+			BRknn mlknn = new BRknn(numLabels,i);
 			//mlknn.setDontNormalize(true);
 
 			//long start = System.currentTimeMillis();
 			//mlknn.buildClassifier(trainData);
 			//long end = System.currentTimeMillis();
 
-			//System.out.print("Buildclassifier Time: " + (end - start) + "\n");
+		    //System.out.print("Buildclassifier Time: " + (end - start) + "\n");
 
 			Evaluator eval;
-			IntegratedCrossvalidation results;
+			IntegratedEvaluation results;
 			eval = new Evaluator();
 			results = eval.crossValidateAll(mlknn, allData,10);
 
@@ -59,8 +58,10 @@ public class testmultiknn {
 			//end = System.currentTimeMillis();
 
 			//System.out.print("Evaluation Time: " + (end - start) + "\n");
-			System.out.println( (double) mlknn.sumedlabels / trainData.numInstances());
-			System.out.println(results.toString());
+			//System.out.println("Average labels predicted: " + (double) mlknn.sumedlabels / trainData.numInstances());
+			//System.out.println(results.toString());
+			
+			System.out.println(i + "," + "simpleknn" + "," + datastem + "," + results.toExcel());
 			System.gc();
 
 			//mlknn.output(); //outputs prior and conditional probabilities
