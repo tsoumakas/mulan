@@ -69,10 +69,9 @@ public class MultiLabelKNN extends AbstractMultiLabelClassifier {
 	}
 
 	/**
-	 * Derive output labels from distribution. Override in subclasses to alter
-	 * default behavior.
+	 * Derive output labels from distribution
 	 */
-	protected double[] labelsFromConfidences(double[] confidences) {
+	protected double[] labelsFromConfidences2(double[] confidences) {
 		double[] result = new double[confidences.length];
 		for (int i = 0; i < result.length; i++) {
 			if (confidences[i] > threshold) {
@@ -122,7 +121,6 @@ public class MultiLabelKNN extends AbstractMultiLabelClassifier {
 
 	@Override
 	protected Prediction makePrediction(Instance instance) throws Exception {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
