@@ -9,14 +9,12 @@ import weka.core.neighboursearch.LinearNNSearch;
 public class Experimentalknn extends MultiLabelKNN {
 
 	public Experimentalknn() {
-		// TODO Auto-generated constructor stub
 	}
 
 	public Experimentalknn(int numLabels, int numOfNeighbors) {
 		super(numLabels, numOfNeighbors);
-		// TODO Auto-generated constructor stub
 	}
-	
+
 	public void buildClassifier(Instances train) throws Exception {
 		super.buildClassifier(train);
 	}
@@ -28,30 +26,52 @@ public class Experimentalknn extends MultiLabelKNN {
 		Instances newtrain = new Instances(this.train);
 		//System.out.println(newtrain.numInstances());
 
+		int[] votes = new int[numLabels + 1]; //for the null class 
+
 		int result;
-		do {
-			result = toplabel(instance, newtrain, predictions);
-			if (result != -1) {
+		int counter=0;
+		
+		while (newtrain.numInstances() >= numOfNeighbors){
+			counter++;
+			votes = votessofar(instance, newtrain, predictions, votes);
+			
+			result = Utils.maxIndex(votes);//most voted
+
+			if (result == numLabels || votes[result] < numOfNeighbors/2 ) // && votes[result] >= 5
+				break;
+			else {
+				confidences[result] = (double)votes[result]/ numOfNeighbors * counter;
 				predictions[result] = 1;
 				newtrain = new Instances(filterwithlabel(result, newtrain));
 				sumedLabels++;
 			}
 			//System.out.println(newtrain.numInstances());
-		} while (result != -1 && newtrain.numInstances() >= numOfNeighbors);
+			votes[result] = 0;
+		} 
+		
+		//calculate confidences
+		for(int i=0 ;i < numLabels ; i++){
+			if(confidences[i]== 0.0){
+			confidences[i] = (double)votes[i]/ numOfNeighbors * counter;
+			//System.out.println("1");
+			}
+		}
 
 		Prediction results = new Prediction(predictions, confidences);
+		//System.out.println("ONE prediction completed");
 		return results;
 	}
-	
-	public int toplabel(Instance instance, Instances train2, double[] predictions) throws Exception {
+
+	public int[] votessofar(Instance instance, Instances train2, double[] predictions, int[] votes)
+			throws Exception {
 
 		LinearNNSearch lnn = new LinearNNSearch();
 		lnn.setDistanceFunction(dfunc);
 		lnn.setInstances(train2);
 		lnn.setMeasurePerformance(false);
 
-		double[] votes = new double[numLabels];
-		int noclass = 0;
+		//double[] votes = new double[numLabels+1]; //+1 for no class
+		//int noclass = 0;
 
 		// for cross-validation where test-train instances belong to the same data set
 		Instance instance2 = new Instance(instance);
@@ -85,21 +105,14 @@ public class Experimentalknn extends MultiLabelKNN {
 				}
 			}
 			if (ace == false) {
-				noclass++;
+				votes[numLabels]++;
 			}
 		}
-		int result = Utils.maxIndex(votes);
 
-		if (votes[result] >= noclass ) // && votes[result] >= 5
-			return result;
-		else
-			return -1;
+		return votes;
 	}
-	
-	public Instances filterwithlabel(int j, Instances init) {
-		//make a copy of the supplied dataset
-		Instances transformed = new Instances(init);
 
+	public Instances filterwithlabel(int j, Instances init) {
 		//delete instances without label j
 		for (int i = 0; i < init.numInstances(); i++) {
 			double value = Double.parseDouble(init.attribute(predictors + j).value(
@@ -108,10 +121,6 @@ public class Experimentalknn extends MultiLabelKNN {
 				init.delete(i);
 			}
 		}
-
-		//delete label j
-		//transformed.deleteAttributeAt(predictors+j);
-
 		//System.out.println(transformed);
 		return init;
 
