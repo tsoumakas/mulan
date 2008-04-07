@@ -100,6 +100,45 @@ public class Evaluator
 		return new IntegratedCrossvalidation(integrated); 
 	}
 	
+	public IntegratedCrossvalidation[] crossvalidateOverThreshold(
+			BinaryPrediction[][][] predictions, Instances dataset, double start, double increment,
+			int steps, int numFolds) throws Exception {
+		IntegratedCrossvalidation[] crossvalidations = new IntegratedCrossvalidation[steps];
+
+		double threshold = start;
+		for (int i = 0; i < steps; i++) { //for every step
+			crossvalidations[i] = new IntegratedCrossvalidation(numFolds);
+			for (int l = 0; l < numFolds; l++) { //for every fold that has been evaluated
+				//calculate the predictions based on threshold
+				for (int j = 0; j < predictions[l].length; j++) {
+					for (int k = 0; k < predictions[l][0].length; k++) {
+						predictions[l][j][k].predicted = predictions[l][j][k].confidenceTrue >= threshold;
+					}
+				}
+				//assign the prediction to the l th fold of this step's crossvalidation
+				crossvalidations[i].folds[l] = new IntegratedEvaluation(predictions[l]);
+			}
+			crossvalidations[i].computeMeasures();
+			threshold += increment; //increase threshold for the next step
+		}
+
+		return crossvalidations;
+
+	}
+
+	public IntegratedCrossvalidation[] crossvalidateOverThreshold(MultiLabelClassifier classifier,
+			Instances dataset, double start, double increment, int steps, int numFolds)
+			throws Exception {
+		//create a crossvalidation of the classifier in order to get predictions
+		IntegratedCrossvalidation cv = crossValidateAll(classifier, dataset, numFolds);
+		BinaryPrediction[][][] predictions2 = new BinaryPrediction[numFolds][][];
+		for (int i = 0; i < numFolds; i++) {
+			predictions2[i] = cv.folds[i].predictions;
+		}
+
+return crossvalidateOverThreshold(predictions2, dataset, start, increment, steps,numFolds);
+}
+	
 	protected BinaryPrediction[][] getPredictions(MultiLabelClassifier classifier, Instances dataset)
 	throws Exception
 	{

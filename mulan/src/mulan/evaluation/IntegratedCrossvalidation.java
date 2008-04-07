@@ -19,6 +19,10 @@ public class IntegratedCrossvalidation extends IntegratedEvaluation {
 	protected double std_rloss;
 	protected double std_avg_precision;
 	
+	public IntegratedCrossvalidation(int numFolds){
+		folds = new IntegratedEvaluation[numFolds];
+	}
+	
 	public IntegratedCrossvalidation(IntegratedEvaluation[] folds){
 		this.folds = folds;
 		computeMeasures();
