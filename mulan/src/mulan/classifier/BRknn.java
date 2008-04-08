@@ -16,7 +16,7 @@ public class BRknn extends MultiLabelKNN {
 
 	public BRknn(int numLabels, int numOfNeighbors) {
 		super(numLabels, numOfNeighbors);
-		m_DistanceWeighting = 2;
+		m_DistanceWeighting = WEIGHT_NONE; //weight none
 	}
 
 	public void buildClassifier(Instances train) throws Exception {
