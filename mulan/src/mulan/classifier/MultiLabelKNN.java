@@ -132,4 +132,18 @@ public class MultiLabelKNN extends AbstractMultiLabelClassifier {
 		return null;
 	}
 
+	/**
+	 * @return the m_DistanceWeighting
+	 */
+	public int getM_DistanceWeighting() {
+		return m_DistanceWeighting;
+	}
+
+	/**
+	 * @param distanceWeighting the m_DistanceWeighting to set
+	 */
+	public void setM_DistanceWeighting(int distanceWeighting) {
+		m_DistanceWeighting = distanceWeighting;
+	}
+
 }
