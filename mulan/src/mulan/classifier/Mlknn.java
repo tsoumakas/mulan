@@ -223,7 +223,7 @@ public class Mlknn extends MultiLabelKNN {
 		double[] confidences = new double[numLabels];
 		double[] predictions = new double[numLabels];
 
-		setThreshold(0.5);
+		//setThreshold(0.5);
 
 		// for cross-validation where test-train instances belong to the same data set
 		Instance instance2 = new Instance(instance);

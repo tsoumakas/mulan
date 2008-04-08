@@ -16,10 +16,18 @@ import weka.core.neighboursearch.LinearNNSearch;
 @SuppressWarnings("serial")
 public class MultiLabelKNN extends AbstractMultiLabelClassifier {
 
+	/** Whether the neighbors should be distance-weighted. */
+	protected int m_DistanceWeighting;
+	/** no weighting. */
+	public static final int WEIGHT_NONE = 1;
+	/** weight by 1/distance. */
+	public static final int WEIGHT_INVERSE = 2;
+	/** weight by 1-distance. */
+	public static final int WEIGHT_SIMILARITY = 4;
 	/**
-	 * Random number generator. 
+	 * Random number generator.
 	 */
-	Random random = null; 
+	Random random = null;
 	/**
 	 * Sum of predicted labels for all instances
 	 */
