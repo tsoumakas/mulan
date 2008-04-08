@@ -17,7 +17,7 @@ import weka.core.neighboursearch.LinearNNSearch;
 public class MultiLabelKNN extends AbstractMultiLabelClassifier {
 
 	/** Whether the neighbors should be distance-weighted. */
-	protected int m_DistanceWeighting;
+	protected int distanceWeighting;
 	/** no weighting. */
 	public static final int WEIGHT_NONE = 1;
 	/** weight by 1/distance. */
@@ -135,15 +135,15 @@ public class MultiLabelKNN extends AbstractMultiLabelClassifier {
 	/**
 	 * @return the m_DistanceWeighting
 	 */
-	public int getM_DistanceWeighting() {
-		return m_DistanceWeighting;
+	public int getDistanceWeighting() {
+		return distanceWeighting;
 	}
 
 	/**
 	 * @param distanceWeighting the m_DistanceWeighting to set
 	 */
-	public void setM_DistanceWeighting(int distanceWeighting) {
-		m_DistanceWeighting = distanceWeighting;
+	public void setDistanceWeighting(int distanceWeighting) {
+		this.distanceWeighting = distanceWeighting;
 	}
 
 }
