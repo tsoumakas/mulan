@@ -16,7 +16,7 @@ public class BRknn extends MultiLabelKNN {
 
 	public BRknn(int numLabels, int numOfNeighbors) {
 		super(numLabels, numOfNeighbors);
-		m_DistanceWeighting = WEIGHT_NONE; //weight none
+		distanceWeighting = WEIGHT_NONE; //weight none
 	}
 
 	public void buildClassifier(Instances train) throws Exception {
@@ -62,7 +62,7 @@ public class BRknn extends MultiLabelKNN {
 			Instance current = neighbours.instance(i);
 			distances[i] = distances[i] * distances[i];
 			distances[i] = Math.sqrt(distances[i] / this.predictors);
-			switch (m_DistanceWeighting) {
+			switch (distanceWeighting) {
 			case WEIGHT_INVERSE:
 				weight = 1.0 / (distances[i] + 0.001); // to avoid div by zero
 				break;
