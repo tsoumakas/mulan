@@ -23,21 +23,14 @@ public class TestMultiLabelKNN {
 
 	public static void main(String[] args) throws Exception {
 
-		String path = "E:/Documents and Settings/lefman/Desktop/my workspace/datasets/";
+		String path = "C:/Documents and Settings/lefteris/Επιφάνεια εργασίας/my workspace/datasets/";
 
-		String datastem = "yeast";
-		//String datastem = "scene";
+		//String datastem = "yeast";
+		String datastem = "scene";
 		//String datastem = "genbase10";
 
-		int numLabels = 14;
-		
-		boolean dontnormalize = false;
-
-		if (args != null) {
-			path = args[0];
-			datastem = args[1];
-			numLabels = Integer.parseInt(args[2]);
-		}
+		//int numLabels = 14;
+		int numLabels = 6;
 		
 		File file = new File(".//" + datastem + " results.txt");
 		PrintWriter out = new PrintWriter(new FileWriter(file));
@@ -52,26 +45,38 @@ public class TestMultiLabelKNN {
 			allData.add(testData.instance(i));
 
 		//names of the tested algorithms
-		String[] algorithms = new String[3];
-		algorithms[0] = "BRknn";
-		algorithms[1] = "MLknn";
-		algorithms[2] = "LPknn";
+		String[][] algorithms = {
+				{"BRknn","normalized","WEIGHT_NONE"},
+				{"BRknn","normalized","WEIGHT_INVERSE"},
+				{"MLknn","normalized","WEIGHT_NONE"},
+				{"MLknn","not-normalized","WEIGHT_NONE"},
+				{"LPknn","normalized","WEIGHT_NONE"}
+				};
 
 		//Statistics stats = new Statistics();
 		//stats.calculateStats(allData, numLabels);
 		//System.out.println(stats.toString());
 
 		//test for values of k between 1 and 30
-		for (int i = 1; i <= 1; i += 1) {
+		for (int i = 1; i <= 30; i += 1) {
 
 			BRknn br = new BRknn(numLabels, i);
 			br.setDistanceWeighting(1);
-			br.setDontNormalize(dontnormalize);
+			br.setDontNormalize(false);
 			//br.buildClassifier(trainData);
+			
+			BRknn br2 = new BRknn(numLabels, i);
+			br2.setDistanceWeighting(2);
+			br2.setDontNormalize(false);
+			//br2.buildClassifier(trainData);
 
 			Mlknn ml = new Mlknn(numLabels, i, 1);
-			ml.setDontNormalize(dontnormalize);
+			ml.setDontNormalize(false);
 			//ml.buildClassifier(trainData);
+			
+			Mlknn ml2 = new Mlknn(numLabels, i, 1);
+			ml2.setDontNormalize(true);
+			//ml2.buildClassifier(trainData);
 
 			IBk baseClassifier = new IBk(i);
 
@@ -124,28 +129,46 @@ public class TestMultiLabelKNN {
 			DecimalFormat df = new DecimalFormat("0.00");
 
 			Evaluator eval;
-			IntegratedCrossvalidation[][] results = new IntegratedCrossvalidation[3][numsteps];
+			IntegratedCrossvalidation[][] results = new IntegratedCrossvalidation[5][numsteps];
 			eval = new Evaluator();
 
-			results[0] = eval.crossvalidateOverThreshold(br, allData, start, increment, numsteps,
-					numfolds);
-			results[1] = eval.crossvalidateOverThreshold(ml, allData, start, increment, numsteps,
-					numfolds);
-			//LP can't be evaluated over threshold
-			results[2][0] = eval.crossValidateAll(lp, allData, numfolds);
+			results[0] = eval.crossvalidateOverThreshold(br, allData, start,
+					increment, numsteps, numfolds);
+			results[1] = eval.crossvalidateOverThreshold(br2, allData, start,
+					increment, numsteps, numfolds);
+			results[2] = eval.crossvalidateOverThreshold(ml, allData, start,
+					increment, numsteps, numfolds);
+			results[3] = eval.crossvalidateOverThreshold(ml2, allData, start,
+					increment, numsteps, numfolds);
+			// LP can't be evaluated over threshold
+			results[4][0] = eval.crossValidateAll(lp, allData, numfolds);
 
-			for (int k = 0; k < algorithms.length; k++) {
-				if (algorithms[k] != "LPknn") {
+			for (int k = 0; k < 5; k++) {
+				if (k!=4) {
 					for (int j = 0; j < numsteps; j++) {
-						out.println(i + ";" + algorithms[k] + ";" + datastem + ";"
-								+ results[k][j].toExcel() + ";" + df.format(start + increment * j));
+						out.println(
+								i 
+								+ ";" + algorithms[k][0] 
+						        + ";" + datastem 
+						        + ";" + results[k][j].toExcel()
+								+ ";" + df.format(start + increment * j)
+								+ ";" + algorithms[k][1]
+							    + ";" + algorithms[k][2]);
 					}
 				} else {
-					out.println(i + ";" + algorithms[k] + ";" + datastem + ";"
-							+ results[k][0].toExcel() + ";" + "0,50");
+					out.println(
+							i 
+							+ ";" + algorithms[k][0] 
+							+ ";" + datastem
+							+ ";" + results[k][0].toExcel() 
+							+ ";" + "0,50"
+							+ ";" + algorithms[k][1]
+							+ ";" + algorithms[k][2]);
 				}
+				out.flush();
 			}
-			System.gc();
 		}
+		out.close();
+		System.gc();
 	}
 }
