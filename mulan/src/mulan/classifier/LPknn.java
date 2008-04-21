@@ -53,7 +53,7 @@ public class LPknn extends MultiLabelKNN {
 		}
 
 		// gather knn votes for each distinct label combination
-		int[] votes = new int[labelSets.size()];
+		int[][] votes = new int[labelSets.size()][2];
 
 		//get all distinct label sets in an array
 		LabelSet[] distinctLabelSets = new LabelSet[labelSets.size()];
@@ -69,7 +69,8 @@ public class LPknn extends MultiLabelKNN {
 			LabelSet labelSet = new LabelSet(dblLabels[i]);
 			for (int j = 0; j < labelSets.size(); j++) {
 				if (labelSet.equals(distinctLabelSets[j])) {
-					votes[j]++;
+					votes[j][0]++;
+					votes[j][1]+= (i+1);
 				}
 			}
 		}
@@ -78,7 +79,10 @@ public class LPknn extends MultiLabelKNN {
 		//nearest neighbors
 		int max = 0;
 		for (int i = 1; i < labelSets.size(); i++) {
-			if (votes[i] >= votes[max]) {
+			if (votes[i][0] > votes[max][0]) {
+				max = i;
+			}
+			else if(votes[i][0] == votes[max][0] && votes[i][1]<= votes[max][1]){
 				max = i;
 			}
 		}
