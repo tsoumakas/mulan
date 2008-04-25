@@ -199,13 +199,24 @@ implements TechnicalInformationHandler, MultiLabelClassifier
 			thresholds = new double[numLabels];
 			java.util.Arrays.fill(thresholds, threshold);
 		}
-		
+		//check the case that no label is true
+		boolean flag = false;
 		
 		double[] result = new double[confidences.length];
 		for(int i = 0; i < result.length; i++)
 		{
-			if (confidences[i] >= thresholds[i]) result[i] = 1.0;
+			if (confidences[i] >= thresholds[i]){
+				result[i] = 1.0;
+				flag = true;
+			}
 		}
+	
+		//assign the class with the greater confidence
+		if(flag == false){
+			int index = Utils.maxIndex(confidences);
+			result[index] = 1.0;
+		}
+	
 		return result;
 	}
 

@@ -7,6 +7,7 @@ import mulan.classifier.Prediction;
 import weka.classifiers.Classifier;
 import weka.core.Instance;
 import weka.core.Instances;
+import weka.core.Utils;
 
 
 /**
@@ -111,8 +112,23 @@ public class Evaluator
 			for (int l = 0; l < numFolds; l++) { //for every fold that has been evaluated
 				//calculate the predictions based on threshold
 				for (int j = 0; j < predictions[l].length; j++) {
+
+					boolean flag = false;
+					double[] confidences = new double[predictions[l][0].length];
+
 					for (int k = 0; k < predictions[l][0].length; k++) {
-						predictions[l][j][k].predicted = predictions[l][j][k].confidenceTrue >= threshold;
+						confidences[k] = predictions[l][j][k].confidenceTrue;
+						if (predictions[l][j][k].confidenceTrue >= threshold) {
+							predictions[l][j][k].predicted = true;
+							flag = true;
+						} else {
+							predictions[l][j][k].predicted = false;
+						}
+					}
+					//assign the class with the greater confidence
+					if (flag == false) {
+						int index = Utils.maxIndex(confidences);
+						predictions[l][j][index].predicted = true;
 					}
 				}
 				//assign the prediction to the l th fold of this step's crossvalidation
