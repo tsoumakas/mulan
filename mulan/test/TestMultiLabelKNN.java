@@ -49,8 +49,8 @@ public class TestMultiLabelKNN {
 
 		//names of the tested algorithms
 		String[][] algorithms = {
-				{"BRknn","normalized","WEIGHT_NONE"},
-				{"BRknn","normalized","WEIGHT_INVERSE"},
+				{"BRknn2","normalized","WEIGHT_NONE"},
+				{"BRknn2","normalized","WEIGHT_INVERSE"},
 				{"MLknn","normalized","WEIGHT_NONE"},
 				{"MLknn","not-normalized","WEIGHT_NONE"},
 				{"LPknn","normalized","WEIGHT_NONE"},
@@ -63,35 +63,30 @@ public class TestMultiLabelKNN {
 		//System.out.println(stats.toString());
 
 		//test for values of k between 1 and 30
-		for (int i = 16; i <= 16; i += 1) {
+		for (int i = 10; i <= 10; i += 1) {
 
 			BRknn br = new BRknn(numLabels, i);
 			br.setDistanceWeighting(1);
 			br.setDontNormalize(false);
-			//br.buildClassifier(trainData);
 			
 			BRknn br2 = new BRknn(numLabels, i);
 			br2.setDistanceWeighting(2);
 			br2.setDontNormalize(false);
-			//br2.buildClassifier(trainData);
 
 			Mlknn ml = new Mlknn(numLabels, i, 1);
 			ml.setDontNormalize(false);
-			//ml.buildClassifier(trainData);
-			
+						
 			Mlknn ml2 = new Mlknn(numLabels, i, 1);
 			ml2.setDontNormalize(true);
-			//ml2.buildClassifier(trainData);
 
 			IBk baseClassifier = new IBk(i);
 
 			LabelPowersetClassifier lp = new LabelPowersetClassifier(Classifier
 					.makeCopy(baseClassifier), numLabels);
-			//lp.buildClassifier(trainData);
 			
 			LPknn lp2 = new LPknn(numLabels, i);
 			
-			//RAKELknn rakel = new RAKELknn(numLabels,i,10,4);
+			RAKELknn rakel = new RAKELknn(numLabels,i,10,4);
 
 			/*//Binary Relevance Classifier 
 			//System.out.println("BR");
@@ -99,37 +94,61 @@ public class TestMultiLabelKNN {
 					.makeCopy(baseClassifier), numLabels);
 			br1.buildClassifier(trainData);*/
 			
-			/*=====================EVALUATION==========================
+			/*//=====================EVALUATION==========================
+			br.buildClassifier(trainData);
+			br2.buildClassifier(trainData);
+			ml.buildClassifier(trainData);
+			ml2.buildClassifier(trainData);
+			lp.buildClassifier(trainData);
+			lp2.buildClassifier(trainData);
+			
 			Evaluator eval;
-			IntegratedEvaluation[] results = new IntegratedEvaluation[4];
+			IntegratedEvaluation[] results = new IntegratedEvaluation[6];
 			eval = new Evaluator();
 			//BR EVAULATION 
 			long start = System.currentTimeMillis();
 			results[0] = eval.evaluateAll(br, testData);
 			long end = System.currentTimeMillis();
 			System.out.print("Evaluation Time: " + (end - start) + "\n");
-			//System.out.println("Average labels predicted: " + (double) br.getSumedLabels() / trainData.numInstances());
 			//BR2 EVAULATION 
 			start = System.currentTimeMillis();
-			results[1] = eval.evaluateAll(br1, testData);
+			results[1] = eval.evaluateAll(br2, testData);
 			end = System.currentTimeMillis();
 			System.out.print("Evaluation Time: " + (end - start) + "\n");
-			//System.out.println("Average labels predicted: " + (double) br.getSumedLabels() / trainData.numInstances());
 			//ML EVAULATION 
 			start = System.currentTimeMillis();
 			results[2] = eval.evaluateAll(ml, testData);
 			end = System.currentTimeMillis();
 			System.out.print("Evaluation Time: " + (end - start) + "\n");
-			//System.out.println("Average labels predicted: " + (double) br.getSumedLabels() / trainData.numInstances());
-			 LP EVAULATION 
+			//ML2 EVAULATION 
 			start = System.currentTimeMillis();
-			results[3] = eval.evaluateAll(lp, testData);
+			results[3] = eval.evaluateAll(ml2, testData);
 			end = System.currentTimeMillis();
 			System.out.print("Evaluation Time: " + (end - start) + "\n");
-			//System.out.println("Average labels predicted: " + (double) br.getSumedLabels() / trainData.numInstances());
+			//LP EVAULATION 
+			start = System.currentTimeMillis();
+			results[4] = eval.evaluateAll(lp, testData);
+			end = System.currentTimeMillis();
+			System.out.print("Evaluation Time: " + (end - start) + "\n");
+			//LP2 EVAULATION 
+			start = System.currentTimeMillis();
+			results[5] = eval.evaluateAll(lp2, testData);
+			end = System.currentTimeMillis();
+			System.out.print("Evaluation Time: " + (end - start) + "\n");
+			
+			for (int k = 0; k <= 1; k++) {
+						System.out.println(
+								i 
+								+ ";" + algorithms[k][0] 
+						        + ";" + datastem 
+						        + ";" + results[k].toExcel()
+								+ ";" + "0,5"
+								+ ";" + algorithms[k][1]
+							    + ";" + algorithms[k][2]);
+					}
 			*/
 			
-			/* =====================CROSS-VALIDATION========================== */
+			// =====================CROSS-VALIDATION==========================
 			int numfolds = 10;
 			int numsteps = 13;
 			double start = 0.2;
@@ -141,20 +160,20 @@ public class TestMultiLabelKNN {
 			IntegratedCrossvalidation[][] results = new IntegratedCrossvalidation[6][numsteps];
 			eval = new Evaluator();
 
-			//results[0] = eval.crossvalidateOverThreshold(br, allData, start,
-			//		increment, numsteps, numfolds);
-			//results[1] = eval.crossvalidateOverThreshold(br2, allData, start,
-			//		increment, numsteps, numfolds);
+			results[0] = eval.crossvalidateOverThreshold(br, allData, start,
+					increment, numsteps, numfolds);
+			results[1] = eval.crossvalidateOverThreshold(br2, allData, start,
+					increment, numsteps, numfolds);
 			//results[2] = eval.crossvalidateOverThreshold(ml, allData, start,
 			//		increment, numsteps, numfolds);
 			//results[3] = eval.crossvalidateOverThreshold(ml2, allData, start,
 			//		increment, numsteps, numfolds);
 			// LP can't be evaluated over threshold
 			//results[4][0] = eval.crossValidateAll(lp, allData, numfolds);
-			results[5][0] = eval.crossValidateAll(lp2, allData, numfolds);
+			//results[5][0] = eval.crossValidateAll(lp2, allData, numfolds);
 			
 
-			for (int k = 5; k <= 5; k++) {
+			for (int k = 0; k <= 1; k++) {
 				if (k<4) {
 					for (int j = 0; j < numsteps; j++) {
 						out.println(
@@ -178,6 +197,7 @@ public class TestMultiLabelKNN {
 				}
 				out.flush();
 			}
+			
 		}
 		out.close();
 		System.gc();
