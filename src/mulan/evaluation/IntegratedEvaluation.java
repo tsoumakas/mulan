@@ -19,6 +19,8 @@ public class IntegratedEvaluation {
 	 * dimension) and label (2nd dimension) containing a BinaryPrediction object
 	 */
 	protected BinaryPrediction[][] predictions;
+	
+	protected double numPredictedLabels;
 
 	// Example based measures and parameters
 	protected double hammingLoss;
@@ -93,6 +95,8 @@ public class IntegratedEvaluation {
 	{
 		int numLabels = numLabels();
 		int numInstances = numInstances();
+		
+		numPredictedLabels = 0;
 
 		// Reset measures in case of multiple calls
 		// -- example-based 
@@ -126,6 +130,12 @@ public class IntegratedEvaluation {
 			//when performing divisions. It makes the code a
 			//little cleaner but:
 			//TODO: run performance tests on counting with doubles
+			
+			for (int j = 0; j < numLabels; j++) {
+				if (predictions[i][j].predicted == true) {
+					numPredictedLabels++;
+				}
+			}
 
 			// example-based counters
 			double setUnion = 0; // |Y or Z|
@@ -310,6 +320,8 @@ public class IntegratedEvaluation {
 		coverage /= numInstances;
 		rloss /= numInstances;
 		avg_precision /= numInstances;
+		
+		numPredictedLabels /= numInstances;
 	}
 
 	// Methods used to obtain the calculated measures
@@ -413,7 +425,8 @@ public class IntegratedEvaluation {
 
 	public String toString() {
 		String description = "";
-
+		
+		description += "Average predicted labels: " + this.numPredictedLabels + "\n";
 		description += "========Example Based Measures========\n";
 		description += "HammingLoss  : " + this.hammingLoss() + "\n";
 		description += "Accuracy     : " + this.accuracy() + "\n";
@@ -458,6 +471,7 @@ public class IntegratedEvaluation {
 		output += microFmeasure() + ";" + macroAccuracy()+ ";" + macroPrecision() + ";";
 		output += macroRecall() + ";" + macroFmeasure() + ";" + one_error()+ ";";
 		output += coverage() + ";" + rloss() + ";" + avg_precision();
+		output += ";" + this.numPredictedLabels;
 		
 		return output;
 	}

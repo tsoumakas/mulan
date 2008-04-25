@@ -51,7 +51,7 @@ public class BRknn extends MultiLabelKNN {
 		double[] confidences = new double[numLabels];
 
 		// Set up a correction to the estimator
-
+		// not important
 		for (int i = 0; i < numLabels; i++) {
 			confidences[i] = 1.0 / Math.max(1, train.numInstances());
 		}
@@ -64,7 +64,7 @@ public class BRknn extends MultiLabelKNN {
 			distances[i] = Math.sqrt(distances[i] / this.predictors);
 			switch (distanceWeighting) {
 			case WEIGHT_INVERSE:
-				weight = 1.0 / (distances[i] + 0.001); // to avoid div by zero
+				weight = 1.0 / (distances[i] + 0.001); // to avoid division by zero
 				break;
 			case WEIGHT_SIMILARITY:
 				weight = 1.0 - distances[i];

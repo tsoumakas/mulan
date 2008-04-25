@@ -34,6 +34,7 @@ public class IntegratedCrossvalidation extends IntegratedEvaluation {
 	
 	protected void computeMeasures()
 	{
+		this.numPredictedLabels = 0;
 		//label based
 		int numLabels  = folds[0].numLabels();
 		labelAccuracy  = new double[numLabels];
@@ -91,6 +92,8 @@ public class IntegratedCrossvalidation extends IntegratedEvaluation {
 			coverage 		+= folds[i].coverage;
 			rloss 			+= folds[i].rloss;
 			avg_precision   += folds[i].avg_precision;
+			
+			this.numPredictedLabels += folds[i].numPredictedLabels;
 		}
 
 		int n = folds.length;
@@ -123,6 +126,8 @@ public class IntegratedCrossvalidation extends IntegratedEvaluation {
 		rloss			/= n;
 		avg_precision   /= n;
 		
+		this.numPredictedLabels /= n;
+		
 		std_one_error = 0;
 		std_coverage = 0;
 		std_rloss = 0;
@@ -146,6 +151,7 @@ public class IntegratedCrossvalidation extends IntegratedEvaluation {
 		String description = "";
 		
 		description += "========Cross Validation========\n";
+		description += "Average predicted labels: " + this.numPredictedLabels + "\n";
 		description += "========Example Based Measures========\n";
 		description += "HammingLoss    : " + this.hammingLoss() + "\n";
 		description += "Accuracy       : " + this.accuracy() + "\n";
