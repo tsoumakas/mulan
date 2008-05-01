@@ -8,6 +8,8 @@ import mulan.evaluation.*;
 import weka.classifiers.Classifier;
 import weka.classifiers.lazy.IBk;
 import weka.core.Instances;
+import weka.core.Utils;
+
 import java.text.DecimalFormat;
 
 /**
@@ -22,16 +24,16 @@ public class TestMultiLabelKNN {
 	}
 
 	public static void main(String[] args) throws Exception {
-
+		
 		String path = "E:/Documents and Settings/lefman/Desktop/my workspace/datasets/";
 
-		String datastem = "yeast";
-		//String datastem = "scene";
+		//String datastem = "yeast";
+		String datastem = "scene";
 		//String datastem = "genbase10";
 		//String datastem = "music0";
 
-		int numLabels = 14;
-		//int numLabels = 6;
+		//int numLabels = 14;
+		int numLabels = 6;
 		//int numLabels = 27;
 		//int numLabels = 6;
 		
@@ -49,8 +51,8 @@ public class TestMultiLabelKNN {
 
 		//names of the tested algorithms
 		String[][] algorithms = {
-				{"BRknn2","normalized","WEIGHT_NONE"},
-				{"BRknn2","normalized","WEIGHT_INVERSE"},
+				{"BRknn3","normalized","WEIGHT_NONE"},
+				{"BRknn3","normalized","WEIGHT_INVERSE"},
 				{"MLknn","normalized","WEIGHT_NONE"},
 				{"MLknn","not-normalized","WEIGHT_NONE"},
 				{"LPknn","normalized","WEIGHT_NONE"},
@@ -63,7 +65,7 @@ public class TestMultiLabelKNN {
 		//System.out.println(stats.toString());
 
 		//test for values of k between 1 and 30
-		for (int i = 10; i <= 10; i += 1) {
+		for (int i = 1; i <= 30; i += 1) {
 
 			BRknn br = new BRknn(numLabels, i);
 			br.setDistanceWeighting(1);
@@ -94,15 +96,15 @@ public class TestMultiLabelKNN {
 					.makeCopy(baseClassifier), numLabels);
 			br1.buildClassifier(trainData);*/
 			
-			/*//=====================EVALUATION==========================
-			br.buildClassifier(trainData);
-			br2.buildClassifier(trainData);
-			ml.buildClassifier(trainData);
-			ml2.buildClassifier(trainData);
-			lp.buildClassifier(trainData);
-			lp2.buildClassifier(trainData);
+			//=====================EVALUATION==========================
+			//br.buildClassifier(trainData);
+			//br2.buildClassifier(trainData);
+			//ml.buildClassifier(trainData);
+			//ml2.buildClassifier(trainData);
+			//lp.buildClassifier(trainData);
+			//lp2.buildClassifier(trainData);
 			
-			Evaluator eval;
+			/*Evaluator eval;
 			IntegratedEvaluation[] results = new IntegratedEvaluation[6];
 			eval = new Evaluator();
 			//BR EVAULATION 
@@ -146,8 +148,8 @@ public class TestMultiLabelKNN {
 								+ ";" + algorithms[k][1]
 							    + ";" + algorithms[k][2]);
 					}
-			*/
 			
+			*/
 			// =====================CROSS-VALIDATION==========================
 			int numfolds = 10;
 			int numsteps = 13;
@@ -160,10 +162,10 @@ public class TestMultiLabelKNN {
 			IntegratedCrossvalidation[][] results = new IntegratedCrossvalidation[6][numsteps];
 			eval = new Evaluator();
 
-			results[0] = eval.crossvalidateOverThreshold(br, allData, start,
-					increment, numsteps, numfolds);
-			results[1] = eval.crossvalidateOverThreshold(br2, allData, start,
-					increment, numsteps, numfolds);
+			//results[0] = eval.crossvalidateOverThreshold(br, allData, start,
+			//		increment, numsteps, numfolds);
+			//results[1] = eval.crossvalidateOverThreshold(br2, allData, start,
+			//		increment, numsteps, numfolds);
 			//results[2] = eval.crossvalidateOverThreshold(ml, allData, start,
 			//		increment, numsteps, numfolds);
 			//results[3] = eval.crossvalidateOverThreshold(ml2, allData, start,
@@ -173,9 +175,12 @@ public class TestMultiLabelKNN {
 			//results[5][0] = eval.crossValidateAll(lp2, allData, numfolds);
 			
 
+			results[0][0] = eval.crossValidateAll(br, allData, numfolds);
+			results[1][0] = eval.crossValidateAll(br2, allData, numfolds);
+			
 			for (int k = 0; k <= 1; k++) {
 				if (k<4) {
-					for (int j = 0; j < numsteps; j++) {
+					for (int j = 0; j < 1; j++) {
 						out.println(
 								i 
 								+ ";" + algorithms[k][0] 
@@ -196,8 +201,7 @@ public class TestMultiLabelKNN {
 							+ ";" + algorithms[k][2]);
 				}
 				out.flush();
-			}
-			
+			}	
 		}
 		out.close();
 		System.gc();
