@@ -14,6 +14,8 @@ import weka.core.neighboursearch.LinearNNSearch;
 @SuppressWarnings("serial")
 public class BRknn extends MultiLabelKNN {
 
+	int avgPredictedLabels;
+	
 	public BRknn(int numLabels, int numOfNeighbors) {
 		super(numLabels, numOfNeighbors);
 		distanceWeighting = WEIGHT_NONE; //weight none
@@ -48,6 +50,7 @@ public class BRknn extends MultiLabelKNN {
 
 	private double[] getConfidences(Instances neighbours, double[] distances) {
 		double total = 0, weight;
+		double neighborLabels = 0;
 		double[] confidences = new double[numLabels];
 
 		// Set up a correction to the estimator
@@ -80,11 +83,13 @@ public class BRknn extends MultiLabelKNN {
 						(int) current.value(predictors + j)));
 				if (Utils.eq(value, 1.0)) {
 					confidences[j] += weight;
+					neighborLabels += weight;
 				}
 			}
-
 			total += weight;
 		}
+		
+		avgPredictedLabels =(int) Math.round(neighborLabels / total) ;
 		// Normalise distribution
 		if (total > 0) {
 			Utils.normalize(confidences, total);
@@ -129,5 +134,25 @@ public class BRknn extends MultiLabelKNN {
 
 		Prediction results = new Prediction(predictions, confidences);
 		return results;
+	}
+	
+	/**
+	 * Derive output labels from distribution
+	 * overrides the method from superclass 
+	 */
+	protected double[] labelsFromConfidences(double[] confidences) {
+		double[] result = new double[numLabels];
+
+		double [] conf2 = new double[numLabels];
+		for(int i =0 ; i<numLabels;i++){
+			conf2[i] = confidences[i];
+		}
+		
+		for (int i = 0; i < avgPredictedLabels; i++) {
+			int maxindex = Utils.maxIndex(conf2);
+			result[maxindex] = 1.0;
+			conf2[maxindex] = -1.0;
+		}
+		return result;
 	}
 }
