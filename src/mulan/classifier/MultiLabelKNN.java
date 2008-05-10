@@ -78,8 +78,9 @@ public class MultiLabelKNN extends AbstractMultiLabelClassifier {
 
 	/**
 	 * Derive output labels from distribution
+	 * currently not in use
 	 */
-	protected double[] labelsFromConfidences2(double[] confidences) {
+	protected double[] labelsFromConfidencesRandom(double[] confidences) {
 		double[] result = new double[confidences.length];
 		for (int i = 0; i < result.length; i++) {
 			if (confidences[i] > threshold) {
@@ -133,14 +134,14 @@ public class MultiLabelKNN extends AbstractMultiLabelClassifier {
 	}
 
 	/**
-	 * @return the m_DistanceWeighting
+	 * @return the distanceWeighting
 	 */
 	public int getDistanceWeighting() {
 		return distanceWeighting;
 	}
 
 	/**
-	 * @param distanceWeighting the m_DistanceWeighting to set
+	 * @param distanceWeighting the distanceWeighting to set
 	 */
 	public void setDistanceWeighting(int distanceWeighting) {
 		this.distanceWeighting = distanceWeighting;
