@@ -168,7 +168,9 @@ public class Mlknn extends MultiLabelKNN {
 		lnn.setDistanceFunction(dfunc);
 		lnn.setInstances(train);
 		lnn.setMeasurePerformance(false);
-		// lnn.setSkipIdentical(true); // this implementation doesn't need it
+		
+		// this implementation doesn't need it 
+		// lnn.setSkipIdentical(true); 
 
 		// c[k] counts the number of training instances with label i whose k
 		// nearest neighbours contain exactly k instances with label i
@@ -224,11 +226,10 @@ public class Mlknn extends MultiLabelKNN {
 		double[] predictions = new double[numLabels];
 
 		//setThreshold(0.5);
+		//in cross-validation test-train instances does not belong to the same data set
+		//Instance instance2 = new Instance(instance);
 
-		// for cross-validation where test-train instances belong to the same data set
-		Instance instance2 = new Instance(instance);
-
-		Instances knn = new Instances(lnn.kNearestNeighbours(instance2, numOfNeighbors));
+		Instances knn = new Instances(lnn.kNearestNeighbours(instance, numOfNeighbors));
 
 		for (int i = 0; i < numLabels; i++) {
 			// compute sum of aces in KNN
@@ -243,15 +244,8 @@ public class Mlknn extends MultiLabelKNN {
 			double Prob_in = PriorProbabilities[i] * CondProbabilities[i][aces];
 			double Prob_out = PriorNProbabilities[i] * CondNProbabilities[i][aces];
 			confidences[i] = Prob_in / (Prob_in + Prob_out); // ranking function
-
-			/*if (confidences[i] >= 0.5) {
-				predictions[i] = 1;
-				sumedlabels++;
-			} else {
-				predictions[i] = 0;
-			}*/
-
 		}
+		
 		predictions = labelsFromConfidences(confidences);
 		Prediction result = new Prediction(predictions, confidences);
 		return result;
