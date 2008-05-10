@@ -35,6 +35,7 @@ public class IntegratedCrossvalidation extends IntegratedEvaluation {
 	protected void computeMeasures()
 	{
 		this.numPredictedLabels = 0;
+		this.numNullLabelSets = 0;
 		//label based
 		int numLabels  = folds[0].numLabels();
 		labelAccuracy  = new double[numLabels];
@@ -94,6 +95,7 @@ public class IntegratedCrossvalidation extends IntegratedEvaluation {
 			avg_precision   += folds[i].avg_precision;
 			
 			this.numPredictedLabels += folds[i].numPredictedLabels;
+			this.numNullLabelSets += folds[i].numNullLabelSets;
 		}
 
 		int n = folds.length;
@@ -127,6 +129,7 @@ public class IntegratedCrossvalidation extends IntegratedEvaluation {
 		avg_precision   /= n;
 		
 		this.numPredictedLabels /= n;
+		this.numNullLabelSets /= n;
 		
 		std_one_error = 0;
 		std_coverage = 0;
