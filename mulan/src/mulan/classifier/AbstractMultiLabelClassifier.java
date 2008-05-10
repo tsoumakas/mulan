@@ -17,16 +17,17 @@ package mulan.classifier;
  */
 
 import java.util.Date;
+import java.util.Random;
 import java.util.Vector;
 
 import weka.classifiers.Classifier;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.TechnicalInformation;
+import weka.core.TechnicalInformationHandler;
 import weka.core.Utils;
 import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
-import weka.core.TechnicalInformationHandler;
 
 
 /**
@@ -199,25 +200,42 @@ implements TechnicalInformationHandler, MultiLabelClassifier
 			thresholds = new double[numLabels];
 			java.util.Arrays.fill(thresholds, threshold);
 		}
-		//check the case that no label is true
-		boolean flag = false;
+		
 		
 		double[] result = new double[confidences.length];
 		for(int i = 0; i < result.length; i++)
 		{
 			if (confidences[i] >= thresholds[i]){
 				result[i] = 1.0;
-				flag = true;
 			}
 		}
-	
-		//assign the class with the greater confidence
-		if(flag == false){
-			int index = Utils.maxIndex(confidences);
-			result[index] = 1.0;
-		}
-	
 		return result;
+	}
+	
+	public int RandomIndexOfMax(double Array[]) {
+		double Max = Array[0];
+
+		for (int i = 1; i < Array.length; i++)
+			if (Array[i] > Max)
+				Max = Array[i];
+
+		int Count = 0;
+		for (int i = 0; i < Array.length; i++)
+			if (Array[i] == Max)
+				Count++;
+
+		Random Rand = new Random(1);
+		int Choose = Rand.nextInt(Count) + 1;
+
+		Count = 0;
+		for (int i = 0; i < Array.length; i++) {
+			if (Array[i] == Max)
+				Count++;
+			if (Count == Choose)
+				return i;
+		}
+
+		return -1;
 	}
 
 	public Classifier getBaseClassifier()
