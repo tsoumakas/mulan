@@ -22,7 +22,6 @@ import weka.classifiers.Classifier;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.SparseInstance;
-import weka.core.Utils;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.Remove;
 
@@ -116,24 +115,26 @@ public class LabelPowersetClassifier extends AbstractMultiLabelClassifier
 
     public Prediction makePrediction(Instance instance) throws Exception {
         double predictions[];
-        double confidences[] = new double[numLabels];
+        //double confidences[] = new double[numLabels];
 
         double[] distribution = distributionFromBaseClassifier(instance);
 
-        int classIndex = Utils.maxIndex(distribution);
-        double confidence = distribution[classIndex];
+        int classIndex = RandomIndexOfMax(distribution);
+        //double confidence = distribution[classIndex];
 
         String strClass = (metadataTest.classAttribute()).value(classIndex);
         LabelSet labels = LabelSet.fromBitString(strClass);
         predictions = labels.toDoubleArray();
         
+        /* old solution
         for (int i = 0; i < numLabels; i++)
         {
                 if (predictions[i] == 1) confidences[i] = confidence;
                 else confidences[i] = 1-confidence;
         }
+        */
         
-        Prediction result = new Prediction(predictions, confidences);
+        Prediction result = new Prediction(predictions, predictions);
         
         return result;
     }
