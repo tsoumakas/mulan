@@ -7,7 +7,6 @@ import mulan.classifier.Prediction;
 import weka.classifiers.Classifier;
 import weka.core.Instance;
 import weka.core.Instances;
-import weka.core.Utils;
 
 
 /**
@@ -103,7 +102,7 @@ public class Evaluator
 	
 	public IntegratedCrossvalidation[] crossvalidateOverThreshold(
 			BinaryPrediction[][][] predictions, Instances dataset, double start, double increment,
-			int steps, int numFolds) throws Exception {
+			int steps, int numFolds,boolean BR2) throws Exception {
 		IntegratedCrossvalidation[] crossvalidations = new IntegratedCrossvalidation[steps];
 
 		double threshold = start;
@@ -126,8 +125,8 @@ public class Evaluator
 						}
 					}
 					//assign the class with the greater confidence
-					if (flag == false) {
-						int index = Utils.maxIndex(confidences);
+					if (flag == false && BR2 == true) {
+						int index = RandomIndexOfMax(confidences);
 						predictions[l][j][index].predicted = true;
 					}
 				}
@@ -152,8 +151,21 @@ public class Evaluator
 			predictions2[i] = cv.folds[i].predictions;
 		}
 
-return crossvalidateOverThreshold(predictions2, dataset, start, increment, steps,numFolds);
-}
+		return crossvalidateOverThreshold(predictions2, dataset, start, increment, steps, numFolds, false);
+	}
+	
+	public IntegratedCrossvalidation[] crossvalidateOverThresholdBR2(MultiLabelClassifier classifier,
+			Instances dataset, double start, double increment, int steps, int numFolds)
+			throws Exception {
+		//create a crossvalidation of the classifier in order to get predictions
+		IntegratedCrossvalidation cv = crossValidateAll(classifier, dataset, numFolds);
+		BinaryPrediction[][][] predictions2 = new BinaryPrediction[numFolds][][];
+		for (int i = 0; i < numFolds; i++) {
+			predictions2[i] = cv.folds[i].predictions;
+		}
+
+		return crossvalidateOverThreshold(predictions2, dataset, start, increment, steps, numFolds, true);
+	}
 	
 	protected BinaryPrediction[][] getPredictions(MultiLabelClassifier classifier, Instances dataset)
 	throws Exception
@@ -258,6 +270,32 @@ return crossvalidateOverThreshold(predictions2, dataset, start, increment, steps
 	{
 		BinaryPrediction[][] predictions = getPredictions(classifier, dataset);
 		return new LabelBasedEvaluation(predictions);
+	}
+	
+	public int RandomIndexOfMax(double Array[]) {
+		double Max = Array[0];
+
+		for (int i = 1; i < Array.length; i++)
+			if (Array[i] > Max)
+				Max = Array[i];
+
+		int Count = 0;
+		for (int i = 0; i < Array.length; i++)
+			if (Array[i] == Max)
+				Count++;
+
+		Random Rand = new Random(1);
+		int Choose = Rand.nextInt(Count) + 1;
+
+		Count = 0;
+		for (int i = 0; i < Array.length; i++) {
+			if (Array[i] == Max)
+				Count++;
+			if (Count == Choose)
+				return i;
+		}
+
+		return -1;
 	}
 	
 }
