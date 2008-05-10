@@ -102,9 +102,10 @@ public class Evaluator
 	
 	public IntegratedCrossvalidation[] crossvalidateOverThreshold(
 			BinaryPrediction[][][] predictions, Instances dataset, double start, double increment,
-			int steps, int numFolds,boolean BR2) throws Exception {
+			int steps, int numFolds, boolean BR2) throws Exception {
 		IntegratedCrossvalidation[] crossvalidations = new IntegratedCrossvalidation[steps];
 
+		Random Rand = new Random(seed);
 		double threshold = start;
 		for (int i = 0; i < steps; i++) { //for every step
 			crossvalidations[i] = new IntegratedCrossvalidation(numFolds);
@@ -126,7 +127,7 @@ public class Evaluator
 					}
 					//assign the class with the greater confidence
 					if (flag == false && BR2 == true) {
-						int index = RandomIndexOfMax(confidences);
+						int index = RandomIndexOfMax(confidences, Rand);
 						predictions[l][j][index].predicted = true;
 					}
 				}
@@ -272,7 +273,7 @@ public class Evaluator
 		return new LabelBasedEvaluation(predictions);
 	}
 	
-	public int RandomIndexOfMax(double Array[]) {
+	public int RandomIndexOfMax(double Array[], Random Rand) {
 		double Max = Array[0];
 
 		for (int i = 1; i < Array.length; i++)
@@ -284,7 +285,6 @@ public class Evaluator
 			if (Array[i] == Max)
 				Count++;
 
-		Random Rand = new Random(1);
 		int Choose = Rand.nextInt(Count) + 1;
 
 		Count = 0;
