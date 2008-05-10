@@ -18,6 +18,8 @@ import weka.core.neighboursearch.LinearNNSearch;
 public class BRknn extends MultiLabelKNN {
 
 	int avgPredictedLabels;
+	
+	protected Random Rand;
 
 	protected int selectedMethod;
 
@@ -31,12 +33,14 @@ public class BRknn extends MultiLabelKNN {
 		super(numLabels, numOfNeighbors);
 		distanceWeighting = WEIGHT_NONE; //weight none
 		selectedMethod = BR; //the default method 
+		Rand = new Random(1);
 	}
 
 	public BRknn(int numLabels, int numOfNeighbors, int method) {
 		super(numLabels, numOfNeighbors);
 		distanceWeighting = WEIGHT_NONE; //weight none
 		selectedMethod = method;
+		Rand = new Random(1);
 	}
 
 	public void buildClassifier(Instances train) throws Exception {
@@ -174,7 +178,7 @@ public class BRknn extends MultiLabelKNN {
 		}
 		//assign the class with the greater confidence
 		if (flag == false) {
-			int index = RandomIndexOfMax(confidences);
+			int index = RandomIndexOfMax(confidences,Rand);
 			result[index] = 1.0;
 		}
 		return result;
@@ -207,10 +211,10 @@ public class BRknn extends MultiLabelKNN {
 		}
 
 		int size = lastindices.size();
-		Random rand = new Random(1);
+	
 		int j = avgPredictedLabels - counter;
 		while (j > 0) {
-			int next = rand.nextInt(size);
+			int next = Rand.nextInt(size);
 			if (result[lastindices.get(next)] != 1.0) {
 				result[lastindices.get(next)] = 1.0;
 				j--;

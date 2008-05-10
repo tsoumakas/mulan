@@ -212,7 +212,7 @@ implements TechnicalInformationHandler, MultiLabelClassifier
 		return result;
 	}
 	
-	public int RandomIndexOfMax(double Array[]) {
+	public int RandomIndexOfMax(double Array[], Random Rand) {
 		double Max = Array[0];
 
 		for (int i = 1; i < Array.length; i++)
@@ -224,7 +224,6 @@ implements TechnicalInformationHandler, MultiLabelClassifier
 			if (Array[i] == Max)
 				Count++;
 
-		Random Rand = new Random(1);
 		int Choose = Rand.nextInt(Count) + 1;
 
 		Count = 0;

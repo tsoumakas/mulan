@@ -16,8 +16,10 @@ package mulan.classifier;
  *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-import mulan.Transformations;
+import java.util.Random;
+
 import mulan.LabelSet;
+import mulan.Transformations;
 import weka.classifiers.Classifier;
 import weka.core.Instance;
 import weka.core.Instances;
@@ -37,11 +39,14 @@ public class LabelPowersetClassifier extends AbstractMultiLabelClassifier
 {
     protected Instances metadataTrain;
     protected Instances metadataTest;
+    
+    protected Random Rand;
 
     public LabelPowersetClassifier(Classifier classifier, int numLabels) throws Exception
     {
         super(numLabels);
         this.baseClassifier = makeCopy(classifier);
+        Rand = new Random(1);
     }
 
     public int indexOfClassValue(String value)
@@ -119,7 +124,7 @@ public class LabelPowersetClassifier extends AbstractMultiLabelClassifier
 
         double[] distribution = distributionFromBaseClassifier(instance);
 
-        int classIndex = RandomIndexOfMax(distribution);
+        int classIndex = RandomIndexOfMax(distribution,Rand);
         //double confidence = distribution[classIndex];
 
         String strClass = (metadataTest.classAttribute()).value(classIndex);
