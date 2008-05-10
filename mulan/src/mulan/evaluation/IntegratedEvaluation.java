@@ -21,6 +21,7 @@ public class IntegratedEvaluation {
 	protected BinaryPrediction[][] predictions;
 	
 	protected double numPredictedLabels;
+	protected double numNullLabelSets;
 
 	// Example based measures and parameters
 	protected double hammingLoss;
@@ -97,6 +98,7 @@ public class IntegratedEvaluation {
 		int numInstances = numInstances();
 		
 		numPredictedLabels = 0;
+		numNullLabelSets = 0;
 
 		// Reset measures in case of multiple calls
 		// -- example-based 
@@ -131,10 +133,15 @@ public class IntegratedEvaluation {
 			//little cleaner but:
 			//TODO: run performance tests on counting with doubles
 			
+			boolean flag = false;
 			for (int j = 0; j < numLabels; j++) {
 				if (predictions[i][j].predicted == true) {
 					numPredictedLabels++;
+					flag = true;
 				}
+			}
+			if (flag == false) {
+				numNullLabelSets++;
 			}
 
 			// example-based counters
@@ -322,6 +329,7 @@ public class IntegratedEvaluation {
 		avg_precision /= numInstances;
 		
 		numPredictedLabels /= numInstances;
+		numNullLabelSets /= numInstances;
 	}
 
 	// Methods used to obtain the calculated measures
@@ -471,7 +479,7 @@ public class IntegratedEvaluation {
 		output += microFmeasure() + ";" + macroAccuracy()+ ";" + macroPrecision() + ";";
 		output += macroRecall() + ";" + macroFmeasure() + ";" + one_error()+ ";";
 		output += coverage() + ";" + rloss() + ";" + avg_precision();
-		output += ";" + this.numPredictedLabels;
+		output += ";" + this.numPredictedLabels + ";" + this.numNullLabelSets;
 		
 		return output;
 	}
