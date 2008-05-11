@@ -16,7 +16,6 @@ package mulan.classifier;
  *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.Random;
 import java.util.Vector;
@@ -217,8 +216,6 @@ implements TechnicalInformationHandler, MultiLabelClassifier
             double max = array[0];
             Vector indeces = new Vector();
             indeces.add(0);
-
-            ArrayList<Integer> indexes = new ArrayList<Integer>();
             
             for (int i = 1; i < array.length; i++) {
                 if (array[i] == max) {
