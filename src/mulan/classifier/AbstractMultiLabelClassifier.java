@@ -16,6 +16,7 @@ package mulan.classifier;
  *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Random;
 import java.util.Vector;
@@ -212,29 +213,32 @@ implements TechnicalInformationHandler, MultiLabelClassifier
 		return result;
 	}
 	
-	public int RandomIndexOfMax(double Array[], Random Rand) {
-		double Max = Array[0];
+	public int RandomIndexOfMax(double array[], Random rand) {
+            double max = array[0];
+            Vector indeces = new Vector();
+            indeces.add(0);
 
-		for (int i = 1; i < Array.length; i++)
-			if (Array[i] > Max)
-				Max = Array[i];
+            ArrayList<Integer> indexes = new ArrayList<Integer>();
+            
+            for (int i = 1; i < array.length; i++) {
+                if (array[i] == max) {
+                    indeces.add(i);
+                } else
+                if (array[i] > max) {
+                    indeces = new Vector();
+                    indeces.add(i);
+                    max = array[i];
+                } 
+            }
 
-		int Count = 0;
-		for (int i = 0; i < Array.length; i++)
-			if (Array[i] == Max)
-				Count++;
-
-		int Choose = Rand.nextInt(Count) + 1;
-
-		Count = 0;
-		for (int i = 0; i < Array.length; i++) {
-			if (Array[i] == Max)
-				Count++;
-			if (Count == Choose)
-				return i;
-		}
-
-		return -1;
+            int numIndeces = indeces.size();
+            if (numIndeces == 1)
+                return ((Integer) indeces.get(0));           
+            else
+            {
+                int Choose = rand.nextInt(indeces.size());
+                return ((Integer) indeces.get(Choose));
+            }
 	}
 
 	public Classifier getBaseClassifier()
