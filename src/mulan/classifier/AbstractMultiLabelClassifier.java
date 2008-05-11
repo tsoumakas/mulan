@@ -233,7 +233,7 @@ implements TechnicalInformationHandler, MultiLabelClassifier
                 return ((Integer) indeces.get(0));           
             else
             {
-                int Choose = rand.nextInt(indeces.size());
+                int Choose = rand.nextInt(numIndeces);
                 return ((Integer) indeces.get(Choose));
             }
 	}
