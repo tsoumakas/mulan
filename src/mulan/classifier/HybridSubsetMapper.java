@@ -1,7 +1,7 @@
 package mulan.classifier;
 import java.util.Vector;
 
-import mulan.LabelSet;
+import mulan.core.LabelSet;
 import weka.core.Instance;
 import weka.core.Instances;
 

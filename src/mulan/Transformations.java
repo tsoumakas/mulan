@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package mulan;
+package mulan.core;
 
 import java.util.HashSet;
 import weka.core.Attribute;
