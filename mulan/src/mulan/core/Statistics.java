@@ -16,6 +16,7 @@ package mulan.core;
  *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+import java.io.FileReader;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Set;
@@ -25,11 +26,45 @@ import weka.core.Instances;
 import weka.core.Utils;
 
 /**
+ <!-- globalinfo-start -->
  * Class for calculating statistics of a multilabel dataset <p>
+ * <br/>
+ * For more information, see<br/>
+ * <br/>
+ * G. Tsoumakas, I. Katakis (2007). Multi-Label Classification: An Overview. International Journal of Data Warehousing and Mining, 3(3):1-13.
+ * </p>
+ <!-- globalinfo-end -->
+ * 
+ <!-- technical-bibtex-start -->
+ * BibTeX:
+ * <pre>
+ * &#64;article{tsoumakas+katakis:2007,
+ *    author = {G. Tsoumakas, I. Katakis},
+ *    journal = {International Journal of Data Warehousing and Mining},
+ *    pages = {1-13},
+ *    title = {Multi-Label Classification: An Overview},
+ *    volume = {3},
+ *    number = {3},
+ *    year = {2007}
+ * }
+ * </pre>
+ * <p/>
+ <!-- technical-bibtex-end -->
+ *
+ <!-- options-start -->
+ * Valid options are: <p/>
+ * 
+ * <pre> -F &lt;filename&gt;
+ *  The filename (including full path) of the multilabel data set).</pre>
+ * 
+ * <pre> -L &lt;number of labels&gt;
+ *  Number of labels. </pre>
+ * 
+ <!-- options-end -->
  *
  * @author Grigorios Tsoumakas 
  * @author Robert Friberg
- * @version $Revision: 0.02 $ 
+ * @version $Revision: 0.03 $ 
  */
 public class Statistics implements Serializable
 {    
@@ -41,6 +76,12 @@ public class Statistics implements Serializable
     /** the number of predictive attributes */
     private int numPredictors = 0;
     
+    /** the number of nominal predictive attributes */
+    private int numNominal = 0;
+    
+    /** the number of numeric attributes */
+    private int numNumeric = 0;
+    
     /** the number of labels */
     private int numLabels;
     
@@ -49,7 +90,7 @@ public class Statistics implements Serializable
 
     /** the label cardinality */
     private double labelCardinality;
-    
+        
     /** percentage of instances per label */
     private double[] examplesPerLabel;
     
@@ -61,9 +102,8 @@ public class Statistics implements Serializable
     /** labelsets and their frequency */
     private HashMap<LabelSet,Integer> labelsets;
     
-    public Statistics()
-    {
-    }
+        
+    public Statistics() { }
     
     /** 
      * returns the HashMap containing the distinct labelsets and their frequencies
@@ -72,14 +112,15 @@ public class Statistics implements Serializable
     	return labelsets;
     }
     
+    
     /** 
      * This method calculates and prints a matrix with the coocurrences of <br>
-     * pairs of labels (under concstruction).
+     * pairs of labels 
      */
     public double[][] calculateCoocurrence(Instances data, int labels) {
         double[][] coocurrenceMatrix = new double[labels][labels];
         
-        int numPredictors = data.numAttributes()-labels;
+        numPredictors = data.numAttributes()-labels;
         for (int k=0; k<data.numInstances(); k++) {
             Instance temp = data.instance(k);
             for (int i=0; i<labels; i++)
@@ -110,12 +151,21 @@ public class Statistics implements Serializable
         // initialize statistics
         numLabels = labels;
         numPredictors = data.numAttributes()-numLabels;
-        labelCardinality=0;
+        labelCardinality = 0;
+        numNominal = 0;
+        numNumeric = 0;
         examplesPerLabel = new double[numLabels];
         cardinalityDistribution = new double[numLabels+1];
         labelsets = new HashMap<LabelSet,Integer>();
              
         // gather statistics
+        for (int i=0; i<numPredictors; i++) {
+            if (data.attribute(i).isNominal())
+                numNominal++;
+            if (data.attribute(i).isNumeric())
+                numNumeric++;
+        }        
+        
         numInstances = data.numInstances(); 
         for (int i=0; i<numInstances; i++)
         {
@@ -149,14 +199,19 @@ public class Statistics implements Serializable
             examplesPerLabel[j] /= numInstances;        
     }
     
+    
     /** 
      * returns various multilabel statistics in textual representation 
      */
+    @Override
     public String toString() {
         String description = "";
         
         description += "Examples: " + numInstances + "\n";
         description += "Predictors: " + numPredictors + "\n";
+        description += "--Nominal: " + numNominal + "\n";
+        description += "--Numeric: " + numNumeric + "\n";
+        
         description += "Labels: " + numLabels + "\n";
 
         description += "\n";       
@@ -217,5 +272,35 @@ public class Statistics implements Serializable
         return labelsets.get(x);
     }
     
+    public static void main(String[] args) throws Exception {
+        String filename = Utils.getOption('F', args);
+        FileReader frData = new FileReader(filename);
+        Instances data = new Instances(frData);                
+        int numLabels = Integer.parseInt(Utils.getOption('L',args));
+        
+        Statistics stats = new Statistics();
+        stats.calculateCoocurrence(data, numLabels);
+        stats.calculateStats(data, numLabels);
+        System.out.println(stats.toString());
+    }
+    
+    /**
+     * Estimates the number of labels by counting the number of binary <br>
+     * attributes at the end of the attribute list
+     * 
+     * @param data
+     * @return the number of labels in the dataset
+     */
+    public static int guessLabels(Instances data) 
+    {
+        int numAtts = data.numAttributes();
+        int labels=0;
+        for (int i=numAtts-1; i>=0; i--)
+            if (data.attribute(i).isNominal() && data.attribute(i).numValues() == 2)
+                labels++;
+            else
+                break;
+        return labels;
+    }
 }
 
