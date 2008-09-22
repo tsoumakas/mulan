@@ -17,6 +17,7 @@ package mulan.core;
  */
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import weka.core.Utils;
 
 /**
@@ -24,9 +25,9 @@ import weka.core.Utils;
  *
  * @author Grigorios Tsoumakas 
  * @author Robert Friberg
- * @version $Revision: 0.02 $ 
+ * @version $Revision: 0.03 $ 
  */
-public class LabelSet implements Serializable
+public class LabelSet implements Serializable, Comparable<LabelSet>
 {
     private static final long serialVersionUID = 7658871740607834759L;
 
@@ -141,5 +142,80 @@ public class LabelSet implements Serializable
             }
         }
         return result;
+    }
+    
+    /**
+     * Constructs all subsets of a labelset (apart from the empty one).
+     * @return an ArrayList of LabelSet objects with the subsets.
+     */    
+    public ArrayList<LabelSet> getSubsets() throws Exception 
+    {
+       ArrayList<LabelSet> subsets = new ArrayList<LabelSet>();
+        
+       //the number of members of a power set is 2^n
+       int powerElements = (int) Math.pow(2,size());
+       
+       for (int i=1; i<powerElements-1; i++)
+       {
+           String temp = Integer.toBinaryString(i);
+           int foundDigits = temp.length();
+           for (int j = foundDigits; j < size(); j++) 
+               temp = "0" + temp;           
+           LabelSet tempSet = LabelSet.fromBitString(temp);
+           double[] tempDouble = tempSet.toDoubleArray();           
+           
+           double[] subset = new double[labelSet.length];
+           int counter=0;
+           for (int j=0; j<labelSet.length; j++)
+           {
+               if (labelSet[j] == 0)
+                   subset[j] = 0;
+               else {
+                   subset[j] = tempDouble[counter];
+                   counter++;
+               }
+           }
+           
+           LabelSet finalLabelSet = new LabelSet(subset);
+           subsets.add(finalLabelSet);
+       }
+       return subsets;
+    }
+
+    /**
+     * 
+     * @param l1 a labelset
+     * @param l2 another labelset
+     * @return their interesection
+     */
+    public static LabelSet intersection(LabelSet l1, LabelSet l2) {
+        double[] arrayL1 = l1.toDoubleArray();
+        double[] arrayL2 = l2.toDoubleArray();
+
+        if (arrayL1.length != arrayL2.length)
+            return null;
+        
+        double[] intersection = new double[arrayL2.length];
+        for (int i=0; i<arrayL2.length; i++)
+            if (arrayL1[i] == 1 && arrayL2[i] == 1)
+                intersection[i] = 1;
+            else
+                intersection[i] = 0;
+
+        return new LabelSet(intersection);
+    }
+    
+    
+    /** 
+     * Used for sorting collections of labelset accorsing to size
+     */
+    public int compareTo(LabelSet o) {
+        if (o.size() < size()) 
+            return -1;
+        else 
+            if (o.size() > size())
+                return 1;
+            else
+                return 0;
     }
 }
