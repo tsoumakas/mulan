@@ -181,4 +181,8 @@ public class FlattenTrueLabelsClassifier extends AbstractMultiLabelClassifier im
 		double[] confidences = classifier.distributionForInstance(instance);
 		return new Prediction(labelsFromConfidences(confidences), confidences);
 	}
+
+    public String getRevision() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }

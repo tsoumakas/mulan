@@ -36,7 +36,7 @@ public class Prediction {
 		return confidences[label];
 	}
 	
-	protected Prediction(double[] labels, double[] confidences)
+	public Prediction(double[] labels, double[] confidences)
 	{
 		this.confidences = confidences;
 		predictedLabels = labels;
@@ -61,6 +61,7 @@ public class Prediction {
 	 * String representation of the set of labels. Perhaps we
 	 * could obtain the actual attribute names from somewhere?
 	 */
+    @Override
 	public String toString()
 	{
 		StringBuilder str = new StringBuilder().append("{");

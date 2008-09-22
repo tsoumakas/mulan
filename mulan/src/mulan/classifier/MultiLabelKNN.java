@@ -67,14 +67,15 @@ public class MultiLabelKNN extends AbstractMultiLabelClassifier {
 		random = new Random(1); // seed is always 1 to reproduce results
 	}
 
-	public void buildClassifier(Instances train) throws Exception {
-		this.train = train;
-		predictors = train.numAttributes() - numLabels;
+    @Override
+    public void buildClassifier(Instances train) throws Exception {
+        this.train = train;
+        predictors = train.numAttributes() - numLabels;
 
-		dfunc = new EuclideanDistance();
-		dfunc.setDontNormalize(dontNormalize);
-		dfunc.setAttributeIndices("first-" + predictors);
-	}
+        dfunc = new EuclideanDistance();
+        dfunc.setDontNormalize(dontNormalize);
+        dfunc.setAttributeIndices("first-" + predictors);
+    }
 
 	/**
 	 * Derive output labels from distribution
@@ -140,11 +141,12 @@ public class MultiLabelKNN extends AbstractMultiLabelClassifier {
 		return distanceWeighting;
 	}
 
-	/**
-	 * @param distanceWeighting the distanceWeighting to set
-	 */
-	public void setDistanceWeighting(int distanceWeighting) {
-		this.distanceWeighting = distanceWeighting;
-	}
+    /**
+     * @param distanceWeighting the distanceWeighting to set
+     */
+    public void setDistanceWeighting(int distanceWeighting) {
+        this.distanceWeighting = distanceWeighting;
+    }
+
 
 }

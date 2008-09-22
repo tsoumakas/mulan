@@ -430,4 +430,8 @@ public class RAKEL extends AbstractMultiLabelClassifier
         public void nullSubsetClassifier(int i) {
             subsetClassifiers[i] = null;
         }
+
+    public String getRevision() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }

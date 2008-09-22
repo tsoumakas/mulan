@@ -1,6 +1,7 @@
 package mulan.classifier;
+
 import mulan.core.Statistics;
-import mulan.core.*;
+import mulan.core.LabelSet;
 import weka.core.*;
 
 import java.io.Serializable;

@@ -35,7 +35,6 @@ public class IntegratedCrossvalidation extends IntegratedEvaluation {
 	protected void computeMeasures()
 	{
 		this.numPredictedLabels = 0;
-		this.numNullLabelSets = 0;
 		//label based
 		int numLabels  = folds[0].numLabels();
 		labelAccuracy  = new double[numLabels];
@@ -45,11 +44,9 @@ public class IntegratedCrossvalidation extends IntegratedEvaluation {
 		microRecall    = 0;
 		microPrecision = 0;
 		microFmeasure  = 0;
-		microAccuracy  = 0;
 		macroRecall    = 0;
 		macroPrecision = 0;
 		macroFmeasure  = 0;
-		macroAccuracy  = 0;
 		//example based
 		accuracy       = 0;
 		recall         = 0;
@@ -76,11 +73,9 @@ public class IntegratedCrossvalidation extends IntegratedEvaluation {
 			microRecall    += folds[i].microRecall;
 			microPrecision += folds[i].microPrecision;
 			microFmeasure  += folds[i].microFmeasure;
-			microAccuracy  += folds[i].microAccuracy;
 			macroRecall    += folds[i].macroRecall;
 			macroPrecision += folds[i].macroPrecision;
 			macroFmeasure  += folds[i].macroFmeasure;
-			macroAccuracy  += folds[i].macroAccuracy;
 			//example based
 			accuracy       += folds[i].accuracy;
 			recall         += folds[i].recall;
@@ -95,7 +90,6 @@ public class IntegratedCrossvalidation extends IntegratedEvaluation {
 			avg_precision   += folds[i].avg_precision;
 			
 			this.numPredictedLabels += folds[i].numPredictedLabels;
-			this.numNullLabelSets += folds[i].numNullLabelSets;
 		}
 
 		int n = folds.length;
@@ -110,11 +104,9 @@ public class IntegratedCrossvalidation extends IntegratedEvaluation {
 		microRecall    /= n;
 		microPrecision /= n;
 		microFmeasure  /= n;
-		microAccuracy  /= n;
 		macroRecall    /= n;
 		macroPrecision /= n;
 		macroFmeasure  /= n;
-		macroAccuracy  /= n;
 		//example based
 		accuracy       /= n;
 		recall         /= n;
@@ -129,7 +121,6 @@ public class IntegratedCrossvalidation extends IntegratedEvaluation {
 		avg_precision   /= n;
 		
 		this.numPredictedLabels /= n;
-		this.numNullLabelSets /= n;
 		
 		std_one_error = 0;
 		std_coverage = 0;
@@ -164,12 +155,10 @@ public class IntegratedCrossvalidation extends IntegratedEvaluation {
 		description += "SubsetAccuracy : " + this.subsetAccuracy() + "\n";
 		description += "========Label Based Measures========\n";
 		description += "MICRO\n";
-		description += "Accuracy       : " + this.microAccuracy() + "\n";
 		description += "Precision      : " + this.microPrecision() + "\n";
 		description += "Recall         : " + this.microRecall() + "\n";
 		description += "F1             : " + this.microFmeasure() + "\n";
 		description += "MACRO\n";
-		description += "Accuracy       : " + this.macroAccuracy() + "\n";
 		description += "Precision      : " + this.macroPrecision() + "\n";
 		description += "Recall         : " + this.macroRecall() + "\n";
 		description += "F1             : " + this.macroFmeasure() + "\n";

@@ -14,7 +14,7 @@ import weka.core.Utils;
  *
  * @author Robert Friberg
  * @author Grigorios Tsoumakas 
- * @version $Revision: 0.02 $ 
+ * @version $Revision: 0.03 $ 
  */
 public class BinaryRelevanceClassifier extends AbstractMultiLabelClassifier
 {
@@ -134,5 +134,6 @@ public class BinaryRelevanceClassifier extends AbstractMultiLabelClassifier
 		result.setClassIndex(result.numAttributes() - 1);
 		return result;
 	}
+          
 }
 

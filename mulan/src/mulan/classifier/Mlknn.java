@@ -9,13 +9,13 @@ import weka.core.TechnicalInformation.Type;
 import weka.core.neighboursearch.LinearNNSearch;
 
 /**
- * @author Eleftherios Spyromitros-Xioufis ( espyromi@csd.auth.gr )
- * @version $Revision: 1.1 $ <!-- globalinfo-start -->
+ * 
+ * <!-- globalinfo-start -->
  * 
  * <pre>
- * Class implementing the the ML-KNN (Multi-Label K Nearest Neighbours ) algorithm.
- * The class is a translation of the pseudo-code made available by the authors,
- * except for the option to use normalized Euclidean distance as a
+ * Class implementing the ML-kNN (Multi-Label k Nearest Neighbours) algorithm.
+ * The class is based on the pseudo-code made available by the authors,
+ * except for the option to use <it>normalized</it> Euclidean distance as a
  * distance function.
  * </pre>
  * 
@@ -31,7 +31,7 @@ import weka.core.neighboursearch.LinearNNSearch;
  * <!-- technical-bibtex-start --> BibTeX:
  * 
  * <pre>
- * &#064;article{1234635,
+ * &#064;article{zhang+zhou:2007,
  *    author = {Min-Ling Zhang and Zhi-Hua Zhou},
  *    title = {ML-KNN: A lazy learning approach to multi-label learning},
  *    journal = {Pattern Recogn.},
@@ -47,9 +47,12 @@ import weka.core.neighboursearch.LinearNNSearch;
  * </pre>
  * 
  * <p/> <!-- technical-bibtex-end -->
+ *
+ * @author Eleftherios Spyromitros-Xioufis ( espyromi@csd.auth.gr )
+ * @version $Revision: 1.1 $ 
  */
 @SuppressWarnings("serial")
-public class Mlknn extends MultiLabelKNN {
+public class MLkNN extends MultiLabelKNN {
 	/**
 	 * Smoothing parameter controlling the strength of uniform prior <br>
 	 * (Default value is set to 1 which yields the Laplace smoothing).
@@ -80,7 +83,7 @@ public class Mlknn extends MultiLabelKNN {
 	/**
 	 * An empty constructor
 	 */
-	public Mlknn() {
+	public MLkNN() {
 	}
 
 	/**
@@ -91,7 +94,7 @@ public class Mlknn extends MultiLabelKNN {
 	 * @param smooth :
 	 *            the smoothing factor
 	 */
-	public Mlknn(int numLabels, int numOfNeighbors, double smooth) {
+	public MLkNN(int numLabels, int numOfNeighbors, double smooth) {
 		super(numLabels,numOfNeighbors);
 		this.smooth = smooth;
 		dontNormalize = true;
@@ -108,6 +111,7 @@ public class Mlknn extends MultiLabelKNN {
 	 * 
 	 * @return the technical information about this class
 	 */
+    @Override
 	public TechnicalInformation getTechnicalInformation() {
 		TechnicalInformation result;
 
