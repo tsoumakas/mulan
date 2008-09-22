@@ -21,8 +21,10 @@ import java.util.Random;
 import java.util.Vector;
 
 import weka.classifiers.Classifier;
+import weka.core.FastVector;
 import weka.core.Instance;
 import weka.core.Instances;
+import weka.core.SerializedObject;
 import weka.core.TechnicalInformation;
 import weka.core.TechnicalInformationHandler;
 import weka.core.Utils;
@@ -67,7 +69,13 @@ implements TechnicalInformationHandler, MultiLabelClassifier
 	 */
 	protected Classifier baseClassifier;
 	
-	
+        /**
+         * The index for the value 1 (true) in the label attributes. If the 
+         * label attribute is specified as {0, 1}, then indexOfTrue==1, while 
+         * if the label attribute is specified as {1, 0} the indexOfTrue==0
+         */
+	protected int[] indexOfTrue;
+        
 	public enum SubsetMappingMethod
 	{
 		NONE,
@@ -117,9 +125,17 @@ implements TechnicalInformationHandler, MultiLabelClassifier
             return result;
 	}
 	
+        public void calcIndexes(Instances data) {
+            indexOfTrue = new int[numLabels];
+            for (int i=0; i<numLabels; i++)
+                indexOfTrue[i] = data.attribute(data.numAttributes()-numLabels+i).indexOfValue("1");            
+        }
+        
 	@Override
 	public void buildClassifier(Instances instances) throws Exception
 	{
+
+            /*
 		//if (subsetMappingMethod == SubsetMappingMethod.GREEDY)
 		//{
 			dbg("Building SubsetMapper");
@@ -133,7 +149,7 @@ implements TechnicalInformationHandler, MultiLabelClassifier
 			hybridMapper = //subsetDistanceThreshold > 0 ?
 					new HybridSubsetMapper(instances, numLabels, 4);
 						//new HybridSubsetMapper(instances, numLabels);
-		
+		*/
 			
 	}
 
@@ -213,28 +229,29 @@ implements TechnicalInformationHandler, MultiLabelClassifier
 	}
 	
 	public int RandomIndexOfMax(double array[], Random rand) {
+            int[] maxIndexes = new int[array.length];
             double max = array[0];
-            Vector indeces = new Vector();
-            indeces.add(0);
+            maxIndexes[0] = 0;            
+            int counter = 1;
             
             for (int i = 1; i < array.length; i++) {
                 if (array[i] == max) {
-                    indeces.add(i);
+                    maxIndexes[counter]=i;
+                    counter++;
                 } else
                 if (array[i] > max) {
-                    indeces = new Vector();
-                    indeces.add(i);
                     max = array[i];
+                    maxIndexes[0] = i;
+                    counter = 1;
                 } 
             }
 
-            int numIndeces = indeces.size();
-            if (numIndeces == 1)
-                return ((Integer) indeces.get(0));           
+            if (counter == 1)
+                return maxIndexes[0];           
             else
             {
-                int Choose = rand.nextInt(numIndeces);
-                return ((Integer) indeces.get(Choose));
+                int choose = rand.nextInt(counter);
+                return maxIndexes[choose];
             }
 	}
 
@@ -247,7 +264,6 @@ implements TechnicalInformationHandler, MultiLabelClassifier
 	{
 		this.baseClassifier = baseClassifier;
 	}
-
 
 	public void setThreshold(double threshold)
 	{
@@ -332,4 +348,16 @@ implements TechnicalInformationHandler, MultiLabelClassifier
 	{
 		subsetMappingMethod = mm;
 	}
+        
+         /**
+        * Creates a deep copy of the given classifier using serialization.
+        *
+        * @param model the classifier to copy
+        * @return a deep copy of the classifier
+        * @exception Exception if an error occurs
+        */
+        public static AbstractMultiLabelClassifier makeCopy(AbstractMultiLabelClassifier model) throws Exception {
+            return (AbstractMultiLabelClassifier) new SerializedObject(model).getObject();
+        }
+
 }

@@ -9,7 +9,7 @@ import weka.core.Instances;
 @SuppressWarnings("serial")
 public class HybridSubsetMapper extends SubsetMapper
 {
-	private LabelPowersetClassifier classifier;
+	private LabelPowerset classifier;
 	
 	
 	public HybridSubsetMapper(Instances instances, int numLabels, int diff)
@@ -35,7 +35,7 @@ public class HybridSubsetMapper extends SubsetMapper
     	weka.classifiers.lazy.IBk lsBaseClassifier = new weka.classifiers.lazy.IBk();
     	lsBaseClassifier.setKNN(10);
     	//*/
-    	classifier = new LabelPowersetClassifier(lsBaseClassifier, numLabels);
+    	classifier = new LabelPowerset(lsBaseClassifier, numLabels);
     	classifier.buildClassifier(instances);
     	
     }

@@ -39,11 +39,26 @@ import weka.filters.unsupervised.attribute.Remove;
  * Class that implements the RAKEL (Random k-labelsets) algorithm <p>
  *
  * @author Grigorios Tsoumakas 
- * @version $Revision: 0.02 $ 
+ * @version $Revision: 0.04 $ 
  */
 @SuppressWarnings("serial")
 public class RAKEL extends AbstractMultiLabelClassifier
 {
+    /**
+     * Seed for replication of random experiments
+     */
+    private int seed=0;
+            
+    /**
+     * Random number generator
+     */
+    private Random rnd;	
+
+    /**
+     * If true then the confidence of the base classifier to the decisions...
+     */
+    private boolean useConfidences = true;
+    
     double[][] sumVotesIncremental; /* comment */
     double[][] lengthVotesIncremental;
     double[] sumVotes;
@@ -52,7 +67,7 @@ public class RAKEL extends AbstractMultiLabelClassifier
     int sizeOfSubset;
     int[][] classIndicesPerSubset;
     int[][] absoluteIndicesToRemove;
-    LabelPowersetClassifier[] subsetClassifiers;
+    LabelPowerset[] subsetClassifiers;
     protected Instances[] metadataTest;
     HashSet<String> combinations;		
     BinaryPrediction[][] predictions;
@@ -60,7 +75,7 @@ public class RAKEL extends AbstractMultiLabelClassifier
     boolean cvParamSelection=false;
     int cvNumFolds, cvMinK, cvMaxK, cvStepK, cvMaxM, cvThresholdSteps;
     double cvThresholdStart, cvThresholdIncrement;    
-    
+        
     /**
     * Returns an instance of a TechnicalInformation object, containing 
     * detailed information about the technical background of this class,
@@ -68,6 +83,7 @@ public class RAKEL extends AbstractMultiLabelClassifier
     * 
     * @return the technical information about this class
     */
+    @Override
     public TechnicalInformation getTechnicalInformation() {
         TechnicalInformation result = new TechnicalInformation(Type.INPROCEEDINGS);
         result.setValue(Field.AUTHOR, "Grigorios Tsoumakas, Ioannis Vlahavas");
@@ -81,16 +97,23 @@ public class RAKEL extends AbstractMultiLabelClassifier
         return result;
     }
                
+    public RAKEL(int labels) {
+        super(labels);
+    }
+    
+    public void setSeed(int x) {
+        seed = x;
+        rnd = new Random(seed);
+    }
+    
     public RAKEL(int labels, int models, int subset) {
-        numLabels = labels;
+        this(labels);
         numOfModels = models;
         sizeOfSubset = subset;
         classIndicesPerSubset = new int[numOfModels][sizeOfSubset];
         absoluteIndicesToRemove = new int[numOfModels][sizeOfSubset];
-        subsetClassifiers = new LabelPowersetClassifier[numOfModels];
+        subsetClassifiers = new LabelPowerset[numOfModels];
         metadataTest = new Instances[numOfModels];
-        sumVotes = new double[numLabels];
-        lengthVotes = new double[numLabels];
     }
 	
 	public void setSizeOfSubset(int size) {
@@ -107,7 +130,7 @@ public class RAKEL extends AbstractMultiLabelClassifier
 		numOfModels = models;
 		classIndicesPerSubset = new int[numOfModels][sizeOfSubset];
 		absoluteIndicesToRemove = new int[numOfModels][sizeOfSubset];
-		subsetClassifiers = new LabelPowersetClassifier[numOfModels];
+		subsetClassifiers = new LabelPowerset[numOfModels];
 		metadataTest = new Instances[numOfModels];
 	}
 	
@@ -137,7 +160,7 @@ public class RAKEL extends AbstractMultiLabelClassifier
         public void setParamSets(int numFolds, int minK, int maxK, int stepK, int maxM, double thresholdStart, double thresholdIncrement, int thresholdSteps){
             cvNumFolds = numFolds;
             cvMinK = minK;
-            cvMaxK = maxK;
+            cvMaxK = Math.min(numLabels-1, maxK);
             cvStepK = stepK;
             cvMaxM = maxM;
             cvThresholdStart = thresholdStart;
@@ -148,8 +171,16 @@ public class RAKEL extends AbstractMultiLabelClassifier
         public void setParamSelectionViaCV(boolean flag){
             cvParamSelection = flag;
         }
-        
-        private void paramSelectionViaCV(Instances trainData) throws Exception {           
+
+	/**
+         * This function evaluates different parameter sets for RAKEL, based 
+         * on the values given by setParamSets. It then selects the best of 
+         * these parameter sets based on Fmeasure. 
+         * 
+	 * @param trainData:
+	 *            the data that will be used for parameter selection
+	 */         
+        public void paramSelectionViaCV(Instances trainData) throws Exception {                       
             ArrayList []metric = new ArrayList[cvNumFolds];
             //* Evaluate using X-fold CV
             for (int f=0; f<cvNumFolds; f++)
@@ -162,6 +193,7 @@ public class RAKEL extends AbstractMultiLabelClassifier
                 for (int k=cvMinK; k<=cvMaxK; k+=cvStepK)
                 {            
                     RAKEL rakel = new RAKEL(numLabels,binomial(numLabels, k), k);
+                    rakel.setSeed(seed);
                     rakel.setBaseClassifier(baseClassifier);
                     int finalM = Math.min(binomial(numLabels,k),cvMaxM);
                     for (int m=0; m<finalM; m++)
@@ -172,7 +204,7 @@ public class RAKEL extends AbstractMultiLabelClassifier
                         rakel.nullSubsetClassifier(m);
                         IntegratedEvaluation[] results = evaluator.evaluateOverThreshold(rakel.getPredictions(), foldTestData, cvThresholdStart, cvThresholdIncrement, cvThresholdSteps);                      
                         for (int t=0; t<results.length; t++)  {
-                            metric[f].add(results[t].hammingLoss());                                                        
+                            metric[f].add(results[t].microFmeasure());                                                        
                         }
                     }
                 }
@@ -185,7 +217,9 @@ public class RAKEL extends AbstractMultiLabelClassifier
                 finalResults.add(sum/cvNumFolds);
             }
             
-            double minMetric=1; // HammingLoss
+            double bestMetric=0; 
+            int bestK=cvMinK, bestM=0;
+            double bestT=cvThresholdStart;
             int counter=0;
             for (int k=cvMinK; k<=cvMaxK; k+=cvStepK)
             {            
@@ -197,18 +231,28 @@ public class RAKEL extends AbstractMultiLabelClassifier
                         for (int f=0; f<cvNumFolds; f++)
                             avgMetric += (Double) metric[f].get(counter);
                         avgMetric /= cvNumFolds;
-                        if (avgMetric < minMetric) {
-                            setSizeOfSubset(k);
-                            setNumModels(m);
-                            setThreshold(cvThresholdStart+cvThresholdIncrement*t);
-                            minMetric = avgMetric;
+                        if (avgMetric > bestMetric) {
+                            bestK = k;
+                            bestM = m;
+                            bestT = cvThresholdStart+cvThresholdIncrement*t;
+                            bestMetric = avgMetric;
                         }
                         counter++;
                     }
                 }
             }
-
+            /*
+            System.out.println("Selected Parameters\n" +
+                               "Subset size     : " + bestK + 
+                               "Number of models: " + bestM +
+                               "Threshold       : " + bestT);
+            */
+            setSizeOfSubset(bestK);
+            setNumModels(bestM);
+            setThreshold(bestT);            
         }        
+        
+
         
         public void updatePredictions(Instances testData, int model) throws Exception {
 		if (predictions == null) {
@@ -237,194 +281,195 @@ public class RAKEL extends AbstractMultiLabelClassifier
 	
         
         
-	public void buildClassifier(Instances trainData) throws Exception {
-		if (cvParamSelection) {
-                    paramSelectionViaCV(trainData);
-                    System.out.println("Selected Parameters\n" +
-                                       "Subset size     : " + getSizeOfSubset() + 
-                                       "Number of models: " + getNumModels() +
-                                       "Threshold       : " + getThreshold());
+    @Override
+    public void buildClassifier(Instances trainData) throws Exception {
+        calcIndexes(trainData);
+        
+        if (cvParamSelection) 
+            paramSelectionViaCV(trainData);
+
+        // need a structure to hold different combinations
+        combinations = new HashSet<String>();		
+
+        for (int i=0; i<numOfModels; i++)
+            updateClassifier(trainData, i);		
+    }
+	
+    public void updateClassifier(Instances trainData, int model) throws Exception {
+        if (indexOfTrue == null)
+            calcIndexes(trainData);
+
+        if (combinations == null)
+            combinations = new HashSet<String>();
+
+        // select a random subset of classes not seen before
+        // todo: select according to invere distribution of current selection
+        boolean[] selected;
+        do {
+            selected = new boolean[numLabels];
+            for (int j=0; j<sizeOfSubset; j++) {
+                int randomLabel;
+                randomLabel = Math.abs(rnd.nextInt() % numLabels);
+                while (selected[randomLabel] != false) {
+                    randomLabel = Math.abs(rnd.nextInt() % numLabels);
                 }
-                
-                // need a structure to hold different combinations
-		combinations = new HashSet<String>();		
-	
-		for (int i=0; i<numOfModels; i++)
-			updateClassifier(trainData, i);		
-	}
-	
-	public void updateClassifier(Instances trainData, int model) throws Exception {
-		if (combinations == null)
-			combinations = new HashSet<String>();
-		
-		Random rnd = new Random();	
+                selected[randomLabel] = true;
+                //System.out.println("label: " + randomLabel);
+                classIndicesPerSubset[model][j] = randomLabel;
+            }
+            Arrays.sort(classIndicesPerSubset[model]);
+        } while (combinations.add(Arrays.toString(classIndicesPerSubset[model])) == false);
+        System.out.println("Building model " + model + ", subset: " + Arrays.toString(classIndicesPerSubset[model]));	
 
-		// --select a random subset of classes not seen before
-		boolean[] selected;
-		do {
-			selected = new boolean[numLabels];
-			for (int j=0; j<sizeOfSubset; j++) {
-				int randomLabel;
-	           	randomLabel = Math.abs(rnd.nextInt() % numLabels);
-	            while (selected[randomLabel] != false) {
-	            	randomLabel = Math.abs(rnd.nextInt() % numLabels);
-	            }
-				selected[randomLabel] = true;
-				//System.out.println("label: " + randomLabel);
-				classIndicesPerSubset[model][j] = randomLabel;
-			}
-			Arrays.sort(classIndicesPerSubset[model]);
-		} while (combinations.add(Arrays.toString(classIndicesPerSubset[model])) == false);
-		System.out.println("Building model " + model + ", subset: " + Arrays.toString(classIndicesPerSubset[model]));	
-		
-		// --remove the unselected labels
-		int numPredictors = trainData.numAttributes()-numLabels;
-		absoluteIndicesToRemove[model] = new int[numLabels-sizeOfSubset]; 
-		int k=0;
-		for (int j=0; j<numLabels; j++) 
-			if (selected[j] == false) {
-				absoluteIndicesToRemove[model][k] = numPredictors+j;
-				k++;					
-			}				                     
-		Remove remove = new Remove();
-		remove.setAttributeIndicesArray(absoluteIndicesToRemove[model]);
-		remove.setInputFormat(trainData);
-		remove.setInvertSelection(false);
-		Instances trainSubset = Filter.useFilter(trainData, remove);
-		//System.out.println(trainSubset.toSummaryString());
-			
-		// build a LabelPowersetClassifier for the selected label subset;
-		subsetClassifiers[model] = new LabelPowersetClassifier(Classifier.makeCopy(getBaseClassifier()), sizeOfSubset);
-		subsetClassifiers[model].buildClassifier(trainSubset);
+        // remove the unselected labels
+        int numPredictors = trainData.numAttributes()-numLabels;
+        absoluteIndicesToRemove[model] = new int[numLabels-sizeOfSubset]; 
+        int k=0;
+        for (int j=0; j<numLabels; j++) 
+            if (selected[j] == false) {
+                absoluteIndicesToRemove[model][k] = numPredictors+j;
+                k++;					
+            }				                     
+        Remove remove = new Remove();
+        remove.setAttributeIndicesArray(absoluteIndicesToRemove[model]);
+        remove.setInputFormat(trainData);
+        remove.setInvertSelection(false);
+        Instances trainSubset = Filter.useFilter(trainData, remove);
+        //System.out.println(trainSubset.toSummaryString());
+        //System.out.println(trainSubset.numInstances());
 
-		// keep the header of the training data for testing
-		trainSubset.delete();
-		metadataTest[model] = trainSubset;
+        // build a LabelPowersetClassifier for the selected label subset;
+        subsetClassifiers[model] = new LabelPowerset(Classifier.makeCopy(getBaseClassifier()), sizeOfSubset);
+        subsetClassifiers[model].buildClassifier(trainSubset);
+
+        // keep the header of the training data for testing
+        trainSubset.delete();
+        metadataTest[model] = trainSubset;
 	}
-	
+	                
 	public Prediction updatePrediction(Instance instance, int instanceNumber, int model) throws Exception {	
-		int numPredictors = instance.numAttributes()-numLabels;
+            int numPredictors = instance.numAttributes()-numLabels;
 
-		// transform instance
-		//// new2 solution
-		
-		Instance newInstance;
-		if (instance instanceof SparseInstance) {
-			newInstance = new SparseInstance(instance);
-			for (int i=1; i<numLabels-sizeOfSubset; i++)
-				newInstance.deleteAttributeAt(newInstance.numAttributes());
-		} else {
-			double[] vals = new double[numPredictors+sizeOfSubset];
-			for (int j=0; j<vals.length-sizeOfSubset; j++)
-				vals[j] = instance.value(j);
-			newInstance = new Instance(instance.weight(), vals);			
-		}
-		
-		
-		//// new solution
-		/*
-		double[] vals = new double[numPredictors+sizeOfSubset];
-		for (int j=0; j<vals.length-sizeOfSubset; j++)
-			vals[j] = instance.value(j);
-		Instance newInstance = (instance instanceof SparseInstance)
-		? new SparseInstance(instance.weight(), vals)
-		: new Instance(instance.weight(), vals);
-		*/
-		
-		//// old solution
-		/*
-		Instance newInstance = new Instance(numPredictors+sizeOfSubset);
-		for (int j=0; j<newInstance.numAttributes(); j++)
-			newInstance.setValue(j, instance.value(j));
-		*/
-		
-		newInstance.setDataset(metadataTest[model]);
-			
-		double[] predictions = subsetClassifiers[model].makePrediction(newInstance).getPredictedLabels();
-		for (int j=0; j<sizeOfSubset; j++) {
-			sumVotesIncremental[instanceNumber][classIndicesPerSubset[model][j]] += predictions[j];
-			lengthVotesIncremental[instanceNumber][classIndicesPerSubset[model][j]]++;
-		}
-		/*
-		for (int i=0; i<numLabels; i++)
-			System.out.print(instance.value(numPredictors+i) + " ");
-		System.out.println("");
-		System.out.println(Arrays.toString(sumVotesIncremental[instanceNumber]));
-		System.out.println(Arrays.toString(lengthVotesIncremental[instanceNumber]));
-		//*/
-		
-		double[] confidence = new double[numLabels];
-		double[] labels = new double[numLabels];
-		for (int i=0; i<numLabels; i++) {
-			confidence[i] = sumVotesIncremental[instanceNumber][i]/lengthVotesIncremental[instanceNumber][i];
-			if (confidence[i] >= 0.5)
-				labels[i] = 1;
-			else
-				labels[i] = 0;
-		}
-		
-		Prediction pred = new Prediction(labels, confidence);
+            // transform instance
+            //// new2 solution
 
-		return pred;
+            Instance newInstance;
+            if (instance instanceof SparseInstance) {
+                    newInstance = new SparseInstance(instance);
+                    for (int i=1; i<numLabels-sizeOfSubset; i++)
+                            newInstance.deleteAttributeAt(newInstance.numAttributes());
+            } else {
+                    double[] vals = new double[numPredictors+sizeOfSubset];
+                    for (int j=0; j<vals.length-sizeOfSubset; j++)
+                            vals[j] = instance.value(j);
+                    newInstance = new Instance(instance.weight(), vals);			
+            }
+
+
+            //// new solution
+            /*
+            double[] vals = new double[numPredictors+sizeOfSubset];
+            for (int j=0; j<vals.length-sizeOfSubset; j++)
+                    vals[j] = instance.value(j);
+            Instance newInstance = (instance instanceof SparseInstance)
+            ? new SparseInstance(instance.weight(), vals)
+            : new Instance(instance.weight(), vals);
+            */
+
+            //// old solution
+            /*
+            Instance newInstance = new Instance(numPredictors+sizeOfSubset);
+            for (int j=0; j<newInstance.numAttributes(); j++)
+                    newInstance.setValue(j, instance.value(j));
+            */
+
+            newInstance.setDataset(metadataTest[model]);
+
+            double[] predictions = subsetClassifiers[model].makePrediction(newInstance).getPredictedLabels();
+            for (int j=0; j<sizeOfSubset; j++) {
+                sumVotesIncremental[instanceNumber][classIndicesPerSubset[model][j]] += predictions[j];
+                lengthVotesIncremental[instanceNumber][classIndicesPerSubset[model][j]]++;
+            }
+            /*
+            for (int i=0; i<numLabels; i++)
+                    System.out.print(instance.value(numPredictors+i) + " ");
+            System.out.println("");
+            System.out.println(Arrays.toString(sumVotesIncremental[instanceNumber]));
+            System.out.println(Arrays.toString(lengthVotesIncremental[instanceNumber]));
+            //*/
+
+            double[] confidence = new double[numLabels];
+            double[] labels = new double[numLabels];
+            for (int i=0; i<numLabels; i++) {
+                    confidence[i] = sumVotesIncremental[instanceNumber][i]/lengthVotesIncremental[instanceNumber][i];
+                    if (confidence[i] >= 0.5)
+                            labels[i] = 1;
+                    else
+                            labels[i] = 0;
+            }
+
+            Prediction pred = new Prediction(labels, confidence);
+
+            return pred;
 	}
 	
 	
 	public Prediction makePrediction(Instance instance) throws Exception {		
-		int numPredictors = instance.numAttributes()-numLabels;
-		Arrays.fill(sumVotes, 0);
-		Arrays.fill(lengthVotes, 0);
-		for (int i=0; i<numOfModels; i++) {
-			if (subsetClassifiers[i] == null)
-				continue;
-			
-			// transform instance
-			//// new solution
-			double[] vals = new double[numPredictors+sizeOfSubset];
-			for (int j=0; j<vals.length-sizeOfSubset; j++)
-				vals[j] = instance.value(j);
-			Instance newInstance = (instance instanceof SparseInstance)
-			? new SparseInstance(instance.weight(), vals)
-			: new Instance(instance.weight(), vals);
-                         			
-			                         
-			//// old solution 
-			/*                         
-			//System.out.println("old instance: " + instance.toString());
-			Instance newInstance = new Instance(numPredictors+sizeOfSubset);
-			for (int j=0; j<newInstance.numAttributes(); j++)
-				newInstance.setValue(j, instance.value(j));
-			//*/
-			
-			newInstance.setDataset(metadataTest[i]);
-			//System.out.println("new instance: " + newInstance.toString());
-			
-			double[] predictions = subsetClassifiers[i].makePrediction(newInstance).getPredictedLabels();
-			for (int j=0; j<sizeOfSubset; j++) {
-				sumVotes[classIndicesPerSubset[i][j]] += predictions[j];
-				lengthVotes[classIndicesPerSubset[i][j]]++;
-			}
-		}
-		/*
-		for (int i=0; i<numLabels; i++)
-			System.out.print(instance.value(numPredictors+i) + " ");
-		System.out.println("");
-		System.out.println(Arrays.toString(sumVotes));
-		System.out.println(Arrays.toString(lengthVotes));
-		//*/
-		
-		double[] confidence = new double[numLabels];
-		double[] labels = new double[numLabels];
-		for (int i=0; i<numLabels; i++) {
-			confidence[i] = sumVotes[i]/lengthVotes[i];
-			if (confidence[i] >= 0.5)
-				labels[i] = 1;
-			else
-				labels[i] = 0;
-		}
-		
-		Prediction pred = new Prediction(labels, confidence);
-		
-		return pred;
+            int numPredictors = instance.numAttributes()-numLabels;
+            double[] sumConf = new double[numLabels];
+            sumVotes = new double[numLabels];
+            lengthVotes = new double[numLabels];
+
+            // transform instance
+            // note: should be placed inside the for if different subset sizes
+            double[] vals = new double[numPredictors+sizeOfSubset];
+            for (int j=0; j<vals.length-sizeOfSubset; j++)
+                    vals[j] = instance.value(j);
+            Instance newInstance = (instance instanceof SparseInstance)
+            ? new SparseInstance(instance.weight(), vals)
+            : new Instance(instance.weight(), vals);
+            
+            for (int i=0; i<numOfModels; i++) {
+                // what for is this if?
+                //if (subsetClassifiers[i] == null)
+                //    continue;
+
+                newInstance.setDataset(metadataTest[i]);
+                //System.out.println("new instance: " + newInstance.toString());
+
+                Prediction pred = subsetClassifiers[i].makePrediction(newInstance);
+                
+                for (int j=0; j<sizeOfSubset; j++) {
+                    sumConf[classIndicesPerSubset[i][j]] += pred.getConfidence(j);                   
+                    sumVotes[classIndicesPerSubset[i][j]] += (pred.getPrediction(j)) ? 1 : 0;
+                    lengthVotes[classIndicesPerSubset[i][j]]++;
+                }
+            }
+            /*
+            for (int i=0; i<numLabels; i++)
+                    System.out.print(instance.value(numPredictors+i) + " ");
+            System.out.println("");
+            System.out.println(Arrays.toString(sumVotes));
+            System.out.println(Arrays.toString(lengthVotes));
+            //*/
+
+            double[] confidence = new double[numLabels];
+            double[] labels = new double[numLabels];
+            for (int i=0; i<numLabels; i++) {
+                if (lengthVotes[i] != 0)
+                    confidence[i] = sumConf[i]/lengthVotes[i];
+                    //confidence[i] = sumVotes[i]/lengthVotes[i];
+                else
+                    confidence[i] = 0;
+                if (confidence[i] >= 0.5)
+                    labels[i] = 1;
+                else
+                    labels[i] = 0;
+            }
+
+            Prediction pred = new Prediction(labels, confidence);
+
+            return pred;
 	}
         
         public void nullSubsetClassifier(int i) {
