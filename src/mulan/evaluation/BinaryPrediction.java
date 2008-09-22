@@ -6,14 +6,19 @@ package mulan.evaluation;
  */
 public class BinaryPrediction
 {
-	public BinaryPrediction(boolean predicted, boolean actual, double confidenceTrue)
-	{
-		this.predicted = predicted;
-		this.actual = actual;
-		this.confidenceTrue = confidenceTrue;
-	}
+    public BinaryPrediction(boolean predicted, boolean actual, double confidenceTrue)
+    {
+            this.predicted = predicted;
+            this.actual = actual;
+            this.confidenceTrue = confidenceTrue;
+    }
 
-	protected boolean actual;
-	protected boolean predicted;
-	protected double confidenceTrue;
+    protected boolean actual;
+    protected boolean predicted;
+    protected double confidenceTrue;
+    
+    public boolean getPrediction() {
+        return predicted;
+    }        
+        
 }

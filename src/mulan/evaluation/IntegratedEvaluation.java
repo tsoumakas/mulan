@@ -9,6 +9,7 @@ import java.util.ArrayList;
  * 
  * @author greg
  * @author lef
+ * @version $Revision: 0.01 $ 
  */
 public class IntegratedEvaluation {
 
@@ -19,9 +20,8 @@ public class IntegratedEvaluation {
 	 * dimension) and label (2nd dimension) containing a BinaryPrediction object
 	 */
 	protected BinaryPrediction[][] predictions;
-	
+
 	protected double numPredictedLabels;
-	protected double numNullLabelSets;
 
 	// Example based measures and parameters
 	protected double hammingLoss;
@@ -43,12 +43,12 @@ public class IntegratedEvaluation {
 	protected double microRecall;
 	protected double microPrecision;
 	protected double microFmeasure;
-	protected double microAccuracy;
+        protected double microAUC;
 	protected double macroRecall;
 	protected double macroPrecision;
 	protected double macroFmeasure;
-	protected double macroAccuracy;
-
+        protected double macroAUC;
+        
 	// ranking measures 
 	protected double one_error;
 	protected double coverage;
@@ -62,6 +62,12 @@ public class IntegratedEvaluation {
 		computeMeasures();
 	}
 
+        
+        public BinaryPrediction[][] getPredictions() 
+        {
+            return predictions;
+        }
+        
 	protected double computeFMeasure(double precision, double recall) {
 		if (Utils.eq(precision + recall, 0))
 			return 0;
@@ -98,7 +104,6 @@ public class IntegratedEvaluation {
 		int numInstances = numInstances();
 		
 		numPredictedLabels = 0;
-		numNullLabelSets = 0;
 
 		// Reset measures in case of multiple calls
 		// -- example-based 
@@ -133,15 +138,10 @@ public class IntegratedEvaluation {
 			//little cleaner but:
 			//TODO: run performance tests on counting with doubles
 			
-			boolean flag = false;
 			for (int j = 0; j < numLabels; j++) {
 				if (predictions[i][j].predicted == true) {
 					numPredictedLabels++;
-					flag = true;
 				}
-			}
-			if (flag == false) {
-				numNullLabelSets++;
 			}
 
 			// example-based counters
@@ -306,7 +306,6 @@ public class IntegratedEvaluation {
 
 			labelFmeasure[i] = computeFMeasure(labelPrecision[i], labelRecall[i]);
 		}
-		macroAccuracy = Utils.mean(labelAccuracy);
 		macroRecall = Utils.mean(labelRecall);
 		macroPrecision = Utils.mean(labelPrecision);
 		macroFmeasure = Utils.mean(labelFmeasure);
@@ -317,7 +316,6 @@ public class IntegratedEvaluation {
 		double fp = Utils.sum(falsePositives);
 		double fn = Utils.sum(falseNegatives);
 
-		microAccuracy = (tp + tn) / (numInstances * numLabels);
 		microRecall = tp + fn == 0 ? 0 : tp / (tp + fn);
 		microPrecision = tp + fp == 0 ? 0 : tp / (tp + fp);
 		microFmeasure = computeFMeasure(microPrecision, microRecall);
@@ -329,7 +327,6 @@ public class IntegratedEvaluation {
 		avg_precision /= numInstances;
 		
 		numPredictedLabels /= numInstances;
-		numNullLabelSets /= numInstances;
 	}
 
 	// Methods used to obtain the calculated measures
@@ -381,9 +378,6 @@ public class IntegratedEvaluation {
 		return labelFmeasure[label];
 	}
 
-	public double microAccuracy() {
-		return microAccuracy;
-	}
 
 	public double microFmeasure() {
 		return microFmeasure;
@@ -397,8 +391,8 @@ public class IntegratedEvaluation {
 		return microRecall;
 	}
 
-	public double macroAccuracy() {
-		return macroAccuracy;
+	public double microAUC() {
+		return microAUC;
 	}
 
 	public double macroFmeasure() {
@@ -411,6 +405,10 @@ public class IntegratedEvaluation {
 
 	public double macroRecall() {
 		return macroRecall;
+	}
+
+	public double macroAUC() {
+		return macroAUC;
 	}
 
 	// -- ranking-based measures
@@ -444,12 +442,10 @@ public class IntegratedEvaluation {
 		description += "SubsetAccuracy : " + this.subsetAccuracy() + "\n";
 		description += "========Label Based Measures========\n";
 		description += "MICRO\n";
-		description += "Accuracy     : " + this.microAccuracy() + "\n";
 		description += "Precision    : " + this.microPrecision() + "\n";
 		description += "Recall       : " + this.microRecall() + "\n";
 		description += "F1           : " + this.microFmeasure() + "\n";
 		description += "MACRO\n";
-		description += "Accuracy     : " + this.macroAccuracy() + "\n";
 		description += "Precision    : " + this.macroPrecision() + "\n";
 		description += "Recall       : " + this.macroRecall() + "\n";
 		description += "F1           : " + this.macroFmeasure() + "\n";
@@ -475,11 +471,11 @@ public class IntegratedEvaluation {
 		
 		output += hammingLoss()+ ";" + accuracy()+ ";" + precision()+ ";";
 		output += recall() + ";" + fmeasure() + ";" + subsetAccuracy() + ";";
-		output += microAccuracy() + ";" + microPrecision() + ";" + microRecall() + ";";
-		output += microFmeasure() + ";" + macroAccuracy()+ ";" + macroPrecision() + ";";
+		output += microPrecision() + ";" + microRecall() + ";";
+		output += microFmeasure() + ";" + macroPrecision() + ";";
 		output += macroRecall() + ";" + macroFmeasure() + ";" + one_error()+ ";";
 		output += coverage() + ";" + rloss() + ";" + avg_precision();
-		output += ";" + this.numPredictedLabels + ";" + this.numNullLabelSets;
+		output += ";" + this.numPredictedLabels;
 		
 		return output;
 	}

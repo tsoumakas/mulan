@@ -144,5 +144,9 @@ public class LabelPowersetClassifier extends AbstractMultiLabelClassifier
         return result;
     }
 
+    public String getRevision() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
 }
 

@@ -31,17 +31,12 @@ import weka.core.SparseInstance;
  * b) one binary attribute containing whether it is true. 
  *
  * @author Robert Friberg
- * @version $Revision: 0.02 $ 
+ * @author Grigorios Tsoumakas
+ * @version $Revision: 0.03 $ 
  */
 public class IncludeLabelsClassifier extends AbstractMultiLabelClassifier implements
 		MultiLabelClassifier
 {
-
-	
-	/**
-	 * The encapsulated distribution classifier.
-	 */
-	protected Classifier classifier;
 	
 	
 	/**
@@ -66,31 +61,32 @@ public class IncludeLabelsClassifier extends AbstractMultiLabelClassifier implem
 	public IncludeLabelsClassifier(Classifier classifier, int numLabels)
 	{
 		super(numLabels);
-		this.classifier = classifier;
+		this.baseClassifier = classifier;
 	}
 	
-	public void buildClassifier(Instances instances) throws Exception
-	{
-		//super.buildClassifier(instances);
-				
-		//Do the transformation 
-		//and generate the classifier
-		transformed = determineOutputFormat(instances);	
-		transform(instances, transformed);
-		
-                /* debug info
-                System.out.println(instances.instance(0).toString());
-		for (int i=0; i<numLabels; i++)
-			System.out.println(transformed.instance(i).toString());
-		//*/
-		classifier.buildClassifier(transformed);
-                
-		//We dont need the data anymore, just the metadata.
-		//Asserts that the classifier has copied anything
-		//it needs.
-		transformed.delete();
-                //System.out.println(transformed);
-	}
+    @Override
+    public void buildClassifier(Instances instances) throws Exception
+    {
+            //super.buildClassifier(instances);
+
+            //Do the transformation 
+            //and generate the classifier
+            transformed = determineOutputFormat(instances);	
+            transform(instances, transformed);
+
+            /* debug info
+            System.out.println(instances.instance(0).toString());
+            for (int i=0; i<numLabels; i++)
+                    System.out.println(transformed.instance(i).toString());
+            //*/
+            baseClassifier.buildClassifier(transformed);
+
+            //We dont need the data anymore, just the metadata.
+            //Asserts that the classifier has copied anything
+            //it needs.
+            transformed.delete();
+            //System.out.println(transformed);
+    }
 	
 
 	/**
@@ -199,11 +195,15 @@ public class IncludeLabelsClassifier extends AbstractMultiLabelClassifier implem
 			newInstance = transform(instance , i);	
                         newInstance.setDataset(transformed);
                         //System.out.println(instance.toString());
-			double[] temp = classifier.distributionForInstance(newInstance);
+			double[] temp = baseClassifier.distributionForInstance(newInstance);
 			confidences[i] = temp[transformed.classAttribute().indexOfValue("1")]; 
 		}	
 		return new Prediction(labelsFromConfidences(confidences), confidences);
 	}
+
+    public String getRevision() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 	
 }
 
