@@ -5,7 +5,7 @@
 
 package mulan.attributeSelection;
 
-import mulan.Transformations;
+import mulan.core.Transformations;
 import weka.attributeSelection.AttributeEvaluator;
 import weka.core.Instances;
 

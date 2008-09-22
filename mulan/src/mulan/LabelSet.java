@@ -1,4 +1,4 @@
-package mulan;
+package mulan.core;
 
 /*
  *    This program is free software; you can redistribute it and/or modify

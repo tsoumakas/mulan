@@ -2,7 +2,7 @@ package mulan.classifier;
 
 import java.util.HashSet;
 
-import mulan.LabelSet;
+import mulan.core.LabelSet;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.neighboursearch.LinearNNSearch;

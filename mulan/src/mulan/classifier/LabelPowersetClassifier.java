@@ -18,8 +18,8 @@ package mulan.classifier;
 
 import java.util.Random;
 
-import mulan.LabelSet;
-import mulan.Transformations;
+import mulan.core.LabelSet;
+import mulan.core.Transformations;
 import weka.classifiers.Classifier;
 import weka.core.Instance;
 import weka.core.Instances;
