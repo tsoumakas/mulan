@@ -2,6 +2,10 @@ package mulan.evaluation;
 
 import weka.core.Utils;
 import java.util.ArrayList;
+import weka.classifiers.evaluation.NominalPrediction;
+import weka.classifiers.evaluation.ThresholdCurve;
+import weka.core.FastVector;
+import weka.core.Instances;
 
 /**
  * The purpose of this class is to provide a single point of reference for the
@@ -9,7 +13,7 @@ import java.util.ArrayList;
  * 
  * @author greg
  * @author lef
- * @version $Revision: 0.01 $ 
+ * @version $Revision: 0.02 $ 
  */
 public class IntegratedEvaluation {
 
@@ -20,7 +24,7 @@ public class IntegratedEvaluation {
 	 * dimension) and label (2nd dimension) containing a BinaryPrediction object
 	 */
 	protected BinaryPrediction[][] predictions;
-
+	
 	protected double numPredictedLabels;
 
 	// Example based measures and parameters
@@ -37,6 +41,7 @@ public class IntegratedEvaluation {
 	protected double[] labelRecall;
 	protected double[] labelPrecision;
 	protected double[] labelFmeasure;
+        protected double[] labelAUC;
 
 	// -- Micro and macro average measures
 	// -- Note that accuracy is equivalent to hammingLoss
@@ -48,7 +53,7 @@ public class IntegratedEvaluation {
 	protected double macroPrecision;
 	protected double macroFmeasure;
         protected double macroAUC;
-        
+
 	// ranking measures 
 	protected double one_error;
 	protected double coverage;
@@ -62,12 +67,6 @@ public class IntegratedEvaluation {
 		computeMeasures();
 	}
 
-        
-        public BinaryPrediction[][] getPredictions() 
-        {
-            return predictions;
-        }
-        
 	protected double computeFMeasure(double precision, double recall) {
 		if (Utils.eq(precision + recall, 0))
 			return 0;
@@ -75,6 +74,14 @@ public class IntegratedEvaluation {
 			return 2 * precision * recall / (precision + recall);
 	}
 
+        /**
+         * @return the main predictions object  
+         */
+        public BinaryPrediction[][] getPredictions() 
+        {
+            return predictions;
+        }
+        
 	public void setForgivenessRate(double rate) {
 		forgivenessRate = rate;
 	}
@@ -99,7 +106,7 @@ public class IntegratedEvaluation {
 	}
 
 	protected void computeMeasures() //throws Exception
-	{
+	{  
 		int numLabels = numLabels();
 		int numInstances = numInstances();
 		
@@ -119,9 +126,14 @@ public class IntegratedEvaluation {
 		coverage = 0;
 		rloss = 0;
 		avg_precision = 0;
+                int examplesToIgnore = 0;
 
 		// label-based counters
-		double[] falsePositives = new double[numLabels];
+                FastVector[] m_Predictions = new FastVector[numLabels]; //for AUC
+		for (int j=0; j<numLabels; j++)
+                    m_Predictions[j] = new FastVector();
+                FastVector all_Predictions = new FastVector();
+                double[] falsePositives = new double[numLabels];
 		double[] truePositives = new double[numLabels];
 		double[] falseNegatives = new double[numLabels];
 		double[] trueNegatives = new double[numLabels];
@@ -130,6 +142,7 @@ public class IntegratedEvaluation {
 		labelRecall = new double[numLabels];
 		labelPrecision = new double[numLabels];
 		labelFmeasure = new double[numLabels];
+                labelAUC = new double[numLabels];
 
 		for (int i = 0; i < numInstances; i++) {
 			//Counter variables
@@ -192,75 +205,91 @@ public class IntegratedEvaluation {
 			}
 			coverage += how_deep;
 
-			//======ranking loss related=============
-			int rolp = 0; // reversed ordered label pairs
-			for (int k = 0; k < true_indexes.size(); k++) {
-				for (int l = 0; l < false_indexes.size(); l++) {
-					if (predictions[i][true_indexes.get(k)].confidenceTrue <= predictions[i][false_indexes
-							.get(l)].confidenceTrue) {
-						rolp++;
-					}
-				}
-			}
-			rloss += (double) rolp / (true_indexes.size() * false_indexes.size());
 
-			//======average precision related related=============
-			double rel_rankj = 0;
+                        if (true_indexes.size() == 0 || false_indexes.size() == 0)
+                            examplesToIgnore++;
+                        else {
+                            //======ranking loss related=============
+                            int rolp = 0; // reversed ordered label pairs
+                            for (int k = 0; k < true_indexes.size(); k++) {
+                                    for (int l = 0; l < false_indexes.size(); l++) {
+                                            if (predictions[i][true_indexes.get(k)].confidenceTrue <= predictions[i][false_indexes
+                                                            .get(l)].confidenceTrue) {
+                                                    rolp++;
+                                            }
+                                    }
+                            }
+                            rloss += (double) rolp / (true_indexes.size() * false_indexes.size());
 
-			for (int j : true_indexes) {
-				int jrating = 0;
-				int ranked_abovet = 0;
+                            //======average precision related=============
+                            double rel_rankj = 0;
 
-				// find rank of jth label in the array of ratings
-				for (int k = 0; k < numLabels; k++) {
-					if (sorted_ranks[k] == j) {
-						jrating = k;
-						break;
-					}
-				}
-				// count the actually true above ranked labels
-				for (int k = jrating + 1; k < numLabels; k++) {
-					if (predictions[i][sorted_ranks[k]].actual == true) {
-						ranked_abovet++;
-					}
-				}
-				int jrank = numLabels - jrating;
-				rel_rankj += (double) (ranked_abovet + 1) / jrank; //+1to include the current label
-			}
-			// division with |Yi|
-			rel_rankj /= true_indexes.size();
-			avg_precision += rel_rankj;
+                            for (int j : true_indexes) {
+                                    int jrating = 0;
+                                    int ranked_abovet = 0;
 
+                                    // find rank of jth label in the array of ratings
+                                    for (int k = 0; k < numLabels; k++) {
+                                            if (sorted_ranks[k] == j) {
+                                                    jrating = k;
+                                                    break;
+                                            }
+                                    }
+                                    // count the actually true above ranked labels
+                                    for (int k = jrating + 1; k < numLabels; k++) {
+                                            if (predictions[i][sorted_ranks[k]].actual == true) {
+                                                    ranked_abovet++;
+                                            }
+                                    }
+                                    int jrank = numLabels - jrating;
+                                    rel_rankj += (double) (ranked_abovet + 1) / jrank; //+1to include the current label
+                            }
+                            // division with |Yi|
+                            rel_rankj /= true_indexes.size();
+                            avg_precision += rel_rankj;
+                        }
+                        
 			//Do the counting
 			for (int j = 0; j < numLabels; j++) {
-				boolean actual = predictions[i][j].actual;
-				boolean predicted = predictions[i][j].predicted;
+                            boolean actual = predictions[i][j].actual;
+                            boolean predicted = predictions[i][j].predicted;
 
-				// example-based counters
-				if (predicted != actual) {
-					symmetricDifference++;
-					if (setsIdentical)
-						setsIdentical = false;
-				}
+                            // example-based counters
+                            if (predicted != actual) {
+                                    symmetricDifference++;
+                                    if (setsIdentical)
+                                            setsIdentical = false;
+                            }
 
-				if (actual)
-					labelActual++;
-				if (predicted)
-					labelPredicted++;
-				if (predicted && actual)
-					setIntersection++;
-				if (predicted || actual)
-					setUnion++;
+                            if (actual)
+                                    labelActual++;
+                            if (predicted)
+                                    labelPredicted++;
+                            if (predicted && actual)
+                                    setIntersection++;
+                            if (predicted || actual)
+                                    setUnion++;
 
-				// label-based counters
-				if (actual && predicted)
-					truePositives[j]++;
-				else if (!actual && !predicted)
-					trueNegatives[j]++;
-				else if (predicted)
-					falsePositives[j]++;
-				else
-					falseNegatives[j]++;
+                            // label-based counters
+                            int classValue;
+                            double[] dist = new double[2];
+                            dist[1] = predictions[i][j].confidenceTrue;
+                            dist[0] = 1 - dist[1];
+                            if (predictions[i][j].actual)
+                                classValue = 1;
+                            else
+                                classValue = 0;
+                            m_Predictions[j].addElement(new NominalPrediction(classValue, dist, 1));
+                            all_Predictions.addElement(new NominalPrediction(classValue, dist, 1));
+
+                            if (actual && predicted)
+                                    truePositives[j]++;
+                            else if (!actual && !predicted)
+                                    trueNegatives[j]++;
+                            else if (predicted)
+                                    falsePositives[j]++;
+                            else
+                                    falseNegatives[j]++;
 			}
 
 			// example-based counters
@@ -305,11 +334,15 @@ public class IntegratedEvaluation {
 					/ (truePositives[i] + falsePositives[i]);
 
 			labelFmeasure[i] = computeFMeasure(labelPrecision[i], labelRecall[i]);
+                        ThresholdCurve tc = new ThresholdCurve();
+                        Instances result = tc.getCurve(m_Predictions[i], 1);
+                        labelAUC[i] = ThresholdCurve.getROCArea(result);
 		}
 		macroRecall = Utils.mean(labelRecall);
 		macroPrecision = Utils.mean(labelPrecision);
 		macroFmeasure = Utils.mean(labelFmeasure);
-
+                macroAUC = Utils.mean(labelAUC);
+                
 		//Compute micro averaged measures
 		double tp = Utils.sum(truePositives);
 		double tn = Utils.sum(trueNegatives);
@@ -319,12 +352,15 @@ public class IntegratedEvaluation {
 		microRecall = tp + fn == 0 ? 0 : tp / (tp + fn);
 		microPrecision = tp + fp == 0 ? 0 : tp / (tp + fp);
 		microFmeasure = computeFMeasure(microPrecision, microRecall);
-
+                ThresholdCurve tc = new ThresholdCurve();
+                Instances result = tc.getCurve(all_Predictions, 1);
+                microAUC = ThresholdCurve.getROCArea(result);                
+                
 		// Finalize computation of ranking measures
 		one_error /= numInstances;
 		coverage /= numInstances;
-		rloss /= numInstances;
-		avg_precision /= numInstances;
+		rloss /= (numInstances-examplesToIgnore);
+		avg_precision /= (numInstances-examplesToIgnore);
 		
 		numPredictedLabels /= numInstances;
 	}
@@ -395,6 +431,7 @@ public class IntegratedEvaluation {
 		return microAUC;
 	}
 
+
 	public double macroFmeasure() {
 		return macroFmeasure;
 	}
@@ -406,7 +443,7 @@ public class IntegratedEvaluation {
 	public double macroRecall() {
 		return macroRecall;
 	}
-
+        
 	public double macroAUC() {
 		return macroAUC;
 	}
@@ -429,31 +466,34 @@ public class IntegratedEvaluation {
 		return avg_precision;
 	}
 
+        @Override
 	public String toString() {
 		String description = "";
 		
 		description += "Average predicted labels: " + this.numPredictedLabels + "\n";
 		description += "========Example Based Measures========\n";
-		description += "HammingLoss  : " + this.hammingLoss() + "\n";
-		description += "Accuracy     : " + this.accuracy() + "\n";
-		description += "Precision    : " + this.precision() + "\n";
-		description += "Recall       : " + this.recall() + "\n";
-		description += "Fmeasure     : " + this.fmeasure() + "\n";
-		description += "SubsetAccuracy : " + this.subsetAccuracy() + "\n";
+		description += "HammingLoss  : " + hammingLoss() + "\n";
+		description += "Accuracy     : " + accuracy() + "\n";
+		description += "Precision    : " + precision() + "\n";
+		description += "Recall       : " + recall() + "\n";
+		description += "Fmeasure     : " + fmeasure() + "\n";
+		description += "SubsetAccuracy : " + subsetAccuracy() + "\n";
 		description += "========Label Based Measures========\n";
 		description += "MICRO\n";
-		description += "Precision    : " + this.microPrecision() + "\n";
-		description += "Recall       : " + this.microRecall() + "\n";
-		description += "F1           : " + this.microFmeasure() + "\n";
+		description += "Precision    : " + microPrecision() + "\n";
+		description += "Recall       : " + microRecall() + "\n";
+		description += "F1           : " + microFmeasure() + "\n";
+		description += "AUC          : " + microAUC() + "\n";
 		description += "MACRO\n";
-		description += "Precision    : " + this.macroPrecision() + "\n";
-		description += "Recall       : " + this.macroRecall() + "\n";
-		description += "F1           : " + this.macroFmeasure() + "\n";
+		description += "Precision    : " + macroPrecision() + "\n";
+		description += "Recall       : " + macroRecall() + "\n";
+		description += "F1           : " + macroFmeasure() + "\n";
+		description += "AUC          : " + macroAUC() + "\n";
 		description += "========Ranking Based Measures========\n";
-		description += "One-error    : " + this.one_error() + "\n";
-		description += "Coverage     : " + this.coverage() + "\n";
-		description += "Ranking Loss : " + this.rloss() + "\n";
-		description += "AvgPrecision : " + this.avg_precision() + "\n";
+		description += "One-error    : " + one_error() + "\n";
+		description += "Coverage     : " + coverage() + "\n";
+		description += "Ranking Loss : " + rloss() + "\n";
+		description += "AvgPrecision : " + avg_precision() + "\n";
 		description += "========Per Class Measures========\n";
 		for (int i = 0; i < numLabels(); i++) {
 			description += "Label " + i + " Accuracy   :" + labelAccuracy[i] + "\n";
@@ -472,11 +512,15 @@ public class IntegratedEvaluation {
 		output += hammingLoss()+ ";" + accuracy()+ ";" + precision()+ ";";
 		output += recall() + ";" + fmeasure() + ";" + subsetAccuracy() + ";";
 		output += microPrecision() + ";" + microRecall() + ";";
-		output += microFmeasure() + ";" + macroPrecision() + ";";
-		output += macroRecall() + ";" + macroFmeasure() + ";" + one_error()+ ";";
+		output += microFmeasure() + ";" + microAUC() + ";" + macroPrecision() + ";";
+		output += macroRecall() + ";" + macroFmeasure() + ";" + macroAUC() + ";" + one_error()+ ";";
 		output += coverage() + ";" + rloss() + ";" + avg_precision();
 		output += ";" + this.numPredictedLabels;
-		
+                /*
+                for (int i = 0; i < numLabels(); i++) {
+                    output += ";" + labelAccuracy[i];
+		}
+                */
 		return output;
 	}
 	
