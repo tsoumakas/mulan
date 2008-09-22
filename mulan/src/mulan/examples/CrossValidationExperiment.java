@@ -11,7 +11,7 @@ import mulan.evaluation.Evaluator;
 import weka.core.Instances;
 import java.io.*;
 import mulan.*;
-import mulan.classifier.LabelPowersetClassifier;
+import mulan.classifier.LabelPowerset;
 import mulan.classifier.MLkNN;
 import mulan.classifier.RAKEL;
 import mulan.evaluation.IntegratedCrossvalidation;
@@ -53,7 +53,7 @@ public class CrossValidationExperiment {
             //* Label Powerset Classifier
             System.out.println("LP");
             J48 lpBaseClassifier = new J48();
-            LabelPowersetClassifier lp = new LabelPowersetClassifier(lpBaseClassifier, numLabels);
+            LabelPowerset lp = new LabelPowerset(lpBaseClassifier, numLabels);
             results = eval.crossValidateAll(lp, data, 10);
             System.out.println(results.toString());
             System.gc();
