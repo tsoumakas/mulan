@@ -6,7 +6,7 @@
 package mulan.examples;
 
 import java.io.FileReader;
-import mulan.classifier.LabelPowersetClassifier;
+import mulan.classifier.LabelPowerset;
 import mulan.evaluation.BinaryPrediction;
 import mulan.evaluation.Evaluator;
 import mulan.evaluation.IntegratedEvaluation;
@@ -36,7 +36,7 @@ public class GettingPredictionsOnTestSet {
         //* Label Powerset Classifier
         System.out.println("LP");
         J48 lpBaseClassifier = new J48();
-        LabelPowersetClassifier lp = new LabelPowersetClassifier(lpBaseClassifier, numLabels);
+        LabelPowerset lp = new LabelPowerset(lpBaseClassifier, numLabels);
         lp.buildClassifier(traindata);
         results = eval.evaluateAll(lp, testdata);
         BinaryPrediction[][] preds = results.getPredictions();
