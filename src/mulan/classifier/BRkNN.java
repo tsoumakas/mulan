@@ -10,6 +10,25 @@ import weka.core.neighboursearch.LinearNNSearch;
 
 /**
  * Simple BR implementation of the KNN algorithm
+ * <!-- globalinfo-start -->
+ * 
+ * <pre>
+ * Class implementing the base BRkNN algorithm and its 2 extensions BRkNN-a and BRkNN-b.
+ * </pre>
+ * 
+ * For more information:
+ * 
+ * <pre>
+ * E. Spyromitros, G. Tsoumakas, I. Vlahavas, “An Empirical Study of Lazy Multilabel Classification Algorithms”,
+ * Proc. 5th Hellenic Conference on Artificial Intelligence (SETN 2008), Springer, Syros, Greece, 2008.
+ * http://mlkd.csd.auth.gr/multilabel.html
+ * </pre>
+ * 
+ * <!-- globalinfo-end -->
+ * 
+ * <!-- technical-bibtex-start --> BibTeX:
+ * 
+ * <p/> <!-- technical-bibtex-end -->
  * 
  * @author Eleftherios Spyromitros-Xioufis ( espyromi@csd.auth.gr )
  * 
@@ -25,10 +44,16 @@ public class BRkNN extends MultiLabelKNN {
 
 	public static final int BR = 0;
 
-	public static final int BR2 = 2;
+	public static final int BRexta = 2;
 
-	public static final int BR3 = 3;
+	public static final int BRextb = 3;
 
+	
+	/**
+	 * The default constructor. (The base algorithm)
+	 * @param numLabels
+	 * @param numOfNeighbors
+	 */
 	public BRkNN(int numLabels, int numOfNeighbors) {
 		super(numLabels, numOfNeighbors);
 		distanceWeighting = WEIGHT_NONE; //weight none
@@ -36,6 +61,13 @@ public class BRkNN extends MultiLabelKNN {
 		Rand = new Random(1);
 	}
 
+	/**
+	 * Constructor giving the option to select an extension of the base version
+	 * 
+	 * @param numLabels
+	 * @param numOfNeighbors
+	 * @param method			2 for BRkNN-a 3 for BRkNN-b		
+	 */
 	public BRkNN(int numLabels, int numOfNeighbors, int method) {
 		super(numLabels, numOfNeighbors);
 		distanceWeighting = WEIGHT_NONE; //weight none
@@ -47,7 +79,9 @@ public class BRkNN extends MultiLabelKNN {
 		super.buildClassifier(train);
 	}
 
-	//IBk style
+	/**
+	 * weka Ibk style prediction
+	 */
 	public Prediction makePrediction(Instance instance) throws Exception {
 
 		LinearNNSearch lnn = new LinearNNSearch();
@@ -66,9 +100,9 @@ public class BRkNN extends MultiLabelKNN {
 
 		if (selectedMethod == 0) {//BRknn
 			predictions = labelsFromConfidences(confidences);
-		} else if (selectedMethod == 2) {//BRknn2 
+		} else if (selectedMethod == 2) {//BRknn-a 
 			predictions = labelsFromConfidences2(confidences);
-		} else if (selectedMethod == 3) {//BRknn3 
+		} else if (selectedMethod == 3) {//BRknn-b
 			predictions = labelsFromConfidences3(confidences);
 		}
 		Prediction results = new Prediction(predictions, confidences);
@@ -124,7 +158,13 @@ public class BRkNN extends MultiLabelKNN {
 		return confidences;
 	}
 
-	//old style
+	/**
+	 * old style prediction  (not in use)
+	 * 
+	 * @param instance
+	 * @return
+	 * @throws Exception
+	 */
 	public Prediction makePrediction2(Instance instance) throws Exception {
 		double[] confidences = new double[numLabels];
 		double[] predictions = new double[numLabels];
@@ -164,7 +204,7 @@ public class BRkNN extends MultiLabelKNN {
 	}
 
 	/**
-	 * used for BRknn2
+	 * used for BRknn-a
 	 */
 	protected double[] labelsFromConfidences2(double[] confidences) {
 		double[] result = new double[confidences.length];
@@ -185,7 +225,7 @@ public class BRkNN extends MultiLabelKNN {
 	}
 
 	/**
-	 * used for BR KNN 3 (break ties arbitrarily)
+	 * used for BRkNN-b (break ties arbitrarily)
 	 */
 	protected double[] labelsFromConfidences3(double[] confidences) {
 		double[] result = new double[numLabels];
@@ -225,7 +265,7 @@ public class BRkNN extends MultiLabelKNN {
 	}
 
 	/**
-	 * old style used for BR KNN 3
+	 * old style used for BRkNN-b (not in use)
 	 */
 	protected double[] labelsFromConfidences3old(double[] confidences) {
 		double[] result = new double[numLabels];
