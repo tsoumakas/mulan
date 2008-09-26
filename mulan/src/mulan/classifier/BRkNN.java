@@ -19,7 +19,7 @@ import weka.core.neighboursearch.LinearNNSearch;
  * For more information:
  * 
  * <pre>
- * E. Spyromitros, G. Tsoumakas, I. Vlahavas, “An Empirical Study of Lazy Multilabel Classification Algorithms”,
+ * E. Spyromitros, G. Tsoumakas, I. Vlahavas, An Empirical Study of Lazy Multilabel Classification Algorithms,
  * Proc. 5th Hellenic Conference on Artificial Intelligence (SETN 2008), Springer, Syros, Greece, 2008.
  * http://mlkd.csd.auth.gr/multilabel.html
  * </pre>
