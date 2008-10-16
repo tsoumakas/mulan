@@ -145,7 +145,7 @@ public class Statistics implements Serializable
        
     /** 
      * calculates various multilabel statistics, such as label cardinality, <br>
-     * label density and the set of dinstinct labels along with their frequency
+     * label density and the set of distinct labels along with their frequency
      */
     public void calculateStats(Instances data, int labels) {        
         // initialize statistics

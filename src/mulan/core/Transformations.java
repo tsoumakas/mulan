@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package mulan.core;
 
 import java.util.HashSet;
@@ -28,7 +23,7 @@ public class Transformations {
         Instances newData = null;
 
         // gather distinct label combinations
-        HashSet<LabelSet> labelSets = new HashSet();
+        HashSet<LabelSet> labelSets = new HashSet<LabelSet>();
         int numInstances = data.numInstances(); 
         int numPredictors = data.numAttributes() - numLabels;
         for (int i=0; i<numInstances; i++)
