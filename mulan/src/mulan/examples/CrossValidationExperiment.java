@@ -5,17 +5,16 @@ package mulan.examples;
  * @author greg
  */
 
+import java.io.FileReader;
+
 import mulan.classifier.BinaryRelevanceClassifier;
-import mulan.classifier.AbstractMultiLabelClassifier.*;
-import mulan.evaluation.Evaluator;
-import weka.core.Instances;
-import java.io.*;
-import mulan.*;
 import mulan.classifier.LabelPowerset;
-import mulan.classifier.MLkNN;
 import mulan.classifier.RAKEL;
+import mulan.classifier.lazy.MLkNN;
+import mulan.evaluation.Evaluator;
 import mulan.evaluation.IntegratedCrossvalidation;
 import weka.classifiers.trees.J48;
+import weka.core.Instances;
 
 public class CrossValidationExperiment {
     
