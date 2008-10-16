@@ -345,7 +345,7 @@ public class IntegratedEvaluation {
                 
 		//Compute micro averaged measures
 		double tp = Utils.sum(truePositives);
-		double tn = Utils.sum(trueNegatives);
+		//double tn = Utils.sum(trueNegatives);
 		double fp = Utils.sum(falsePositives);
 		double fn = Utils.sum(falseNegatives);
 

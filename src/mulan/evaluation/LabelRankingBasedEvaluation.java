@@ -138,7 +138,7 @@ public class LabelRankingBasedEvaluation extends EvaluationBase {
 	 * <br>
 	 * The performance is perfect when one_error = 0
 	 */
-	private void compute_one_error() {
+	protected void compute_one_error() {
 		one_error = 0;
 		coverage = 0;
 
@@ -160,7 +160,7 @@ public class LabelRankingBasedEvaluation extends EvaluationBase {
 		one_error /= numInstances;
 	}
 
-	private void compute_one_error2() {
+	protected void compute_one_error2() {
 		one_error = 0;
 
 		int numLabels = numLabels();
@@ -192,7 +192,7 @@ public class LabelRankingBasedEvaluation extends EvaluationBase {
 	 * <br>
 	 * The smaller the value of coverage, the better the performance.
 	 */
-	private void compute_coverage() {
+	protected void compute_coverage() {
 		coverage = 0;
 
 		int numLabels = numLabels();
@@ -229,7 +229,7 @@ public class LabelRankingBasedEvaluation extends EvaluationBase {
 	 * The performance is perfect when rloss = 0. The smaller the value of
 	 * rloss, the better the performance.
 	 */
-	private void compute_rloss() {
+	protected void compute_rloss() {
 		rloss = 0;
 
 		int numLabels = numLabels();
@@ -267,12 +267,12 @@ public class LabelRankingBasedEvaluation extends EvaluationBase {
 
 	/**
 	 * average precision: evaluates the average fraction of labels ranked above
-	 * a particular label y ∈ Y which actually are in Y.<br>
+	 * a particular label y in Y which actually are in Y.<br>
 	 * <br>
 	 * The performance is perfect when avgprec = 1. The bigger the value of
 	 * avgprec the better the performance.
 	 */
-	private void compute_avg_precision() {
+	protected void compute_avg_precision() {
 		avg_precision = 0;
 
 		int numLabels = numLabels();
