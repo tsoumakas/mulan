@@ -21,7 +21,6 @@ import java.util.Random;
 import java.util.Vector;
 
 import weka.classifiers.Classifier;
-import weka.core.FastVector;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.SerializedObject;
