@@ -207,7 +207,7 @@ public class LabelSet implements Serializable, Comparable<LabelSet>
     
     
     /** 
-     * Used for sorting collections of labelset accorsing to size
+     * Used for sorting collections of labelsets according to size
      */
     public int compareTo(LabelSet o) {
         if (o.size() < size()) 
