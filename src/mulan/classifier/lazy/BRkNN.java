@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import mulan.classifier.Prediction;
-
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.Utils;
@@ -38,11 +37,31 @@ import weka.core.neighboursearch.LinearNNSearch;
 @SuppressWarnings("serial")
 public class BRkNN extends MultiLabelKNN {
 
+	/**
+	 * Stores the average number of labels among the knn for each instance
+	 * Used in BRkNN-b extension
+	 */
 	int avgPredictedLabels;
 	
+	/**
+     * Random number generator used for tie breaking
+     */
 	protected Random Rand;
 
+	/**
+     * Meaningful values are 0,2 and 3
+     */
 	protected int selectedMethod;
+
+	private int cvNumFolds;
+
+	private int cvMinK;
+
+	private int cvMaxK;
+
+	private int cvStepK;
+
+	private boolean cvParamSelection = false;
 
 	public static final int BR = 0;
 
@@ -53,6 +72,7 @@ public class BRkNN extends MultiLabelKNN {
 	
 	/**
 	 * The default constructor. (The base algorithm)
+	 * 
 	 * @param numLabels
 	 * @param numOfNeighbors
 	 */
@@ -80,6 +100,18 @@ public class BRkNN extends MultiLabelKNN {
 	public void buildClassifier(Instances train) throws Exception {
 		super.buildClassifier(train);
 	}
+	
+	  public void setParamSets(int numFolds, int minK, int maxK, int stepK) {
+		cvNumFolds = numFolds;
+		cvMinK = minK;
+		cvMaxK = Math.min(numLabels - 1, maxK);
+		cvStepK = stepK;
+	}
+	  
+	  public void setParamSelectionViaCV(boolean flag) {
+		cvParamSelection = flag;
+	}
+	
 
 	/**
 	 * weka Ibk style prediction
@@ -100,11 +132,11 @@ public class BRkNN extends MultiLabelKNN {
 		double[] confidences = getConfidences(knn, distances);
 		double[] predictions = null;
 
-		if (selectedMethod == 0) {//BRknn
+		if (selectedMethod == BR) {//BRknn
 			predictions = labelsFromConfidences(confidences);
-		} else if (selectedMethod == 2) {//BRknn-a 
+		} else if (selectedMethod == BRexta) {//BRknn-a 
 			predictions = labelsFromConfidences2(confidences);
-		} else if (selectedMethod == 3) {//BRknn-b
+		} else if (selectedMethod == BRextb) {//BRknn-b
 			predictions = labelsFromConfidences3(confidences);
 		}
 		Prediction results = new Prediction(predictions, confidences);
