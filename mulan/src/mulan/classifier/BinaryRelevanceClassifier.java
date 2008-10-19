@@ -134,6 +134,12 @@ public class BinaryRelevanceClassifier extends AbstractMultiLabelClassifier
 		result.setClassIndex(result.numAttributes() - 1);
 		return result;
 	}
+
+	@Override
+	public String getRevision() {
+		// TODO Auto-generated method stub
+		return null;
+	}
           
 }
 
