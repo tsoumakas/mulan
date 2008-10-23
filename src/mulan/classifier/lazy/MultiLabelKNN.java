@@ -151,11 +151,4 @@ public class MultiLabelKNN extends AbstractMultiLabelClassifier {
         this.distanceWeighting = distanceWeighting;
     }
 
-	@Override
-	public String getRevision() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
 }
