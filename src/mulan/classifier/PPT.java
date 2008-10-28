@@ -18,8 +18,6 @@ import weka.core.TechnicalInformation;
 import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
 
-
-
 /**
  * Class that implements the PPT algorithm <p>
  *
