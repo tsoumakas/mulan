@@ -99,6 +99,7 @@ public class RAKEL extends AbstractMultiLabelClassifier
                
     public RAKEL(int labels) {
         super(labels);
+        rnd = new Random();
     }
     
     public void setSeed(int x) {
@@ -127,11 +128,11 @@ public class RAKEL extends AbstractMultiLabelClassifier
         }
         
 	public void setNumModels(int models) {
-		numOfModels = models;
-		classIndicesPerSubset = new int[numOfModels][sizeOfSubset];
-		absoluteIndicesToRemove = new int[numOfModels][sizeOfSubset];
-		subsetClassifiers = new LabelPowerset[numOfModels];
-		metadataTest = new Instances[numOfModels];
+            numOfModels = models;
+            classIndicesPerSubset = new int[numOfModels][sizeOfSubset];
+            absoluteIndicesToRemove = new int[numOfModels][sizeOfSubset];
+            subsetClassifiers = new LabelPowerset[numOfModels];
+            metadataTest = new Instances[numOfModels];
 	}
 	
         public int getNumModels() {
@@ -233,7 +234,7 @@ public class RAKEL extends AbstractMultiLabelClassifier
                         avgMetric /= cvNumFolds;
                         if (avgMetric > bestMetric) {
                             bestK = k;
-                            bestM = m;
+                            bestM = m+1;
                             bestT = cvThresholdStart+cvThresholdIncrement*t;
                             bestMetric = avgMetric;
                         }
@@ -246,9 +247,9 @@ public class RAKEL extends AbstractMultiLabelClassifier
                                "Subset size     : " + bestK + 
                                "Number of models: " + bestM +
                                "Threshold       : " + bestT);
-            */
+            //*/
             setSizeOfSubset(bestK);
-            setNumModels(bestM);
+            setNumModels(bestM); 
             setThreshold(bestT);            
         }        
         
