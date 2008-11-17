@@ -21,6 +21,7 @@ import java.util.Random;
 
 import mulan.core.LabelSet;
 import mulan.core.Transformations;
+import mulan.core.Util;
 import weka.classifiers.Classifier;
 import weka.core.Instance;
 import weka.core.Instances;
@@ -34,7 +35,7 @@ import weka.core.SparseInstance;
  * @author Robert Friberg
  * @version $Revision: 0.05 $ 
  */
-public class LabelPowerset extends AbstractMultiLabelClassifier
+public class LabelPowerset extends TransformationBasedMultiLabelClassifier
 {
     /**
      * The confidence values for each label are calculated in the following ways
@@ -58,8 +59,7 @@ public class LabelPowerset extends AbstractMultiLabelClassifier
 
     public LabelPowerset(Classifier classifier, int numLabels) throws Exception
     {
-        super(numLabels);
-        this.baseClassifier = makeCopy(classifier);
+        super(classifier, numLabels);
         Rand = new Random(1);
     }
    
@@ -91,8 +91,6 @@ public class LabelPowerset extends AbstractMultiLabelClassifier
     @Override
     public void buildClassifier(Instances train) throws Exception
     {
-        //super.buildClassifier(train);
-        if (baseClassifier == null) baseClassifier = defaultClassifier(); 
         metadataTrain = new Instances(train, 0);
 
         Transformations trans = new Transformations(numLabels);
@@ -148,7 +146,7 @@ public class LabelPowerset extends AbstractMultiLabelClassifier
             double[] distribution = distributionFromBaseClassifier(instance);
             
             if (!predictionBasedOnConfidences) {
-                int classIndex = RandomIndexOfMax(distribution,Rand);
+                int classIndex = Util.RandomIndexOfMax(distribution,Rand);
                 String strClass = (metadataTest.classAttribute()).value(classIndex);
                 LabelSet labels = LabelSet.fromBitString(strClass);
                 predictions = labels.toDoubleArray();

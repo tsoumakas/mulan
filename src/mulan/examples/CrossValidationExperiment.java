@@ -40,10 +40,8 @@ public class CrossValidationExperiment {
 
             //* Binary Relevance Classifier
             System.out.println("BR");
-            BinaryRelevanceClassifier br = new BinaryRelevanceClassifier();
             J48 brBaseClassifier = new J48();
-            br.setBaseClassifier(brBaseClassifier);
-            br.setNumLabels(numLabels);
+            BinaryRelevanceClassifier br = new BinaryRelevanceClassifier(brBaseClassifier,numLabels);
             results = eval.crossValidateAll(br, data, 10);           
             System.out.println(results.toString());
             System.gc();
@@ -60,9 +58,8 @@ public class CrossValidationExperiment {
             
             //* RAKEL
             System.out.println("RAKEL");
-            RAKEL rakel = new RAKEL(numLabels, 10, 3);
             J48 rakelBaseClassifier = new J48();
-            rakel.setBaseClassifier(rakelBaseClassifier);
+            RAKEL rakel = new RAKEL(rakelBaseClassifier, numLabels, 10, 3);
             rakel.setParamSelectionViaCV(true);
             rakel.setParamSets(3, 2, numLabels-1, 1, 500, 0.1, 0.1, 9);
             results = eval.crossValidateAll(rakel, data, 10);

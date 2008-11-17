@@ -16,6 +16,8 @@ package mulan.classifier;
  *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+import java.util.Arrays;
+
 import weka.classifiers.Classifier;
 import weka.core.Attribute;
 import weka.core.FastVector;
@@ -34,7 +36,7 @@ import weka.core.SparseInstance;
  * @author Grigorios Tsoumakas
  * @version $Revision: 0.03 $ 
  */
-public class IncludeLabelsClassifier extends AbstractMultiLabelClassifier implements
+public class IncludeLabelsClassifier extends TransformationBasedMultiLabelClassifier implements
 		MultiLabelClassifier
 {
 	
@@ -48,27 +50,14 @@ public class IncludeLabelsClassifier extends AbstractMultiLabelClassifier implem
 	protected Instances transformed;
 
 	
-	/**
-	 * Default constructor needed to allow instantiation 
-	 * by reflection. If this constructor is used call setNumLabels()
-	 * and setBaseClassifier(Classifier) before building the classifier
-	 * or exceptions will hail.
-	 */
-	public IncludeLabelsClassifier()
-	{
-	}
-	
 	public IncludeLabelsClassifier(Classifier classifier, int numLabels)
 	{
-		super(numLabels);
-		this.baseClassifier = classifier;
+		super(classifier, numLabels);
 	}
 	
     @Override
     public void buildClassifier(Instances instances) throws Exception
     {
-            //super.buildClassifier(instances);
-
             //Do the transformation 
             //and generate the classifier
             transformed = determineOutputFormat(instances);	
@@ -201,6 +190,27 @@ public class IncludeLabelsClassifier extends AbstractMultiLabelClassifier implem
 		return new Prediction(labelsFromConfidences(confidences), confidences);
 	}
 
+	/**
+	 * Derive output labels from distributions.
+	 */
+	protected double[] labelsFromConfidences(double[] confidences)
+	{
+		if (thresholds == null)
+		{
+			thresholds = new double[numLabels];
+			Arrays.fill(thresholds, threshold);
+		}
+		
+		double[] result = new double[confidences.length];
+		for(int i = 0; i < result.length; i++)
+		{
+			if (confidences[i] >= thresholds[i]){
+				result[i] = 1.0;
+			}
+		}
+		return result;
+	}
+	
     public String getRevision() {
         throw new UnsupportedOperationException("Not supported yet.");
     }

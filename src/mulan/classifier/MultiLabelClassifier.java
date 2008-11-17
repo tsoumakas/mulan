@@ -1,29 +1,39 @@
 package mulan.classifier;
-import weka.classifiers.Classifier;
+
 import weka.core.Instance;
 import weka.core.Instances;
 
+/**
+ * Common interface for multi-label classifiers.
+ * 
+ * @author Eleftherios Spyromitros-Xioufis ( espyromi@csd.auth.gr )
+ * @author Jozef Vilcek
+ */
 public interface MultiLabelClassifier
 {
 
+	/**
+	 * Returns a number of labels the classifier is configured for.
+	 * The label attributes are assumed to be the last ones in {@link Instances} training data.
+	 * @return
+	 */
 	public int getNumLabels();
 	
-	public void setNumLabels(int numLabels);
-	
-	public void setBaseClassifier(Classifier classifier);
-	
-	public Classifier getBaseClassifier();
-	
-
 	/**
-	 * What about the name predict? should we call it classify? 
-	 * predictInstance? makePrediction?
-	 * @param instance
-	 * @return
-	 * @throws Exception
+	 * Computes the prediction of labels for a specified input {@link Instance}. 
+	 * 
+	 * @param instance the input instance for which the prediction is made
+	 * @return the prediction
+	 * @throws Exception if prediction was not successful
 	 */
 	public Prediction predict(Instance instance) throws Exception;
 	
+	/**
+	 * Builds the classifier. 
+	 *  
+	 * @param instances set of training data, upon which the classifier should be build
+	 * @throws Exception if classifier was not created successfully
+	 */
 	public void buildClassifier(Instances instances) throws Exception;
 
 }

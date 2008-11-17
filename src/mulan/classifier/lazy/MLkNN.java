@@ -1,5 +1,7 @@
 package mulan.classifier.lazy;
 
+import java.util.Arrays;
+
 import mulan.classifier.Prediction;
 import weka.core.Instance;
 import weka.core.Instances;
@@ -80,12 +82,6 @@ public class MLkNN extends MultiLabelKNN {
 	 * given that i:0..k of its neighbors belong to that class
 	 */
 	private double[][] CondNProbabilities;
-
-	/**
-	 * An empty constructor
-	 */
-	public MLkNN() {
-	}
 
 	/**
 	 * @param numLabels:
@@ -225,7 +221,8 @@ public class MLkNN extends MultiLabelKNN {
 		}
 	}
 
-	public Prediction makePrediction(Instance instance) throws Exception {
+	@Override
+	protected Prediction makePrediction(Instance instance) throws Exception {
 
 		double[] confidences = new double[numLabels];
 		double[] predictions = new double[numLabels];
@@ -269,5 +266,26 @@ public class MLkNN extends MultiLabelKNN {
 				System.out.println(j + " neighbours: " + CondNProbabilities[i][j]);
 			}
 		}
+	}
+	
+	/**
+	 * Derive output labels from distributions.
+	 */
+	protected double[] labelsFromConfidences(double[] confidences)
+	{
+		if (thresholds == null)
+		{
+			thresholds = new double[numLabels];
+			Arrays.fill(thresholds, threshold);
+		}
+		
+		double[] result = new double[confidences.length];
+		for(int i = 0; i < result.length; i++)
+		{
+			if (confidences[i] >= thresholds[i]){
+				result[i] = 1.0;
+			}
+		}
+		return result;
 	}
 }
