@@ -1,10 +1,10 @@
 package mulan.evaluation;
 import java.util.Random;
 
-import mulan.classifier.AbstractMultiLabelClassifier;
 import mulan.classifier.MultiLabelClassifier;
+import mulan.classifier.MultiLabelClassifierBase;
 import mulan.classifier.Prediction;
-import weka.classifiers.Classifier;
+import mulan.classifier.TransformationBasedMultiLabelClassifier;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.Utils;
@@ -57,8 +57,7 @@ public class Evaluator
 		{
 			Instances train = workingSet.trainCV(numFolds, i, random);  
 			Instances test  = workingSet.testCV(numFolds, i);
-			AbstractMultiLabelClassifier clone = 
-				(AbstractMultiLabelClassifier) Classifier.makeCopy((Classifier) classifier);
+			MultiLabelClassifier clone = MultiLabelClassifierBase.makeCopy(classifier);
 			clone.buildClassifier(train);
 			Evaluation evaluation = evaluate(clone, test);
 			labelBased[i] = evaluation.getLabelBased();
@@ -87,8 +86,7 @@ public class Evaluator
 		{
 			Instances train = workingSet.trainCV(numFolds, i, random);  
 			Instances test  = workingSet.testCV(numFolds, i);
-			AbstractMultiLabelClassifier clone = 
-				(AbstractMultiLabelClassifier) Classifier.makeCopy((Classifier) classifier);
+			MultiLabelClassifier clone = MultiLabelClassifierBase.makeCopy(classifier);
 			//long start = System.currentTimeMillis();
 			clone.buildClassifier(train);
 			//long end = System.currentTimeMillis();

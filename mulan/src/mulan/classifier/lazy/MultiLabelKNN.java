@@ -2,9 +2,8 @@ package mulan.classifier.lazy;
 
 import java.util.Random;
 
-import mulan.classifier.AbstractMultiLabelClassifier;
 import mulan.classifier.Prediction;
-
+import mulan.classifier.TransformationBasedMultiLabelClassifier;
 import weka.core.EuclideanDistance;
 import weka.core.Instance;
 import weka.core.Instances;
@@ -17,7 +16,7 @@ import weka.core.neighboursearch.LinearNNSearch;
  * 
  */
 @SuppressWarnings("serial")
-public class MultiLabelKNN extends AbstractMultiLabelClassifier {
+public class MultiLabelKNN extends TransformationBasedMultiLabelClassifier {
 
 	/** Whether the neighbors should be distance-weighted. */
 	protected int distanceWeighting;
@@ -61,8 +60,6 @@ public class MultiLabelKNN extends AbstractMultiLabelClassifier {
 	 */
 	protected Instances train = null;
 
-	public MultiLabelKNN() {
-	}
 
 	public MultiLabelKNN(int numLabels, int numOfNeighbors) {
 		super(numLabels);

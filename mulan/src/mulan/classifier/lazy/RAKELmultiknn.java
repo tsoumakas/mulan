@@ -22,21 +22,16 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Random;
 
-import mulan.classifier.AbstractMultiLabelClassifier;
-import mulan.classifier.LabelPowerset;
 import mulan.classifier.Prediction;
 import mulan.classifier.RAKEL;
+import mulan.classifier.TransformationBasedMultiLabelClassifier;
 import mulan.evaluation.BinaryPrediction;
 import mulan.evaluation.Evaluator;
 import mulan.evaluation.IntegratedEvaluation;
-import weka.classifiers.Classifier;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.SparseInstance;
-import weka.core.TechnicalInformation;
 import weka.core.Utils;
-import weka.core.TechnicalInformation.Field;
-import weka.core.TechnicalInformation.Type;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.Remove;
 
@@ -47,7 +42,7 @@ import weka.filters.unsupervised.attribute.Remove;
  * @version $Revision: 0.04 $ 
  */
 @SuppressWarnings("serial")
-public class RAKELmultiknn extends AbstractMultiLabelClassifier
+public class RAKELmultiknn extends TransformationBasedMultiLabelClassifier
 {
     /**
      * Seed for replication of random experiments
@@ -178,9 +173,9 @@ public class RAKELmultiknn extends AbstractMultiLabelClassifier
                 // rakel    
                 for (int k=cvMinK; k<=cvMaxK; k+=cvStepK)
                 {            
-                    RAKEL rakel = new RAKEL(numLabels,binomial(numLabels, k), k);
+                    RAKEL rakel = new RAKEL(baseClassifier,numLabels,binomial(numLabels, k), k);
                     rakel.setSeed(seed);
-                    rakel.setBaseClassifier(baseClassifier);
+                    //rakel.setBaseClassifier(baseClassifier);
                     int finalM = Math.min(binomial(numLabels,k),cvMaxM);
                     for (int m=0; m<finalM; m++)
                     {
@@ -235,7 +230,7 @@ public class RAKELmultiknn extends AbstractMultiLabelClassifier
             */
             setSizeOfSubset(bestK);
             setNumModels(bestM);
-            setThreshold(bestT);            
+            threshold = bestT;            
         }        
         
 
@@ -269,7 +264,6 @@ public class RAKELmultiknn extends AbstractMultiLabelClassifier
         
     @Override
     public void buildClassifier(Instances trainData) throws Exception {
-        calcIndexes(trainData);
         
         if (cvParamSelection) 
             paramSelectionViaCV(trainData);
@@ -282,8 +276,6 @@ public class RAKELmultiknn extends AbstractMultiLabelClassifier
     }
 	
     public void updateClassifier(Instances trainData, int model) throws Exception {
-        if (indexOfTrue == null)
-            calcIndexes(trainData);
 
         if (combinations == null)
             combinations = new HashSet<String>();

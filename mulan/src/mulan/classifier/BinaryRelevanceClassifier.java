@@ -4,9 +4,9 @@ import weka.classifiers.Classifier;
 import weka.core.Attribute;
 import weka.core.Instance;
 import weka.core.Instances;
+import weka.core.Utils;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.Remove;
-import weka.core.Utils;
 
 @SuppressWarnings("serial")
 /**
@@ -16,7 +16,7 @@ import weka.core.Utils;
  * @author Grigorios Tsoumakas 
  * @version $Revision: 0.03 $ 
  */
-public class BinaryRelevanceClassifier extends AbstractMultiLabelClassifier
+public class BinaryRelevanceClassifier extends TransformationBasedMultiLabelClassifier
 {
 
 	protected Instances[] metadataTest;
@@ -25,40 +25,22 @@ public class BinaryRelevanceClassifier extends AbstractMultiLabelClassifier
 	public BinaryRelevanceClassifier(Classifier classifier, int numLabels)
 			throws Exception
 	{
-		setNumLabels(numLabels);
-		dbg("BR: making classifier copies");
-		ensemble = makeCopies(classifier, numLabels);
-	}
-
-	public void setNumLabels(int numLabels)
-	{
-		super.setNumLabels(numLabels);
+		super(classifier,numLabels);
 		metadataTest = new Instances[numLabels];
-
+		debug("BR: making classifier copies");
+		ensemble = Classifier.makeCopies(classifier, numLabels);
 	}
 
-	public BinaryRelevanceClassifier()
-	{
-	}
 
 	public void buildClassifier(Instances train) throws Exception
 	{
-		dbg("BR: calling super constructor");
-		super.buildClassifier(train);
+		debug("BR: calling super constructor");
 		
-		// Added to support zero argument constructor
-		if (ensemble == null)
-		{
-			dbg("BR: making classifier copies");
-			ensemble = makeCopies(getBaseClassifier(), numLabels);
-		}
-			
-
 		for (int i = 0; i < numLabels; i++)
 		{
-			dbg("BR: transforming training set for label " + i);
+			debug("BR: transforming training set for label " + i);
 			Instances subTrain = transform(train, i);
-			dbg("BR: building base classifier for label " + i);
+			debug("BR: building base classifier for label " + i);
 			ensemble[i].buildClassifier(subTrain);
 			subTrain.delete();
 			metadataTest[i] = subTrain;

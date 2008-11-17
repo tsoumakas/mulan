@@ -1,5 +1,8 @@
 package mulan.classifier;
+import java.util.Arrays;
+
 import weka.classifiers.Classifier;
+import weka.classifiers.bayes.NaiveBayes;
 import weka.core.Attribute;
 import weka.core.FastVector;
 import weka.core.Instance;
@@ -12,7 +15,7 @@ import weka.core.SparseInstance;
  * The multiple label attributes are mapped to a single multi class
  * attribute. 
  */
-public class FlattenTrueLabelsClassifier extends AbstractMultiLabelClassifier implements
+public class FlattenTrueLabelsClassifier extends TransformationBasedMultiLabelClassifier implements
 		MultiLabelClassifier
 {
 
@@ -33,30 +36,25 @@ public class FlattenTrueLabelsClassifier extends AbstractMultiLabelClassifier im
 	 */
 	protected Instances transformed;
 
-	
-	/**
-	 * Default constructor needed to allow instantiation 
-	 * by reflection. If this constructor is used call setNumLabels()
-	 * and setBaseClassifier(Classifier) before building the classifier
-	 * or exceptions will hail.
-	 */
-	public FlattenTrueLabelsClassifier()
-	{
-	}
-	
+
 	public FlattenTrueLabelsClassifier(Classifier classifier, int numLabels)
 	{
 		super(numLabels);
 		this.classifier = classifier;
 	}
 	
+	/**
+	 * Creates an instance of {@link FlattenTrueLabelsClassifier}. 
+	 * The default base classifier used is {@link NaiveBayes}.
+	 * 
+	 * @param numLabels {@inheritDoc}
+	 */
+	public FlattenTrueLabelsClassifier(int numLabels){
+		this(new NaiveBayes(), numLabels);
+	}
+	
 	public void buildClassifier(Instances instances) throws Exception
 	{
-		super.buildClassifier(instances);
-		
-		if (classifier == null) 
-			classifier = forName("weka.classifiers.bayes.NaiveBayes", null);
-		
 		//Do the transformation 
 		//and generate the classifier
 		transformed = determineOutputFormat(instances); 
@@ -180,6 +178,27 @@ public class FlattenTrueLabelsClassifier extends AbstractMultiLabelClassifier im
 		instance = transform(instance);
 		double[] confidences = classifier.distributionForInstance(instance);
 		return new Prediction(labelsFromConfidences(confidences), confidences);
+	}
+	
+	/**
+	 * Derive output labels from distributions.
+	 */
+	protected double[] labelsFromConfidences(double[] confidences)
+	{
+		if (thresholds == null)
+		{
+			thresholds = new double[numLabels];
+			Arrays.fill(thresholds, threshold);
+		}
+		
+		double[] result = new double[confidences.length];
+		for(int i = 0; i < result.length; i++)
+		{
+			if (confidences[i] >= thresholds[i]){
+				result[i] = 1.0;
+			}
+		}
+		return result;
 	}
 
     public String getRevision() {

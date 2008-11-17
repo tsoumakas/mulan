@@ -1,9 +1,11 @@
 package mulan.classifier.lazy;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 
 import mulan.classifier.Prediction;
+import mulan.core.Util;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.Utils;
@@ -238,6 +240,27 @@ public class BRkNN extends MultiLabelKNN {
 	}
 
 	/**
+	 * Derive output labels from distributions.
+	 */
+	protected double[] labelsFromConfidences(double[] confidences)
+	{
+		if (thresholds == null)
+		{
+			thresholds = new double[numLabels];
+			Arrays.fill(thresholds, threshold);
+		}
+		
+		double[] result = new double[confidences.length];
+		for(int i = 0; i < result.length; i++)
+		{
+			if (confidences[i] >= thresholds[i]){
+				result[i] = 1.0;
+			}
+		}
+		return result;
+	}
+	
+	/**
 	 * used for BRknn-a
 	 */
 	protected double[] labelsFromConfidences2(double[] confidences) {
@@ -252,7 +275,7 @@ public class BRkNN extends MultiLabelKNN {
 		}
 		//assign the class with the greater confidence
 		if (flag == false) {
-			int index = RandomIndexOfMax(confidences,Rand);
+			int index = Util.RandomIndexOfMax(confidences,Rand);
 			result[index] = 1.0;
 		}
 		return result;

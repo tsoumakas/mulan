@@ -1,7 +1,7 @@
 package mulan.classifier.lazy;
 
-import mulan.classifier.AbstractMultiLabelClassifier;
 import mulan.classifier.Prediction;
+import mulan.classifier.TransformationBasedMultiLabelClassifier;
 import weka.core.EuclideanDistance;
 import weka.core.Instance;
 import weka.core.Instances;
@@ -14,7 +14,7 @@ import weka.core.neighboursearch.LinearNNSearch;
  *
  */
 @SuppressWarnings("serial")
-public class MultiKnn extends AbstractMultiLabelClassifier {
+public class MultiKnn extends TransformationBasedMultiLabelClassifier {
 
 	public long sumedlabels;
 
@@ -29,7 +29,7 @@ public class MultiKnn extends AbstractMultiLabelClassifier {
 	private Instances train;
 
 	public MultiKnn(int labels, int k) {
-		numLabels = labels;
+		super(labels);
 		numofNeighbours = k;
 	}
 

@@ -10,10 +10,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+
 import mulan.core.LabelSet;
 import weka.classifiers.Classifier;
-import weka.core.Instances;
 import weka.core.Instance;
+import weka.core.Instances;
 import weka.core.TechnicalInformation;
 import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
@@ -81,7 +82,6 @@ public class PPT extends LabelPowerset {
     {   
         int numInstances = data.numInstances();
         int numPredictors = data.numAttributes()-numLabels;
-        if (baseClassifier == null) baseClassifier = defaultClassifier(); 
         metadataTrain = new Instances(data, 0);
         
         // create a data structure that holds for each labelset a list with the 
