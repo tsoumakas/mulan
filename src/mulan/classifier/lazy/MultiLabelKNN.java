@@ -2,11 +2,12 @@ package mulan.classifier.lazy;
 
 import java.util.Random;
 
+import mulan.classifier.MultiLabelClassifierBase;
 import mulan.classifier.Prediction;
-import mulan.classifier.TransformationBasedMultiLabelClassifier;
 import weka.core.EuclideanDistance;
 import weka.core.Instance;
 import weka.core.Instances;
+import weka.core.TechnicalInformation;
 import weka.core.neighboursearch.LinearNNSearch;
 
 /**
@@ -16,7 +17,7 @@ import weka.core.neighboursearch.LinearNNSearch;
  * 
  */
 @SuppressWarnings("serial")
-public class MultiLabelKNN extends TransformationBasedMultiLabelClassifier {
+public abstract class MultiLabelKNN extends MultiLabelClassifierBase {
 
 	/** Whether the neighbors should be distance-weighted. */
 	protected int distanceWeighting;
@@ -26,6 +27,7 @@ public class MultiLabelKNN extends TransformationBasedMultiLabelClassifier {
 	public static final int WEIGHT_INVERSE = 2;
 	/** weight by 1-distance. */
 	public static final int WEIGHT_SIMILARITY = 4;
+	//TODO weight each neighbor's vote according to the inverse square of its distance
 	/**
 	 * Random number generator.
 	 */
@@ -147,5 +149,9 @@ public class MultiLabelKNN extends TransformationBasedMultiLabelClassifier {
     public void setDistanceWeighting(int distanceWeighting) {
         this.distanceWeighting = distanceWeighting;
     }
-
+    
+    public TechnicalInformation getTechnicalInformation(){
+		return null;//TODO: implement in subclasses
+    	
+    }
 }
