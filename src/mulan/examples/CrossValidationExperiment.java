@@ -10,6 +10,7 @@ import java.io.FileReader;
 import mulan.classifier.BinaryRelevanceClassifier;
 import mulan.classifier.LabelPowerset;
 import mulan.classifier.RAKEL;
+import mulan.classifier.lazy.BRkNN;
 import mulan.classifier.lazy.MLkNN;
 import mulan.evaluation.Evaluator;
 import mulan.evaluation.IntegratedCrossvalidation;
@@ -74,6 +75,19 @@ public class CrossValidationExperiment {
             results = eval.crossValidateAll(mlknn, data, 10);
             System.out.println(results.toString());
             System.gc();                
-            //*/        
+            //*/    
+            
+            //* BR-kNN 
+            System.out.println("BR-kNN");
+            numNeighbours = 10;
+            BRkNN brknn = new BRkNN(numLabels, numNeighbours, 0);
+            brknn.setkSelectionViaCV(true);
+            brknn.setCvMaxK(30);
+            brknn.setDebug(true);
+            brknn.buildClassifier(data);
+            //results = eval.crossValidateAll(brknn, data, 10);
+            //System.out.println(results.toString());
+            System.gc();                
+            //*/ 
         }    
 }
