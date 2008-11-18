@@ -4,7 +4,6 @@ import java.util.Random;
 import mulan.classifier.MultiLabelClassifier;
 import mulan.classifier.MultiLabelClassifierBase;
 import mulan.classifier.Prediction;
-import mulan.classifier.TransformationBasedMultiLabelClassifier;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.Utils;
