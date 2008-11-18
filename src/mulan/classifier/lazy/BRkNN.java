@@ -6,14 +6,16 @@ import java.util.Random;
 
 import mulan.classifier.Prediction;
 import mulan.core.Util;
+import mulan.evaluation.BinaryPrediction;
+import mulan.evaluation.IntegratedEvaluation;
+import weka.classifiers.lazy.IBk;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.Utils;
 import weka.core.neighboursearch.LinearNNSearch;
 
 /**
- * Simple BR implementation of the KNN algorithm
- * <!-- globalinfo-start -->
+ * Simple BR implementation of the KNN algorithm <!-- globalinfo-start -->
  * 
  * <pre>
  * Class implementing the base BRkNN algorithm and its 2 extensions BRkNN-a and BRkNN-b.
@@ -31,7 +33,8 @@ import weka.core.neighboursearch.LinearNNSearch;
  * 
  * <!-- technical-bibtex-start --> BibTeX:
  * 
- * <p/> <!-- technical-bibtex-end -->
+ * <p/>
+ * <!-- technical-bibtex-end -->
  * 
  * @author Eleftherios Spyromitros-Xioufis ( espyromi@csd.auth.gr )
  * 
@@ -40,30 +43,31 @@ import weka.core.neighboursearch.LinearNNSearch;
 public class BRkNN extends MultiLabelKNN {
 
 	/**
-	 * Stores the average number of labels among the knn for each instance
-	 * Used in BRkNN-b extension
+	 * Stores the average number of labels among the knn for each instance Used
+	 * in BRkNN-b extension
 	 */
 	int avgPredictedLabels;
-	
+
 	/**
-     * Random number generator used for tie breaking
-     */
+	 * Random number generator used for tie breaking
+	 */
 	protected Random Rand;
 
 	/**
-     * Meaningful values are 0,2 and 3
-     */
-	protected int selectedMethod;
-
-	private int cvNumFolds;
-
-	private int cvMinK;
-
+	 * The value of kNN provided by the user. This may differ from
+	 * numOfNeighbors if cross-validation is being used.
+	 */
 	private int cvMaxK;
 
-	private int cvStepK;
+	/**
+	 * Whether to select k by cross validation.
+	 */
+	private boolean cvkSelection = false;
 
-	private boolean cvParamSelection = false;
+	/**
+	 * Meaningful values are 0,2 and 3
+	 */
+	protected int selectedMethod;
 
 	public static final int BR = 0;
 
@@ -71,7 +75,6 @@ public class BRkNN extends MultiLabelKNN {
 
 	public static final int BRextb = 3;
 
-	
 	/**
 	 * The default constructor. (The base algorithm)
 	 * 
@@ -80,8 +83,8 @@ public class BRkNN extends MultiLabelKNN {
 	 */
 	public BRkNN(int numLabels, int numOfNeighbors) {
 		super(numLabels, numOfNeighbors);
-		distanceWeighting = WEIGHT_NONE; //weight none
-		selectedMethod = BR; //the default method 
+		distanceWeighting = WEIGHT_NONE; // weight none
+		selectedMethod = BR; // the default method
 		Rand = new Random(1);
 	}
 
@@ -90,43 +93,149 @@ public class BRkNN extends MultiLabelKNN {
 	 * 
 	 * @param numLabels
 	 * @param numOfNeighbors
-	 * @param method			2 for BRkNN-a 3 for BRkNN-b		
+	 * @param method
+	 *            (2 for BRkNN-a 3 for BRkNN-b)
+	 * 
 	 */
 	public BRkNN(int numLabels, int numOfNeighbors, int method) {
 		super(numLabels, numOfNeighbors);
-		distanceWeighting = WEIGHT_NONE; //weight none
+		distanceWeighting = WEIGHT_NONE; // weight none
 		selectedMethod = method;
 		Rand = new Random(1);
 	}
 
 	public void buildClassifier(Instances train) throws Exception {
 		super.buildClassifier(train);
+
+		lnn = new LinearNNSearch();
+		lnn.setDistanceFunction(dfunc);
+		lnn.setInstances(train);
+		lnn.setMeasurePerformance(false);
+
+		if (cvkSelection == true) {
+			crossValidate();
+		}
 	}
-	
-	  public void setParamSets(int numFolds, int minK, int maxK, int stepK) {
-		cvNumFolds = numFolds;
-		cvMinK = minK;
-		cvMaxK = Math.min(numLabels - 1, maxK);
-		cvStepK = stepK;
+
+	/**
+	 * 
+	 * @param flag
+	 *            if true the k is selected via cross-validation
+	 */
+	public void setkSelectionViaCV(boolean flag) {
+		cvkSelection = flag;
 	}
-	  
-	  public void setParamSelectionViaCV(boolean flag) {
-		cvParamSelection = flag;
+
+	/**
+	 * Select the best value for k by hold-one-out cross-validation. Hamming
+	 * Loss is minimized
+	 * 
+	 * @throws Exception
+	 */
+	protected void crossValidate() throws Exception {
+		try {
+			// the performance for each different k
+			double[] performanceMetric = new double[cvMaxK];
+
+			for (int i = 0; i < cvMaxK; i++) {
+				performanceMetric[i] = 0;
+			}
+
+			Instance instance;
+			Instances neighbours;
+			double[] origDistances, convertedDistances;
+			for (int i = 0; i < train.numInstances(); i++) {
+				if (isDebug && (i % 50 == 0)) {
+					debug("Cross validating " + i + "/" + train.numInstances()
+							+ "\r");
+				}
+				instance = train.instance(i);
+				neighbours = lnn.kNearestNeighbours(instance, cvMaxK);
+				origDistances = lnn.getDistances();
+
+				for (int j = cvMaxK; j > 0; j--) {
+					// Update the performance metric
+					convertedDistances = new double[origDistances.length];
+					System.arraycopy(origDistances, 0, convertedDistances, 0,
+							origDistances.length);
+					double[] confidences = this.getConfidences(neighbours,
+							convertedDistances);
+					double[] predictions = null;
+
+					if (selectedMethod == BR) {// BRknn
+						predictions = labelsFromConfidences(confidences);
+					} else if (selectedMethod == BRexta) {// BRknn-a
+						predictions = labelsFromConfidences2(confidences);
+					} else if (selectedMethod == BRextb) {// BRknn-b
+						predictions = labelsFromConfidences3(confidences);
+					}
+					Prediction thisPrediction = new Prediction(predictions,
+							confidences);
+
+					BinaryPrediction[][] bpredictions = new BinaryPrediction[1][numLabels];
+					for (int k = 0; k < numLabels; k++) {
+						int classIdx = predictors + k;
+						String classValue = instance.attribute(classIdx).value(
+								(int) instance.value(classIdx));
+						boolean actual = classValue.equals("1");
+						bpredictions[0][k] = new BinaryPrediction(
+								thisPrediction.getPrediction(k), actual,
+								thisPrediction.getConfidence(k));
+					}
+
+					IntegratedEvaluation result = new IntegratedEvaluation(
+							bpredictions);
+
+					performanceMetric[j - 1] += result.hammingLoss();
+
+					neighbours = new IBk().pruneToK(neighbours,
+							convertedDistances, j - 1);
+				}
+			}
+
+			// Display the results of the cross-validation
+			for (int i = cvMaxK; i > 0; i--) {
+				if (isDebug) {
+					debug("Hold-one-out performance of " + (i) + " neighbors ");
+				}
+				if (isDebug) {
+					debug("(Hamming Loss) = " + performanceMetric[i - 1]
+							/ train.numInstances());
+				}
+			}
+
+			// Check through the performance stats and select the best
+			// k value (or the lowest k if more than one best)
+			double[] searchStats = performanceMetric;
+
+			double bestPerformance = Double.NaN;
+			int bestK = 1;
+			for (int i = 0; i < cvMaxK; i++) {
+				if (Double.isNaN(bestPerformance)
+						|| (bestPerformance > searchStats[i])) {
+					bestPerformance = searchStats[i];
+					bestK = i + 1;
+				}
+			}
+			numOfNeighbors = bestK;
+			if (isDebug) {
+				System.err.println("Selected k = " + bestK);
+			}
+
+		} catch (Exception ex) {
+			throw new Error("Couldn't optimize by cross-validation: "
+					+ ex.getMessage());
+		}
 	}
-	
 
 	/**
 	 * weka Ibk style prediction
 	 */
 	public Prediction makePrediction(Instance instance) throws Exception {
 
-		LinearNNSearch lnn = new LinearNNSearch();
-		lnn.setDistanceFunction(dfunc);
-		lnn.setInstances(train);
-		lnn.setMeasurePerformance(false);
-
-		//in cross-validation test-train instances does not belong to the same data set
-		//Instance instance2 = new Instance(instance);
+		// in cross-validation test-train instances does not belong to the same
+		// data set
+		// Instance instance2 = new Instance(instance);
 
 		Instances knn = lnn.kNearestNeighbours(instance, numOfNeighbors);
 
@@ -134,11 +243,11 @@ public class BRkNN extends MultiLabelKNN {
 		double[] confidences = getConfidences(knn, distances);
 		double[] predictions = null;
 
-		if (selectedMethod == BR) {//BRknn
+		if (selectedMethod == BR) {// BRknn
 			predictions = labelsFromConfidences(confidences);
-		} else if (selectedMethod == BRexta) {//BRknn-a 
+		} else if (selectedMethod == BRexta) {// BRknn-a
 			predictions = labelsFromConfidences2(confidences);
-		} else if (selectedMethod == BRextb) {//BRknn-b
+		} else if (selectedMethod == BRextb) {// BRknn-b
 			predictions = labelsFromConfidences3(confidences);
 		}
 		Prediction results = new Prediction(predictions, confidences);
@@ -146,6 +255,16 @@ public class BRkNN extends MultiLabelKNN {
 
 	}
 
+	/**
+	 * Calculates the confidences of the labels, based on the neighboring
+	 * instances
+	 * 
+	 * @param neighbours
+	 *            the list of nearest neighboring instances
+	 * @param distances
+	 *            the distances of the neighbors
+	 * @return the confidences of the labels
+	 */
 	private double[] getConfidences(Instances neighbours, double[] distances) {
 		double total = 0, weight;
 		double neighborLabels = 0;
@@ -164,7 +283,8 @@ public class BRkNN extends MultiLabelKNN {
 			distances[i] = Math.sqrt(distances[i] / this.predictors);
 			switch (distanceWeighting) {
 			case WEIGHT_INVERSE:
-				weight = 1.0 / (distances[i] + 0.001); // to avoid division by zero
+				weight = 1.0 / (distances[i] + 0.001); // to avoid division by
+				// zero
 				break;
 			case WEIGHT_SIMILARITY:
 				weight = 1.0 - distances[i];
@@ -176,7 +296,8 @@ public class BRkNN extends MultiLabelKNN {
 			weight *= current.weight();
 
 			for (int j = 0; j < numLabels; j++) {
-				double value = Double.parseDouble(current.attribute(predictors + j).value(
+				double value = Double.parseDouble(current.attribute(
+						predictors + j).value(
 						(int) current.value(predictors + j)));
 				if (Utils.eq(value, 1.0)) {
 					confidences[j] += weight;
@@ -195,7 +316,7 @@ public class BRkNN extends MultiLabelKNN {
 	}
 
 	/**
-	 * old style prediction  (not in use)
+	 * old style prediction (not in use)
 	 * 
 	 * @param instance
 	 * @return
@@ -212,15 +333,14 @@ public class BRkNN extends MultiLabelKNN {
 
 		double[] votes = new double[numLabels];
 
-		//in cross-validation test-train instances does not belong to the same data set
-		//Instance instance2 = new Instance(instance);
-
-		Instances knn = new Instances(lnn.kNearestNeighbours(instance, numOfNeighbors));
+		Instances knn = new Instances(lnn.kNearestNeighbours(instance,
+				numOfNeighbors));
 
 		for (int i = 0; i < numLabels; i++) {
 			int aces = 0; // num of aces in Knn for i
 			for (int k = 0; k < numOfNeighbors; k++) {
-				double value = Double.parseDouble(train.attribute(predictors + i).value(
+				double value = Double.parseDouble(train.attribute(
+						predictors + i).value(
 						(int) knn.instance(k).value(predictors + i)));
 				if (Utils.eq(value, 1.0)) {
 					aces++;
@@ -242,30 +362,27 @@ public class BRkNN extends MultiLabelKNN {
 	/**
 	 * Derive output labels from distributions.
 	 */
-	protected double[] labelsFromConfidences(double[] confidences)
-	{
-		if (thresholds == null)
-		{
+	protected double[] labelsFromConfidences(double[] confidences) {
+		if (thresholds == null) {
 			thresholds = new double[numLabels];
 			Arrays.fill(thresholds, threshold);
 		}
-		
+
 		double[] result = new double[confidences.length];
-		for(int i = 0; i < result.length; i++)
-		{
-			if (confidences[i] >= thresholds[i]){
+		for (int i = 0; i < result.length; i++) {
+			if (confidences[i] >= thresholds[i]) {
 				result[i] = 1.0;
 			}
 		}
 		return result;
 	}
-	
+
 	/**
 	 * used for BRknn-a
 	 */
 	protected double[] labelsFromConfidences2(double[] confidences) {
 		double[] result = new double[confidences.length];
-		boolean flag = false; //check the case that no label is true
+		boolean flag = false; // check the case that no label is true
 
 		for (int i = 0; i < result.length; i++) {
 			if (confidences[i] >= threshold) {
@@ -273,9 +390,9 @@ public class BRkNN extends MultiLabelKNN {
 				flag = true;
 			}
 		}
-		//assign the class with the greater confidence
+		// assign the class with the greater confidence
 		if (flag == false) {
-			int index = Util.RandomIndexOfMax(confidences,Rand);
+			int index = Util.RandomIndexOfMax(confidences, Rand);
 			result[index] = 1.0;
 		}
 		return result;
@@ -295,7 +412,8 @@ public class BRkNN extends MultiLabelKNN {
 		int i = numLabels - 1;
 
 		while (i > 0) {
-			if (confidences[indices[i]] > confidences[indices[numLabels - avgPredictedLabels]]) {
+			if (confidences[indices[i]] > confidences[indices[numLabels
+					- avgPredictedLabels]]) {
 				result[indices[i]] = 1.0;
 				counter++;
 			} else if (confidences[indices[i]] == confidences[indices[numLabels
@@ -308,7 +426,7 @@ public class BRkNN extends MultiLabelKNN {
 		}
 
 		int size = lastindices.size();
-	
+
 		int j = avgPredictedLabels - counter;
 		while (j > 0) {
 			int next = Rand.nextInt(size);
@@ -338,6 +456,16 @@ public class BRkNN extends MultiLabelKNN {
 			conf2[maxindex] = -1.0;
 		}
 		return result;
+	}
+
+	/**
+	 * set the maximum number of neighbors to be evaluated
+	 * via cross-validation
+	 * 
+	 * @param cvMaxK
+	 */
+	public void setCvMaxK(int cvMaxK) {
+		this.cvMaxK = cvMaxK;
 	}
 
 }
