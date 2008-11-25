@@ -17,6 +17,7 @@ package mulan.classifier;
  */
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Date;
 
 import weka.core.Instance;
@@ -31,7 +32,8 @@ import weka.core.TechnicalInformationHandler;
  *
  * @author Robert Friberg
  * @author Jozef Vilcek
- * @version $Revision: 0.02 $ 
+ * @author Grigorios Tsoumakas
+ * @version $Revision: 0.3 $ 
 */
 public abstract class MultiLabelClassifierBase 
 implements TechnicalInformationHandler, MultiLabelClassifier, Serializable {
@@ -46,8 +48,8 @@ implements TechnicalInformationHandler, MultiLabelClassifier, Serializable {
 	protected boolean isDebug = false;
 	
 	/**
-	 * Labels with probability over this value are included in the output unless
-	 * each label has an individual threshold, see thresholds[].
+	 * Labels with confidence over this value are included in the output 
+	 * unless each label has an individual threshold, see thresholds[].
 	 */
 	protected double threshold = 0.5;
 	
@@ -56,7 +58,13 @@ implements TechnicalInformationHandler, MultiLabelClassifier, Serializable {
 	 */
 	protected double[] thresholds;
 
-/*  TODO: Subset mapping stuff - decide if this will be reused somehow or discard
+        /**
+         * Whether to threshold the confidences in order to get the final 
+         * binary predictions
+         */
+        protected boolean makePredictionsBasedOnConfidences = false;
+        
+        /*  TODO: Subset mapping stuff - decide if this will be reused somehow or discard
 	public enum SubsetMappingMethod {
 		NONE,
 		GREEDY,
@@ -96,23 +104,64 @@ implements TechnicalInformationHandler, MultiLabelClassifier, Serializable {
 	 */
 	public abstract void buildClassifier(Instances instances) throws Exception;
 	
-	
+        public void setMakePredictionsBasedOnConfidences(boolean value)
+        {
+            makePredictionsBasedOnConfidences = value;
+        }
+                
+	public void setThresholds(double[] t) 
+        {
+            thresholds = Arrays.copyOf(t, t.length);
+        }
+        
+        public double[] getThresholds() 
+        {
+            return thresholds;
+        }
+        
+        public void setThreshold(double t) 
+        {
+            threshold = t;
+        }
+        
+        public double getThreshold() 
+        {
+            return threshold;
+        }
+        
 	public final Prediction predict(Instance instance) throws Exception
 	{
-		Prediction original = makePrediction(instance);
+            Prediction original = makePrediction(instance);
 		
-/*		TODO: Subset mapping stuff - decide if this will be reused somehow or discard
-		if (subsetMappingMethod == SubsetMappingMethod.GREEDY)
-		{
-			return subsetMapper.nearestSubset(instance, original.predictedLabels);
-		}
-		else if (subsetMappingMethod == SubsetMappingMethod.PROBABILISTIC)
-		{
-			return hybridMapper.nearestSubset(instance, original.predictedLabels);
-		}
-		else return original;
+            // handle thresholds 
+            if (makePredictionsBasedOnConfidences) 
+            {
+                if (thresholds == null)
+                {
+                    thresholds = new double[numLabels];
+                    Arrays.fill(thresholds, threshold);
+                }
+            
+                for (int i=0; i<original.numLabels; i++) {
+                    if (original.getConfidence(i) > thresholds[i])
+                        original.setPrediction(i, true);
+                    else
+                        original.setPrediction(i, false);
+                }
+            }
+                
+/*          TODO: Subset mapping stuff - decide if this will be reused somehow or discard
+            if (subsetMappingMethod == SubsetMappingMethod.GREEDY)
+            {
+                    return subsetMapper.nearestSubset(instance, original.predictedLabels);
+            }
+            else if (subsetMappingMethod == SubsetMappingMethod.PROBABILISTIC)
+            {
+                    return hybridMapper.nearestSubset(instance, original.predictedLabels);
+            }
+            else return original;
 */	
-		return original;
+            return original;
 	}
 	
 	
@@ -165,7 +214,7 @@ implements TechnicalInformationHandler, MultiLabelClassifier, Serializable {
 	 * @exception Exception if an error occurs
 	 */
 	public static MultiLabelClassifier makeCopy(MultiLabelClassifier model) 
-	throws Exception {
+	throws Exception {      
 	    return (MultiLabelClassifier) new SerializedObject(model).getObject();
 	}
 	
