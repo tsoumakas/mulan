@@ -41,17 +41,10 @@ public class LabelPowerset extends TransformationBasedMultiLabelClassifier
      * The confidence values for each label are calculated in the following ways
      * 1: Confidence of 1 for all labels (1 if label true, 0 if label is false)
      * 2: Confidence calculated based on the distribution of probabilities 
-     *    obtained from the base classifier
+     *    obtained from the base classifier, as introduced by the PPT algorithm
      */
     private int confidenceCalculationMethod = 2;
-        
-    /**
-     * The PPT algorithm introduced an approach that uses the confidences of
-     * each subset and a threshold in order to output the final predictions
-     * When this variable is true, then this PPT approach is employed
-     */
-    private boolean predictionBasedOnConfidences=false;            
-        
+                
     protected Instances metadataTrain;
     protected Instances metadataTest;
         
@@ -81,11 +74,6 @@ public class LabelPowerset extends TransformationBasedMultiLabelClassifier
     public int indexOfClassValue(String value)
     {
         return metadataTest.attribute(metadataTest.numAttributes()-1).indexOfValue(value);
-    }
-
-    public void setPredictionBasedOnConfidences(boolean b)
-    {
-        predictionBasedOnConfidences = b;
     }
     
     @Override
@@ -141,58 +129,34 @@ public class LabelPowerset extends TransformationBasedMultiLabelClassifier
             String strClass = (metadataTest.classAttribute()).value(0);
             LabelSet labels = LabelSet.fromBitString(strClass);
             predictions = labels.toDoubleArray();
-            confidences = Arrays.copyOf(predictions, numLabels);
+            confidences = Arrays.copyOf(predictions, predictions.length);
         } else {        
             double[] distribution = distributionFromBaseClassifier(instance);
             
-            if (!predictionBasedOnConfidences) {
-                int classIndex = Util.RandomIndexOfMax(distribution,Rand);
-                String strClass = (metadataTest.classAttribute()).value(classIndex);
-                LabelSet labels = LabelSet.fromBitString(strClass);
-                predictions = labels.toDoubleArray();
+            int classIndex = Util.RandomIndexOfMax(distribution,Rand);
+            String strClass = (metadataTest.classAttribute()).value(classIndex);
+            LabelSet labels = LabelSet.fromBitString(strClass);
+            predictions = labels.toDoubleArray();
+            
+            switch (confidenceCalculationMethod) 
+            {
+                case 1: confidences = Arrays.copyOf(predictions, predictions.length);
+                        break;
+                case 2: confidences = new double[numLabels]; 
+                        for (int i=0; i<distribution.length; i++)
+                        {
+                            strClass = (metadataTest.classAttribute()).value(i);
+                            labels = LabelSet.fromBitString(strClass);
+                            double[] predictionsTemp = labels.toDoubleArray();
+                            double confidence = distribution[i];
+                            for (int j=0; j<numLabels;j++)
+                                if (predictionsTemp[j] == 1)
+                                    confidences[j] += confidence;
+                        }    
+                
 
-                if (confidenceCalculationMethod == 1)
-                    confidences = Arrays.copyOf(predictions, numLabels);
 
-                if (confidenceCalculationMethod == 2)
-                {
-                    confidences = new double[numLabels]; 
-                    for (int i=0; i<distribution.length; i++)
-                    {
-                        strClass = (metadataTest.classAttribute()).value(i);
-                        labels = LabelSet.fromBitString(strClass);
-                        double[] predictionsTemp = labels.toDoubleArray();
-                        double confidence = distribution[i];
-                        for (int j=0; j<numLabels;j++)
-                            if (predictionsTemp[j] == predictions[j])
-                                confidences[j] += confidence;
-                    }            
-
-                    for (int j=0; j<numLabels; j++) {
-                        if (predictions[j] == 0)
-                            confidences[j] = 1-confidences[j];
-                    }                      
-                }
-            } else {
-                confidences = new double[numLabels]; 
-                for (int i=0; i<distribution.length; i++)
-                {
-                    String strClass = (metadataTest.classAttribute()).value(i);
-                    LabelSet labels = LabelSet.fromBitString(strClass);
-                    double[] predictionsTemp = labels.toDoubleArray();
-                    double confidence = distribution[i];
-                    for (int j=0; j<numLabels;j++)
-                        if (predictionsTemp[j] == 1)
-                            confidences[j] += confidence;
-                }                            
-                for (int j=0; j<numLabels; j++)
-                {
-                    if (confidences[j] >= threshold)
-                        predictions[j] = 1;
-                    else
-                        predictions[j] = 0;
-                }
-            }            
+            }
         }
         
         Prediction result = new Prediction(predictions, confidences);
