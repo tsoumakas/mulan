@@ -7,6 +7,7 @@ package mulan.examples;
 
 import java.io.FileReader;
 import mulan.classifier.LabelPowerset;
+import mulan.classifier.neural.BPMLL;
 import mulan.evaluation.BinaryPrediction;
 import mulan.evaluation.Evaluator;
 import mulan.evaluation.IntegratedEvaluation;
@@ -52,6 +53,30 @@ public class GettingPredictionsOnTestSet {
             System.out.println();
         }
         System.out.println(results.toString());
-        System.gc();        
+        System.gc(); 
+        //*/
+        
+        //* BPMLL Classifier
+        System.out.println("BPMLL");
+        BPMLL bpmll = new BPMLL(numLabels);
+        bpmll.setHiddenLayers(new int[]{50});
+        bpmll.setDebug(true);
+        bpmll.buildClassifier(traindata);
+        results = eval.evaluateAll(bpmll, testdata);
+        BinaryPrediction[][] predictions = results.getPredictions();
+        for (int i=0; i<predictions.length; i++)
+        {
+            System.out.print("test example " + (i+1) + ": ");                    
+            for (int j=0; j<predictions[i].length; j++)
+            {
+                boolean prediction = predictions[i][j].getPrediction();
+                if (prediction)
+                    System.out.print(testdata.attribute(testdata.numAttributes()-numLabels+j).name() + " ");
+            }
+            System.out.println();
+        }
+        System.out.println(results.toString());
+        System.gc(); 
+        //*/
     }
 }
