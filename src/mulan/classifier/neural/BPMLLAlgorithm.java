@@ -11,7 +11,7 @@ import java.util.List;
  * For more information see:
  * <br/>
  * Zhang, M.L., Zhou, Z.H.: Multi-label neural networks with applications to functional genomics 
- * and text categorization. IEEE Transactions on Knowledge and Data Engineering 18 (2006) 1338–1351
+ * and text categorization. IEEE Transactions on Knowledge and Data Engineering 18 (2006) 1338-1351
  * 
  * @author Jozef Vilcek
  */
