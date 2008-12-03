@@ -309,9 +309,9 @@ public class RAKEL extends TransformationBasedMultiLabelClassifier
             selected = new boolean[numLabels];
             for (int j=0; j<sizeOfSubset; j++) {
                 int randomLabel;
-                randomLabel = Math.abs(rnd.nextInt() % numLabels);
+                randomLabel = rnd.nextInt(numLabels);
                 while (selected[randomLabel] != false) {
-                    randomLabel = Math.abs(rnd.nextInt() % numLabels);
+                    randomLabel = rnd.nextInt(numLabels);
                 }
                 selected[randomLabel] = true;
                 //System.out.println("label: " + randomLabel);
