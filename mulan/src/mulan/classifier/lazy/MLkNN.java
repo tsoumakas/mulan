@@ -127,11 +127,12 @@ public class MLkNN extends MultiLabelKNN {
 		return result;
 	}
 
+    @Override
 	public void buildClassifier(Instances train) throws Exception {
 		super.buildClassifier(train);
 		
-		ComputePrior(train);
-		ComputeCond(train);
+		ComputePrior();
+		ComputeCond();
 
 	}
 
@@ -142,7 +143,7 @@ public class MLkNN extends MultiLabelKNN {
 	 * @param train :
 	 *            the training dataset
 	 */
-	private void ComputePrior(Instances train) {
+	private void ComputePrior() {
 		for (int i = 0; i < numLabels; i++) {
 			int temp_Ci = 0;
 			for (int j = 0; j < train.numInstances(); j++) {
@@ -163,7 +164,7 @@ public class MLkNN extends MultiLabelKNN {
 	 * @param train :
 	 *            the training dataset
 	 */
-	private void ComputeCond(Instances train) throws Exception {
+	private void ComputeCond() throws Exception {
 
 		lnn = new LinearNNSearch();
 		lnn.setDistanceFunction(dfunc);
