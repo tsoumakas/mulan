@@ -319,8 +319,9 @@ public class RAKEL extends TransformationBasedMultiLabelClassifier
             }
             Arrays.sort(classIndicesPerSubset[model]);
         } while (combinations.add(Arrays.toString(classIndicesPerSubset[model])) == false);
-        System.out.println("Building model " + model + ", subset: " + Arrays.toString(classIndicesPerSubset[model]));	
-
+        if (getDebug()){
+            debug("Building model " + model + ", subset: " + Arrays.toString(classIndicesPerSubset[model]));
+        }
         // remove the unselected labels
         int numPredictors = trainData.numAttributes()-numLabels;
         absoluteIndicesToRemove[model] = new int[numLabels-sizeOfSubset]; 
