@@ -104,8 +104,8 @@ public class BRkNN extends MultiLabelKNN {
 		Rand = new Random(1);
 	}
 
-	public void buildClassifier(Instances train) throws Exception {
-		super.buildClassifier(train);
+	public void buildClassifier(Instances aTrain) throws Exception {
+		super.buildClassifier(aTrain);
 
 		lnn = new LinearNNSearch();
 		lnn.setDistanceFunction(dfunc);
