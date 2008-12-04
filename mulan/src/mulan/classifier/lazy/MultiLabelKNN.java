@@ -71,7 +71,7 @@ public abstract class MultiLabelKNN extends MultiLabelClassifierBase {
 
     @Override
     public void buildClassifier(Instances train) throws Exception {
-        this.train = train;
+        this.train = new Instances(train);
         predictors = train.numAttributes() - numLabels;
 
         dfunc = new EuclideanDistance();
