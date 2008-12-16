@@ -36,6 +36,7 @@ public class BasicNeuralNet implements NeuralNet, Serializable {
 	 * 		of neurons in each particular layer. 
 	 * @param biasInput the bias input value for neurons of the neural network.
 	 * @param activationFunction the type of activation function to be used by network elements
+	 * @throws IllegalArgumentException if network topology is incorrect of activation function class is null.
 	 */
 	public BasicNeuralNet(int[] netTopology, double biasInput, 
 			Class<? extends ActivationFunction> activationFunction){
@@ -43,6 +44,9 @@ public class BasicNeuralNet implements NeuralNet, Serializable {
 		if(netTopology == null || netTopology.length < 2){
 			throw new IllegalArgumentException("The topology for neural network is not specified " +
 					"or is invalid. Please provide correct topology for the network.");
+		}
+		if(activationFunction == null){
+			throw new IllegalArgumentException("The activation functions is null.");
 		}
 		
 		netInputDim = netTopology[0];
@@ -119,6 +123,10 @@ public class BasicNeuralNet implements NeuralNet, Serializable {
 	}
 	
 	public double[] getOutput() {
+		if(currentNetOutput == null){
+			return new double[netOutputDim];
+		}
+
 		return currentNetOutput;
 	}
 
