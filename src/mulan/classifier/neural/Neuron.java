@@ -33,11 +33,19 @@ public class Neuron implements Serializable {
 	 * Creates a {@link Neuron} instance.
 	 * 
 	 * @param function the activation function of the neuron
-	 * @param inputDim the dimension of input pattern vector the neuron can process (the bias not included)
+	 * @param inputDim the dimension of input pattern vector the neuron can process (the bias not included). 
+	 * 				   The input dimension must be greater than zero.
 	 * @param biasValue the bias input value 
 	 */
 	public Neuron(final ActivationFunction function, int inputDim, double biasValue) {
 
+		if(function == null){
+			throw new IllegalArgumentException("Activation function is null.");
+		}
+		if(inputDim <= 0){
+			throw new IllegalArgumentException("Input dimension for the neuron must be greather than zero.");
+		}
+		
 		this.inputDim = inputDim;
 		this.function = function;
 		biasInput = biasValue;
@@ -52,12 +60,18 @@ public class Neuron implements Serializable {
 	 * 
 	 * @param function the activation function of the neuron
 	 * @param inputDim the dimension of input pattern vector the neuron can process (the bias not included)
+	 * 				   The input dimension must be greater than zero.
 	 * @param biasValue the bias input value 
 	 * @param nextNeurons collection of neurons for which this neuron will be an input. 
 	 */
 	public Neuron(final ActivationFunction function, int inputDim, double biasValue, final Collection<Neuron> nextNeurons) {
-
+		
 		this(function, inputDim, biasValue);
+		
+		if(nextNeurons == null){
+			throw new IllegalArgumentException("Collection of connexted neurons is null.");
+		}
+		
 		this.nextNeurons = new ArrayList<Neuron>(nextNeurons);
 	}
 
@@ -116,6 +130,10 @@ public class Neuron implements Serializable {
 	 * @return the output of the {@link Neuron}
 	 */
 	public double processInput(final double[] inputs) {
+		
+		if(inputs == null){
+			throw new IllegalArgumentException("The input pattern for processing is null.");
+		}
 		
 		if(inputs.length != inputDim){
 			throw new IllegalArgumentException("The dimension of input pattern vector " +
@@ -176,8 +194,12 @@ public class Neuron implements Serializable {
 	 * @param neuron the neuron which is connected to the output of this instance.
 	 * @return true if specified neuron was successfully connected;
 	 * 		   false if connection already exists 
+	 * @throws IllegalArgumentException in neuron is null
 	 */
 	public boolean addNeuron(Neuron neuron){
+		if(neuron == null){
+			throw new IllegalArgumentException("Neuron should not be null.");
+		}
 		if(nextNeurons.contains(neuron)){
 			return false;
 		}
@@ -191,9 +213,13 @@ public class Neuron implements Serializable {
 	 *  
 	 * @param neurons the collection of neurons which have to be connected to the output of this instance.
 	 * @return true if at least one of specified neurons was successfully connected;
-	 * 		   false if no connection was made. This means that all instances are already connected. 
+	 * 		   false if no connection was made. This means that all instances are already connected.
+	 * @throws IllegalArgumentException if neurons collection is null 
 	 */
 	public boolean addAllNeurons(Collection<Neuron> neurons){
+		if(neurons == null){
+			throw new IllegalArgumentException("Neurons collection should not be null.");
+		}
 		Neuron[] items = neurons.toArray(new Neuron[0]);
 		boolean nothingAdded = true;
 		for(Neuron item : items){
@@ -210,8 +236,12 @@ public class Neuron implements Serializable {
 	 * @param neuron the neuron which is connected to the output of this instance.
 	 * @return true if connection to specified neuron was successfully removed;
 	 * 		   false if connection did not exist
+	 * @throws IllegalArgumentException if neuron is null
 	 */
 	public boolean removeNeuron(Neuron neuron){
+		if(neuron == null){
+			throw new IllegalArgumentException("Neuron should not be null.");
+		}
 		return nextNeurons.remove(neuron);
 	}
 	
@@ -233,5 +263,14 @@ public class Neuron implements Serializable {
 		for(int i=0; i<inputsCount; i++){
 			inputWeights[i] = Math.random() * (max - min) + min;
 		}
+	}
+	
+
+	/**
+	 * Gets the count of neurons connected to the output of this neuron instance.
+	 * Support for unit tests ...
+	 */
+	protected int getConnectedNeuronsCount(){
+		return nextNeurons.size();
 	}
 }

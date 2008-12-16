@@ -18,10 +18,11 @@ public class ThresholdFunction {
 
 	/**
 	 * Creates a new instance of {@link ThresholdFunction} and 
-	 * build the function based on input parameters.
+	 * builds the function based on input parameters.
 	 * 
 	 * @param idealLabels the ideal output for each input patterns, which a model should output
-	 * @param modelOutLabels the real output of a model for each input pattern 
+	 * @param modelOutLabels the real output of a model for each input pattern
+	 * @throws IllegalArgumentException if dimensions of input arrays does not match 
 	 * @see ThresholdFunction#build(double[][], double[][])
 	 */
 	public ThresholdFunction(final double[][] idealLabels, final double[][] modelOutLabels){
@@ -103,6 +104,18 @@ public class ThresholdFunction {
 		double[][] weightsArray = weights.transpose().getArray();
 		
 		parameters = Arrays.copyOf(weightsArray[0], weightsArray[0].length);
+	}
+	
+	/**
+	 * Returns parameters learned by the threshold function in last build. 
+	 * Based on these parameters the functions is computing thresholds for 
+	 * label confidences.<br/>
+	 * Support for unit tests ...
+	 * 
+	 * @return parameters
+	 */
+	protected double[] getFunctionParameters(){
+		return Arrays.copyOf(parameters, parameters.length);
 	}
 	
 }

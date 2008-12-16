@@ -19,7 +19,7 @@ public class BPMLLAlgorithm {
 	
 	
 	private final NeuralNet neuralNet;
-	private double weightsDecayCost;
+	private final double weightsDecayCost;
 	
 	/**
 	 * Creates a {@link BPMLLAlgorithm} instance.
@@ -44,10 +44,19 @@ public class BPMLLAlgorithm {
 	/**
 	 * Returns the neural network which is learned/updated by the algorithm.
 	 * 
-	 * @return
+	 * @return the neural network
 	 */
 	public NeuralNet getNetwork(){
 		return neuralNet;
+	}
+	
+	/**
+	 * Returns the value of weights decay cost term used for regularization.
+	 * 
+	 * @return the weights decay cost term
+	 */
+	public double getWeightsDecayCost(){
+		return weightsDecayCost;
 	}
 	
 	/**
@@ -66,6 +75,15 @@ public class BPMLLAlgorithm {
 	 * 			or {@link Double#NaN} if the passed input can not be processed.
 	 */
 	public double learn(double[] inputPattern, double[] expectedLabels, double learningRate){
+		
+		if(inputPattern == null || inputPattern.length != neuralNet.getNetInputSize()){
+			throw new IllegalArgumentException("Specified input pattern vector is null " +
+					"or does not match the input dimension of underlying neural network model.");
+		}
+		if(expectedLabels == null || expectedLabels.length != neuralNet.getNetOutputSize()){
+			throw new IllegalArgumentException("Specified expected labels vector is null " +
+					"or does not match the output dimension of underlying neural network model.");
+		}
 		
 		// 1. PROPAGATE SIGNAL
 		double[] networkOutputs = neuralNet.feedForward(inputPattern);
@@ -113,8 +131,8 @@ public class BPMLLAlgorithm {
 		double globalError = 0;
 		for(double error : outputErrors){
 			globalError += Math.abs(error);
-			globalError += weightsDecayCost * 0.5 * weightsSquareSum;
 		}
+		globalError += weightsDecayCost * 0.5 * weightsSquareSum;
 		
 		return globalError;
 	}
@@ -146,7 +164,7 @@ public class BPMLLAlgorithm {
 		// compute sum of weights squares for weights decay regularization
 		double weightsSquareSum = 0;
 		int layersCount = neuralNet.getLayersCount();
-		for(int layerIndex = 1; layerIndex > layersCount; layerIndex++){
+		for(int layerIndex = 1; layerIndex < layersCount; layerIndex++){
 			List<Neuron> layer = neuralNet.getLayerUnits(layerIndex);
 			for(Neuron neuron : layer){
 				double[] weights = neuron.getWeights();
@@ -159,8 +177,8 @@ public class BPMLLAlgorithm {
 		double globalError = 0;
 		for(double error : outputErrors){
 			globalError += Math.abs(error);
-			globalError += weightsDecayCost * 0.5 * weightsSquareSum;
 		}
+		globalError += weightsDecayCost * 0.5 * weightsSquareSum;
 		
 		return globalError;
 	}
