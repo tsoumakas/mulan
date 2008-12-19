@@ -15,9 +15,12 @@ import mulan.evaluation.IntegratedEvaluation;
 import weka.core.Attribute;
 import weka.core.Instance;
 import weka.core.Instances;
+import weka.core.SparseInstance;
 import weka.core.TechnicalInformation;
 import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
+import weka.filters.Filter;
+import weka.filters.unsupervised.attribute.NominalToBinary;
 
 
 
@@ -32,6 +35,9 @@ public class BPMLL extends MultiLabelClassifierBase {
 	private static final long serialVersionUID = 2153814250172139021L;
 	private static final double NET_BIAS = 1;
 	private static final double ERROR_SMALL_CHANGE = 0.000001;
+	
+	// filter used to convert nominal input attributes into binary-numeric 
+	NominalToBinary nominalToBinaryFilter;
 	
 	// algorithm parameters 
 	private int epochs = 100;
@@ -148,6 +154,8 @@ public class BPMLL extends MultiLabelClassifierBase {
 		if(instances == null){
 			throw new IllegalArgumentException("Instances must not be null.");
 		}
+		// delete filter if available from previous build, a new one will be created if necessary
+		nominalToBinaryFilter = null;
 		
 		Instances trainInstances = new Instances(instances);
 		List<DataPair> trainData = prepareData(trainInstances);
@@ -197,7 +205,16 @@ public class BPMLL extends MultiLabelClassifierBase {
 					"to be processed by the model. Instance is not consistent with the data the model was built for.");
 		}
 		
-		Instance inputInstance = new Instance(instance);
+		Instance inputInstance = (instance instanceof SparseInstance) ? 
+				new SparseInstance(instance) : new Instance(instance);
+		
+		if(nominalToBinaryFilter != null){
+			nominalToBinaryFilter.input(inputInstance);
+			inputInstance = nominalToBinaryFilter.output();
+			inputInstance.setDataset(null);
+		}
+		
+		// remove label attributes from the end of instance if they are available there
 		if(inputInstance.numAttributes() > model.getNetInputSize()){
 			int diff = inputInstance.numAttributes() - model.getNetInputSize();
 			for(int i = 0; i < diff; i++)
@@ -290,7 +307,7 @@ public class BPMLL extends MultiLabelClassifierBase {
 			throw new IllegalArgumentException("Attributes are not in correct format. " +
 					"Input attributes (all but the label attributes) must be numeric.");
 		}
-		
+				
 		if(normalizeAttributes){
 			normalizeAttributes(data);
 		}
@@ -351,21 +368,48 @@ public class BPMLL extends MultiLabelClassifierBase {
 	
 	/**
 	 * Checks {@link Instances} data if attributes (all but the label attributes) 
-	 * are numeric.
+	 * are numeric or nominal. Nominal attributes are transformed to binary by use of
+	 * {@link NominalToBinary} filter.
 	 * 
 	 * @param data instances data to be checked
 	 * @return true if attributes are in correct format, false otherwise
 	 */
 	private boolean checkAttributesFormat(Instances data){
 		
+		StringBuilder nominalAttrRange = new StringBuilder();
+		String rangeDelimiter = ",";
 		int numAttributes = data.numAttributes();
 		for(int attrIndex = 0; attrIndex < numAttributes - numLabels; attrIndex++){
 			Attribute attribute = data.attribute(attrIndex);
-			if(attribute.isNumeric() != true){
-				return false;
+			if(attribute.isNumeric() == false){
+				if(attribute.isNominal()){
+					nominalAttrRange.append((attrIndex + 1) + rangeDelimiter);
+				}
+				else{
+					// fail check if any other attribute type than nominal or numeric is used
+					return false;
+				}
 			}
 		}
 		
+		// convert any nominal attributes to binary
+		if(nominalAttrRange.length() > 0){
+			nominalAttrRange.deleteCharAt(nominalAttrRange.lastIndexOf(rangeDelimiter));
+			try {
+				nominalToBinaryFilter = new NominalToBinary();
+				nominalToBinaryFilter.setAttributeIndices(nominalAttrRange.toString());
+				nominalToBinaryFilter.setInputFormat(data);
+				data = Filter.useFilter(data, nominalToBinaryFilter);
+			} catch (Exception exception) {
+				nominalToBinaryFilter = null;
+				if(getDebug()){
+					debug("Failed to apply NominalToBinary filter to the input instances data. " +
+							"Error message: " + exception.getMessage());
+				}
+				throw new RuntimeException("Failed to apply NominalToBinary filter to the input instances data.", exception);
+			}
+		}
+
 		return true;
 	}
 	
@@ -419,52 +463,4 @@ public class BPMLL extends MultiLabelClassifierBase {
 			instance.setValue(attIndex, value);
 		}
 	}
-	
-	// TODO: just for testing ... remove before commit
-	public static void main(String[] argv) throws Exception{
-		
-				
-		String path = "data/";
-        String trainfile = "yeast-train.arff";
-        String testfile = "yeast-test.arff";
-        int numLabels = 14;
-
-        FileReader frtrainData = new FileReader(path + trainfile);
-        Instances traindata = new Instances(frtrainData);                
-        FileReader frtestData = new FileReader(path + testfile);
-        Instances testdata = new Instances(frtestData);          
-        Evaluator eval = new Evaluator(5);
-        IntegratedEvaluation results;
-        
-        //* BPMLL Classifier
-        System.out.println("BPMLL");
-        BPMLL bpmll = new BPMLL(numLabels);
-        bpmll.setHiddenLayers(new int[]{50});
-        bpmll.setTrainingEpochs(200);
-        bpmll.setDebug(true);
-        bpmll.setNormalizeAttributes(true);
-        //bpmll.setWeightsDecayRegularization(0.1);
-        bpmll.buildClassifier(traindata);
-        results = eval.evaluateAll(bpmll, testdata);
-        BinaryPrediction[][] preds = results.getPredictions();
-        for (int i=0; i<preds.length; i++)
-        {
-            System.out.print("test example " + (i+1) + ": ");                    
-            for (int j=0; j<preds[i].length; j++)
-            {
-                boolean prediction = preds[i][j].getPrediction();
-                if (prediction)
-                    System.out.print(testdata.attribute(testdata.numAttributes()-numLabels+j).name() + " ");
-            }
-            System.out.println();
-        }
-        System.out.println(results.toString());
-        System.gc(); 
-		 
-	}
-
-	
-	
-
-	
 }
