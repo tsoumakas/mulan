@@ -253,7 +253,7 @@ public class BPMLL extends MultiLabelClassifierBase {
 	    technicalInfo.setValue(Field.TITLE, "Multi-label neural networks with applications to functional genomics and text categorization");
 	    technicalInfo.setValue(Field.JOURNAL, "IEEE Transactions on Knowledge and Data Engineering");
 	    technicalInfo.setValue(Field.VOLUME, "18");
-	    technicalInfo.setValue(Field.PAGES, "1338–1351");
+	    technicalInfo.setValue(Field.PAGES, "1338-1351");
 	    return technicalInfo;
 	}
 	
