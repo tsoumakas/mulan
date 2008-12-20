@@ -1,6 +1,5 @@
 package mulan.classifier.neural;
 
-import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -9,9 +8,6 @@ import java.util.List;
 
 import mulan.classifier.MultiLabelClassifierBase;
 import mulan.classifier.Prediction;
-import mulan.evaluation.BinaryPrediction;
-import mulan.evaluation.Evaluator;
-import mulan.evaluation.IntegratedEvaluation;
 import weka.core.Attribute;
 import weka.core.Instance;
 import weka.core.Instances;
