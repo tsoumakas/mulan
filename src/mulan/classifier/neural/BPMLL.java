@@ -42,7 +42,7 @@ public class BPMLL extends MultiLabelClassifierBase {
 	private int[] hiddenLayersTopology;
 	
 	// members related to normalization or attributes
-	private boolean normalizeAttributes = false;
+	private boolean normalizeAttributes = true;
 	private double[] attRanges;
 	private double[] attBases;
 
