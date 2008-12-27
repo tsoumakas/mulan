@@ -39,7 +39,8 @@ import weka.core.SparseInstance;
 public class IncludeLabelsClassifier extends TransformationBasedMultiLabelClassifier implements
 		MultiLabelClassifier
 {
-	
+	double[] thresholds;
+    double threshold=0.5;
 	
 	/**
 	 * A dataset with the format needed by the base classifier.

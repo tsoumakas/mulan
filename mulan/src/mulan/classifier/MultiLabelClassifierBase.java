@@ -17,7 +17,6 @@ package mulan.classifier;
  */
 
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.Date;
 
 import weka.core.Instance;
@@ -47,22 +46,6 @@ implements TechnicalInformationHandler, MultiLabelClassifier, Serializable {
 	/** Whether the classifier is run in debug mode. */
 	protected boolean isDebug = false;
 	
-	/**
-	 * Labels with confidence over this value are included in the output 
-	 * unless each label has an individual threshold, see thresholds[].
-	 */
-	protected double threshold = 0.5;
-	
-	/**
-	 *  Individual thresholds for each label.
-	 */
-	protected double[] thresholds;
-
-        /**
-         * Whether to threshold the confidences in order to get the final 
-         * binary predictions
-         */
-        protected boolean makePredictionsBasedOnConfidences = false;
         
         /*  TODO: Subset mapping stuff - decide if this will be reused somehow or discard
 	public enum SubsetMappingMethod {
@@ -103,53 +86,11 @@ implements TechnicalInformationHandler, MultiLabelClassifier, Serializable {
 	 * {@inheritDoc}
 	 */
 	public abstract void buildClassifier(Instances instances) throws Exception;
-	
-        public void setMakePredictionsBasedOnConfidences(boolean value)
-        {
-            makePredictionsBasedOnConfidences = value;
-        }
-                
-	public void setThresholds(double[] t) 
-        {
-            thresholds = Arrays.copyOf(t, t.length);
-        }
-        
-        public double[] getThresholds() 
-        {
-            return thresholds;
-        }
-        
-        public void setThreshold(double t) 
-        {
-            threshold = t;
-        }
-        
-        public double getThreshold() 
-        {
-            return threshold;
-        }
-        
+
 	public final Prediction predict(Instance instance) throws Exception
 	{
             Prediction original = makePrediction(instance);
 		
-            // handle thresholds 
-            if (makePredictionsBasedOnConfidences) 
-            {
-                if (thresholds == null)
-                {
-                    thresholds = new double[numLabels];
-                    Arrays.fill(thresholds, threshold);
-                }
-            
-                for (int i=0; i<original.numLabels; i++) {
-                    if (original.getConfidence(i) > thresholds[i])
-                        original.setPrediction(i, true);
-                    else
-                        original.setPrediction(i, false);
-                }
-            }
-                
 /*          TODO: Subset mapping stuff - decide if this will be reused somehow or discard
             if (subsetMappingMethod == SubsetMappingMethod.GREEDY)
             {

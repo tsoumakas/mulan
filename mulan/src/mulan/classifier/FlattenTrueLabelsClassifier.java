@@ -18,6 +18,8 @@ import weka.core.SparseInstance;
 public class FlattenTrueLabelsClassifier extends TransformationBasedMultiLabelClassifier implements
 		MultiLabelClassifier
 {
+    double[] thresholds;
+    double threshold=0.5;
 
 	public static final String versionId = "$Id: 2007-02-21 02:55:46 +0100 (on, 21 feb 2007) $"; 
 	
