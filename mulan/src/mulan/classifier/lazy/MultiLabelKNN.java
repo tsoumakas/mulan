@@ -18,6 +18,8 @@ import weka.core.neighboursearch.LinearNNSearch;
  */
 @SuppressWarnings("serial")
 public abstract class MultiLabelKNN extends MultiLabelClassifierBase {
+    double threshold = 0.5;
+    double[] thresholds;
 
 	/** Whether the neighbors should be distance-weighted. */
 	protected int distanceWeighting;
