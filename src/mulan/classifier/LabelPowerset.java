@@ -39,12 +39,26 @@ public class LabelPowerset extends TransformationBasedMultiLabelClassifier
 {
     /**
      * The confidence values for each label are calculated in the following ways
-     * 1: Confidence of 1 for all labels (1 if label true, 0 if label is false)
+     * 1: Confidence of 1/0 for all labels (1 if label true, 0 if label is false)
      * 2: Confidence calculated based on the distribution of probabilities 
      *    obtained from the base classifier, as introduced by the PPT algorithm
      */
     private int confidenceCalculationMethod = 2;
-                
+
+    /**
+     * Whether the method introduced by the PPT algorithm will be used to
+     * actually get the 1/0 output predictions based on the confidences
+     * (requires a threshold)
+     */
+    protected boolean makePredictionsBasedOnConfidences=false;
+
+    /**
+     * Threshold used for deciding the 1/0 output value of each label based on
+     * the corresponding confidences as calculated by the method introduced in
+     * the PPT algorithm
+     */
+    protected double threshold=0.5;
+
     protected Instances metadataTrain;
     protected Instances metadataTest;
         
@@ -56,7 +70,11 @@ public class LabelPowerset extends TransformationBasedMultiLabelClassifier
         Rand = new Random(1);
     }
    
-    
+    public void setMakePredictionsBasedOnConfidences(boolean value)
+    {
+        makePredictionsBasedOnConfidences = value;
+    }
+
     /**
      * Setting a seed for random selection in case of ties during prediction
      */
@@ -65,6 +83,12 @@ public class LabelPowerset extends TransformationBasedMultiLabelClassifier
         Rand = new Random(s);
     }
     
+
+    public void setThreshold(double t)
+    {
+        threshold = t;
+    }
+
     public void setConfidenceCalculationMethod(int method)
     {
         if (method == 1 || method == 2)
@@ -153,12 +177,18 @@ public class LabelPowerset extends TransformationBasedMultiLabelClassifier
                                 if (predictionsTemp[j] == 1)
                                     confidences[j] += confidence;
                         }    
-                
-
-
             }
         }
-        
+
+        if (makePredictionsBasedOnConfidences)
+        {
+            for (int i=0; i<confidences.length; i++)
+                if (confidences[i] > threshold)
+                    predictions[i] = 1;
+                else
+                    predictions[i] = 0;
+        }
+
         Prediction result = new Prediction(predictions, confidences);
         
         return result;
