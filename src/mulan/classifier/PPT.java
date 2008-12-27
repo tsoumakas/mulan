@@ -34,31 +34,30 @@ import weka.core.TechnicalInformation.Type;
  *
  * @author Elise Rairat 
  * @author Grigorios Tsoumakas 
- * @version $Revision: 0.3 $ 
+ * @version $Revision: 0.4 $
  */
 public class PPT extends LabelPowerset {
     
     /*parameter for the threshold of number of occurences of a labelset */
-    protected int n;
+    protected int x;
     
     /*parameter for the threshold of number of occurences of a labelset */
-    protected boolean informationLoss=false;
+    protected boolean informationLoss=true;
             
     /** labelsets and their frequency of all label*/
     private HashMap<LabelSet,Integer> labelsets = new HashMap<LabelSet,Integer>();;          
 
     /** 
     * @paramater:
-    * @param n: number of instances required for a labelset to be included.
-    * @param t: threshold used for the prediction. 
+    * @param x: number of instances required for a labelset to be included.
     */
-    public PPT(Classifier classifier, int numLabels, int n, double t) throws Exception
+    public PPT(Classifier classifier, int numLabels, int x) throws Exception
     {
         super(classifier, numLabels);
-        this.n = n;
+        this.x = x; // x should be larger than 0
         setMakePredictionsBasedOnConfidences(true);
-        setThreshold(t);
-    }          
+        threshold = 0.21;
+    }
 
     /**
      * @param b true/false value for information loss
@@ -130,7 +129,7 @@ public class PPT extends LabelPowerset {
         while(it.hasNext()) { 
             LabelSet ls = it.next(); 
             ArrayList<Instance> instances = ListInstancePerLabel.get(ls); 
-            if (instances.size() > n)                
+            if (instances.size() > x)
                 for (int i=0; i<instances.size(); i++)
                     newData.add(instances.get(i));
             else 
@@ -149,7 +148,7 @@ public class PPT extends LabelPowerset {
                             continue;
                         else 
                             // check if it has more than p elements
-                            if (ListInstancePerLabel.get(l).size() <= n)
+                            if (ListInstancePerLabel.get(l).size() <= x)
                                 continue;
                             else {
                                 // check that it has no common elements with 
