@@ -1,7 +1,7 @@
 package mulan.classifier.lazy;
 
-import java.util.Arrays;
 
+import java.util.Random;
 import mulan.classifier.Prediction;
 import weka.core.Instance;
 import weka.core.Instances;
@@ -228,10 +228,6 @@ public class MLkNN extends MultiLabelKNN {
 		double[] confidences = new double[numLabels];
 		double[] predictions = new double[numLabels];
 
-		//setThreshold(0.5);
-		//in cross-validation test-train instances does not belong to the same data set
-		//Instance instance2 = new Instance(instance);
-
 		Instances knn = new Instances(lnn.kNearestNeighbours(instance, numOfNeighbors));
 
 		for (int i = 0; i < numLabels; i++) {
@@ -246,10 +242,18 @@ public class MLkNN extends MultiLabelKNN {
 			}
 			double Prob_in = PriorProbabilities[i] * CondProbabilities[i][aces];
 			double Prob_out = PriorNProbabilities[i] * CondNProbabilities[i][aces];
-			confidences[i] = Prob_in / (Prob_in + Prob_out); // ranking function
+            if (Prob_in > Prob_out)
+                predictions[i] = 1;
+            else if (Prob_in < Prob_out)
+                predictions[i] = 0;
+            else {
+                Random rnd = new Random();
+                predictions[i] = rnd.nextInt(2);
+            }
+            // ranking function
+			confidences[i] = Prob_in / (Prob_in + Prob_out); 
 		}
 		
-		predictions = labelsFromConfidences(confidences);
 		Prediction result = new Prediction(predictions, confidences);
 		return result;
 	}
@@ -267,26 +271,5 @@ public class MLkNN extends MultiLabelKNN {
 				System.out.println(j + " neighbours: " + CondNProbabilities[i][j]);
 			}
 		}
-	}
-	
-	/**
-	 * Derive output labels from distributions.
-	 */
-	protected double[] labelsFromConfidences(double[] confidences)
-	{
-		if (thresholds == null)
-		{
-			thresholds = new double[numLabels];
-			Arrays.fill(thresholds, threshold);
-		}
-		
-		double[] result = new double[confidences.length];
-		for(int i = 0; i < result.length; i++)
-		{
-			if (confidences[i] >= thresholds[i]){
-				result[i] = 1.0;
-			}
-		}
-		return result;
-	}
+	}	
 }
