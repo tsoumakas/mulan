@@ -92,10 +92,26 @@ public class ThresholdFunction {
 			}
 			double isLabelMin = isLabelModelOuts[Utils.minIndex(isLabelModelOuts)];
 			double isNotLabelMax = isNotLabelModelOuts[Utils.maxIndex(isNotLabelModelOuts)];
-			if(isLabelMin != isNotLabelMax)
-				thresholds[example] = (isLabelMin + isNotLabelMax) / 2;
-			else
+			
+			// check if we have unique minimum ... 
+			// if not take center of the segment ... if it is a segment
+			if(isLabelMin != isNotLabelMax){
+				// check marginal cases -> all labels are in or none of them
+				if(isLabelMin == Double.MAX_VALUE){
+					thresholds[example] = isNotLabelMax + 0.1;
+				}
+				else if(isNotLabelMax == -Double.MAX_VALUE){
+					thresholds[example] = isLabelMin - 0.1;
+				}
+				else{
+					// center of a segment
+					thresholds[example] = (isLabelMin + isNotLabelMax) / 2;
+				}
+			}
+			else{
+				// when minimum is unique
 				thresholds[example] = isLabelMin;
+			}
 		}
 		
 		Matrix modelMatrix = new Matrix(numExamples, numLabels + 1, 1.0);
