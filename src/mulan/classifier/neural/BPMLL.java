@@ -135,9 +135,9 @@ public class BPMLL extends MultiLabelClassifierBase {
 	 * on numeric attributes to the range {-1,1}).<br/> 
 	 * When making prediction, attributes of passed input instance are also 
 	 * normalized prior to making prediction.<br/>
-	 * Default is false (no normalization takes place).
+	 * Default is true (normalization of attributes takes place).
 	 * 
-	 * @param epochs the number of training epochs
+	 * @param normalize flag if normalization of attributes should be used
 	 * @throws IllegalArgumentException if passed value is invalid
 	 */
 	public void setNormalizeAttributes(boolean normalize){
