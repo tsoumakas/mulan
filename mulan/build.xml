@@ -44,7 +44,7 @@
 		</javac>
 	</target>
 	
-	<target name="build-tests" depends="build" description="Builds tests classes.">
+	<target name="build-test" depends="build" description="Builds tests classes.">
 		<mkdir dir="${target.testclasses.dir}" />
 		<javac source="1.5" target="1.5" 
 			   deprecation="true" debug="true" optimize="false" 
@@ -73,7 +73,7 @@
 		and (optionally) "test.excludes" properties through the	command line, as below:
 			ant tests -Dtest.includes=mulan/classifier/**/*Test*
 	-->
-	<target name="test" depends="build-tests" description="Run tests and generate test summary.">
+	<target name="test" depends="build-test" description="Run tests and generate test summary.">
 		<mkdir dir="${target.junit.reports.dir}"/>
 		<mkdir dir="${target.junit.summary.dir}"/>
 		<junit dir="${basedir}" showoutput="no" filtertrace="yes" forkmode="perBatch" printsummary="yes" haltonfailure="no" haltonerror="no" failureproperty="test.failed">

@@ -30,7 +30,7 @@
             </folders>
             <ide-actions>
                 <action name="build">
-                    <target>build</target>
+                    <target>build-test</target>
                 </action>
                 <action name="clean">
                     <target>clean</target>
@@ -43,7 +43,7 @@
                 </action>
                 <action name="rebuild">
                     <target>clean</target>
-                    <target>build</target>
+                    <target>build-test</target>
                 </action>
             </ide-actions>
             <view>
@@ -66,6 +66,10 @@
                     <ide-action name="clean"/>
                     <ide-action name="javadoc"/>
                     <ide-action name="test"/>
+                    <action>
+                        <label>Package Project</label>
+                        <target>package</target>
+                    </action>
                 </context-menu>
             </view>
             <subprojects/>
