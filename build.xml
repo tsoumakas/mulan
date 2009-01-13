@@ -1,0 +1,106 @@
+<project name="mulan" default="package" basedir=".">
+
+	<property name="lib.dir" value="${basedir}/lib" description="Directory containing all 3rd party jars." />
+	<property name="src.dir" value="src" description="Source code directory." />
+	<property name="test.dir" value="test" description="Directory containing tests." />
+	<property name="javadoc.dir" value="${basedir}/docs" description="Directory for generated API documentation." />
+	<property name="dist.dir" value="${basedir}/dist" description="Directory for distribution artifacts, e.g. jars." />
+		
+	<property name="target.dir" value="${basedir}/target" description="All artifacts produced by the build, except 'docs/api' and 'dist', goes here." />
+	<property name="target.classes.dir" value="${target.dir}/classes" description="Directory for compiled source code classes." />
+	<property name="target.testclasses.dir" value="${target.dir}/test-classes" description="Directory for compiled test classes." />
+	<property name="target.junit.reports.dir" value="${target.dir}/test-reports" description="Directory for generated xml tests reports." />
+	<property name="target.junit.summary.dir" value="${target.dir}/test-summary" description="Directory for generated tests summary report in htlm format." />
+	
+	<property name="test.includes" value="mulan/**/*Test*" description="Default pattern used to identify tests implementation." />
+	
+	<property name="mulan.title" value="MULAN - MUlti-LAbel classificatioN" />
+	<property name="mulan.version" value="0.3.0" />
+	<property name="weka.version" value="3.5.7" />
+	<property name="junit.version" value="4.5" />
+
+	
+	<path id="dependency.libs.path">
+		<fileset dir="${lib.dir}">
+			<include name="weka-${weka.version}.jar" />
+			<include name="junit-${junit.version}.jar" />
+		</fileset>
+	</path>
+
+	
+	<target name="clean" description="Deletes the build directory.">
+		<delete dir="${target.dir}" />
+		<delete dir="${javadoc.dir}" />
+		<delete dir="${dist.dir}" />
+	</target>
+
+	<target name="build" description="Builds the source code.">
+		<mkdir dir="${target.classes.dir}" />
+		<javac source="1.5" target="1.5" 
+			   deprecation="true" debug="true" optimize="false" 
+			   srcdir="${src.dir}" 
+			   destdir="${target.classes.dir}">
+			<classpath refid="dependency.libs.path" />
+		</javac>
+	</target>
+	
+	<target name="build-test" depends="build" description="Builds tests classes.">
+		<mkdir dir="${target.testclasses.dir}" />
+		<javac source="1.5" target="1.5" 
+			   deprecation="true" debug="true" optimize="false" 
+			   srcdir="${test.dir}" 
+			   destdir="${target.testclasses.dir}">
+			<classpath refid="dependency.libs.path" />
+			<classpath location="${target.classes.dir}"/>
+		</javac>
+	</target>
+
+	<target name="package" depends="test" description="Creates all distribution packages, such as jar archives." >
+		<mkdir dir="${dist.dir}" />
+		<jar jarfile="${dist.dir}/mulan-${mulan.version}.jar">
+			<fileset dir="${target.classes.dir}" includes="mulan/**/**"/>
+			<manifest>
+				<attribute name="Implementation-Title" value="${mulan.title}"/>
+				<attribute name="Implementation-Version" value="${mulan.version}"/>
+			</manifest>
+		</jar>
+		<jar jarfile="${dist.dir}/mulan-src-${mulan.version}.jar" basedir="${src.dir}" />
+	</target>
+
+	<!--
+		Run tests and generate test summary. 
+		It's possible to run specific tests by passing in the "test.includes" 
+		and (optionally) "test.excludes" properties through the	command line, as below:
+			ant tests -Dtest.includes=mulan/classifier/**/*Test*
+	-->
+	<target name="test" depends="build-test" description="Run tests and generate test summary.">
+		<mkdir dir="${target.junit.reports.dir}"/>
+		<mkdir dir="${target.junit.summary.dir}"/>
+		<junit dir="${basedir}" showoutput="no" filtertrace="yes" forkmode="perBatch" printsummary="yes" haltonfailure="no" haltonerror="no" failureproperty="test.failed">
+			<jvmarg line="-Djava.awt.headless=true -Xmx256m -XX:MaxPermSize=128m"/>
+			<classpath location="${target.testclasses.dir}" />
+			<classpath location="${target.classes.dir}"/>
+			<classpath location="${test.dir}"/>
+			<classpath refid="dependency.libs.path" />
+			<formatter type="xml"/>
+			<batchtest fork="yes" todir="${target.junit.reports.dir}">
+				<fileset dir="${target.testclasses.dir}" includes="${test.includes}" excludes="${test.excludes}"/>
+			</batchtest>
+		</junit>
+		<junitreport todir="${target.junit.reports.dir}">
+			<fileset dir="${target.junit.reports.dir}">
+				<include name="TEST-*.xml"/>
+			</fileset>
+			<report todir="${target.junit.summary.dir}"/>
+		</junitreport>
+		<fail if="test.failed" message="Tests failed."/>
+	</target>
+
+	<target name="javadoc" description="Generates JavaDocs API documentation.">
+		<mkdir dir="${javadoc.dir}" />
+		<javadoc packagenames="mulan.*" sourcepath="${src.dir}" destdir="${javadoc.dir}" doctitle="Mulan ${mulan.version} API" failonerror="yes">
+			<classpath refid="dependency.libs.path" />
+		</javadoc>
+	</target>
+
+</project>
