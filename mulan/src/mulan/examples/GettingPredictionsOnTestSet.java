@@ -38,7 +38,7 @@ public class GettingPredictionsOnTestSet {
         System.out.println("LP");
         J48 lpBaseClassifier = new J48();
         LabelPowerset lp = new LabelPowerset(lpBaseClassifier, numLabels);
-        lp.buildClassifier(traindata);
+        lp.build(traindata);
         results = eval.evaluateAll(lp, testdata);
         BinaryPrediction[][] preds = results.getPredictions();
         for (int i=0; i<preds.length; i++)
@@ -61,7 +61,7 @@ public class GettingPredictionsOnTestSet {
         BPMLL bpmll = new BPMLL(numLabels);
         bpmll.setHiddenLayers(new int[]{50});
         bpmll.setDebug(true);
-        bpmll.buildClassifier(traindata);
+        bpmll.build(traindata);
         results = eval.evaluateAll(bpmll, testdata);
         BinaryPrediction[][] predictions = results.getPredictions();
         for (int i=0; i<predictions.length; i++)

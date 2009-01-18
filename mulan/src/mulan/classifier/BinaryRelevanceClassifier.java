@@ -1,5 +1,7 @@
 package mulan.classifier;
 
+import java.util.List;
+
 import weka.classifiers.Classifier;
 import weka.core.Attribute;
 import weka.core.Instance;
@@ -32,7 +34,7 @@ public class BinaryRelevanceClassifier extends TransformationBasedMultiLabelClas
 	}
 
 
-	public void buildClassifier(Instances train) throws Exception
+	public void build(Instances train) throws Exception
 	{
 		debug("BR: calling super constructor");
 		
@@ -67,7 +69,7 @@ public class BinaryRelevanceClassifier extends TransformationBasedMultiLabelClas
 		return newInstance;
 	}
 
-	protected Prediction makePrediction(Instance instance) throws Exception
+	protected List<Boolean> makePrediction(Instance instance) throws Exception
 	{
                 double predictions[] = new double[numLabels];
 		double confidences[] = new double[numLabels];

@@ -1,6 +1,7 @@
 package mulan.classifier.lazy;
 
 import java.util.HashSet;
+import java.util.List;
 
 import mulan.classifier.Prediction;
 import mulan.core.LabelSet;
@@ -22,7 +23,7 @@ public class LPknn extends MultiLabelKNN {
 		super(numLabels, numOfNeighbors);
 	}
 
-	public Prediction makePrediction(Instance instance) throws Exception {
+	public List<Boolean> makePrediction(Instance instance) throws Exception {
 
 		double[] predictions = new double[numLabels];
 

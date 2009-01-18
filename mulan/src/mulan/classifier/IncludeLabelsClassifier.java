@@ -17,6 +17,7 @@ package mulan.classifier;
  */
 
 import java.util.Arrays;
+import java.util.List;
 
 import weka.classifiers.Classifier;
 import weka.core.Attribute;
@@ -57,7 +58,7 @@ public class IncludeLabelsClassifier extends TransformationBasedMultiLabelClassi
 	}
 	
     @Override
-    public void buildClassifier(Instances instances) throws Exception
+    public void build(Instances instances) throws Exception
     {
             //Do the transformation 
             //and generate the classifier
@@ -176,7 +177,7 @@ public class IncludeLabelsClassifier extends TransformationBasedMultiLabelClassi
 		return result;
 	}
 	
-	protected Prediction makePrediction(Instance instance) throws Exception
+	protected List<Boolean> makePrediction(Instance instance) throws Exception
 	{
 		double[] confidences = new double[numLabels];
                 //System.out.println(instance.toString());

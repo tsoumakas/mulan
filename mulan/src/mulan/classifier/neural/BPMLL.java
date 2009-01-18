@@ -145,7 +145,7 @@ public class BPMLL extends MultiLabelClassifierBase {
 	}
 
 	@Override
-	public void buildClassifier(final Instances instances) throws Exception {
+	public void build(final Instances instances) throws Exception {
 		
 		if(instances == null){
 			throw new IllegalArgumentException("Instances must not be null.");
@@ -191,7 +191,7 @@ public class BPMLL extends MultiLabelClassifierBase {
 		thresholdF = buildThresholdFunction(trainData);
 	}
 	
-	protected Prediction makePrediction(final Instance instance) throws Exception {
+	protected List<Boolean> makePrediction(final Instance instance) throws Exception {
 
 		if(instance == null){
 			throw new IllegalArgumentException("Input instance for prediction is null.");
@@ -227,17 +227,18 @@ public class BPMLL extends MultiLabelClassifierBase {
 		double[] inputPattern = Arrays.copyOfRange(inputInstance.toDoubleArray(), 0, inputInstance.numAttributes());
 		double[] labelConfidences = model.feedForward(inputPattern);
 		double threshold = thresholdF.computeThreshold(labelConfidences);
-		double[] labelPredictions = new double[numLabels];
+		Boolean[] labelPredictions = new Boolean[numLabels];
+		Arrays.fill(labelPredictions, false);
 		
 		for(int labelIndex = 0; labelIndex < numLabels; labelIndex++){
 			if(labelConfidences[labelIndex] > threshold){
-				labelPredictions[labelIndex] = 1;
+				labelPredictions[labelIndex] = true;
 			}
 			// translate from bipolar output to binary
 			labelConfidences[labelIndex] = (labelConfidences[labelIndex] + 1) / 2;
 		}
-		
-		return new Prediction(labelPredictions, labelConfidences);
+		 
+		return Arrays.asList(labelPredictions);
 	}
 	
 	@Override

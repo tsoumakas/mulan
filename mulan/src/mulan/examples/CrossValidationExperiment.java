@@ -84,7 +84,7 @@ public class CrossValidationExperiment {
             brknn.setkSelectionViaCV(true);
             brknn.setCvMaxK(30);
             brknn.setDebug(true);
-            brknn.buildClassifier(data);
+            brknn.build(data);
             //results = eval.crossValidateAll(brknn, data, 10);
             //System.out.println(results.toString());
             System.gc();                

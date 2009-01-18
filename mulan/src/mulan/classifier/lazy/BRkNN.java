@@ -2,6 +2,7 @@ package mulan.classifier.lazy;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
 import mulan.classifier.Prediction;
@@ -104,8 +105,8 @@ public class BRkNN extends MultiLabelKNN {
 		Rand = new Random(1);
 	}
 
-	public void buildClassifier(Instances aTrain) throws Exception {
-		super.buildClassifier(aTrain);
+	public void build(Instances aTrain) throws Exception {
+		super.build(aTrain);
 
 		lnn = new LinearNNSearch();
 		lnn.setDistanceFunction(dfunc);
@@ -231,7 +232,7 @@ public class BRkNN extends MultiLabelKNN {
 	/**
 	 * weka Ibk style prediction
 	 */
-	public Prediction makePrediction(Instance instance) throws Exception {
+	public List<Boolean> makePrediction(Instance instance) throws Exception {
 
 		// in cross-validation test-train instances does not belong to the same
 		// data set

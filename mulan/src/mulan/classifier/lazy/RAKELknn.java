@@ -2,6 +2,7 @@ package mulan.classifier.lazy;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Random;
 
 import mulan.classifier.Prediction;
@@ -34,7 +35,7 @@ public class RAKELknn extends MultiLabelKNN {
 		lengthVotes = new double[numLabels];
 	}
 
-	public Prediction makePrediction(Instance instance) throws Exception {
+	public List<Boolean> makePrediction(Instance instance) throws Exception {
 		double[][] predictions = new double[numOfModels][numLabels];
 
 		double[][][] dblLabels = new double[numOfModels][numOfNeighbors][numLabels];

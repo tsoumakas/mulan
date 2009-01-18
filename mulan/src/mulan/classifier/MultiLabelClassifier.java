@@ -1,39 +1,28 @@
 package mulan.classifier;
 
+import java.util.List;
+
 import weka.core.Instance;
 import weka.core.Instances;
 
 /**
- * Common interface for multi-label classifiers.
+ * Common interface for multi-label classifiers. 
  * 
  * @author Eleftherios Spyromitros-Xioufis ( espyromi@csd.auth.gr )
  * @author Jozef Vilcek
  */
-public interface MultiLabelClassifier
+public interface MultiLabelClassifier extends MultiLabelLearner
 {
-
 	/**
-	 * Returns a number of labels the classifier is configured for.
-	 * The label attributes are assumed to be the last ones in {@link Instances} training data.
-	 * @return
-	 */
-	public int getNumLabels();
-	
-	/**
-	 * Computes the prediction of labels for a specified input {@link Instance}. 
+	 * Computes the binary prediction (bipartition) of labels for a 
+	 * specified input {@link Instance}. The true for a label means that 
+	 * the label is associated with input instance.
+	 * The classifier model must be build before prediction as called.
 	 * 
 	 * @param instance the input instance for which the prediction is made
-	 * @return the prediction
+	 * @return the bipartition of labels
+	 * @see MultiLabelLearner#build(Instances)
 	 * @throws Exception if prediction was not successful
 	 */
-	public Prediction predict(Instance instance) throws Exception;
-	
-	/**
-	 * Builds the classifier. 
-	 *  
-	 * @param instances set of training data, upon which the classifier should be build
-	 * @throws Exception if classifier was not created successfully
-	 */
-	public void buildClassifier(Instances instances) throws Exception;
-
+	public List<Boolean> predict(Instance instance) throws Exception;
 }

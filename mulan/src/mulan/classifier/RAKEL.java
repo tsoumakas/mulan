@@ -19,6 +19,7 @@ package mulan.classifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Random;
 
 import mulan.evaluation.BinaryPrediction;
@@ -302,7 +303,7 @@ public class RAKEL extends TransformationBasedMultiLabelClassifier
         
         
     @Override
-    public void buildClassifier(Instances trainData) throws Exception {
+    public void build(Instances trainData) throws Exception {
         
         if (cvParamSelection) 
             paramSelectionViaCV(trainData);
@@ -358,7 +359,7 @@ public class RAKEL extends TransformationBasedMultiLabelClassifier
 
         // build a LabelPowersetClassifier for the selected label subset;
         subsetClassifiers[model] = new LabelPowerset(Classifier.makeCopy(getBaseClassifier()), sizeOfSubset);
-        subsetClassifiers[model].buildClassifier(trainSubset);
+        subsetClassifiers[model].build(trainSubset);
 
         // keep the header of the training data for testing
         trainSubset.delete();
@@ -410,7 +411,7 @@ public class RAKEL extends TransformationBasedMultiLabelClassifier
 	}
 	
 	
-	public Prediction makePrediction(Instance instance) throws Exception {		
+	public List<Boolean> makePrediction(Instance instance) throws Exception {		
             double[] sumConf = new double[numLabels];
             sumVotes = new double[numLabels];
             lengthVotes = new double[numLabels];

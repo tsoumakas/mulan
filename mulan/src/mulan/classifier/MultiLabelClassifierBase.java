@@ -18,6 +18,7 @@ package mulan.classifier;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import weka.core.Instance;
 import weka.core.Instances;
@@ -85,11 +86,11 @@ implements TechnicalInformationHandler, MultiLabelClassifier, Serializable {
 	/**
 	 * {@inheritDoc}
 	 */
-	public abstract void buildClassifier(Instances instances) throws Exception;
+	public abstract void build(Instances instances) throws Exception;
 
-	public final Prediction predict(Instance instance) throws Exception
+	public final List<Boolean> predict(Instance instance) throws Exception
 	{
-            Prediction original = makePrediction(instance);
+            List<Boolean> original = makePrediction(instance);
 		
 /*          TODO: Subset mapping stuff - decide if this will be reused somehow or discard
             if (subsetMappingMethod == SubsetMappingMethod.GREEDY)
@@ -111,10 +112,10 @@ implements TechnicalInformationHandler, MultiLabelClassifier, Serializable {
 	 * The method is called from {@link MultiLabelClassifier#predict(Instance)}.
 	 * 
 	 * @param instance the instance for which prediction is made
-	 * @return the prediction for the instance
+	 * @return the labels bipartition prediction for the instance
 	 * @throws Exception if prediction was not successful
 	 */
-	protected abstract Prediction makePrediction(Instance instance) throws Exception;
+	protected abstract List<Boolean> makePrediction(Instance instance) throws Exception;
 
 
 	/**

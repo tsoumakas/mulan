@@ -38,7 +38,7 @@ public class TrainTestExperiment {
             RAKEL rakel = new RAKEL(rakelBaseClassifier, labels, 10, 3);
             //rakel.setParamSelectionViaCV(true);
             //rakel.setParamSets(3, 2, labels-1, 1, 500, 0.1, 0.1, 9);
-            rakel.buildClassifier(train);
+            rakel.build(train);
             results = eval.evaluateAll(rakel, test);
             System.out.println(results.toString());
             //*/

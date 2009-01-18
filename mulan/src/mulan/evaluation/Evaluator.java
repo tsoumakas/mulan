@@ -57,7 +57,7 @@ public class Evaluator
 			Instances train = workingSet.trainCV(numFolds, i, random);  
 			Instances test  = workingSet.testCV(numFolds, i);
 			MultiLabelClassifier clone = MultiLabelClassifierBase.makeCopy(classifier);
-			clone.buildClassifier(train);
+			clone.build(train);
 			Evaluation evaluation = evaluate(clone, test);
 			labelBased[i] = evaluation.getLabelBased();
 			exampleBased[i] = evaluation.getExampleBased();
@@ -87,7 +87,7 @@ public class Evaluator
 			Instances test  = workingSet.testCV(numFolds, i);
 			MultiLabelClassifier clone = MultiLabelClassifierBase.makeCopy(classifier);
 			//long start = System.currentTimeMillis();
-			clone.buildClassifier(train);
+			clone.build(train);
 			//long end = System.currentTimeMillis();
 			//System.out.print(i + "Buildclassifier Time: " + (end - start) + "\n");
 			//start = System.currentTimeMillis();

@@ -1,6 +1,7 @@
 package mulan.classifier.lazy;
 
 
+import java.util.List;
 import java.util.Random;
 import mulan.classifier.Prediction;
 import weka.core.Instance;
@@ -128,8 +129,8 @@ public class MLkNN extends MultiLabelKNN {
 	}
 
     @Override
-	public void buildClassifier(Instances train) throws Exception {
-		super.buildClassifier(train);
+	public void build(Instances train) throws Exception {
+		super.build(train);
 		
 		ComputePrior();
 		ComputeCond();
@@ -223,7 +224,7 @@ public class MLkNN extends MultiLabelKNN {
 	}
 
 	@Override
-	protected Prediction makePrediction(Instance instance) throws Exception {
+	protected List<Boolean> makePrediction(Instance instance) throws Exception {
 
 		double[] confidences = new double[numLabels];
 		double[] predictions = new double[numLabels];

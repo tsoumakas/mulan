@@ -1,5 +1,7 @@
 package mulan.classifier.lazy;
 
+import java.util.List;
+
 import mulan.classifier.Prediction;
 import weka.core.EuclideanDistance;
 import weka.core.Instance;
@@ -31,7 +33,7 @@ public class MultiKnn extends MultiLabelKNN {
 		super(labels,k);
 	}
 
-	public void buildClassifier(Instances train) {
+	public void build(Instances train) {
 		this.train = train;
 		predictors = train.numAttributes() - numLabels;
 
@@ -118,7 +120,7 @@ public class MultiKnn extends MultiLabelKNN {
 		return results;
 	}
 	
-	public Prediction makePrediction(Instance instance) throws Exception {
+	public List<Boolean> makePrediction(Instance instance) throws Exception {
 		double[] confidences = new double[numLabels];
 		double[] predictions = new double[numLabels];
 

@@ -36,7 +36,7 @@ public class HybridSubsetMapper extends SubsetMapper
     	lsBaseClassifier.setKNN(10);
     	//*/
     	classifier = new LabelPowerset(lsBaseClassifier, numLabels);
-    	classifier.buildClassifier(instances);
+    	classifier.build(instances);
     	
     }
     
