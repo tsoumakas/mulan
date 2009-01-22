@@ -16,15 +16,9 @@ package mulan.classifier;
  *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-import java.io.Serializable;
-import java.util.Date;
 import java.util.List;
 
 import weka.core.Instance;
-import weka.core.Instances;
-import weka.core.SerializedObject;
-import weka.core.TechnicalInformation;
-import weka.core.TechnicalInformationHandler;
 
 
 /**
@@ -35,20 +29,9 @@ import weka.core.TechnicalInformationHandler;
  * @author Grigorios Tsoumakas
  * @version $Revision: 0.3 $ 
 */
-public abstract class MultiLabelClassifierBase 
-implements TechnicalInformationHandler, MultiLabelClassifier, Serializable {
-
-	/**
-	 * The number of labels the classifier should handle. 
-	 * The label attributes are stored at the end of {@link Instances} data.
-	 */
-	protected final int numLabels;
-
-	/** Whether the classifier is run in debug mode. */
-	protected boolean isDebug = false;
-	
-        
-        /*  TODO: Subset mapping stuff - decide if this will be reused somehow or discard
+public abstract class MultiLabelClassifierBase extends MultiLabelLearnerBase implements MultiLabelClassifier {
+	 
+ /*  TODO: Subset mapping stuff - decide if this will be reused somehow or discard
 	public enum SubsetMappingMethod {
 		NONE,
 		GREEDY,
@@ -67,27 +50,9 @@ implements TechnicalInformationHandler, MultiLabelClassifier, Serializable {
 	 * @param numLabels the number of labels the classifier should use
 	 */
 	public MultiLabelClassifierBase(final int numLabels) {
-		this.numLabels = numLabels;
+		super(numLabels);
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
-	public int getNumLabels()
-	{
-		return numLabels;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	public abstract TechnicalInformation getTechnicalInformation();
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	public abstract void build(Instances instances) throws Exception;
-
 	public final List<Boolean> predict(Instance instance) throws Exception
 	{
             List<Boolean> original = makePrediction(instance);
@@ -117,47 +82,4 @@ implements TechnicalInformationHandler, MultiLabelClassifier, Serializable {
 	 */
 	protected abstract List<Boolean> makePrediction(Instance instance) throws Exception;
 
-
-	/**
-	 * Set debugging mode.
-	 * 
-	 * @param debug
-	 *            true if debug output should be printed
-	 */
-	public void setDebug(boolean debug) {
-		isDebug = debug;
-	}
-		
-	/**
-	 * Get whether debugging is turned on.
-	 *
-	 * @return true if debugging output is on
-	 */
-	public boolean getDebug() {
-		return isDebug;
-	}
-	
-	/**
-	 * Writes the debug message string to the console output.
-	 * @param msg the message
-	 */
-	protected void debug(String msg)
-	{
-		if (!getDebug()) return;
-			System.err.println("" + new Date() + ": " + msg);
-	}
-	
-	
-	/**
-	 * Creates a deep copy of the given classifier using serialization.
-	 *
-	 * @param model the classifier to copy
-	 * @return a deep copy of the classifier
-	 * @exception Exception if an error occurs
-	 */
-	public static MultiLabelClassifier makeCopy(MultiLabelClassifier model) 
-	throws Exception {      
-	    return (MultiLabelClassifier) new SerializedObject(model).getObject();
-	}
-	
 }

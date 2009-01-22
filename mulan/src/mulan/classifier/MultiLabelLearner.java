@@ -1,6 +1,7 @@
 package mulan.classifier;
 
 import weka.core.Instances;
+import weka.core.SerializedObject;
 
 /**
  * Common interface for all multi-label learner types.
@@ -23,4 +24,13 @@ public interface MultiLabelLearner {
 	 * @throws Exception if classifier was not created successfully
 	 */
 	public void build(Instances instances) throws Exception;
+	
+	/**
+	 * Creates a deep copy of the given learner using serialization.
+	 *
+	 * @param learner the learner to copy
+	 * @return a deep copy of the learner
+	 * @exception Exception if an error occurs
+	 */
+	public MultiLabelLearner makeCopy(MultiLabelLearner learner) throws Exception; 
 }

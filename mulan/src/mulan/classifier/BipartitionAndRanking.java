@@ -2,6 +2,8 @@ package mulan.classifier;
 
 import java.util.List;
 
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+
 /**
  * Binary prediction (bipartition), ranking of labels and respective confidences. 
  * Confidences are optional.
@@ -15,8 +17,7 @@ public class BipartitionAndRanking {
 	 * @param ranks
 	 */
 	public BipartitionAndRanking(List<Double> bipartitions, List<Integer> ranks) {
-		this(bipartitions, ranks, null);
-		// convenience method
+		// creates immutable instance where confidences are null 
 	}
 	
 	/**
@@ -25,19 +26,20 @@ public class BipartitionAndRanking {
 	 * @param confidences
 	 */
 	public BipartitionAndRanking(List<Double> bipartitions, List<Integer> ranks, List<Double> confidences){
-		// creates immutable instance ... null value for bipartitions and ranks are not allowed
+		this(bipartitions, ranks);
+		// creates immutable instance 
 	}
 	
 	public List<Boolean> getBipartitions(){
-		return null;
+		throw new NotImplementedException();
 	}
 	
 	public List<Integer> getRanks(){
-		return null;
+		throw new NotImplementedException();
 	}
 	
 	public List<Double> getConfidences(){
-		return null;
+		throw new NotImplementedException();
 	}
 	
 }

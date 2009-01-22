@@ -2,6 +2,10 @@ package mulan.classifier;
 
 import java.util.List;
 
+import mulan.evaluation.ModelEvaluationDataPair;
+
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+
 /**
  * Represents a ranking of labels with respective confidences, provided by {@link MultiLabelRanker}. 
  * Confidences are optional.
@@ -34,7 +38,7 @@ public class Ranking {
 	 * @return read-only list of ranks 
 	 */
 	public List<Integer> getRanks(){
-		return null;
+		throw new NotImplementedException();
 	}
 	
 	/**
@@ -44,7 +48,7 @@ public class Ranking {
 	 * @return read-only list of confidences or null if they are not available
 	 */
 	public List<Double> getConfidences(){
-		return null;
+		throw new NotImplementedException();
 	}
 	
 	
