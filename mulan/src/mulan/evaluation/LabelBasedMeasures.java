@@ -4,15 +4,13 @@ import java.util.List;
 
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+public class LabelBasedMeasures {
 
-public class ExampleBasedMeasures {
-
-	
-	protected ExampleBasedMeasures(List<ModelEvaluationDataPair<Boolean>> learnerPredictionData){
+	protected LabelBasedMeasures(List<ModelEvaluationDataPair<Boolean>> learnerPredictionData){
 		compute(learnerPredictionData);
 	}
 	
-	protected ExampleBasedMeasures(ModelCrossValidationDataSet<Boolean> learnerCrossValPredictionDataSet){
+	protected LabelBasedMeasures(ModelCrossValidationDataSet<Boolean> learnerCrossValPredictionDataSet){
 		compute(learnerCrossValPredictionDataSet);
 	}
 	
@@ -20,30 +18,24 @@ public class ExampleBasedMeasures {
 		throw new NotImplementedException();
 	}
 	
+	
 	protected void compute(ModelCrossValidationDataSet<Boolean> learnerCrossValPredictionDataSet){
 		throw new NotImplementedException();
 	}
 	
-	public double getHammingLoss(){
+	public ConfidenceLabelBasedMeasures getConfidenceLabelBasedMeasures(){
 		throw new NotImplementedException();
 	}
 	
-	public double getSubsetAccuracy(){
+	double getAccuracy(MeasureAveragingType averagingType){
 		throw new NotImplementedException();
 	}
 	
-	public double getAccuracy(){
+	double getFMeasure(MeasureAveragingType averagingType){
 		throw new NotImplementedException();
 	}
 	
-	public double getFMeasure(){
-		throw new NotImplementedException();
-	}
-	public double getPrecision(){
-		throw new NotImplementedException();
-	}
-	
-	public double getRecall(){
+	double getRecall(MeasureAveragingType averagingType){
 		throw new NotImplementedException();
 	}
 	

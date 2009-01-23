@@ -2,8 +2,6 @@ package mulan.classifier;
 
 import java.util.List;
 
-import mulan.evaluation.ModelEvaluationDataPair;
-
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /**
