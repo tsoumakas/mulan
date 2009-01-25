@@ -1,7 +1,7 @@
 package mulan.classifier.lazy;
 
-import java.util.List;
 
+import mulan.classifier.Bipartition;
 import mulan.classifier.Prediction;
 import weka.core.EuclideanDistance;
 import weka.core.Instance;
@@ -120,7 +120,7 @@ public class MultiKnn extends MultiLabelKNN {
 		return results;
 	}
 	
-	public List<Boolean> makePrediction(Instance instance) throws Exception {
+	public Bipartition makePrediction(Instance instance) throws Exception {
 		double[] confidences = new double[numLabels];
 		double[] predictions = new double[numLabels];
 

@@ -2,8 +2,6 @@ package mulan.classifier;
 
 import java.util.List;
 
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
 /**
  * Binary prediction (bipartition), ranking of labels and respective confidences. 
  * Confidences are optional.
@@ -12,34 +10,77 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
  */
 public class BipartitionAndRanking {
 
+	private final Bipartition bipartition;
+	private final Ranking ranking;
+	
 	/**
 	 * Creates a new instance.
+	 * @param bipartition
 	 * @param ranks
 	 */
-	public BipartitionAndRanking(List<Double> bipartitions, List<Integer> ranks) {
-		// creates immutable instance where confidences are null 
+	public BipartitionAndRanking(List<Boolean> bipartition, List<Integer> ranks) {
+		this(bipartition, ranks, null);
 	}
 	
 	/**
 	 * Creates a new instance.
+	 * @param bipartition
 	 * @param ranks
 	 * @param confidences
 	 */
-	public BipartitionAndRanking(List<Double> bipartitions, List<Integer> ranks, List<Double> confidences){
-		this(bipartitions, ranks);
-		// creates immutable instance 
+	public BipartitionAndRanking(List<Boolean> bipartition, List<Integer> ranks, List<Double> confidences){
+		this.bipartition = new Bipartition(bipartition);
+		this.ranking = new Ranking(ranks, confidences);
 	}
 	
-	public List<Boolean> getBipartitions(){
-		throw new NotImplementedException();
+	/**
+	 * Creates a new instance.
+	 * @param bipartition
+	 * @param ranks
+	 */
+	public BipartitionAndRanking(Boolean[] bipartition, Integer[] ranks) {
+		this(bipartition, ranks, null);
+	}
+	
+	/**
+	 * Creates a new instance.
+	 * @param bipartition
+	 * @param ranks
+	 * @param confidences
+	 */
+	public BipartitionAndRanking(Boolean[] bipartition, Integer[] ranks, Double[] confidences){
+		this.bipartition = new Bipartition(bipartition);
+		this.ranking = new Ranking(ranks, confidences);
+	}
+	
+	/**
+	 * Creates a new instance.
+	 * @param bipartition
+	 * @param ranking
+	 */
+	public BipartitionAndRanking(Bipartition bipartition, Ranking ranking){
+		this.bipartition = bipartition;
+		this.ranking = ranking;
+	}
+	
+	public List<Boolean> getBipartition(){
+		return bipartition.getBipartition();
 	}
 	
 	public List<Integer> getRanks(){
-		throw new NotImplementedException();
+		return ranking.getRanks();
 	}
 	
 	public List<Double> getConfidences(){
-		throw new NotImplementedException();
+		return ranking.getConfidences();
+	}
+	
+	public Bipartition getBipartitionObject(){
+		return bipartition;
+	}
+	
+	public Ranking getRankingObject(){
+		return ranking;
 	}
 	
 }

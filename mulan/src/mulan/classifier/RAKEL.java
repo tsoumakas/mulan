@@ -19,7 +19,6 @@ package mulan.classifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Random;
 
 import mulan.evaluation.BinaryPrediction;
@@ -411,7 +410,7 @@ public class RAKEL extends TransformationBasedMultiLabelClassifier
 	}
 	
 	
-	public List<Boolean> makePrediction(Instance instance) throws Exception {		
+	public Bipartition makePrediction(Instance instance) throws Exception {		
             double[] sumConf = new double[numLabels];
             sumVotes = new double[numLabels];
             lengthVotes = new double[numLabels];

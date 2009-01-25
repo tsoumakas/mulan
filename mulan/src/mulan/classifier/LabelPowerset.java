@@ -17,7 +17,6 @@ package mulan.classifier;
  */
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.Random;
 
 import mulan.core.LabelSet;
@@ -145,7 +144,7 @@ public class LabelPowerset extends TransformationBasedMultiLabelClassifier
         return baseClassifier.distributionForInstance(newInstance); 		
     }
 
-    public List<Boolean> makePrediction(Instance instance) throws Exception {
+    public Bipartition makePrediction(Instance instance) throws Exception {
         double predictions[] = null;
         double confidences[] = null;
 

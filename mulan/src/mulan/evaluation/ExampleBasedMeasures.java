@@ -2,25 +2,26 @@ package mulan.evaluation;
 
 import java.util.List;
 
+import mulan.classifier.Bipartition;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 
 public class ExampleBasedMeasures {
 
 	
-	protected ExampleBasedMeasures(List<ModelEvaluationDataPair<Boolean>> learnerPredictionData){
-		compute(learnerPredictionData);
+	protected ExampleBasedMeasures(List<ModelEvaluationDataPair<Bipartition>> predictionData){
+		compute(predictionData);
 	}
 	
-	protected ExampleBasedMeasures(ModelCrossValidationDataSet<Boolean> learnerCrossValPredictionDataSet){
-		compute(learnerCrossValPredictionDataSet);
+	protected ExampleBasedMeasures(ModelCrossValidationDataSet<Bipartition> crossValPredictionDataSet){
+		compute(crossValPredictionDataSet);
 	}
 	
-	protected void compute(List<ModelEvaluationDataPair<Boolean>> learnerPredictionData){
+	protected void compute(List<ModelEvaluationDataPair<Bipartition>> predictionData){
 		throw new NotImplementedException();
 	}
 	
-	protected void compute(ModelCrossValidationDataSet<Boolean> learnerCrossValPredictionDataSet){
+	protected void compute(ModelCrossValidationDataSet<Bipartition> crossValPredictionDataSet){
 		throw new NotImplementedException();
 	}
 	

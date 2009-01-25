@@ -1,8 +1,8 @@
 package mulan.classifier.lazy;
 
 import java.util.HashSet;
-import java.util.List;
 
+import mulan.classifier.Bipartition;
 import mulan.classifier.Prediction;
 import mulan.core.LabelSet;
 import weka.core.Instance;
@@ -23,7 +23,7 @@ public class LPknn extends MultiLabelKNN {
 		super(numLabels, numOfNeighbors);
 	}
 
-	public List<Boolean> makePrediction(Instance instance) throws Exception {
+	public Bipartition makePrediction(Instance instance) throws Exception {
 
 		double[] predictions = new double[numLabels];
 

@@ -1,6 +1,5 @@
 package mulan.classifier;
 import java.util.Arrays;
-import java.util.List;
 
 import weka.classifiers.Classifier;
 import weka.classifiers.bayes.NaiveBayes;
@@ -176,7 +175,7 @@ public class FlattenTrueLabelsClassifier extends TransformationBasedMultiLabelCl
 		return result;
 	}
 	
-	protected List<Boolean> makePrediction(Instance instance) throws Exception
+	protected Bipartition makePrediction(Instance instance) throws Exception
 	{
 		instance = transform(instance);
 		double[] confidences = classifier.distributionForInstance(instance);

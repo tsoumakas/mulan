@@ -1,6 +1,5 @@
 package mulan.classifier;
 
-import java.util.List;
 
 import weka.core.Instance;
 import weka.core.Instances;
@@ -24,5 +23,5 @@ public interface MultiLabelClassifier extends MultiLabelLearner
 	 * @see MultiLabelLearner#build(Instances)
 	 * @throws Exception if prediction was not successful
 	 */
-	public List<Boolean> predict(Instance instance) throws Exception;
+	public Bipartition predict(Instance instance) throws Exception;
 }

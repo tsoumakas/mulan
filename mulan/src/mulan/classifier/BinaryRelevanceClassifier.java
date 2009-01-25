@@ -1,6 +1,5 @@
 package mulan.classifier;
 
-import java.util.List;
 
 import weka.classifiers.Classifier;
 import weka.core.Attribute;
@@ -69,7 +68,7 @@ public class BinaryRelevanceClassifier extends TransformationBasedMultiLabelClas
 		return newInstance;
 	}
 
-	protected List<Boolean> makePrediction(Instance instance) throws Exception
+	protected Bipartition makePrediction(Instance instance) throws Exception
 	{
                 double predictions[] = new double[numLabels];
 		double confidences[] = new double[numLabels];

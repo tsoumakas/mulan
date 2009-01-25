@@ -2,9 +2,9 @@ package mulan.classifier.lazy;
 
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Random;
 
+import mulan.classifier.Bipartition;
 import mulan.classifier.Prediction;
 import mulan.core.LabelSet;
 import weka.core.Instance;
@@ -35,7 +35,7 @@ public class RAKELknn extends MultiLabelKNN {
 		lengthVotes = new double[numLabels];
 	}
 
-	public List<Boolean> makePrediction(Instance instance) throws Exception {
+	public Bipartition makePrediction(Instance instance) throws Exception {
 		double[][] predictions = new double[numOfModels][numLabels];
 
 		double[][][] dblLabels = new double[numOfModels][numOfNeighbors][numLabels];

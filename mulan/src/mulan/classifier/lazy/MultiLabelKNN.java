@@ -1,8 +1,8 @@
 package mulan.classifier.lazy;
 
-import java.util.List;
 import java.util.Random;
 
+import mulan.classifier.Bipartition;
 import mulan.classifier.MultiLabelClassifierBase;
 import weka.core.EuclideanDistance;
 import weka.core.Instance;
@@ -134,7 +134,7 @@ public abstract class MultiLabelKNN extends MultiLabelClassifierBase {
 	}
 
 	@Override
-	protected List<Boolean> makePrediction(Instance instance) throws Exception {
+	protected Bipartition makePrediction(Instance instance) throws Exception {
 		return null;
 	}
 

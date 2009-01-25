@@ -6,8 +6,8 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 
+import mulan.classifier.Bipartition;
 import mulan.classifier.MultiLabelClassifierBase;
-import mulan.classifier.Prediction;
 import weka.core.Attribute;
 import weka.core.Instance;
 import weka.core.Instances;
@@ -191,7 +191,7 @@ public class BPMLL extends MultiLabelClassifierBase {
 		thresholdF = buildThresholdFunction(trainData);
 	}
 	
-	protected List<Boolean> makePrediction(final Instance instance) throws Exception {
+	protected Bipartition makePrediction(final Instance instance) throws Exception {
 
 		if(instance == null){
 			throw new IllegalArgumentException("Input instance for prediction is null.");
@@ -238,7 +238,7 @@ public class BPMLL extends MultiLabelClassifierBase {
 			labelConfidences[labelIndex] = (labelConfidences[labelIndex] + 1) / 2;
 		}
 		 
-		return Arrays.asList(labelPredictions);
+		return new Bipartition(labelPredictions);
 	}
 	
 	@Override

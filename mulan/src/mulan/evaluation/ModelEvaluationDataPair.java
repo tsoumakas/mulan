@@ -6,86 +6,49 @@ import java.util.List;
 /**
  * Used to store data from multi-label learner model examination for evaluation purposes.
  * The class provides output of the model, which is the model response to presented 
- * input data instance, an actual output, which is a true (ideal) output the model should 
- * provide when presented with particular input data and confidences for each output item 
- * of the model result.
+ * input data instance and a true labels for instance the model was examined with.
  * 
  * @author Jozef Vilcek
  */
 class ModelEvaluationDataPair<T> {
 	
-	private List<T> modelOutput;
-	private List<Double> modelConfidences;
-	private List<T> actualOutput;
-	
+	private final T modelOutput;
+	private List<Boolean> trueLabels;
 	
 	/**
 	 * Creates a new instance. 
 	 *  
 	 * @param modelOutput model output
-	 * @param actualOutput actual output the model should output
+	 * @param trueLabels the true labels bipartition
 	 */
-	ModelEvaluationDataPair(List<T> modelOutput, List<T> actualOutput){
-		if(modelOutput == null || actualOutput == null) {
-			throw new IllegalArgumentException("Neither modelOutput or actualOutput can be null.");
+	ModelEvaluationDataPair(T modelOutput, List<Boolean> trueLabels){
+		if(modelOutput == null || trueLabels == null) {
+			throw new IllegalArgumentException("Neither modelOutput or trueLabels can be null.");
 		}
-		int modelOutputSize = modelOutput.size();
-		int actualOutputSize = actualOutput.size();
-		if(modelOutputSize == 0 || actualOutputSize == 0){
-			throw new IllegalArgumentException("Either modelOutput or actualOutput does not contain any " +
-							"items. Empty collections are not allowed.");
+		
+		if(trueLabels.size() <= 1){
+			throw new IllegalArgumentException("trueLabels is too less in dimension.");
 		}
-		if(modelOutputSize != actualOutputSize){
-			throw new IllegalArgumentException("Both modelOutput and actualOutput must have same dimenstions.");
-		}
+		
 		this.modelOutput = modelOutput;
-		this.actualOutput = actualOutput;
+		this.trueLabels = trueLabels;
 	}
 						    
-	
-	/**
-	 * Creates a new instance. 
-	 *  
-	 * @param modelOutput model output
-	 * @param actualOutput actual output the model should output
-	 * @param modelConfidences confidences for model output
-	 */
-	ModelEvaluationDataPair(List<T> modelOutput, List<T> actualOutput, 
-						      List<Double> modelConfidences) {
-		this(modelOutput, actualOutput);
-		
-		if(modelConfidences == null){
-			throw new IllegalArgumentException("Input parameter modelConfidences is null.");
-		}
-		if(modelConfidences.size() != modelOutput.size()){
-			throw new IllegalArgumentException("The dimension of modelConfidences does not match model output.");
-		}
-		this.modelConfidences = modelConfidences;
-	}
 	
 	/**
 	 * Returns read-only list of model output.
 	 * @return model output
 	 */
-	List<T> getModelOutput(){
-		return Collections.unmodifiableList(modelOutput);
+	T getModelOutput(){
+		return modelOutput;
 	}
 	
 	/**
-	 * Returns read-only list of confidences of model output.
-	 * @return confidences of model output or null if they are not specified
+	 * Returns read-only list of true labels the model should output.
+	 * @return true labels
 	 */
-	List<Double> getModelConfidences(){
-		return (modelConfidences == null) ? 
-				null : Collections.unmodifiableList(modelConfidences);
-	}
-	
-	/**
-	 * Returns read-only list of actual output the model should output.
-	 * @return actual output
-	 */
-	List<T> getActualOutput(){
-		return Collections.unmodifiableList(actualOutput);
+	List<Boolean> getTrueLabels(){
+		return Collections.unmodifiableList(trueLabels);
 	}
 	
 

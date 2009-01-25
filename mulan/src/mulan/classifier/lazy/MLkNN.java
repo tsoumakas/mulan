@@ -1,8 +1,9 @@
 package mulan.classifier.lazy;
 
 
-import java.util.List;
 import java.util.Random;
+
+import mulan.classifier.Bipartition;
 import mulan.classifier.Prediction;
 import weka.core.Instance;
 import weka.core.Instances;
@@ -224,7 +225,7 @@ public class MLkNN extends MultiLabelKNN {
 	}
 
 	@Override
-	protected List<Boolean> makePrediction(Instance instance) throws Exception {
+	protected Bipartition makePrediction(Instance instance) throws Exception {
 
 		double[] confidences = new double[numLabels];
 		double[] predictions = new double[numLabels];

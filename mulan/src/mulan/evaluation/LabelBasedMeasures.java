@@ -2,24 +2,26 @@ package mulan.evaluation;
 
 import java.util.List;
 
+import mulan.classifier.Bipartition;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 public class LabelBasedMeasures {
 
-	protected LabelBasedMeasures(List<ModelEvaluationDataPair<Boolean>> learnerPredictionData){
-		compute(learnerPredictionData);
+	protected LabelBasedMeasures(List<ModelEvaluationDataPair<Bipartition>> predictionData,
+								 ConfidenceLabelBasedMeasures confidenceLabelBasedMeasures){
+		compute(predictionData);
 	}
 	
-	protected LabelBasedMeasures(ModelCrossValidationDataSet<Boolean> learnerCrossValPredictionDataSet){
-		compute(learnerCrossValPredictionDataSet);
+	protected LabelBasedMeasures(ModelCrossValidationDataSet<Bipartition> crossValPredictionDataSet,
+								 ConfidenceLabelBasedMeasures confidenceLabelBasedMeasures){
+		compute(crossValPredictionDataSet);
 	}
 	
-	protected void compute(List<ModelEvaluationDataPair<Boolean>> learnerPredictionData){
+	protected void compute(List<ModelEvaluationDataPair<Bipartition>> predictionData){
 		throw new NotImplementedException();
 	}
 	
-	
-	protected void compute(ModelCrossValidationDataSet<Boolean> learnerCrossValPredictionDataSet){
+	protected void compute(ModelCrossValidationDataSet<Bipartition> crossValPredictionDataSet){
 		throw new NotImplementedException();
 	}
 	
@@ -27,15 +29,15 @@ public class LabelBasedMeasures {
 		throw new NotImplementedException();
 	}
 	
-	double getAccuracy(MeasureAveragingType averagingType){
+	public double getAccuracy(MeasureAveragingType averagingType){
 		throw new NotImplementedException();
 	}
 	
-	double getFMeasure(MeasureAveragingType averagingType){
+	public double getFMeasure(MeasureAveragingType averagingType){
 		throw new NotImplementedException();
 	}
 	
-	double getRecall(MeasureAveragingType averagingType){
+	public double getRecall(MeasureAveragingType averagingType){
 		throw new NotImplementedException();
 	}
 	

@@ -2,25 +2,26 @@ package mulan.evaluation;
 
 import java.util.List;
 
+import mulan.classifier.Ranking;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 
 public class RankingMeasures {
 
 	
-	protected RankingMeasures(List<ModelEvaluationDataPair<Boolean>> learnerRankingData){
-		compute(learnerRankingData);
+	protected RankingMeasures(List<ModelEvaluationDataPair<Ranking>> rankingData){
+		compute(rankingData);
 	}
 	
-	protected RankingMeasures(ModelCrossValidationDataSet<Boolean> learnerCrossValRankingDataSet){
-		compute(learnerCrossValRankingDataSet);
+	protected RankingMeasures(ModelCrossValidationDataSet<Ranking> crossValRankingDataSet){
+		compute(crossValRankingDataSet);
 	}
 	
-	protected void compute(List<ModelEvaluationDataPair<Boolean>> learnerRankingData){
+	protected void compute(List<ModelEvaluationDataPair<Ranking>> rankingData){
 		throw new NotImplementedException();
 	}
 	
-	protected void compute(ModelCrossValidationDataSet<Boolean> learnerCrossValRankingDataSet){
+	protected void compute(ModelCrossValidationDataSet<Ranking> crossValRankingDataSet){
 		throw new NotImplementedException();
 	}
 	
