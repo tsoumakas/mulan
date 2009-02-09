@@ -5,11 +5,9 @@ import weka.classifiers.Classifier;
 import weka.core.Attribute;
 import weka.core.Instance;
 import weka.core.Instances;
-import weka.core.Utils;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.Remove;
 
-@SuppressWarnings("serial")
 /**
  * Class that implements a binary relevance classifier <p>
  *
@@ -17,7 +15,7 @@ import weka.filters.unsupervised.attribute.Remove;
  * @author Grigorios Tsoumakas 
  * @version $Revision: 0.03 $ 
  */
-public class BinaryRelevanceClassifier extends TransformationBasedMultiLabelClassifier
+public class BinaryRelevanceClassifier extends TransformationBasedMultiLabelClassifier implements MultiLabelClassifierAndRanker
 {
 
 	protected Instances[] metadataTest;
@@ -49,7 +47,6 @@ public class BinaryRelevanceClassifier extends TransformationBasedMultiLabelClas
 	}
 
 	private Instance transformInstance(Instance instance, int label)
-			throws Exception
 	{
 		Instance newInstance = new Instance(instance.numAttributes());
 		newInstance = (Instance) instance.copy();
@@ -66,31 +63,6 @@ public class BinaryRelevanceClassifier extends TransformationBasedMultiLabelClas
 			newInstance.deleteAttributeAt(numPredictors + skipLabel);
 		}
 		return newInstance;
-	}
-
-	protected Bipartition makePrediction(Instance instance) throws Exception
-	{
-                double predictions[] = new double[numLabels];
-		double confidences[] = new double[numLabels];
-
-		for (int i = 0; i < numLabels; i++)
-		{
-			Instance newInstance = transformInstance(instance, i);			
-			newInstance.setDataset(metadataTest[i]);
-
-			double[] distribution = ensemble[i]
-					.distributionForInstance(newInstance);
-			int maxIndex = Utils.maxIndex(distribution);
-
-			// Ensure correct predictions both for class values {0,1} and {1,0}
-			Attribute classAttribute = metadataTest[i].classAttribute();				
-			predictions[i] = Double.parseDouble(classAttribute.value(maxIndex));
-
-			// The confidence of the label being equal to 1
-			confidences[i] = distribution[classAttribute.indexOfValue("1")];
-		}
-		Prediction result = new Prediction(predictions, confidences);
-		return result;
 	}
 
 	/**
@@ -117,6 +89,37 @@ public class BinaryRelevanceClassifier extends TransformationBasedMultiLabelClas
 		result.setClassIndex(result.numAttributes() - 1);
 		return result;
 	}
+
+    public BipartitionAndRanking predictAndRank(Instance instance) {
+        Boolean[] predictions = new Boolean[numLabels];
+		double[] confidences = new double[numLabels];
+
+		for (int i=0; i<numLabels; i++)
+		{
+			Instance newInstance = transformInstance(instance, i);
+			newInstance.setDataset(metadataTest[i]);
+
+            double distribution[] = new double[2];
+            try {
+                distribution = ensemble[i].distributionForInstance(newInstance);
+            } catch (Exception e) {
+                System.out.println(e);
+                return null;
+            }
+            int maxIndex = (distribution[0] > distribution[1]) ? 0 : 1;
+
+			// Ensure correct predictions both for class values {0,1} and {1,0}
+			Attribute classAttribute = metadataTest[i].classAttribute();
+			predictions[i] = (classAttribute.value(maxIndex).equals("1")) ? true : false;
+
+			// The confidence of the label being equal to 1
+			confidences[i] = distribution[classAttribute.indexOfValue("1")];
+		}
+        Ranking ranking = new Ranking(confidences);
+        Bipartition bipartition = new Bipartition(predictions);
+        BipartitionAndRanking result = new BipartitionAndRanking(bipartition, ranking);
+		return result;
+    }
           
 }
 
