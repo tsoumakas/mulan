@@ -26,6 +26,18 @@ public class Ranking {
 	
 	/**
 	 * Creates a new instance.
+	 * @param confidences
+	 */
+	public Ranking(double[] confidences) {
+        int[] reverseRanks = weka.core.Utils.stableSort(confidences);
+        for (int i=0; i< confidences.length; i++) {
+            ranks.add(confidences.length-reverseRanks[i]);
+            this.confidences.add(confidences[i]);
+        }
+    }
+
+	/**
+	 * Creates a new instance.
 	 * @param ranks
 	 */
 	public Ranking(Integer[] ranks) {
