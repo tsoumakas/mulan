@@ -15,7 +15,7 @@ import weka.filters.unsupervised.attribute.Remove;
  * @author Grigorios Tsoumakas 
  * @version $Revision: 0.03 $ 
  */
-public class BinaryRelevanceClassifier extends TransformationBasedMultiLabelClassifier implements MultiLabelClassifierAndRanker
+public class BinaryRelevanceClassifier extends TransformationBasedMultiLabelLearner implements MultiLabelClassifierAndRanker
 {
 
 	protected Instances[] metadataTest;

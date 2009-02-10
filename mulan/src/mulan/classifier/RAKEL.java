@@ -42,7 +42,7 @@ import weka.filters.unsupervised.attribute.Remove;
  * @version $Revision: 0.04 $ 
  */
 @SuppressWarnings("serial")
-public class RAKEL extends TransformationBasedMultiLabelClassifier
+public class RAKEL extends TransformationBasedMultiLabelLearner implements MultiLabelClassifier
 {
     /**
      * Seed for replication of random experiments
@@ -410,7 +410,7 @@ public class RAKEL extends TransformationBasedMultiLabelClassifier
 	}
 	
 	
-	public Bipartition makePrediction(Instance instance) throws Exception {		
+	public Bipartition predict(Instance instance) throws Exception {		
             double[] sumConf = new double[numLabels];
             sumVotes = new double[numLabels];
             lengthVotes = new double[numLabels];

@@ -36,7 +36,7 @@ import weka.core.SparseInstance;
  * @author Grigorios Tsoumakas
  * @version $Revision: 0.03 $ 
  */
-public class IncludeLabelsClassifier extends TransformationBasedMultiLabelClassifier implements
+public class IncludeLabelsClassifier extends TransformationBasedMultiLabelLearner implements
 		MultiLabelClassifier
 {
 	double[] thresholds;
@@ -176,7 +176,7 @@ public class IncludeLabelsClassifier extends TransformationBasedMultiLabelClassi
 		return result;
 	}
 	
-	protected Bipartition makePrediction(Instance instance) throws Exception
+	public Bipartition predict(Instance instance) throws Exception
 	{
 		double[] confidences = new double[numLabels];
                 //System.out.println(instance.toString());

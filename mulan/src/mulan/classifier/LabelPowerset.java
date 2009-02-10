@@ -35,7 +35,7 @@ import weka.core.SparseInstance;
  * @author Robert Friberg
  * @version $Revision: 0.05 $ 
  */
-public class LabelPowerset extends TransformationBasedMultiLabelClassifier
+public class LabelPowerset extends TransformationBasedMultiLabelLearner implements MultiLabelClassifier
 {
     /**
      * The confidence values for each label are calculated in the following ways
@@ -144,7 +144,7 @@ public class LabelPowerset extends TransformationBasedMultiLabelClassifier
         return baseClassifier.distributionForInstance(newInstance); 		
     }
 
-    public Bipartition makePrediction(Instance instance) throws Exception {
+    public Bipartition predict(Instance instance) throws Exception {
         double predictions[] = null;
         double confidences[] = null;
 

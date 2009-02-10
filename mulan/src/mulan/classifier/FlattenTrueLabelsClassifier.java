@@ -15,7 +15,7 @@ import weka.core.SparseInstance;
  * The multiple label attributes are mapped to a single multi class
  * attribute. 
  */
-public class FlattenTrueLabelsClassifier extends TransformationBasedMultiLabelClassifier implements
+public class FlattenTrueLabelsClassifier extends TransformationBasedMultiLabelLearner implements
 		MultiLabelClassifier
 {
     double[] thresholds;
@@ -175,7 +175,7 @@ public class FlattenTrueLabelsClassifier extends TransformationBasedMultiLabelCl
 		return result;
 	}
 	
-	protected Bipartition makePrediction(Instance instance) throws Exception
+	public Bipartition predict(Instance instance) throws Exception
 	{
 		instance = transform(instance);
 		double[] confidences = classifier.distributionForInstance(instance);
