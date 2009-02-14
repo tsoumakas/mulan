@@ -50,6 +50,10 @@ class ModelEvaluationDataPair<T> {
 	List<Boolean> getTrueLabels(){
 		return Collections.unmodifiableList(trueLabels);
 	}
-	
+
+
+    int getNumLabels() {
+        return trueLabels.size();
+    }
 
 }

@@ -176,6 +176,7 @@ public class IntegratedEvaluation {
 			// sort the array of ranks
 			sorted_ranks = Utils.stableSort(ranks);
 
+
 			// indexes of true and false labels
 			ArrayList<Integer> true_indexes = new ArrayList<Integer>();
 			ArrayList<Integer> false_indexes = new ArrayList<Integer>();

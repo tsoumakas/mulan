@@ -7,7 +7,7 @@ package mulan.examples;
 
 import java.io.FileReader;
 
-import mulan.classifier.BinaryRelevanceClassifier;
+import mulan.classifier.BinaryRelevance;
 import mulan.classifier.LabelPowerset;
 import mulan.classifier.RAKEL;
 import mulan.classifier.lazy.BRkNN;
@@ -42,7 +42,7 @@ public class CrossValidationExperiment {
             //* Binary Relevance Classifier
             System.out.println("BR");
             J48 brBaseClassifier = new J48();
-            BinaryRelevanceClassifier br = new BinaryRelevanceClassifier(brBaseClassifier,numLabels);
+            BinaryRelevance br = new BinaryRelevance(brBaseClassifier,numLabels);
             results = eval.crossValidateAll(br, data, 10);           
             System.out.println(results.toString());
             System.gc();

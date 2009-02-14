@@ -3,6 +3,7 @@ package mulan.classifier.lazy;
 import java.util.Random;
 
 import mulan.classifier.Bipartition;
+import mulan.classifier.MultiLabelClassifierAndRanker;
 import mulan.classifier.MultiLabelClassifierBase;
 import weka.core.EuclideanDistance;
 import weka.core.Instance;
@@ -16,8 +17,7 @@ import weka.core.neighboursearch.LinearNNSearch;
  * @author Eleftherios Spyromitros-Xioufis ( espyromi@csd.auth.gr )
  * 
  */
-@SuppressWarnings("serial")
-public abstract class MultiLabelKNN extends MultiLabelClassifierBase {
+public abstract class MultiLabelKNN extends MultiLabelClassifierBase  {
     double threshold = 0.5;
     double[] thresholds;
 

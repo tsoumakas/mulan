@@ -62,7 +62,7 @@ public class BipartitionAndRanking {
 		this.bipartition = bipartition;
 		this.ranking = ranking;
 	}
-	
+
 	public List<Boolean> getBipartition(){
 		return bipartition.getBipartition();
 	}

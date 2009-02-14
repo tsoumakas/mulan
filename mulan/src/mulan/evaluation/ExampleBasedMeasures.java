@@ -3,7 +3,6 @@ package mulan.evaluation;
 import java.util.List;
 
 import mulan.classifier.Bipartition;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import weka.core.Utils;
 
 
@@ -13,27 +12,55 @@ public class ExampleBasedMeasures {
 	private double accuracy;
 	private double recall;
 	private double precision;
-	private double fmeasure;
+	private double fMeasure;
 
 	private double forgivenessRate;
 
+	protected ExampleBasedMeasures(List<ModelEvaluationDataPair<Bipartition>> predictionData, double forgivenessRate){
+        this.forgivenessRate = forgivenessRate;
+        computeMeasures(predictionData);
+	}
 	
 	protected ExampleBasedMeasures(List<ModelEvaluationDataPair<Bipartition>> predictionData){
-		compute(predictionData);
-	}
-	
-	protected ExampleBasedMeasures(ModelCrossValidationDataSet<Bipartition> crossValPredictionDataSet){
-		compute(crossValPredictionDataSet);
+		this (predictionData, 1.0);
 	}
 
-    // shouldn't the following be private?
-	protected void compute(List<ModelEvaluationDataPair<Bipartition>> predictionData){
+    /*
+     * Aggregation of array of measures
+     */
+    protected ExampleBasedMeasures(ExampleBasedMeasures[] arrayOfMeasures) {
+		accuracy = 0;
+		hammingLoss = 0;
+		precision = 0;
+		recall = 0;
+		fMeasure = 0;
+		subsetAccuracy = 0;
+
+        for (ExampleBasedMeasures measures : arrayOfMeasures) {
+            accuracy += measures.getAccuracy();
+            hammingLoss += measures.getHammingLoss();
+            precision += measures.getPrecision();
+            recall += measures.getRecall();
+            fMeasure += measures.getFMeasure();
+            subsetAccuracy += measures.getSubsetAccuracy();
+        }
+
+        int arraySize = arrayOfMeasures.length;
+        accuracy /= arraySize;
+        hammingLoss /= arraySize;
+        precision /= arraySize;
+        recall /= arraySize;
+        fMeasure /= arraySize;
+        subsetAccuracy /= arraySize;
+    }
+	
+	private void computeMeasures(List<ModelEvaluationDataPair<Bipartition>> predictionData){
 		// Reset in case of multiple calls
 		accuracy = 0;
 		hammingLoss = 0;
 		precision = 0;
 		recall = 0;
-		fmeasure = 0;
+		fMeasure = 0;
 		subsetAccuracy = 0;
 
 		int numLabels = predictionData.get(0).getTrueLabels().size();
@@ -75,7 +102,7 @@ public class ExampleBasedMeasures {
 				accuracy  += 1;
 				recall    += 1;
 				precision += 1;
-				fmeasure  += 1;
+				fMeasure  += 1;
 			}
 			else
 			{
@@ -96,7 +123,7 @@ public class ExampleBasedMeasures {
 		precision /= numInstances;
 		recall /= numInstances;
 		subsetAccuracy /= numInstances;
-		fmeasure = computeF1Measure(precision, recall);
+		fMeasure = computeF1Measure(precision, recall);
     }
 
   	private double computeF1Measure(double precision, double recall)
@@ -106,36 +133,6 @@ public class ExampleBasedMeasures {
 	    else
             return (2 * precision * recall) / (precision + recall);
 	}
-
-	protected void compute(ModelCrossValidationDataSet<Bipartition> crossValPredictionDataSet){
-       
-        double accuracy = 0;
-        double hammingLoss = 0;
-		double precision = 0;
-		double recall = 0;
-		double fmeasure = 0;
-		double subsetAccuracy = 0;
-		
-		int numFolds = crossValPredictionDataSet.getNumFolds(); 
-        for (int i=0; i<numFolds; i++) {
-            List<ModelEvaluationDataPair<Bipartition>> predictionData = 
-            	crossValPredictionDataSet.getFoldData(i);
-            compute(predictionData);
-            accuracy += this.accuracy;
-            hammingLoss += this.hammingLoss;
-            precision += this.precision;
-            recall += this.recall;
-            fmeasure += this.fmeasure;
-            subsetAccuracy += this.subsetAccuracy;
-        }
-        
-        this.accuracy = accuracy / numFolds;
-        this.hammingLoss = hammingLoss / numFolds;
-        this.precision = precision / numFolds;
-        this.recall = recall / numFolds;
-        this.fmeasure = fmeasure / numFolds;
-        this.subsetAccuracy = fmeasure / numFolds;
-    }
 	
 	public double getHammingLoss(){
 		return hammingLoss;
@@ -150,7 +147,7 @@ public class ExampleBasedMeasures {
 	}
 	
 	public double getFMeasure(){
-		return fmeasure;
+		return fMeasure;
 	}
 	public double getPrecision(){
 		return precision;
@@ -159,10 +156,5 @@ public class ExampleBasedMeasures {
 	public double getRecall(){
 		return recall;
 	}
-	
-	//TODO: add more measures if applicable
-	
-	public String getAllMeasuresSummary(){
-		throw new NotImplementedException();
-	}
+
 }

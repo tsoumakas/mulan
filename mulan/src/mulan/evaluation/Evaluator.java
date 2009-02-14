@@ -90,7 +90,7 @@ public class Evaluator
 		
 		List<ModelEvaluationDataPair<Bipartition>> result = collectClassifierOutput(learner, testDataSet); 
 		ExampleBasedMeasures exampleBasedMeasures = new ExampleBasedMeasures(result);
-		LabelBasedMeasures labelBasedMeasures = new LabelBasedMeasures(result, null);
+		LabelBasedMeasures labelBasedMeasures = new LabelBasedMeasures(result);
 		Evaluation evaluation = new Evaluation();
 		evaluation.setExampleBasedMeasures(exampleBasedMeasures);
 		evaluation.setLabelBasedMeasures(labelBasedMeasures);
@@ -105,26 +105,27 @@ public class Evaluator
 		throw new NotImplementedException();
 	}
 	
-	private Evaluation crossValidateClassifier(MultiLabelClassifier learner, Instances dataSet, int numFolds) throws Exception{
+	private Evaluation crossValidateClassifier(MultiLabelClassifier learner, Instances dataSet, int numFolds) throws Exception {
 		
 		Random random = new Random(seed);
-		ModelCrossValidationDataSet<Bipartition> crossValidationDataSet = 
-			new ModelCrossValidationDataSet<Bipartition>();
-		
+        ExampleBasedMeasures[] ebm = new ExampleBasedMeasures[numFolds];
+        LabelBasedMeasures[] lbm = new LabelBasedMeasures[numFolds];
+
 		for(int fold = 0; fold < numFolds; fold++){
 			Instances train = dataSet.trainCV(numFolds, fold, random);  
 			Instances test  = dataSet.testCV(numFolds, fold);
-			MultiLabelClassifier clone = (MultiLabelClassifier)learner.makeCopy(learner);
+			MultiLabelClassifier clone = (MultiLabelClassifier) learner.makeCopy(learner);
 			clone.build(train);
-			crossValidationDataSet.addFoldData(fold, collectClassifierOutput(clone, test));
+            List<ModelEvaluationDataPair<Bipartition>> results = collectClassifierOutput(clone, test);
+            ebm[fold] = new ExampleBasedMeasures(results);
+            lbm[fold] = new LabelBasedMeasures(results);
 		}
 		
-		ExampleBasedMeasures exampleBasedMeasures = new ExampleBasedMeasures(crossValidationDataSet);
-		LabelBasedMeasures labelBasedMeasures = new LabelBasedMeasures(crossValidationDataSet, null);
+		ExampleBasedMeasures exampleBasedMeasures = new ExampleBasedMeasures(ebm);
+		LabelBasedMeasures labelBasedMeasures = new LabelBasedMeasures(lbm);
 		Evaluation evaluation = new Evaluation();
 		evaluation.setExampleBasedMeasures(exampleBasedMeasures);
-		evaluation.setLabelBasedMeasures(labelBasedMeasures);
-		
+		evaluation.setLabelBasedMeasures(labelBasedMeasures);		
 		return evaluation;
 	}
 	
