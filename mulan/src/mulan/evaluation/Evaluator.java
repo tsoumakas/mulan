@@ -1,15 +1,16 @@
 package mulan.evaluation;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
+import mulan.classifier.Bipartition;
 import mulan.classifier.MultiLabelClassifier;
-import mulan.classifier.MultiLabelClassifierBase;
+import mulan.classifier.MultiLabelClassifierAndRanker;
 import mulan.classifier.MultiLabelLearner;
-import mulan.classifier.Prediction;
+import mulan.classifier.MultiLabelRanker;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import weka.core.Instance;
 import weka.core.Instances;
-import weka.core.Utils;
 
 
 /**
@@ -37,12 +38,131 @@ public class Evaluator
 		this.seed = seed;
 	}
 	
-	public Evaluation evaluate(MultiLabelLearner learner, Instances dataSet){
+	public Evaluation evaluate(MultiLabelLearner learner, Instances testDataSet) throws Exception{
+	
+		if(learner == null){
+			throw new IllegalArgumentException("Learner to be evaluated is null.");
+		}
+		if(testDataSet == null){
+			throw new IllegalArgumentException("TestDataSet for the evaluation is null.");
+		}
+	
+		Evaluation evaluation;
+		if(learner instanceof MultiLabelClassifier){
+			evaluation = evaluateClassifier((MultiLabelClassifier)learner, testDataSet);
+		} else if(learner instanceof MultiLabelClassifierAndRanker){
+			evaluation = evaluateClassifierAndRanker((MultiLabelClassifierAndRanker)learner, testDataSet);
+		} else if(learner instanceof MultiLabelRanker){
+			evaluation = evaluateRanker((MultiLabelRanker)learner, testDataSet);
+		} else{
+			throw new IllegalArgumentException("The type of learner is not supported by the evaluator.");
+		}
+		
+		return evaluation;
+	}
+	
+	public Evaluation crossValidate(MultiLabelLearner learner, Instances dataSet, int numFolds) throws Exception{
+		if(learner == null){
+			throw new IllegalArgumentException("Learner to be evaluated is null.");
+		}
+		if(dataSet == null){
+			throw new IllegalArgumentException("DataSet for the cross validation is null.");
+		}
+		if(numFolds < 2){
+			throw new IllegalArgumentException("NumFolds parameter must be greater or equal to 2.");
+		}
+		
+		Evaluation evaluation;
+		if(learner instanceof MultiLabelClassifier){
+			evaluation = crossValidateClassifier((MultiLabelClassifier)learner, dataSet, numFolds);
+		} else if(learner instanceof MultiLabelClassifierAndRanker){
+			evaluation = crossValidateClassifierAndRanker((MultiLabelClassifierAndRanker)learner, dataSet, numFolds);
+		} else if(learner instanceof MultiLabelRanker){
+			evaluation = crossValidateRanker((MultiLabelRanker)learner, dataSet, numFolds);
+		} else{
+			throw new IllegalArgumentException("The type of learner is not supported by the evaluator.");
+		}
+			
+		return evaluation;
+	}
+	
+	private Evaluation evaluateClassifier(MultiLabelClassifier learner, Instances testDataSet) throws Exception{
+		
+		List<ModelEvaluationDataPair<Bipartition>> result = collectClassifierOutput(learner, testDataSet); 
+		ExampleBasedMeasures exampleBasedMeasures = new ExampleBasedMeasures(result);
+		LabelBasedMeasures labelBasedMeasures = new LabelBasedMeasures(result, null);
+		Evaluation evaluation = new Evaluation();
+		evaluation.setExampleBasedMeasures(exampleBasedMeasures);
+		evaluation.setLabelBasedMeasures(labelBasedMeasures);
+		return evaluation;
+	}
+		
+	private Evaluation evaluateRanker(MultiLabelRanker learner, Instances testDataSet){
 		throw new NotImplementedException();
 	}
 	
-	public Evaluation evaluate(MultiLabelLearner learner, Instances dataSet, int numFolds){
+	private Evaluation evaluateClassifierAndRanker(MultiLabelClassifierAndRanker learner, Instances testDataSet){
 		throw new NotImplementedException();
+	}
+	
+	private Evaluation crossValidateClassifier(MultiLabelClassifier learner, Instances dataSet, int numFolds) throws Exception{
+		
+		Random random = new Random(seed);
+		ModelCrossValidationDataSet<Bipartition> crossValidationDataSet = 
+			new ModelCrossValidationDataSet<Bipartition>();
+		
+		for(int fold = 0; fold < numFolds; fold++){
+			Instances train = dataSet.trainCV(numFolds, fold, random);  
+			Instances test  = dataSet.testCV(numFolds, fold);
+			MultiLabelClassifier clone = (MultiLabelClassifier)learner.makeCopy(learner);
+			clone.build(train);
+			crossValidationDataSet.addFoldData(fold, collectClassifierOutput(clone, test));
+		}
+		
+		ExampleBasedMeasures exampleBasedMeasures = new ExampleBasedMeasures(crossValidationDataSet);
+		LabelBasedMeasures labelBasedMeasures = new LabelBasedMeasures(crossValidationDataSet, null);
+		Evaluation evaluation = new Evaluation();
+		evaluation.setExampleBasedMeasures(exampleBasedMeasures);
+		evaluation.setLabelBasedMeasures(labelBasedMeasures);
+		
+		return evaluation;
+	}
+	
+	private Evaluation crossValidateRanker(MultiLabelRanker learner, Instances dataSet, int numFolds) throws Exception{
+		throw new NotImplementedException();
+	}
+	
+	private Evaluation crossValidateClassifierAndRanker(MultiLabelClassifierAndRanker learner, Instances dataSet, int numFolds) throws Exception{
+		throw new NotImplementedException();
+	}
+	
+	private List<ModelEvaluationDataPair<Bipartition>> collectClassifierOutput(MultiLabelClassifier learner, Instances dataSet) throws Exception{
+		int numInstances = dataSet.numInstances();
+		int numLabels = learner.getNumLabels();
+		List<ModelEvaluationDataPair<Bipartition>> predictionData = new ArrayList<ModelEvaluationDataPair<Bipartition>>(numInstances);
+		for(int itemIndex = 0; itemIndex < numInstances; itemIndex++){
+			Instance instance = dataSet.instance(itemIndex);
+			Bipartition prediction = learner.predict(instance);
+			List<Boolean> trueLabels = getTrueLabels(instance, numLabels);
+			ModelEvaluationDataPair<Bipartition> result = 
+				new ModelEvaluationDataPair<Bipartition>(prediction, trueLabels);
+			predictionData.add(result);
+		}
+		
+		return predictionData;
+	}
+	
+	private List<Boolean> getTrueLabels(Instance instance, int numLabels){
+		
+		List<Boolean> trueLabels = new ArrayList<Boolean>();
+		for(int j = 0; j < numLabels; j++)
+		{
+			int classIdx = instance.numAttributes() - numLabels + j;
+			String classValue = instance.attribute(classIdx).value((int) instance.value(classIdx));
+            trueLabels.add(classValue.equals("1"));
+		}
+		
+		return trueLabels;
 	}
 	
 //	

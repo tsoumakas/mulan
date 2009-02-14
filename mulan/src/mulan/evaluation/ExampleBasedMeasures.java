@@ -108,33 +108,56 @@ public class ExampleBasedMeasures {
 	}
 
 	protected void compute(ModelCrossValidationDataSet<Bipartition> crossValPredictionDataSet){
-        int numFolds = crossValPredictionDataSet.getNumFolds();
+       
+        double accuracy = 0;
+        double hammingLoss = 0;
+		double precision = 0;
+		double recall = 0;
+		double fmeasure = 0;
+		double subsetAccuracy = 0;
+		
+		int numFolds = crossValPredictionDataSet.getNumFolds(); 
         for (int i=0; i<numFolds; i++) {
-            List<ModelEvaluationDataPair<Bipartition>> predictionData = crossValPredictionDataSet.getFoldData(i);
+            List<ModelEvaluationDataPair<Bipartition>> predictionData = 
+            	crossValPredictionDataSet.getFoldData(i);
+            compute(predictionData);
+            accuracy += this.accuracy;
+            hammingLoss += this.hammingLoss;
+            precision += this.precision;
+            recall += this.recall;
+            fmeasure += this.fmeasure;
+            subsetAccuracy += this.subsetAccuracy;
         }
+        
+        this.accuracy = accuracy / numFolds;
+        this.hammingLoss = hammingLoss / numFolds;
+        this.precision = precision / numFolds;
+        this.recall = recall / numFolds;
+        this.fmeasure = fmeasure / numFolds;
+        this.subsetAccuracy = fmeasure / numFolds;
     }
 	
 	public double getHammingLoss(){
-		throw new NotImplementedException();
+		return hammingLoss;
 	}
 	
 	public double getSubsetAccuracy(){
-		throw new NotImplementedException();
+		return subsetAccuracy;
 	}
 	
 	public double getAccuracy(){
-		throw new NotImplementedException();
+		return accuracy;
 	}
 	
 	public double getFMeasure(){
-		throw new NotImplementedException();
+		return fmeasure;
 	}
 	public double getPrecision(){
-		throw new NotImplementedException();
+		return precision;
 	}
 	
 	public double getRecall(){
-		throw new NotImplementedException();
+		return recall;
 	}
 	
 	//TODO: add more measures if applicable

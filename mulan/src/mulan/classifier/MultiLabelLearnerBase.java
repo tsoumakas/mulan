@@ -76,8 +76,8 @@ public abstract class MultiLabelLearnerBase
 			System.err.println("" + new Date() + ": " + msg);
 	}
 	
-	public MultiLabelLearner makeCopy(MultiLabelLearner model) throws Exception {      
-	    return (MultiLabelLearner) new SerializedObject(model).getObject();
+	public MultiLabelLearner makeCopy() throws Exception {      
+	    return (MultiLabelLearner) new SerializedObject(this).getObject();
 	}
 	
 }

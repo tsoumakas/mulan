@@ -30,7 +30,7 @@ public class Evaluation {
 		return exampleBasedMeasures;
 	}
 	
-	protected void getExampleBasedMeasures(ExampleBasedMeasures exampleBasedMeasures) {
+	protected void setExampleBasedMeasures(ExampleBasedMeasures exampleBasedMeasures) {
 		this.exampleBasedMeasures = exampleBasedMeasures;
 	}
 
@@ -38,7 +38,7 @@ public class Evaluation {
 		return rankingMeasures;
 	}
 	
-	protected void getRankingMeasures(RankingMeasures rankingMeasures) {
+	protected void setRankingMeasures(RankingMeasures rankingMeasures) {
 		this.rankingMeasures = rankingMeasures;
 	}
 
