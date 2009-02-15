@@ -102,7 +102,7 @@ public class RankingBasedMeasures {
             else {
                 double sum=0;
                 for (int j : trueIndexes) {
-                    int rankedAbove=0;
+                    double rankedAbove=0;
                     for (int k : trueIndexes)
                         if (ranks[k] <= ranks[j])
                             rankedAbove++;
