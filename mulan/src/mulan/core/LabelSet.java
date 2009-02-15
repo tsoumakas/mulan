@@ -105,9 +105,9 @@ public class LabelSet implements Serializable, Comparable<LabelSet>
      * Get an array representation of this set.
      * @return a copy of the underlying array.
      */
-    public Boolean[] toBooleanArray()
+    public boolean[] toBooleanArray()
     {
-        Boolean[] arr = new Boolean[labelSet.length];
+        boolean[] arr = new boolean[labelSet.length];
         for(int i = 0; i < labelSet.length; i++)
             arr[i] = (labelSet[i] == 1) ? true : false;
         return arr;
