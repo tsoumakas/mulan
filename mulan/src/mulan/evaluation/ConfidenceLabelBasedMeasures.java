@@ -1,7 +1,7 @@
 package mulan.evaluation;
 
-import java.util.List;
 
+import mulan.classifier.MultiLabelOutput;
 import weka.classifiers.evaluation.NominalPrediction;
 import weka.classifiers.evaluation.ThresholdCurve;
 import weka.core.FastVector;
@@ -13,12 +13,40 @@ public class ConfidenceLabelBasedMeasures {
     double[] auc = new double[2];
     double[] labelAUC;
 
-    protected ConfidenceLabelBasedMeasures(List<ModelEvaluationDataPair<List<Double>>> predictions) {
-       computeMeasures(predictions);
-    }	
+    protected ConfidenceLabelBasedMeasures(MultiLabelOutput[] output, boolean[][] trueLabels) {
+       computeMeasures(output, trueLabels);
+    }
+
+    ConfidenceLabelBasedMeasures(ConfidenceLabelBasedMeasures[] arrayOfMeasures) {
+		int numLabels  = arrayOfMeasures[0].labelAUC.length;
+		labelAUC  = new double[numLabels];
+
+		for (ConfidenceLabelBasedMeasures measures : arrayOfMeasures)
+		{
+            for (Averaging type : Averaging.values()) {
+                auc[type.ordinal()]  += measures.getAUC(type);
+            }
+
+			for(int labelIndex=0; labelIndex<numLabels; labelIndex++)
+			{
+				labelAUC[labelIndex]  += measures.getLabelAUC(labelIndex);
+			}
+		}
+
+		int arrayLength = arrayOfMeasures.length;
+        for (Averaging type : Averaging.values()) {
+            auc[type.ordinal()]  /= arrayLength;
+        }
+
+		for(int labelIndex=0; labelIndex<numLabels; labelIndex++)
+		{
+			labelAUC[labelIndex]  /= arrayLength;
+		}
+
+    }
 		
-    private void computeMeasures(List<ModelEvaluationDataPair<List<Double>>> predictions) {
-        int numLabels = predictions.get(0).getNumLabels();
+    private void computeMeasures(MultiLabelOutput[] output, boolean[][] trueLabels) {
+        int numLabels = trueLabels[0].length;
         
         // AUC
         FastVector[] m_Predictions = new FastVector[numLabels];
@@ -26,28 +54,30 @@ public class ConfidenceLabelBasedMeasures {
             m_Predictions[j] = new FastVector();
         FastVector all_Predictions = new FastVector();
 
-
-        for (ModelEvaluationDataPair<List<Double>> pair : predictions)
+        int numInstances = output.length;
+        for (int instanceIndex=0; instanceIndex<numInstances; instanceIndex++)
 		{
-            for (int j = 0; j < numLabels; j++)
+            double[] confidences = output[instanceIndex].getConfidences();
+            for (int labelIndex = 0; labelIndex < numLabels; labelIndex++)
             {
 
                 int classValue;
-                boolean actual = pair.getTrueLabels().get(j);
+                boolean actual = trueLabels[instanceIndex][labelIndex];
                 if (actual)
                     classValue = 1;
                 else
                     classValue = 0;
 
                 double[] dist = new double[2];
-                dist[1] = pair.getModelOutput().get(j);
+                dist[1] = confidences[labelIndex];
                 dist[0] = 1 - dist[1];
 
-                m_Predictions[j].addElement(new NominalPrediction(classValue, dist, 1));
+                m_Predictions[labelIndex].addElement(new NominalPrediction(classValue, dist, 1));
                 all_Predictions.addElement(new NominalPrediction(classValue, dist, 1));
             }
         }
 
+        labelAUC = new double[numLabels];
         for (int i=0; i<numLabels; i++) {
             ThresholdCurve tc = new ThresholdCurve();
             Instances result = tc.getCurve(m_Predictions[i], 1);

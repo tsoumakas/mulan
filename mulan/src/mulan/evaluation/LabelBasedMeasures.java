@@ -1,8 +1,6 @@
 package mulan.evaluation;
 
-import java.util.List;
-
-import mulan.classifier.Bipartition;
+import mulan.classifier.MultiLabelOutput;
 import weka.core.Utils;
 
 public class LabelBasedMeasures {
@@ -64,12 +62,12 @@ public class LabelBasedMeasures {
 
     }
 
-	protected LabelBasedMeasures(List<ModelEvaluationDataPair<Bipartition>> predictions) {
-        computeMeasures(predictions);
+	protected LabelBasedMeasures(MultiLabelOutput[] output, boolean[][] trueLabels) {
+        computeMeasures(output, trueLabels);
     }
 
-    private void computeMeasures(List<ModelEvaluationDataPair<Bipartition>> predictions) {
-        int numLabels = predictions.get(0).getNumLabels();
+    private void computeMeasures(MultiLabelOutput[] output, boolean[][] trueLabels) {
+        int numLabels = trueLabels[0].length;
 
         //Counters are doubles to avoid typecasting
         //when performing divisions. It makes the code a
@@ -81,21 +79,24 @@ public class LabelBasedMeasures {
         double[] trueNegatives  = new double[numLabels];
 
         //Count TP, TN, FP, FN
-        for (ModelEvaluationDataPair<Bipartition> pair : predictions) 
+        int numInstances = output.length;
+        for (int instanceIndex=0; instanceIndex<numInstances; instanceIndex++)
 		{
-            for (int j = 0; j < numLabels; j++)
+            boolean[] bipartition = output[instanceIndex].getBipartition();
+
+            for (int labelIndex = 0; labelIndex < numLabels; labelIndex++)
             {
-                boolean actual = pair.getTrueLabels().get(j);
-                boolean predicted = pair.getModelOutput().getBipartition().get(j);
+                boolean actual = trueLabels[instanceIndex][labelIndex];
+                boolean predicted = bipartition[labelIndex];
 
                 if (actual && predicted)
-                    truePositives[j]++;
+                    truePositives[labelIndex]++;
                 else if (!actual && !predicted)
-                    trueNegatives[j]++;
+                    trueNegatives[labelIndex]++;
                 else if (predicted)
-                    falsePositives[j]++;
+                    falsePositives[labelIndex]++;
                 else
-                    falseNegatives[j]++;
+                    falseNegatives[labelIndex]++;
             }
         }
 
@@ -106,18 +107,17 @@ public class LabelBasedMeasures {
         labelFMeasure  = new double[numLabels];
 
         //Compute macro averaged measures
-        int numInstances = predictions.size();
-        for(int i = 0; i < numLabels; i++)
+        for(int labelIndex = 0; labelIndex < numLabels; labelIndex++)
         {
-            labelAccuracy[i] = (truePositives[i] + trueNegatives[i]) / numInstances;
+            labelAccuracy[labelIndex] = (truePositives[labelIndex] + trueNegatives[labelIndex]) / numInstances;
 
-            labelRecall[i] = truePositives[i] + falseNegatives[i] == 0 ? 0
-                            :truePositives[i] / (truePositives[i] + falseNegatives[i]);
+            labelRecall[labelIndex] = truePositives[labelIndex] + falseNegatives[labelIndex] == 0 ? 0
+                            :truePositives[labelIndex] / (truePositives[labelIndex] + falseNegatives[labelIndex]);
 
-            labelPrecision[i] = truePositives[i] + falsePositives[i] == 0 ? 0
-                            :truePositives[i] / (truePositives[i] + falsePositives[i]);
+            labelPrecision[labelIndex] = truePositives[labelIndex] + falsePositives[labelIndex] == 0 ? 0
+                            :truePositives[labelIndex] / (truePositives[labelIndex] + falsePositives[labelIndex]);
 
-            labelFMeasure[i] = computeF1Measure(labelPrecision[i], labelRecall[i]);
+            labelFMeasure[labelIndex] = computeF1Measure(labelPrecision[labelIndex], labelRecall[labelIndex]);
         }
         accuracy[Averaging.MACRO.ordinal()]  = Utils.mean(labelAccuracy);
 	    recall[Averaging.MACRO.ordinal()]    = Utils.mean(labelRecall);
@@ -136,19 +136,6 @@ public class LabelBasedMeasures {
 	    fMeasure[Averaging.MICRO.ordinal()]  = computeF1Measure(precision[Averaging.MICRO.ordinal()], recall[Averaging.MICRO.ordinal()]);
     }
 
-
-	protected void compute(List<ModelEvaluationDataPair<Bipartition>> predictionData){
-	//	throw new NotImplementedException();
-	}
-	
-	protected void compute(ModelCrossValidationDataSet<Bipartition> crossValPredictionDataSet){
-	//	throw new NotImplementedException();
-	}
-	
-	public ConfidenceLabelBasedMeasures getConfidenceLabelBasedMeasures(){
-        return null;
-	//	throw new NotImplementedException();
-	}
 	
 	public double getAccuracy(Averaging averagingType){
 		return accuracy[averagingType.ordinal()];

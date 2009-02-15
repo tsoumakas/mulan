@@ -1,5 +1,5 @@
 package mulan.evaluation;
 
-enum Averaging {
+public enum Averaging {
 	MACRO, MICRO
 }

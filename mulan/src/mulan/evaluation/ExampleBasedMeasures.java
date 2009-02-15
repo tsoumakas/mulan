@@ -1,8 +1,6 @@
 package mulan.evaluation;
 
-import java.util.List;
-
-import mulan.classifier.Bipartition;
+import mulan.classifier.MultiLabelOutput;
 import weka.core.Utils;
 
 
@@ -16,13 +14,13 @@ public class ExampleBasedMeasures {
 
 	private double forgivenessRate;
 
-	protected ExampleBasedMeasures(List<ModelEvaluationDataPair<Bipartition>> predictionData, double forgivenessRate){
+	protected ExampleBasedMeasures(MultiLabelOutput[] output, boolean[][] trueLabels, double forgivenessRate) {
         this.forgivenessRate = forgivenessRate;
-        computeMeasures(predictionData);
+        computeMeasures(output, trueLabels);
 	}
 	
-	protected ExampleBasedMeasures(List<ModelEvaluationDataPair<Bipartition>> predictionData){
-		this (predictionData, 1.0);
+	protected ExampleBasedMeasures(MultiLabelOutput[] output, boolean[][] trueLabels) {
+		this(output, trueLabels, 1.0);
 	}
 
     /*
@@ -54,7 +52,7 @@ public class ExampleBasedMeasures {
         subsetAccuracy /= arraySize;
     }
 	
-	private void computeMeasures(List<ModelEvaluationDataPair<Bipartition>> predictionData){
+	private void computeMeasures(MultiLabelOutput[] output, boolean[][] trueLabels) {
 		// Reset in case of multiple calls
 		accuracy = 0;
 		hammingLoss = 0;
@@ -63,8 +61,9 @@ public class ExampleBasedMeasures {
 		fMeasure = 0;
 		subsetAccuracy = 0;
 
-		int numLabels = predictionData.get(0).getTrueLabels().size();
-        for (ModelEvaluationDataPair<Bipartition> pair : predictionData) 
+		int numLabels = trueLabels[0].length;
+        int numInstances = output.length;
+        for (int instanceIndex=0; instanceIndex<numInstances; instanceIndex++)
 		{
 			// Counter variables
 			double setUnion = 0; // |Y or Z|
@@ -75,12 +74,11 @@ public class ExampleBasedMeasures {
 			boolean setsIdentical = true; // innocent until proven guilty
 
 			//Do the counting
-            List<Boolean> trueLabels = pair.getTrueLabels(); 
-            List<Boolean> predictedLabels = pair.getModelOutput().getBipartition();
-			for (int j = 0; j < numLabels; j++)
+            boolean[] bipartition = output[instanceIndex].getBipartition();
+			for (int labelIndex = 0; labelIndex < numLabels; labelIndex++)
 			{
-				boolean actual = trueLabels.get(j);
-				boolean predicted = predictedLabels.get(j);
+				boolean actual = trueLabels[instanceIndex][labelIndex];
+				boolean predicted = bipartition[labelIndex];
 
 				if (predicted != actual)
 				{
@@ -117,7 +115,6 @@ public class ExampleBasedMeasures {
 		}
 
 		// Set final values
-		int numInstances = predictionData.size();
 		hammingLoss /= numInstances;
 		accuracy /= numInstances;
 		precision /= numInstances;
