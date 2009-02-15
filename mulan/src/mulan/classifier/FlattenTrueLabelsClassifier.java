@@ -179,7 +179,8 @@ public class FlattenTrueLabelsClassifier extends TransformationBasedMultiLabelLe
 	{
 		instance = transform(instance);
 		double[] confidences = classifier.distributionForInstance(instance);
-		return new Prediction(labelsFromConfidences(confidences), confidences);
+//		return new Prediction(labelsFromConfidences(confidences), confidences);
+        return null;
 	}
 	
 	/**
@@ -204,6 +205,10 @@ public class FlattenTrueLabelsClassifier extends TransformationBasedMultiLabelLe
 	}
 
     public String getRevision() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public MultiLabelOutput makePrediction(Instance instance) throws Exception {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }

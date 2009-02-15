@@ -44,6 +44,7 @@ import weka.filters.unsupervised.attribute.Remove;
 @SuppressWarnings("serial")
 public class RAKEL extends TransformationBasedMultiLabelLearner implements MultiLabelClassifier
 {
+
     /**
      * Seed for replication of random experiments
      */
@@ -197,7 +198,8 @@ public class RAKEL extends TransformationBasedMultiLabelLearner implements Multi
          * 
 	 * @param trainData:
 	 *            the data that will be used for parameter selection
-	 */         
+	 */
+        /*
         public void paramSelectionViaCV(Instances trainData) throws Exception {                       
             ArrayList []metric = new ArrayList[cvNumFolds];
             //* Evaluate using X-fold CV
@@ -266,12 +268,12 @@ public class RAKEL extends TransformationBasedMultiLabelLearner implements Multi
                                "Subset size     : " + bestK + 
                                "Number of models: " + bestM +
                                "Threshold       : " + bestT);
-            //*/
+            //
             setSizeOfSubset(bestK);
             setNumModels(bestM); 
             threshold = bestT;            
         }        
-        
+        */
 
         
         public void updatePredictions(Instances testData, int model) throws Exception {
@@ -304,8 +306,8 @@ public class RAKEL extends TransformationBasedMultiLabelLearner implements Multi
     @Override
     public void build(Instances trainData) throws Exception {
         
-        if (cvParamSelection) 
-            paramSelectionViaCV(trainData);
+       // if (cvParamSelection)
+         //   paramSelectionViaCV(trainData);
 
         // need a structure to hold different combinations
         combinations = new HashSet<String>();		
@@ -388,12 +390,12 @@ public class RAKEL extends TransformationBasedMultiLabelLearner implements Multi
         Instance newInstance = transformInstance(instance);
         newInstance.setDataset(metadataTest[model]);
 
-        double[] predictions = subsetClassifiers[model].makePrediction(newInstance).getPredictedLabels();
+/*        double[] predictions = subsetClassifiers[model].makePrediction(newInstance).getPredictedLabels();
         for (int j=0; j<sizeOfSubset; j++) {
             sumVotesIncremental[instanceNumber][classIndicesPerSubset[model][j]] += predictions[j];
             lengthVotesIncremental[instanceNumber][classIndicesPerSubset[model][j]]++;
         }
-
+*/
         double[] confidence = new double[numLabels];
         double[] labels = new double[numLabels];
         for (int i=0; i<numLabels; i++) {
@@ -419,7 +421,7 @@ public class RAKEL extends TransformationBasedMultiLabelLearner implements Multi
             Instance newInstance = transformInstance(instance);
 
             // gather votes
-            for (int i=0; i<numOfModels; i++) {
+/*            for (int i=0; i<numOfModels; i++) {
                 newInstance.setDataset(metadataTest[i]);
                 Prediction pred = subsetClassifiers[i].makePrediction(newInstance);                
                 for (int j=0; j<sizeOfSubset; j++) {
@@ -428,7 +430,7 @@ public class RAKEL extends TransformationBasedMultiLabelLearner implements Multi
                     lengthVotes[classIndicesPerSubset[i][j]]++;
                 }
             }
-
+*/
             double[] confidence1 = new double[numLabels];
             double[] confidence2 = new double[numLabels];
             double[] labels = new double[numLabels];
@@ -450,7 +452,8 @@ public class RAKEL extends TransformationBasedMultiLabelLearner implements Multi
             // todo: optionally use confidence2 for ranking measures
             Prediction pred = new Prediction(labels, confidence1);
 
-            return pred;
+            //return pred;
+            return null;
 	}
         
         public void nullSubsetClassifier(int i) {
@@ -458,6 +461,10 @@ public class RAKEL extends TransformationBasedMultiLabelLearner implements Multi
         }
 
     public String getRevision() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public MultiLabelOutput makePrediction(Instance instance) throws Exception {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }

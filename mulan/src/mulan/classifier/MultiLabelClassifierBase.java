@@ -55,7 +55,7 @@ public abstract class MultiLabelClassifierBase extends MultiLabelLearnerBase imp
 	
 	public final Bipartition predict(Instance instance) throws Exception
 	{
-            Bipartition original = makePrediction(instance);
+//            Bipartition original = makePrediction(instance);
 		
 /*          TODO: Subset mapping stuff - decide if this will be reused somehow or discard
             if (subsetMappingMethod == SubsetMappingMethod.GREEDY)
@@ -68,7 +68,8 @@ public abstract class MultiLabelClassifierBase extends MultiLabelLearnerBase imp
             }
             else return original;
 */	
-            return original;
+            //return original;
+        return null;
 	}
 	
 	
@@ -80,6 +81,6 @@ public abstract class MultiLabelClassifierBase extends MultiLabelLearnerBase imp
 	 * @return the labels bipartition prediction for the instance
 	 * @throws Exception if prediction was not successful
 	 */
-	protected abstract Bipartition makePrediction(Instance instance) throws Exception;
+//	protected abstract Bipartition makePrediction(Instance instance) throws Exception;
 
 }

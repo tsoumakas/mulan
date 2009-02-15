@@ -1,5 +1,6 @@
 package mulan.classifier;
 
+import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.SerializedObject;
 
@@ -31,5 +32,14 @@ public interface MultiLabelLearner {
 	 * @return a deep copy of the learner
 	 * @exception Exception if an error occurs
 	 */
-	public MultiLabelLearner makeCopy() throws Exception; 
+	public MultiLabelLearner makeCopy() throws Exception;
+
+
+	/**
+	 * Returns the output .
+	 *
+	 * @return a deep copy of the learner
+	 * @exception Exception if an error occurs
+	 */
+    public MultiLabelOutput makePrediction(Instance instance) throws Exception;
 }

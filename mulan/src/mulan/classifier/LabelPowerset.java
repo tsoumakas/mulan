@@ -36,7 +36,7 @@ import weka.core.SparseInstance;
  * @author Robert Friberg
  * @version $Revision: 0.05 $ 
  */
-public class LabelPowerset extends TransformationBasedMultiLabelLearner implements MultiLabelClassifierAndRanker
+public class LabelPowerset extends TransformationBasedMultiLabelLearner implements MultiLabelLearner
 {
     /**
      * The confidence values for each label are calculated in the following ways
@@ -48,7 +48,7 @@ public class LabelPowerset extends TransformationBasedMultiLabelLearner implemen
 
     /**
      * Whether the method introduced by the PPT algorithm will be used to
-     * actually get the 1/0 output predictions based on the confidences
+     * actually get the 1/0 output bipartition based on the confidences
      * (requires a threshold)
      */
     protected boolean makePredictionsBasedOnConfidences=false;
@@ -149,8 +149,8 @@ public class LabelPowerset extends TransformationBasedMultiLabelLearner implemen
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public BipartitionAndRanking predictAndRank(Instance instance) {
-        Boolean predictions[] = null;
+    public MultiLabelOutput makePrediction(Instance instance) throws Exception {
+        boolean bipartition[] = null;
         double confidences[] = null;
 
         // check for unary class
@@ -162,7 +162,7 @@ public class LabelPowerset extends TransformationBasedMultiLabelLearner implemen
             } catch (Exception ex) {
                 Logger.getLogger(LabelPowerset.class.getName()).log(Level.SEVERE, null, ex);
             }
-            predictions = labelSet.toBooleanArray();
+            bipartition = labelSet.toBooleanArray();
             confidences = Arrays.copyOf(labelSet.toDoubleArray(), labelSet.size());
         } else {
             double[] distribution = null;
@@ -179,7 +179,7 @@ public class LabelPowerset extends TransformationBasedMultiLabelLearner implemen
             } catch (Exception ex) {
                 Logger.getLogger(LabelPowerset.class.getName()).log(Level.SEVERE, null, ex);
             }
-            predictions = labelSet.toBooleanArray();
+            bipartition = labelSet.toBooleanArray();
 
             switch (confidenceCalculationMethod)
             {
@@ -206,18 +206,19 @@ public class LabelPowerset extends TransformationBasedMultiLabelLearner implemen
             {
                 for (int i=0; i<confidences.length; i++)
                     if (confidences[i] > threshold)
-                        predictions[i] = true;
+                        bipartition[i] = true;
                     else
-                        predictions[i] = false;
+                        bipartition[i] = false;
             }
             
         }
 
-        Ranking ranking = new Ranking(confidences);
-        Bipartition bipartition = new Bipartition(predictions);
-        BipartitionAndRanking result = new BipartitionAndRanking(bipartition, ranking);
-		return result;
+        MultiLabelOutput mlo = new MultiLabelOutput();
+        mlo.setBipartition(bipartition);
+        mlo.setConfidencesAndRanking(confidences);
+ 		return mlo;
     }
+
 
 }
 

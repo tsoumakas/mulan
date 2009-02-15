@@ -25,7 +25,6 @@ import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.SparseInstance;
 
-@SuppressWarnings("serial")
 /**
  * A multilabel classifier based on Problem Transformation 6.
  * The multiple label attributes are mapped to two attributes:
@@ -188,7 +187,8 @@ public class IncludeLabelsClassifier extends TransformationBasedMultiLabelLearne
 			double[] temp = baseClassifier.distributionForInstance(newInstance);
 			confidences[i] = temp[transformed.classAttribute().indexOfValue("1")]; 
 		}	
-		return new Prediction(labelsFromConfidences(confidences), confidences);
+		//return new Prediction(labelsFromConfidences(confidences), confidences);
+                return null;
 	}
 
 	/**
@@ -213,6 +213,10 @@ public class IncludeLabelsClassifier extends TransformationBasedMultiLabelLearne
 	}
 	
     public String getRevision() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public MultiLabelOutput makePrediction(Instance instance) throws Exception {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 	

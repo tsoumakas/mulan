@@ -15,7 +15,7 @@ import weka.filters.unsupervised.attribute.Remove;
  * @author Grigorios Tsoumakas 
  * @version $Revision: 0.04 $
  */
-public class BinaryRelevance extends TransformationBasedMultiLabelLearner implements MultiLabelClassifierAndRanker
+public class BinaryRelevance extends TransformationBasedMultiLabelLearner implements MultiLabelLearner
 {
 
 	protected Instances[] metadataTest;
@@ -119,6 +119,38 @@ public class BinaryRelevance extends TransformationBasedMultiLabelLearner implem
         Bipartition bipartition = new Bipartition(predictions);
         BipartitionAndRanking result = new BipartitionAndRanking(bipartition, ranking);
 		return result;
+    }
+
+    public MultiLabelOutput makePrediction(Instance instance) throws Exception {
+        boolean[] bipartition = new boolean[numLabels];
+		double[] confidences = new double[numLabels];
+
+		for (int i=0; i<numLabels; i++)
+		{
+			Instance newInstance = transformInstance(instance, i);
+			newInstance.setDataset(metadataTest[i]);
+
+            double distribution[] = new double[2];
+            try {
+                distribution = ensemble[i].distributionForInstance(newInstance);
+            } catch (Exception e) {
+                System.out.println(e);
+                return null;
+            }
+            int maxIndex = (distribution[0] > distribution[1]) ? 0 : 1;
+
+			// Ensure correct predictions both for class values {0,1} and {1,0}
+			Attribute classAttribute = metadataTest[i].classAttribute();
+			bipartition[i] = (classAttribute.value(maxIndex).equals("1")) ? true : false;
+
+			// The confidence of the label being equal to 1
+			confidences[i] = distribution[classAttribute.indexOfValue("1")];
+		}
+
+        MultiLabelOutput mlo = new MultiLabelOutput();
+        mlo.setBipartition(bipartition);
+        mlo.setConfidencesAndRanking(confidences);
+		return mlo;
     }
           
 }
