@@ -122,7 +122,7 @@ public class Evaluator
 		for(int fold = 0; fold < numFolds; fold++){
 			Instances train = dataSet.trainCV(numFolds, fold, random);  
 			Instances test  = dataSet.testCV(numFolds, fold);
-			MultiLabelClassifier clone = (MultiLabelClassifier) learner.makeCopy(learner);
+			MultiLabelClassifier clone = (MultiLabelClassifier) learner.makeCopy();
 			clone.build(train);
             List<ModelEvaluationDataPair<Bipartition>> results = collectClassifierOutput(clone, test);
             ebm[fold] = new ExampleBasedMeasures(results);

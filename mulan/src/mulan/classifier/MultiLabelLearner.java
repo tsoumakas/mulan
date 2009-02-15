@@ -28,9 +28,8 @@ public interface MultiLabelLearner {
 	/**
 	 * Creates a deep copy of the given learner using serialization.
 	 *
-	 * @param learner the learner to copy
 	 * @return a deep copy of the learner
 	 * @exception Exception if an error occurs
 	 */
-	public MultiLabelLearner makeCopy(MultiLabelLearner learner) throws Exception; 
+	public MultiLabelLearner makeCopy() throws Exception; 
 }
