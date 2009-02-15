@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Random;
 
 import mulan.classifier.Bipartition;
+import mulan.classifier.BipartitionAndRanking;
 import mulan.classifier.MultiLabelClassifier;
 import mulan.classifier.MultiLabelClassifierAndRanker;
 import mulan.classifier.MultiLabelLearner;
@@ -102,8 +103,15 @@ public class Evaluator
 	}
 	
 	private Evaluation evaluateClassifierAndRanker(MultiLabelClassifierAndRanker learner, Instances testDataSet){
-		throw new NotImplementedException();
-	}
+		List<ModelEvaluationDataPair<BipartitionAndRanking>> result = collectClassifierAndRankerOutput(learner, testDataSet);
+		ExampleBasedMeasures exampleBasedMeasures = new ExampleBasedMeasures(result);
+		LabelBasedMeasures labelBasedMeasures = new LabelBasedMeasures(result);
+		Evaluation evaluation = new Evaluation();
+		evaluation.setExampleBasedMeasures(exampleBasedMeasures);
+		evaluation.setLabelBasedMeasures(labelBasedMeasures);
+		return evaluation;
+
+    }
 	
 	private Evaluation crossValidateClassifier(MultiLabelClassifier learner, Instances dataSet, int numFolds) throws Exception {
 		
@@ -137,16 +145,16 @@ public class Evaluator
 		throw new NotImplementedException();
 	}
 	
-	private List<ModelEvaluationDataPair<Bipartition>> collectClassifierOutput(MultiLabelClassifier learner, Instances dataSet) throws Exception{
+	private List<ModelEvaluationDataPair<BipartitionAndRanking>> collectClassifierAndRankerOutput(MultiLabelClassifierAndRanker learner, Instances dataSet) throws Exception{
 		int numInstances = dataSet.numInstances();
 		int numLabels = learner.getNumLabels();
-		List<ModelEvaluationDataPair<Bipartition>> predictionData = new ArrayList<ModelEvaluationDataPair<Bipartition>>(numInstances);
-		for(int itemIndex = 0; itemIndex < numInstances; itemIndex++){
+		List<ModelEvaluationDataPair<BipartitionAndRanking>> predictionData = new ArrayList<ModelEvaluationDataPair<BipartitionAndRanking>>(numInstances);
+		for (int itemIndex = 0; itemIndex < numInstances; itemIndex++){
 			Instance instance = dataSet.instance(itemIndex);
-			Bipartition prediction = learner.predict(instance);
+			BipartitionAndRanking prediction = learner.predictAndRank(instance);
 			List<Boolean> trueLabels = getTrueLabels(instance, numLabels);
-			ModelEvaluationDataPair<Bipartition> result = 
-				new ModelEvaluationDataPair<Bipartition>(prediction, trueLabels);
+			ModelEvaluationDataPair<BipartitionAndRanking> result =
+				new ModelEvaluationDataPair<BipartitionAndRanking>(prediction, trueLabels);
 			predictionData.add(result);
 		}
 		
