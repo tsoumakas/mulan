@@ -1,4 +1,4 @@
-package mulan.classifier;
+package mulan.classifier.transformation;
 
 /*
  *    This program is free software; you can redistribute it and/or modify
@@ -16,6 +16,7 @@ package mulan.classifier;
  *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+import mulan.classifier.*;
 import java.util.Arrays;
 import java.util.Random;
 
@@ -24,6 +25,7 @@ import java.util.logging.Logger;
 import mulan.core.LabelSet;
 import mulan.core.Transformations;
 import mulan.core.Util;
+import mulan.transformations.LabelPowersetTransformation;
 import weka.classifiers.Classifier;
 import weka.core.Instance;
 import weka.core.Instances;
@@ -106,8 +108,8 @@ public class LabelPowerset extends TransformationBasedMultiLabelLearner implemen
     {
         metadataTrain = new Instances(train, 0);
 
-        Transformations trans = new Transformations(numLabels);
-        Instances newTrain = trans.LabelPowerset(train);               
+        LabelPowersetTransformation transformation = new LabelPowersetTransformation();
+        Instances newTrain = transformation.transformInstances(train, numLabels);
         
         // keep the header of new dataset for classification
         metadataTest = new Instances(newTrain, 0);

@@ -17,7 +17,7 @@ public class MultiLabelOutput {
 
     public MultiLabelOutput() {}
 
-    void setBipartition(boolean[] aBipartition) {
+    public void setBipartition(boolean[] aBipartition) {
         bipartition = Arrays.copyOf(aBipartition, aBipartition.length);
     }
 
@@ -29,7 +29,7 @@ public class MultiLabelOutput {
         return (bipartition != null);
     }
 
-    void setRanking(int[] aRanking) {
+    public void setRanking(int[] aRanking) {
         ranking = Arrays.copyOf(aRanking, aRanking.length);
     }
 
@@ -41,7 +41,7 @@ public class MultiLabelOutput {
         return (ranking != null);
     }
 
-    void setConfidences(double[] someConfidences) {
+    public void setConfidences(double[] someConfidences) {
         confidences = Arrays.copyOf(someConfidences, someConfidences.length);
     }
 
@@ -53,7 +53,7 @@ public class MultiLabelOutput {
         return (confidences != null);
     }
 
-    void setConfidencesAndRanking(double[] someConfidences) {
+    public void setConfidencesAndRanking(double[] someConfidences) {
         confidences = Arrays.copyOf(someConfidences, someConfidences.length);
         ranking = ranksFromConfidences(someConfidences);
     }

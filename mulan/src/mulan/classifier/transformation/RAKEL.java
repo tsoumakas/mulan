@@ -1,4 +1,4 @@
-package mulan.classifier;
+package mulan.classifier.transformation;
 
 /*
  *    This program is free software; you can redistribute it and/or modify
@@ -16,6 +16,7 @@ package mulan.classifier;
  *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+import mulan.classifier.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
