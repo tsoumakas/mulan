@@ -6,8 +6,8 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 
-import mulan.classifier.Bipartition;
-import mulan.classifier.MultiLabelClassifierBase;
+import mulan.classifier.MultiLabelLearnerBase;
+import mulan.classifier.MultiLabelOutput;
 import weka.core.Attribute;
 import weka.core.Instance;
 import weka.core.Instances;
@@ -26,7 +26,7 @@ import weka.filters.unsupervised.attribute.NominalToBinary;
  * 
  * @author Jozef Vilcek
  */
-public class BPMLL extends MultiLabelClassifierBase {
+public class BPMLL extends MultiLabelLearnerBase {
 
 	private static final long serialVersionUID = 2153814250172139021L;
 	private static final double NET_BIAS = 1;
@@ -189,56 +189,6 @@ public class BPMLL extends MultiLabelClassifierBase {
 		}
 		
 		thresholdF = buildThresholdFunction(trainData);
-	}
-	
-	protected Bipartition makePrediction(final Instance instance) throws Exception {
-
-		if(instance == null){
-			throw new IllegalArgumentException("Input instance for prediction is null.");
-		}
-		if(instance.numAttributes() < model.getNetInputSize()){
-			throw new IllegalArgumentException("Input instance do not have enough attributes " +
-					"to be processed by the model. Instance is not consistent with the data the model was built for.");
-		}
-		
-		Instance inputInstance = (instance instanceof SparseInstance) ? 
-				new SparseInstance(instance) : new Instance(instance);
-		
-		if(nominalToBinaryFilter != null){
-			nominalToBinaryFilter.input(inputInstance);
-			inputInstance = nominalToBinaryFilter.output();
-			inputInstance.setDataset(null);
-		}
-		
-		// remove label attributes from the end of instance if they are available there
-		if(inputInstance.numAttributes() > model.getNetInputSize()){
-			int diff = inputInstance.numAttributes() - model.getNetInputSize();
-			for(int i = 0; i < diff; i++)
-				inputInstance.deleteAttributeAt(model.getNetInputSize());
-		}
-		
-		if(normalizeAttributes){
-			int numAttributes = inputInstance.numAttributes();
-			for (int attIndex = 0; attIndex < numAttributes; attIndex++) {
-				normalizeAttribute(inputInstance, attIndex, attRanges[attIndex], attBases[attIndex]);
-			}
-		}
-		
-		double[] inputPattern = Arrays.copyOfRange(inputInstance.toDoubleArray(), 0, inputInstance.numAttributes());
-		double[] labelConfidences = model.feedForward(inputPattern);
-		double threshold = thresholdF.computeThreshold(labelConfidences);
-		Boolean[] labelPredictions = new Boolean[numLabels];
-		Arrays.fill(labelPredictions, false);
-		
-		for(int labelIndex = 0; labelIndex < numLabels; labelIndex++){
-			if(labelConfidences[labelIndex] > threshold){
-				labelPredictions[labelIndex] = true;
-			}
-			// translate from bipolar output to binary
-			labelConfidences[labelIndex] = (labelConfidences[labelIndex] + 1) / 2;
-		}
-		 
-		return new Bipartition(labelPredictions);
 	}
 	
 	@Override
@@ -460,4 +410,57 @@ public class BPMLL extends MultiLabelClassifierBase {
 			instance.setValue(attIndex, value);
 		}
 	}
+
+    public MultiLabelOutput makePrediction(Instance instance) throws Exception {
+
+		if(instance == null){
+			throw new IllegalArgumentException("Input instance for prediction is null.");
+		}
+		if(instance.numAttributes() < model.getNetInputSize()){
+			throw new IllegalArgumentException("Input instance do not have enough attributes " +
+					"to be processed by the model. Instance is not consistent with the data the model was built for.");
+		}
+
+		Instance inputInstance = (instance instanceof SparseInstance) ?
+				new SparseInstance(instance) : new Instance(instance);
+
+		if(nominalToBinaryFilter != null){
+			nominalToBinaryFilter.input(inputInstance);
+			inputInstance = nominalToBinaryFilter.output();
+			inputInstance.setDataset(null);
+		}
+
+		// remove label attributes from the end of instance if they are available there
+		if(inputInstance.numAttributes() > model.getNetInputSize()){
+			int diff = inputInstance.numAttributes() - model.getNetInputSize();
+			for(int i = 0; i < diff; i++)
+				inputInstance.deleteAttributeAt(model.getNetInputSize());
+		}
+
+		if(normalizeAttributes){
+			int numAttributes = inputInstance.numAttributes();
+			for (int attIndex = 0; attIndex < numAttributes; attIndex++) {
+				normalizeAttribute(inputInstance, attIndex, attRanges[attIndex], attBases[attIndex]);
+			}
+		}
+
+		double[] inputPattern = Arrays.copyOfRange(inputInstance.toDoubleArray(), 0, inputInstance.numAttributes());
+		double[] labelConfidences = model.feedForward(inputPattern);
+		double threshold = thresholdF.computeThreshold(labelConfidences);
+		boolean[] labelPredictions = new boolean[numLabels];
+		Arrays.fill(labelPredictions, false);
+
+		for(int labelIndex = 0; labelIndex < numLabels; labelIndex++){
+			if(labelConfidences[labelIndex] > threshold){
+				labelPredictions[labelIndex] = true;
+			}
+			// translate from bipolar output to binary
+			labelConfidences[labelIndex] = (labelConfidences[labelIndex] + 1) / 2;
+		}
+
+        MultiLabelOutput mlo = new MultiLabelOutput();
+        mlo.setBipartition(labelPredictions);
+        mlo.setConfidencesAndRanking(labelConfidences);
+        return mlo;
+    }
 }
