@@ -4,8 +4,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Random;
 
-import mulan.classifier.Bipartition;
-import mulan.classifier.Prediction;
+import mulan.classifier.MultiLabelOutput;
 import mulan.core.LabelSet;
 import weka.core.Instance;
 import weka.core.Instances;
@@ -34,7 +33,7 @@ public class RAKELknn extends MultiLabelKNN {
 		sumVotes = new double[numLabels];
 		lengthVotes = new double[numLabels];
 	}
-
+/*
 	public Bipartition makePrediction(Instance instance) throws Exception {
 		double[][] predictions = new double[numOfModels][numLabels];
 
@@ -153,4 +152,8 @@ public class RAKELknn extends MultiLabelKNN {
 		return results;
 		
 	}
+*/
+    public MultiLabelOutput makePrediction(Instance instance) throws Exception {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }

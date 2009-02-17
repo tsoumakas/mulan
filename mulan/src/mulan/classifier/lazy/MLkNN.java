@@ -1,15 +1,12 @@
 package mulan.classifier.lazy;
 
 
-import java.util.Random;
 
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import mulan.classifier.Bipartition;
-import mulan.classifier.BipartitionAndRanking;
-import mulan.classifier.MultiLabelClassifierAndRanker;
-import mulan.classifier.Prediction;
-import mulan.classifier.Ranking;
+import mulan.classifier.MultiLabelLearner;
+import mulan.classifier.MultiLabelOutput;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.TechnicalInformation;
@@ -62,7 +59,7 @@ import weka.core.neighboursearch.LinearNNSearch;
  * @version $Revision: 1.1 $ 
  */
 @SuppressWarnings("serial")
-public class MLkNN extends MultiLabelKNN implements MultiLabelClassifierAndRanker {
+public class MLkNN extends MultiLabelKNN implements MultiLabelLearner {
 	/**
 	 * Smoothing parameter controlling the strength of uniform prior <br>
 	 * (Default value is set to 1 which yields the Laplace smoothing).
@@ -244,10 +241,9 @@ public class MLkNN extends MultiLabelKNN implements MultiLabelClassifierAndRanke
 		}
 	}
 
-    public BipartitionAndRanking predictAndRank(Instance instance) {
-
+    public MultiLabelOutput makePrediction(Instance instance) throws Exception {
 		double[] confidences = new double[numLabels];
-		Boolean[] predictions = new Boolean[numLabels];
+		boolean[] predictions = new boolean[numLabels];
 
 		Instances knn = null;
         try {
@@ -278,10 +274,11 @@ public class MLkNN extends MultiLabelKNN implements MultiLabelClassifierAndRanke
             }
             // ranking function
 			confidences[i] = Prob_in / (Prob_in + Prob_out);
-            Ranking ranking = new Ranking(confidences);
-            Bipartition bipartition = new Bipartition(predictions);
-            BipartitionAndRanking result = new BipartitionAndRanking(bipartition, ranking);
-            return result;
         }
+        MultiLabelOutput mlo = new MultiLabelOutput();
+        mlo.setBipartition(predictions);
+        mlo.setConfidencesAndRanking(confidences);
+        return mlo;
     }
+
 }
