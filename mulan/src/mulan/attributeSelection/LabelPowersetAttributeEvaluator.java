@@ -5,7 +5,7 @@
 
 package mulan.attributeSelection;
 
-import mulan.core.Transformations;
+import mulan.transformations.LabelPowersetTransformation;
 import weka.attributeSelection.AttributeEvaluator;
 import weka.core.Instances;
 
@@ -30,8 +30,8 @@ public class LabelPowersetAttributeEvaluator extends AttributeEvaluator {
 
     @Override
     public void buildEvaluator(Instances data) throws Exception {
-        Transformations trans = new Transformations(numLabels);
-        Instances newData = trans.LabelPowerset(data);
+        LabelPowersetTransformation lbTrans = new LabelPowersetTransformation();
+        Instances newData = lbTrans.transformInstances(data, numLabels);
         baseAttributeEvaluator.buildEvaluator(newData);
     }
 
