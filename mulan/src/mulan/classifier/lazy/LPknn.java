@@ -88,8 +88,7 @@ public class LPknn extends MultiLabelKNN {
 
 		predictions = distinctLabelSets[max].toBooleanArray();
 
-        MultiLabelOutput mlo = new MultiLabelOutput();
-        mlo.setBipartition(predictions);
+        MultiLabelOutput mlo = new MultiLabelOutput(predictions);
 		return mlo;
     }
 }

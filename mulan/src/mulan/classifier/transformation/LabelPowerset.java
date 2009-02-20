@@ -215,9 +215,7 @@ public class LabelPowerset extends TransformationBasedMultiLabelLearner implemen
             
         }
 
-        MultiLabelOutput mlo = new MultiLabelOutput();
-        mlo.setBipartition(bipartition);
-        mlo.setConfidencesAndRanking(confidences);
+        MultiLabelOutput mlo = new MultiLabelOutput(bipartition, confidences, true);
  		return mlo;
     }
 

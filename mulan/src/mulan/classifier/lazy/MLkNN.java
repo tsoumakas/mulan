@@ -275,9 +275,7 @@ public class MLkNN extends MultiLabelKNN implements MultiLabelLearner {
             // ranking function
 			confidences[i] = Prob_in / (Prob_in + Prob_out);
         }
-        MultiLabelOutput mlo = new MultiLabelOutput();
-        mlo.setBipartition(predictions);
-        mlo.setConfidencesAndRanking(confidences);
+        MultiLabelOutput mlo = new MultiLabelOutput(predictions, confidences, true);
         return mlo;
     }
 

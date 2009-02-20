@@ -17,8 +17,15 @@ public class MultiLabelOutput {
 
     public MultiLabelOutput() {}
 
-    public void setBipartition(boolean[] aBipartition) {
+    public MultiLabelOutput(boolean[] aBipartition) {
         bipartition = Arrays.copyOf(aBipartition, aBipartition.length);
+    }
+
+    public MultiLabelOutput(boolean[] aBipartition, double[] someConfidences, boolean ranksFromConfidences) {
+        this(aBipartition);
+        confidences = Arrays.copyOf(someConfidences, someConfidences.length);
+        if (ranksFromConfidences)
+            ranking = ranksFromConfidences(someConfidences);
     }
 
     public boolean[] getBipartition() {
@@ -29,20 +36,12 @@ public class MultiLabelOutput {
         return (bipartition != null);
     }
 
-    public void setRanking(int[] aRanking) {
-        ranking = Arrays.copyOf(aRanking, aRanking.length);
-    }
-
     public int[] getRanking() {
         return ranking;
     }
 
     public boolean hasRanking() {
         return (ranking != null);
-    }
-
-    public void setConfidences(double[] someConfidences) {
-        confidences = Arrays.copyOf(someConfidences, someConfidences.length);
     }
 
     public double[] getConfidences() {
@@ -53,12 +52,7 @@ public class MultiLabelOutput {
         return (confidences != null);
     }
 
-    public void setConfidencesAndRanking(double[] someConfidences) {
-        confidences = Arrays.copyOf(someConfidences, someConfidences.length);
-        ranking = ranksFromConfidences(someConfidences);
-    }
-
-    public static int[] ranksFromConfidences(double[] confidences) {
+    private int[] ranksFromConfidences(double[] confidences) {
         int[] reverseRanks = weka.core.Utils.stableSort(confidences);
         int[] ranks = new int[confidences.length];
         for (int i=0; i<confidences.length; i++) {

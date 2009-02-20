@@ -458,9 +458,7 @@ public class BPMLL extends MultiLabelLearnerBase {
 			labelConfidences[labelIndex] = (labelConfidences[labelIndex] + 1) / 2;
 		}
 
-        MultiLabelOutput mlo = new MultiLabelOutput();
-        mlo.setBipartition(labelPredictions);
-        mlo.setConfidencesAndRanking(labelConfidences);
+        MultiLabelOutput mlo = new MultiLabelOutput(labelPredictions, labelConfidences, true);
         return mlo;
     }
 }

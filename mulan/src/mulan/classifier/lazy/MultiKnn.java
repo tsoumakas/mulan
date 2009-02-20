@@ -116,9 +116,7 @@ public class MultiKnn extends MultiLabelKNN {
 			//System.out.println(newtrain.numInstances());
 		} while (result != -1 && newtrain.numInstances() >= numofNeighbours);
 
-        MultiLabelOutput mlo = new MultiLabelOutput();
-		mlo.setBipartition(bipartition);
-        mlo.setConfidencesAndRanking(confidences);
+        MultiLabelOutput mlo = new MultiLabelOutput(bipartition, confidences, true);
 		return mlo;
 	}
 	/*

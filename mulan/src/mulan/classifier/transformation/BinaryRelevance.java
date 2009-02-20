@@ -73,9 +73,7 @@ public class BinaryRelevance extends TransformationBasedMultiLabelLearner implem
 			confidences[labelIndex] = distribution[classAttribute.indexOfValue("1")];
 		}
 
-        MultiLabelOutput mlo = new MultiLabelOutput();
-        mlo.setBipartition(bipartition);
-        mlo.setConfidencesAndRanking(confidences);
+        MultiLabelOutput mlo = new MultiLabelOutput(bipartition, confidences, true);
 		return mlo;
     }
           
