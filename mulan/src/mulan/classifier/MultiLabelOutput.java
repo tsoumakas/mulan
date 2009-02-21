@@ -21,11 +21,10 @@ public class MultiLabelOutput {
         bipartition = Arrays.copyOf(aBipartition, aBipartition.length);
     }
 
-    public MultiLabelOutput(boolean[] aBipartition, double[] someConfidences, boolean ranksFromConfidences) {
+    public MultiLabelOutput(boolean[] aBipartition, double[] someConfidences) {
         this(aBipartition);
         confidences = Arrays.copyOf(someConfidences, someConfidences.length);
-        if (ranksFromConfidences)
-            ranking = ranksFromConfidences(someConfidences);
+        ranking = ranksFromConfidences(someConfidences);
     }
 
     public boolean[] getBipartition() {

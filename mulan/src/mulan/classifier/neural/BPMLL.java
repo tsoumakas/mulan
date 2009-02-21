@@ -458,7 +458,7 @@ public class BPMLL extends MultiLabelLearnerBase {
 			labelConfidences[labelIndex] = (labelConfidences[labelIndex] + 1) / 2;
 		}
 
-        MultiLabelOutput mlo = new MultiLabelOutput(labelPredictions, labelConfidences, true);
+        MultiLabelOutput mlo = new MultiLabelOutput(labelPredictions, labelConfidences);
         return mlo;
     }
 }
