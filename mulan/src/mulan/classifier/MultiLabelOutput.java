@@ -17,12 +17,36 @@ public class MultiLabelOutput {
 
     public MultiLabelOutput() {}
 
+    /**
+     * Creates a new instance of {@link MultiLabelOutput}.
+     * @param aBipartition bipartiton of labels
+     * @throws IllegalArgumentException if aBipartitions is null.
+     */
     public MultiLabelOutput(boolean[] aBipartition) {
+    	if(aBipartition == null){
+    		throw new IllegalArgumentException("The bipartitions is null.");
+    	}
         bipartition = Arrays.copyOf(aBipartition, aBipartition.length);
     }
 
+    /**
+     * Creates a new instance of {@link MultiLabelOutput}.
+     * @param aBipartition bipartition of labels
+     * @param someConfidences confidences of labels
+     * @throws IllegalArgumentException if either of input parameters is null
+     * @throws IllegalArgumentException if dimension of bipartition and 
+     * 									confidences does not match
+     */
     public MultiLabelOutput(boolean[] aBipartition, double[] someConfidences) {
         this(aBipartition);
+        if(someConfidences == null){
+    		throw new IllegalArgumentException("The confidences is null.");
+    	}
+        if(aBipartition.length != someConfidences.length){
+        	bipartition = null;
+        	throw new IllegalArgumentException("The bipartitons and respective " +
+        			"confidences dimansions does not match.");
+        }
         confidences = Arrays.copyOf(someConfidences, someConfidences.length);
         ranking = ranksFromConfidences(someConfidences);
     }

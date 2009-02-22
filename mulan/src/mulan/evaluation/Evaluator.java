@@ -32,6 +32,17 @@ public class Evaluator
 		this.seed = seed;
 	}
 	
+	/**
+	 * Evaluates a {@link MultiLabelLearner} on given test data set.
+	 * 
+	 * @param learner the learner to be evaluated via cross-validation
+	 * @param dataset the data set for cross-validation
+	 * @param learner
+	 * @param dataSet
+	 * @return the evaluation result
+	 * @throws IllegalArgumentException if either of input parameters is null.
+	 * @throws Exception
+	 */
 	public Evaluation evaluate(MultiLabelLearner learner, Instances dataSet) throws Exception{
 	
 		if(learner == null){
@@ -83,18 +94,51 @@ public class Evaluator
 		return trueLabels;
 	}
 	
-	
+	/**
+	 * Evaluates a {@link MultiLabelLearner} via cross-validation on given data set.
+	 * The default number of folds {@link Evaluator#DEFAULTFOLDS} will be used. 
+	 * 
+	 * @param learner the learner to be evaluated via cross-validation
+	 * @param dataset the data set for cross-validation
+	 * @return the evaluation result
+	 * @throws IllegalArgumentException if either of input parameters is null.
+	 * @throws Exception
+	 */
 	public Evaluation crossValidate(MultiLabelLearner learner, Instances dataset)
 	throws Exception
 	{
 		return crossValidate(learner, dataset, DEFAULTFOLDS);
 	}
 	
-	
+	/**
+	 * Evaluates a {@link MultiLabelLearner} via cross-validation on given data set with
+	 * defined number of folds. 
+	 * The specified number of folds has to be at least two. 
+	 * If negative value is specified, the used number of folds is equal to number 
+	 * of instances in the data set. 
+	 * 
+	 * @param learner the learner to be evaluated via cross-validation
+	 * @param dataset the data set for cross-validation
+	 * @param numFolds the number of folds to be used
+	 * @return the evaluation result
+	 * @throws IllegalArgumentException if either of learner or data set parameters is null
+	 * @throws IllegalArgumentException if number of folds is invalid 
+	 * @throws Exception
+	 */
 	public Evaluation crossValidate(MultiLabelLearner learner, Instances dataset, int numFolds)
 	throws Exception
 	{
-		if (numFolds == -1) numFolds = dataset.numInstances();
+		if(learner == null){
+			throw new IllegalArgumentException("Learner to be evaluated is null.");
+		}
+		if(dataset == null){
+			throw new IllegalArgumentException("Dataset for the evaluation is null.");
+		}
+		if(numFolds == 0 || numFolds == 1){
+			throw new IllegalArgumentException("Number of folds must be at least two or higher.");
+		}
+		
+		if (numFolds < 0) numFolds = dataset.numInstances();
         ExampleBasedMeasures[] ebm = new ExampleBasedMeasures[numFolds];
         LabelBasedMeasures[] lbm = new LabelBasedMeasures[numFolds];
         RankingBasedMeasures[] rbm = new RankingBasedMeasures[numFolds];
