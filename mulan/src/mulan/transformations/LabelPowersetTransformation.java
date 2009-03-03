@@ -1,11 +1,9 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 
 package mulan.transformations;
 import java.util.HashSet;
 import mulan.core.LabelSet;
+import weka.core.Attribute;
+import weka.core.FastVector;
 import weka.core.Instances;
 /**
  * Class that implement the Label powerset (LP) transformation method
@@ -33,22 +31,29 @@ public class LabelPowersetTransformation  {
             labelSets.add(labelSet);
         }
         
+        // create class attribute
+        FastVector classValues = new FastVector(labelSets.size());
+        for(LabelSet subset : labelSets)
+            classValues.addElement(subset.toBitString());
+        Attribute newClass = new Attribute("class", classValues);
+
+        // remove all labels
         RemoveAllLabels rmLabels = new RemoveAllLabels();
         newData = new Instances(rmLabels.transformInstances(data, numLabels));
 
-        // construct class attribute
-        CreateNewLabel cnLabels = new CreateNewLabel();
-        newData = cnLabels.executeLP(newData, labelSets, numLabels);
+        // add new class attribute
+        newData.insertAttributeAt(newClass, newData.numAttributes());
+        newData.setClassIndex(newData.numAttributes()-1);
 
         // add class values
         for (int i = 0; i < newData.numInstances(); i++) {
             String strClass = "";
-                for (int j = 0; j < numLabels; j++)
-                    strClass = strClass + data.attribute(data.numAttributes()-numLabels+j).value((int) data.instance(i).
-                                      value(data.numAttributes() - numLabels + j));
-                    newData.instance(i).setClassValue(strClass);
+            for (int j = 0; j < numLabels; j++) {
+                int index = data.numAttributes()-numLabels+j;
+                strClass = strClass + data.attribute(index).value((int) data.instance(i).value(index));
+            }
+            newData.instance(i).setClassValue(strClass);
         }
-
         return newData;
     }
 }

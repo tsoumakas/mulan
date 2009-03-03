@@ -22,9 +22,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Random;
 
-import mulan.evaluation.BinaryPrediction;
 import mulan.evaluation.Evaluator;
-import mulan.evaluation.IntegratedEvaluation;
 import weka.classifiers.Classifier;
 import weka.core.Instance;
 import weka.core.Instances;
@@ -43,7 +41,7 @@ import weka.filters.unsupervised.attribute.Remove;
  * @version $Revision: 0.04 $ 
  */
 @SuppressWarnings("serial")
-public class RAKEL extends TransformationBasedMultiLabelLearner implements MultiLabelClassifier
+public class RAKEL extends TransformationBasedMultiLabelLearner
 {
 
     /**
@@ -73,7 +71,6 @@ public class RAKEL extends TransformationBasedMultiLabelLearner implements Multi
     LabelPowerset[] subsetClassifiers;
     protected Instances[] metadataTest;
     HashSet<String> combinations;		
-    BinaryPrediction[][] predictions;
     boolean incremental =true;
     boolean cvParamSelection=false;
     int cvNumFolds, cvMinK, cvMaxK, cvStepK, cvMaxM, cvThresholdSteps;
@@ -159,9 +156,6 @@ public class RAKEL extends TransformationBasedMultiLabelLearner implements Multi
         }
                 
         
-	public BinaryPrediction[][] getPredictions() {
-		return predictions;
-	}
 		
     public static int binomial(int n, int m)
     {
@@ -278,6 +272,7 @@ public class RAKEL extends TransformationBasedMultiLabelLearner implements Multi
 
         
         public void updatePredictions(Instances testData, int model) throws Exception {
+            /*
 		if (predictions == null) {
 			predictions = new BinaryPrediction[testData.numInstances()][numLabels];
 			sumVotesIncremental = new double[testData.numInstances()][numLabels];
@@ -299,7 +294,7 @@ public class RAKEL extends TransformationBasedMultiLabelLearner implements Multi
 							actual, 
 							result.getConfidence(j));
 			}
-		}		
+		}	*/
 	}
 	
         
@@ -384,19 +379,19 @@ public class RAKEL extends TransformationBasedMultiLabelLearner implements Multi
 
         return newInstance;
     }
-
+/*
 	public Prediction updatePrediction(Instance instance, int instanceNumber, int model) throws Exception {	
 
         // transform test instance as required by the underlying LP models
         Instance newInstance = transformInstance(instance);
         newInstance.setDataset(metadataTest[model]);
 
-/*        double[] predictions = subsetClassifiers[model].makePrediction(newInstance).getPredictedLabels();
+        double[] predictions = subsetClassifiers[model].makePrediction(newInstance).getPredictedLabels();
         for (int j=0; j<sizeOfSubset; j++) {
             sumVotesIncremental[instanceNumber][classIndicesPerSubset[model][j]] += predictions[j];
             lengthVotesIncremental[instanceNumber][classIndicesPerSubset[model][j]]++;
         }
-*/
+
         double[] confidence = new double[numLabels];
         double[] labels = new double[numLabels];
         for (int i=0; i<numLabels; i++) {
@@ -411,8 +406,8 @@ public class RAKEL extends TransformationBasedMultiLabelLearner implements Multi
 
         return pred;
 	}
-	
-	
+*/
+/*
 	public Bipartition predict(Instance instance) throws Exception {		
             double[] sumConf = new double[numLabels];
             sumVotes = new double[numLabels];
@@ -431,7 +426,7 @@ public class RAKEL extends TransformationBasedMultiLabelLearner implements Multi
                     lengthVotes[classIndicesPerSubset[i][j]]++;
                 }
             }
-*/
+
             double[] confidence1 = new double[numLabels];
             double[] confidence2 = new double[numLabels];
             double[] labels = new double[numLabels];
@@ -455,7 +450,7 @@ public class RAKEL extends TransformationBasedMultiLabelLearner implements Multi
 
             //return pred;
             return null;
-	}
+	}*/
         
         public void nullSubsetClassifier(int i) {
             subsetClassifiers[i] = null;

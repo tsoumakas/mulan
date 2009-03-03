@@ -23,7 +23,6 @@ import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import mulan.core.LabelSet;
-import mulan.core.Transformations;
 import mulan.core.Util;
 import mulan.transformations.LabelPowersetTransformation;
 import weka.classifiers.Classifier;
@@ -38,7 +37,7 @@ import weka.core.SparseInstance;
  * @author Robert Friberg
  * @version $Revision: 0.05 $ 
  */
-public class LabelPowerset extends TransformationBasedMultiLabelLearner implements MultiLabelLearner
+public class LabelPowerset extends TransformationBasedMultiLabelLearner 
 {
     /**
      * The confidence values for each label are calculated in the following ways

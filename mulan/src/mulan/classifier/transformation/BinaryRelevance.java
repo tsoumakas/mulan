@@ -15,7 +15,7 @@ import weka.core.Instances;
  * @author Grigorios Tsoumakas 
  * @version $Revision: 0.04 $
  */
-public class BinaryRelevance extends TransformationBasedMultiLabelLearner implements MultiLabelLearner
+public class BinaryRelevance extends TransformationBasedMultiLabelLearner 
 {
 	protected Instances[] metadataTest;
 	protected Classifier[] ensemble;

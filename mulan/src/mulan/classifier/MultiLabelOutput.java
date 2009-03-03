@@ -31,11 +31,23 @@ public class MultiLabelOutput {
 
     /**
      * Creates a new instance of {@link MultiLabelOutput}.
+     * @param aRanking ranking of labels
+     * @throws IllegalArgumentException if aRanking is null
+     */
+    public MultiLabelOutput(int[] aRanking) {
+        if (aRanking == null) {
+    		throw new IllegalArgumentException("The ranking is null.");
+    	}
+        ranking = Arrays.copyOf(aRanking, aRanking.length);
+    }
+
+    /**
+     * Creates a new instance of {@link MultiLabelOutput}.
      * @param aBipartition bipartition of labels
-     * @param someConfidences confidences of labels
+     * @param someConfidences values of labels
      * @throws IllegalArgumentException if either of input parameters is null
      * @throws IllegalArgumentException if dimension of bipartition and 
-     * 									confidences does not match
+     * 									values does not match
      */
     public MultiLabelOutput(boolean[] aBipartition, double[] someConfidences) {
         this(aBipartition);
@@ -48,7 +60,7 @@ public class MultiLabelOutput {
         			"confidences dimansions does not match.");
         }
         confidences = Arrays.copyOf(someConfidences, someConfidences.length);
-        ranking = ranksFromConfidences(someConfidences);
+        ranking = ranksFromValues(someConfidences);
     }
 
     public boolean[] getBipartition() {
@@ -75,12 +87,11 @@ public class MultiLabelOutput {
         return (confidences != null);
     }
 
-    private int[] ranksFromConfidences(double[] confidences) {
-        int[] reverseRanks = weka.core.Utils.stableSort(confidences);
-        int[] ranks = new int[confidences.length];
-        for (int i=0; i<confidences.length; i++) {
-            ranks[i] = reverseRanks[confidences.length-1-i];
-        }
+    public static int[] ranksFromValues(double[] values) {
+        int[] temp = weka.core.Utils.stableSort(values);
+        int[] ranks = new int[values.length];
+        for (int i=0; i<values.length; i++)
+            ranks[temp[i]] = values.length-i;
         return ranks;
     }
 
