@@ -17,8 +17,8 @@ import weka.core.Instances;
  */
 public abstract class MultiClassTransformation {
 
-    int numOfLabels;
-    int numPredictors;
+    protected int numOfLabels;
+    protected int numPredictors;
 
     MultiClassTransformation(int numOfLabels) {
         this.numOfLabels = numOfLabels;

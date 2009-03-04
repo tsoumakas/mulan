@@ -13,8 +13,8 @@ import mulan.transformations.RemoveAllLabels;
  */
 public class MultiClassLearner extends TransformationBasedMultiLabelLearner {
 
-    Instances header;
-    MultiClassTransformation transformation;
+    private Instances header;
+    private MultiClassTransformation transformation;
 
 	public MultiClassLearner(Classifier baseClassifier, int numLabels, MultiClassTransformation dt)
 	{
