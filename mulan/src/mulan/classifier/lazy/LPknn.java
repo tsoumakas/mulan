@@ -2,7 +2,7 @@ package mulan.classifier.lazy;
 
 import java.util.HashSet;
 
-import mulan.classifier.Prediction;
+import mulan.classifier.MultiLabelOutput;
 import mulan.core.LabelSet;
 import weka.core.Instance;
 import weka.core.Instances;
@@ -21,10 +21,8 @@ public class LPknn extends MultiLabelKNN {
 	public LPknn(int numLabels, int numOfNeighbors) {
 		super(numLabels, numOfNeighbors);
 	}
-
-	public Prediction makePrediction(Instance instance) throws Exception {
-
-		double[] predictions = new double[numLabels];
+    public MultiLabelOutput makePrediction(Instance instance) throws Exception {
+		boolean[] predictions = new boolean[numLabels];
 
 		double[][] dblLabels = new double[numOfNeighbors][numLabels];
 
@@ -76,7 +74,7 @@ public class LPknn extends MultiLabelKNN {
 			}
 		}
 
-		//the latest subsets are better because they are the subsets of the 
+		//the latest subsets are better because they are the subsets of the
 		//nearest neighbors
 		int max = 0;
 		for (int i = 1; i < labelSets.size(); i++) {
@@ -88,10 +86,9 @@ public class LPknn extends MultiLabelKNN {
 			}
 		}
 
-		predictions = distinctLabelSets[max].toDoubleArray();
-		
-		// the confidences for the true labels are 1. The rest are 0.
-		Prediction results = new Prediction(predictions, predictions);
-		return results;
-	}
+		predictions = distinctLabelSets[max].toBooleanArray();
+
+        MultiLabelOutput mlo = new MultiLabelOutput(predictions);
+		return mlo;
+    }
 }

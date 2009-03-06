@@ -1,6 +1,7 @@
 package mulan.classifier.lazy;
 
-import mulan.classifier.Prediction;
+
+import mulan.classifier.MultiLabelOutput;
 import weka.core.EuclideanDistance;
 import weka.core.Instance;
 import weka.core.Instances;
@@ -31,7 +32,8 @@ public class MultiKnn extends MultiLabelKNN {
 		super(labels,k);
 	}
 
-	public void buildClassifier(Instances train) {
+    @Override
+	public void build(Instances train) {
 		this.train = train;
 		predictors = train.numAttributes() - numLabels;
 
@@ -40,7 +42,7 @@ public class MultiKnn extends MultiLabelKNN {
 		dfunc.setAttributeIndices("first-" + predictors);
 	}
 
-	public int toplabel(Instance instance, Instances train, double[] predictions) throws Exception {
+	public int toplabel(Instance instance, Instances train, boolean[] bipartition) throws Exception {
 
 		LinearNNSearch lnn = new LinearNNSearch();
 		lnn.setDistanceFunction(dfunc);
@@ -57,7 +59,7 @@ public class MultiKnn extends MultiLabelKNN {
 
 		//calculation of the votes of each label
 		for (int i = 0; i < numLabels; i++) {
-			if (Utils.eq(predictions[i], 0)) { //calculate votes for the rest of the labels only
+			if (!bipartition[i]) { //calculate votes for the rest of the labels only
 				// compute sum of aces in KNN
 				int aces = 0; // num of aces in Knn for i
 				for (int k = 0; k < numofNeighbours; k++) {
@@ -74,7 +76,7 @@ public class MultiKnn extends MultiLabelKNN {
 		for (int k = 0; k < numofNeighbours; k++) {
 			boolean ace = false;
 			for (int i = 0; i < numLabels; i++) {
-				if (Utils.eq(predictions[i], 0)) {//calculate votes for the rest of the labels only
+				if (!bipartition[i]) {//calculate votes for the rest of the labels only
 					double value = Double.parseDouble(train.attribute(predictors + i).value(
 							(int) knn.instance(k).value(predictors + i)));
 					if (Utils.eq(value, 1.0)) {
@@ -96,29 +98,29 @@ public class MultiKnn extends MultiLabelKNN {
 			return -1;
 	}
 
-	public Prediction makePrediction2(Instance instance) throws Exception {
+	public MultiLabelOutput makePrediction2(Instance instance) throws Exception {
 		double[] confidences = new double[numLabels];
-		double[] predictions = new double[numLabels];
+		boolean[] bipartition = new boolean[numLabels];
 
 		Instances newtrain = new Instances(this.train);
 		//System.out.println(newtrain.numInstances());
 
 		int result;
 		do {
-			result = toplabel(instance, newtrain, predictions);
+			result = toplabel(instance, newtrain, bipartition);
 			if (result != -1) {
-				predictions[result] = 1;
-				newtrain = new Instances(filterwithlabel(result, newtrain));
+				bipartition[result] = true;
+		//		newtrain = new Instances(filterwithlabel(result, newtrain));
 				sumedlabels++;
 			}
 			//System.out.println(newtrain.numInstances());
 		} while (result != -1 && newtrain.numInstances() >= numofNeighbours);
 
-		Prediction results = new Prediction(predictions, confidences);
-		return results;
+        MultiLabelOutput mlo = new MultiLabelOutput(bipartition, confidences);
+		return mlo;
 	}
-	
-	public Prediction makePrediction(Instance instance) throws Exception {
+	/*
+	public Bipartition makePrediction(Instance instance) throws Exception {
 		double[] confidences = new double[numLabels];
 		double[] predictions = new double[numLabels];
 
@@ -204,9 +206,13 @@ public class MultiKnn extends MultiLabelKNN {
 		//System.out.println(transformed);
 		return init;
 
-	}
+	}*/
 
     public String getRevision() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public MultiLabelOutput makePrediction(Instance instance) throws Exception {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }

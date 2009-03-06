@@ -1,10 +1,14 @@
 package mulan.examples;
 
 import java.io.FileReader;
-import mulan.classifier.RAKEL;
+import mulan.classifier.transformation.BinaryRelevance;
+import mulan.classifier.transformation.LabelPowerset;
+import mulan.classifier.transformation.MultiClassLearner;
+import mulan.evaluation.Evaluation;
 import mulan.evaluation.Evaluator;
-import mulan.evaluation.IntegratedEvaluation;
-import weka.classifiers.functions.SMO;
+import mulan.transformations.multiclass.*;
+import mulan.transformations.multiclass.MultiClassTransformation;
+import weka.classifiers.trees.J48;
 import weka.core.Instances;
 import weka.core.Utils;
 
@@ -30,16 +34,33 @@ public class TrainTestExperiment {
             Instances test = new Instances(frTest);
 
             Evaluator eval = new Evaluator();
-            IntegratedEvaluation results;
+            Evaluation results;
 
-            //* RAKEL
-            System.out.println("RAKEL");
-            SMO rakelBaseClassifier = new SMO();
-            RAKEL rakel = new RAKEL(rakelBaseClassifier, labels, 10, 3);
-            //rakel.setParamSelectionViaCV(true);
-            //rakel.setParamSets(3, 2, labels-1, 1, 500, 0.1, 0.1, 9);
-            rakel.buildClassifier(train);
-            results = eval.evaluateAll(rakel, test);
+            //* LP
+            System.out.println("LP");
+            J48 lpBaseClassifier = new J48();
+            LabelPowerset lp = new LabelPowerset(lpBaseClassifier, labels);
+            lp.build(train);
+            results = eval.evaluate(lp, test);
+            System.out.println(results.toString());
+            //*/
+
+            //* Multiclass Transformations
+            System.out.println("Multiclass Transformations - Copy");
+            J48 mcBaseClassifier = new J48();
+            MultiClassTransformation copy = new Copy(labels);
+            MultiClassLearner mc;
+            mc = new MultiClassLearner(mcBaseClassifier, labels, copy);
+            mc.build(train);
+            results = eval.evaluate(mc, test);
+            System.out.println(results.toString());
+
+            //* BR
+            System.out.println("BR");
+            J48 brClassifier = new J48();
+            BinaryRelevance br = new BinaryRelevance(brClassifier, labels);
+            br.build(train);
+            results = eval.evaluate(br, test);
             System.out.println(results.toString());
             //*/
         }

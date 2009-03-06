@@ -1,34 +1,29 @@
-package mulan.classifier;
+package mulan.classifier.transformation;
+
+import mulan.classifier.*;
 import java.util.Arrays;
 
 import weka.classifiers.Classifier;
-import weka.classifiers.bayes.NaiveBayes;
 import weka.core.Attribute;
 import weka.core.FastVector;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.SparseInstance;
 
-@SuppressWarnings("serial")
 /**
- * A multilabel classifier based on Problem Transformation 5.
- * The multiple label attributes are mapped to a single multi class
- * attribute. 
+ * A multilabel classifier based on Problem Transformation 6.
+ * The multiple label attributes are mapped to two attributes:
+ * a) one nominal attribute containing the class
+ * b) one binary attribute containing whether it is true. 
+ *
+ * @author Robert Friberg
+ * @author Grigorios Tsoumakas
+ * @version $Revision: 0.03 $ 
  */
-public class FlattenTrueLabelsClassifier extends TransformationBasedMultiLabelClassifier implements
-		MultiLabelClassifier
+public class IncludeLabelsClassifier extends TransformationBasedMultiLabelLearner 
 {
-    double[] thresholds;
+	double[] thresholds;
     double threshold=0.5;
-
-	public static final String versionId = "$Id: 2007-02-21 02:55:46 +0100 (on, 21 feb 2007) $"; 
-	
-	
-	/**
-	 * The encapsulated distribution classifier.
-	 */
-	protected Classifier classifier;
-	
 	
 	/**
 	 * A dataset with the format needed by the base classifier.
@@ -38,36 +33,33 @@ public class FlattenTrueLabelsClassifier extends TransformationBasedMultiLabelCl
 	 */
 	protected Instances transformed;
 
+	
+	public IncludeLabelsClassifier(Classifier classifier, int numLabels)
+	{
+		super(classifier, numLabels);
+	}
+	
+    @Override
+    public void build(Instances instances) throws Exception
+    {
+            //Do the transformation 
+            //and generate the classifier
+            transformed = determineOutputFormat(instances);	
+            transform(instances, transformed);
 
-	public FlattenTrueLabelsClassifier(Classifier classifier, int numLabels)
-	{
-		super(numLabels);
-		this.classifier = classifier;
-	}
-	
-	/**
-	 * Creates an instance of {@link FlattenTrueLabelsClassifier}. 
-	 * The default base classifier used is {@link NaiveBayes}.
-	 * 
-	 * @param numLabels {@inheritDoc}
-	 */
-	public FlattenTrueLabelsClassifier(int numLabels){
-		this(new NaiveBayes(), numLabels);
-	}
-	
-	public void buildClassifier(Instances instances) throws Exception
-	{
-		//Do the transformation 
-		//and generate the classifier
-		transformed = determineOutputFormat(instances); 
-		transform(instances, transformed);
-		classifier.buildClassifier(transformed);
-		
-		//We dont need the data anymore, just the metadata.
-		//Asserts that the classifier has copied anything
-		//it needs.
-		transformed.delete();
-	}
+            /* debug info
+            System.out.println(instances.instance(0).toString());
+            for (int i=0; i<numLabels; i++)
+                    System.out.println(transformed.instance(i).toString());
+            //*/
+            baseClassifier.buildClassifier(transformed);
+
+            //We dont need the data anymore, just the metadata.
+            //Asserts that the classifier has copied anything
+            //it needs.
+            transformed.delete();
+            //System.out.println(transformed);
+    }
 	
 
 	/**
@@ -101,14 +93,14 @@ public class FlattenTrueLabelsClassifier extends TransformationBasedMultiLabelCl
 		for(int i = startIndex; i < input.numAttributes(); i++)
 			classValues.addElement(input.attribute(i).name());
 		
-		//remove numClasses attributes from the end
+		//remove numLabels-1 attributes from the end
 		Instances outputFormat = new Instances(input, 0);
-		for(int i = 0; i < numLabels; i++)
-			outputFormat.deleteAttributeAt(outputFormat.numAttributes() - 1);
+		for(int i = 0; i < numLabels-1; i++)
+			outputFormat.deleteAttributeAt(outputFormat.numAttributes() - 1);		
 		
-		//create and append the nominal class attribute
-		Attribute classAttribute = new Attribute("Class", classValues);
-		outputFormat.insertAttributeAt(classAttribute, outputFormat.numAttributes());
+		//create and append the nominal class attribute before the end
+		Attribute classAttribute = new Attribute("label", classValues);
+		outputFormat.insertAttributeAt(classAttribute, outputFormat.numAttributes()-1);
 		outputFormat.setClassIndex(outputFormat.numAttributes() - 1);
 		return outputFormat;
 	}
@@ -116,8 +108,6 @@ public class FlattenTrueLabelsClassifier extends TransformationBasedMultiLabelCl
 
 	/**
 	 * Each input instance will yield one output instance for each label.
-	 * Transform a single input instance into 0 or more 
-	 * output instances.
 	 * 
 	 * @param instance
 	 * @param out Actually a reference to the member variable transformed.
@@ -125,23 +115,17 @@ public class FlattenTrueLabelsClassifier extends TransformationBasedMultiLabelCl
 	private void transformAndAppendMultiple(Instance instance, Instances out)
 	{
 		//Grab a reference to the input dataset 
-		Instances in  = instance.dataset();
+		//Instances in  = instance.dataset();
 		
 		//The prototype instance is used to make copies, one per label.
-		Instance prototype = transform(instance);
+	//	Instance prototype = transform(instance);
 	
-		//At this point we have an instance with a missing last class value
-	    //Now we iterate over the incoming instances multiple labels
-	    //and output one instance for every label with a value of 1.
-		//TODO: This asserts that label attribute is binary nominal with values {0,1}
-		for(int i = in.numAttributes() - numLabels; i < in.numAttributes(); i++)
-		{
-			if (instance.value(i) == 0 || instance.value(i) == Instance.missingValue() ) continue;
-			Instance copy = (Instance) prototype.copy();
-			copy.setDataset(out);
-			copy.setClassValue(instance.attribute(i).name());
-			out.add(copy);
+		for (int i=0; i<numLabels; i++) {
+			Instance copy = (Instance) instance.copy();
+			Instance newInstance = transform(copy, i);
+			out.add(newInstance);
 		}
+		
 	}
 	
 	/**
@@ -150,7 +134,7 @@ public class FlattenTrueLabelsClassifier extends TransformationBasedMultiLabelCl
 	 * @param instance
 	 * @return a transformed copy of the passed instance
 	 */
-	private Instance transform(Instance instance)
+	private Instance transform(Instance instance, int label)
 	{
 		
 		//TODO: It might be faster to copy the entire instance and 
@@ -160,28 +144,37 @@ public class FlattenTrueLabelsClassifier extends TransformationBasedMultiLabelCl
 		double [] vals = new double[transformed.numAttributes()];
 
 		//Copy all predictors		
-		for (int i = 0; i < transformed.numAttributes() - 1; i++)
+		for (int i = 0; i < transformed.numAttributes() - 2; i++)
 			vals[i] = instance.value(i);
 
-		//If class value is 0 it will not be included in the sparse
-		//instance and validation will fail. 
-		vals[transformed.numAttributes()-1] = 42;
+		vals[transformed.numAttributes()-2] = label;
+		
+		vals[transformed.numAttributes()-1] = instance.value(instance.numAttributes()-numLabels + label);
 		
 		Instance result = (instance instanceof SparseInstance)
 		? new SparseInstance(instance.weight(), vals)
 		: new Instance(instance.weight(), vals);
 		
-		result.setDataset(transformed);
+//		result.setDataset(transformed);
 		return result;
 	}
-	
-	protected Prediction makePrediction(Instance instance) throws Exception
+	/*
+	public Bipartition predict(Instance instance) throws Exception
 	{
-		instance = transform(instance);
-		double[] confidences = classifier.distributionForInstance(instance);
-		return new Prediction(labelsFromConfidences(confidences), confidences);
-	}
-	
+		double[] confidences = new double[numLabels];
+                //System.out.println(instance.toString());
+                Instance newInstance;
+		for (int i=0; i<numLabels; i++) {
+			newInstance = transform(instance , i);	
+                        newInstance.setDataset(transformed);
+                        //System.out.println(instance.toString());
+			double[] temp = baseClassifier.distributionForInstance(newInstance);
+			confidences[i] = temp[transformed.classAttribute().indexOfValue("1")]; 
+		}	
+		//return new Prediction(labelsFromConfidences(confidences), confidences);
+                return null;
+	}*/
+
 	/**
 	 * Derive output labels from distributions.
 	 */
@@ -202,8 +195,14 @@ public class FlattenTrueLabelsClassifier extends TransformationBasedMultiLabelCl
 		}
 		return result;
 	}
-
+	
     public String getRevision() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
+
+    public MultiLabelOutput makePrediction(Instance instance) throws Exception {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+	
 }
+

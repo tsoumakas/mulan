@@ -4,10 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
-import mulan.classifier.Prediction;
+import mulan.classifier.MultiLabelOutput;
 import mulan.core.Util;
-import mulan.evaluation.BinaryPrediction;
-import mulan.evaluation.IntegratedEvaluation;
 import weka.classifiers.lazy.IBk;
 import weka.core.Instance;
 import weka.core.Instances;
@@ -104,8 +102,8 @@ public class BRkNN extends MultiLabelKNN {
 		Rand = new Random(1);
 	}
 
-	public void buildClassifier(Instances aTrain) throws Exception {
-		super.buildClassifier(aTrain);
+	public void build(Instances aTrain) throws Exception {
+		super.build(aTrain);
 
 		lnn = new LinearNNSearch();
 		lnn.setDistanceFunction(dfunc);
@@ -113,7 +111,7 @@ public class BRkNN extends MultiLabelKNN {
 		lnn.setMeasurePerformance(false);
 
 		if (cvkSelection == true) {
-			crossValidate();
+//			crossValidate();
 		}
 	}
 
@@ -132,6 +130,7 @@ public class BRkNN extends MultiLabelKNN {
 	 * 
 	 * @throws Exception
 	 */
+    /*
 	protected void crossValidate() throws Exception {
 		try {
 			// the performance for each different k
@@ -231,7 +230,8 @@ public class BRkNN extends MultiLabelKNN {
 	/**
 	 * weka Ibk style prediction
 	 */
-	public Prediction makePrediction(Instance instance) throws Exception {
+    /*
+	public Bipartition makePrediction(Instance instance) throws Exception {
 
 		// in cross-validation test-train instances does not belong to the same
 		// data set
@@ -254,7 +254,7 @@ public class BRkNN extends MultiLabelKNN {
 		return results;
 
 	}
-
+*/
 	/**
 	 * Calculates the confidences of the labels, based on the neighboring
 	 * instances
@@ -322,7 +322,8 @@ public class BRkNN extends MultiLabelKNN {
 	 * @return
 	 * @throws Exception
 	 */
-	public Prediction makePrediction2(Instance instance) throws Exception {
+     /*
+    public Prediction makePrediction2(Instance instance) throws Exception {
 		double[] confidences = new double[numLabels];
 		double[] predictions = new double[numLabels];
 
@@ -358,7 +359,8 @@ public class BRkNN extends MultiLabelKNN {
 		Prediction results = new Prediction(predictions, confidences);
 		return results;
 	}
-
+    */
+    
 	/**
 	 * Derive output labels from distributions.
 	 */
@@ -467,5 +469,9 @@ public class BRkNN extends MultiLabelKNN {
 	public void setCvMaxK(int cvMaxK) {
 		this.cvMaxK = cvMaxK;
 	}
+
+    public MultiLabelOutput makePrediction(Instance instance) throws Exception {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 
 }

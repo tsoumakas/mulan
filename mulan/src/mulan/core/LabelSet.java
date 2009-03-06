@@ -100,7 +100,19 @@ public class LabelSet implements Serializable, Comparable<LabelSet>
             arr[i] = labelSet[i];
         return arr;
     }
-	
+
+    /**
+     * Get an array representation of this set.
+     * @return a copy of the underlying array.
+     */
+    public boolean[] toBooleanArray()
+    {
+        boolean[] arr = new boolean[labelSet.length];
+        for(int i = 0; i < labelSet.length; i++)
+            arr[i] = (labelSet[i] == 1) ? true : false;
+        return arr;
+    }
+
     /**
      * calculates the Hamming Distance between the current labelset and another labelset.
      * @return the Hamming Distance.
@@ -138,7 +150,7 @@ public class LabelSet implements Serializable, Comparable<LabelSet>
             {
                 case '1' : result.labelSet[i] = 1;  break;
                 case '0' : result.labelSet[i] = 0;  break;
-                default: throw new Exception("Bad bitstring: " + bits);
+                default  : throw new Exception("Bad bitstring: " + bits);
             }
         }
         return result;

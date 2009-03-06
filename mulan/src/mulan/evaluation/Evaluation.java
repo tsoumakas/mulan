@@ -1,65 +1,103 @@
 package mulan.evaluation;
+
 /**
- * Simple aggregation class for both types of evaluation, 
- * example based and label based.
+ * Simple aggregation class which provides all possible evaluation measure types.
+ * The evaluation is providing measures for particular multi-label learner type.
+ * Only measures applicable to evaluated learner will be provided. 
+ * Measures which are not applicable will be null. The proper measures are set by 
+ * {@link Evaluator} based on predefined rules.
+ * 
+ * @see Evaluator
+ * 
+ * @author Jozef Vilcek
  */
-public class Evaluation
-{
-	protected LabelBasedEvaluation labelBased;
-
-	protected ExampleBasedEvaluation exampleBased;
+public class Evaluation {
 	
-	protected LabelRankingBasedEvaluation rankingBased;
+	private LabelBasedMeasures labelBasedMeasures;
+	private ExampleBasedMeasures exampleBasedMeasures;
+	private RankingBasedMeasures rankingBasedMeasures;
+    private ConfidenceLabelBasedMeasures confidenceLabelBasedMeasures;
 
 	
-	protected Evaluation(LabelBasedEvaluation labelBased,
-			ExampleBasedEvaluation exampleBased,LabelRankingBasedEvaluation rankingBased )
-	{
-		this.labelBased = labelBased;
-		this.exampleBased = exampleBased;
-		this.rankingBased = rankingBased;
-	}
-	
-
-	/**
-	 * @return the labelBased
-	 */
-	public LabelBasedEvaluation getLabelBased()
-	{
-		return labelBased;
+	public LabelBasedMeasures getLabelBasedMeasures() {
+		return labelBasedMeasures;
 	}
 
-	public ExampleBasedEvaluation getExampleBased()
-	{
-		return exampleBased;
+	protected void setLabelBasedMeasures(LabelBasedMeasures labelBasedMeasures) {
+		this.labelBasedMeasures = labelBasedMeasures;
 	}
 	
-	public LabelRankingBasedEvaluation getRankingBased()
-	{
-		return rankingBased;
+	public ExampleBasedMeasures getExampleBasedMeasures() {
+		return exampleBasedMeasures;
 	}
 	
-        public String toString() {
-            String description = "";
+	protected void setExampleBasedMeasures(ExampleBasedMeasures exampleBasedMeasures) {
+		this.exampleBasedMeasures = exampleBasedMeasures;
+	}
 
-            description += "HammingLoss    : " + exampleBased.hammingLoss() + "\n";
-            description += "SubsetAccuracy : " + exampleBased.subsetAccuracy() + "\n";
-            description += "Ranking Based Measures\n";
-            description += "One-error      : " + rankingBased.one_error() + "\n";
-            description += "Coverage       : " + rankingBased.coverage() + "\n";
-            description += "Ranking Loss   : " + rankingBased.rloss() + "\n";
-            description += "Avg Precision  : " + rankingBased.avg_precision() + "\n";
-            labelBased.setAveragingMethod(LabelBasedEvaluation.MICRO);
-            description += "MICRO\n";
-            description += "Precision : " + labelBased.precision() + "\n";
-            description += "Recall    : " + labelBased.recall() + "\n";
-            description += "F1        : " + labelBased.fmeasure() + "\n";
-            labelBased.setAveragingMethod(LabelBasedEvaluation.MACRO);
-            description += "MACRO\n";
-            description += "Precision : " + labelBased.precision() + "\n";
-            description += "Recall    : " + labelBased.recall() + "\n";
-            description += "F1        : " + labelBased.fmeasure() + "\n";
-            
-            return description;
+	public RankingBasedMeasures getRankingBasedMeasures() {
+		return rankingBasedMeasures;
+	}
+	
+	protected void setRankingBasedMeasures(RankingBasedMeasures rankingBasedMeasures) {
+		this.rankingBasedMeasures = rankingBasedMeasures;
+	}
+
+	protected void setConfidenceLabelBasedMeasures(ConfidenceLabelBasedMeasures confidenceLabelBasedMeasures) {
+		this.confidenceLabelBasedMeasures = confidenceLabelBasedMeasures;
+	}
+
+	public ConfidenceLabelBasedMeasures getConfidenceLabelBasedMeasures() {
+		return confidenceLabelBasedMeasures;
+	}
+
+    @Override
+	public String toString() {
+		String description = "";
+
+        if (exampleBasedMeasures != null) {
+//		description += "Average predicted labels: " + this.numPredictedLabels + "\n";
+            description += "========Example Based Measures========\n";
+            description += "HammingLoss    : " + exampleBasedMeasures.getHammingLoss() + "\n";
+            description += "Accuracy       : " + exampleBasedMeasures.getAccuracy() + "\n";
+            description += "Precision      : " + exampleBasedMeasures.getPrecision() + "\n";
+            description += "Recall         : " + exampleBasedMeasures.getRecall() + "\n";
+            description += "Fmeasure       : " + exampleBasedMeasures.getFMeasure() + "\n";
+            description += "SubsetAccuracy : " + exampleBasedMeasures.getSubsetAccuracy() + "\n";
         }
+        if (labelBasedMeasures != null) {
+            description += "========Label Based Measures========\n";
+            description += "MICRO\n";
+            description += "Precision    : " + labelBasedMeasures.getPrecision(Averaging.MICRO) + "\n";
+            description += "Recall       : " + labelBasedMeasures.getRecall(Averaging.MICRO) + "\n";
+            description += "F1           : " + labelBasedMeasures.getFMeasure(Averaging.MICRO) + "\n";
+            description += "MACRO\n";
+            description += "Precision    : " + labelBasedMeasures.getPrecision(Averaging.MACRO) + "\n";
+            description += "Recall       : " + labelBasedMeasures.getRecall(Averaging.MACRO) + "\n";
+            description += "F1           : " + labelBasedMeasures.getFMeasure(Averaging.MACRO) + "\n";
+        }
+        if (confidenceLabelBasedMeasures != null) {
+            description += "MICRO\n";
+            description += "AUC          : " + confidenceLabelBasedMeasures.getAUC(Averaging.MICRO) + "\n";
+            description += "MACRO\n";
+            description += "AUC          : " + confidenceLabelBasedMeasures.getAUC(Averaging.MACRO) + "\n";
+        }
+        if (rankingBasedMeasures != null) {
+            description += "========Ranking Based Measures========\n";
+            description += "One-error    : " + rankingBasedMeasures.getOneError() + "\n";
+            description += "Coverage     : " + rankingBasedMeasures.getCoverage() + "\n";
+            description += "Ranking Loss : " + rankingBasedMeasures.getRankingLoss() + "\n";
+            description += "AvgPrecision : " + rankingBasedMeasures.getAvgPrecision() + "\n";
+        }
+        /*
+        description += "========Per Class Measures========\n";
+		for (int i = 0; i < numLabels(); i++) {
+			description += "Label " + i + " Accuracy   :" + labelAccuracy[i] + "\n";
+			description += "Label " + i + " Precision  :" + labelPrecision[i] + "\n";
+			description += "Label " + i + " Recall     :" + labelRecall[i] + "\n";
+			description += "Label " + i + " F1         :" + labelFmeasure[i] + "\n";
+		}
+		*/
+		return description;
+	}
 }
