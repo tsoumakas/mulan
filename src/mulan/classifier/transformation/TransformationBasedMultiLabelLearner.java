@@ -1,4 +1,4 @@
-package mulan.classifier;
+package mulan.classifier.transformation;
 
 /*
  *    This program is free software; you can redistribute it and/or modify
@@ -16,6 +16,7 @@ package mulan.classifier;
  *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+import mulan.classifier.*;
 import weka.classifiers.Classifier;
 import weka.classifiers.trees.J48;
 import weka.core.TechnicalInformation;
@@ -24,14 +25,14 @@ import weka.core.TechnicalInformation.Type;
 
 
 /**
- * Base class for multi-label classifiers, 
- * which use problem transformation to handle multi-label data.
+ * Base class for multi-label learners, which use problem 
+ * transformation to handle multi-label data.
  *
  * @author Robert Friberg
  * @author Jozef Vilcek
  * @version $Revision: 0.02 $ 
 */
-public abstract class TransformationBasedMultiLabelClassifier extends MultiLabelClassifierBase {
+public abstract class TransformationBasedMultiLabelLearner extends MultiLabelLearnerBase {
 
 	
 	/**
@@ -45,7 +46,7 @@ public abstract class TransformationBasedMultiLabelClassifier extends MultiLabel
 	 *  
 	 * @param numLabels the number of labels for the classifier.
 	 */
-	public TransformationBasedMultiLabelClassifier(int numLabels)
+	public TransformationBasedMultiLabelLearner(int numLabels)
 	{
 		this(new J48(), numLabels);
 	}
@@ -53,17 +54,18 @@ public abstract class TransformationBasedMultiLabelClassifier extends MultiLabel
 	/**
 	 * Creates a new instance.
 	 * 
-	 * @param baseClassifier the base classifier which will be used internally to classify the data.
-	 * @param numLabels the number of labels for the classifier.
+	 * @param baseClassifier the base classifier which will be used internally to handle the data.
+	 * @param numLabels the number of labels for the learner.
+	 * @see Classifier
 	 */
-	public TransformationBasedMultiLabelClassifier(Classifier baseClassifier, int numLabels)
+	public TransformationBasedMultiLabelLearner(Classifier baseClassifier, int numLabels)
 	{
 		super(numLabels);
 		this.baseClassifier = baseClassifier;
 	}
 	
 	/**
-	 * Returns the {@link Classifier} which is used internally by this classifier.
+	 * Returns the {@link Classifier} which is used internally by the learner.
 	 *  
 	 * @return
 	 */

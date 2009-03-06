@@ -1,4 +1,4 @@
-package mulan.classifier;
+package mulan.classifier.transformation;
 
 /*
  *    This program is free software; you can redistribute it and/or modify
@@ -16,14 +16,13 @@ package mulan.classifier;
  *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+import mulan.classifier.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Random;
 
-import mulan.evaluation.BinaryPrediction;
 import mulan.evaluation.Evaluator;
-import mulan.evaluation.IntegratedEvaluation;
 import weka.classifiers.Classifier;
 import weka.core.Instance;
 import weka.core.Instances;
@@ -42,8 +41,9 @@ import weka.filters.unsupervised.attribute.Remove;
  * @version $Revision: 0.04 $ 
  */
 @SuppressWarnings("serial")
-public class RAKEL extends TransformationBasedMultiLabelClassifier
+public class RAKEL extends TransformationBasedMultiLabelLearner
 {
+
     /**
      * Seed for replication of random experiments
      */
@@ -71,7 +71,6 @@ public class RAKEL extends TransformationBasedMultiLabelClassifier
     LabelPowerset[] subsetClassifiers;
     protected Instances[] metadataTest;
     HashSet<String> combinations;		
-    BinaryPrediction[][] predictions;
     boolean incremental =true;
     boolean cvParamSelection=false;
     int cvNumFolds, cvMinK, cvMaxK, cvStepK, cvMaxM, cvThresholdSteps;
@@ -157,9 +156,6 @@ public class RAKEL extends TransformationBasedMultiLabelClassifier
         }
                 
         
-	public BinaryPrediction[][] getPredictions() {
-		return predictions;
-	}
 		
     public static int binomial(int n, int m)
     {
@@ -197,7 +193,8 @@ public class RAKEL extends TransformationBasedMultiLabelClassifier
          * 
 	 * @param trainData:
 	 *            the data that will be used for parameter selection
-	 */         
+	 */
+        /*
         public void paramSelectionViaCV(Instances trainData) throws Exception {                       
             ArrayList []metric = new ArrayList[cvNumFolds];
             //* Evaluate using X-fold CV
@@ -266,15 +263,16 @@ public class RAKEL extends TransformationBasedMultiLabelClassifier
                                "Subset size     : " + bestK + 
                                "Number of models: " + bestM +
                                "Threshold       : " + bestT);
-            //*/
+            //
             setSizeOfSubset(bestK);
             setNumModels(bestM); 
             threshold = bestT;            
         }        
-        
+        */
 
         
         public void updatePredictions(Instances testData, int model) throws Exception {
+            /*
 		if (predictions == null) {
 			predictions = new BinaryPrediction[testData.numInstances()][numLabels];
 			sumVotesIncremental = new double[testData.numInstances()][numLabels];
@@ -296,16 +294,16 @@ public class RAKEL extends TransformationBasedMultiLabelClassifier
 							actual, 
 							result.getConfidence(j));
 			}
-		}		
+		}	*/
 	}
 	
         
         
     @Override
-    public void buildClassifier(Instances trainData) throws Exception {
+    public void build(Instances trainData) throws Exception {
         
-        if (cvParamSelection) 
-            paramSelectionViaCV(trainData);
+       // if (cvParamSelection)
+         //   paramSelectionViaCV(trainData);
 
         // need a structure to hold different combinations
         combinations = new HashSet<String>();		
@@ -358,7 +356,7 @@ public class RAKEL extends TransformationBasedMultiLabelClassifier
 
         // build a LabelPowersetClassifier for the selected label subset;
         subsetClassifiers[model] = new LabelPowerset(Classifier.makeCopy(getBaseClassifier()), sizeOfSubset);
-        subsetClassifiers[model].buildClassifier(trainSubset);
+        subsetClassifiers[model].build(trainSubset);
 
         // keep the header of the training data for testing
         trainSubset.delete();
@@ -381,7 +379,7 @@ public class RAKEL extends TransformationBasedMultiLabelClassifier
 
         return newInstance;
     }
-
+/*
 	public Prediction updatePrediction(Instance instance, int instanceNumber, int model) throws Exception {	
 
         // transform test instance as required by the underlying LP models
@@ -408,9 +406,9 @@ public class RAKEL extends TransformationBasedMultiLabelClassifier
 
         return pred;
 	}
-	
-	
-	public Prediction makePrediction(Instance instance) throws Exception {		
+*/
+/*
+	public Bipartition predict(Instance instance) throws Exception {		
             double[] sumConf = new double[numLabels];
             sumVotes = new double[numLabels];
             lengthVotes = new double[numLabels];
@@ -419,7 +417,7 @@ public class RAKEL extends TransformationBasedMultiLabelClassifier
             Instance newInstance = transformInstance(instance);
 
             // gather votes
-            for (int i=0; i<numOfModels; i++) {
+/*            for (int i=0; i<numOfModels; i++) {
                 newInstance.setDataset(metadataTest[i]);
                 Prediction pred = subsetClassifiers[i].makePrediction(newInstance);                
                 for (int j=0; j<sizeOfSubset; j++) {
@@ -450,14 +448,19 @@ public class RAKEL extends TransformationBasedMultiLabelClassifier
             // todo: optionally use confidence2 for ranking measures
             Prediction pred = new Prediction(labels, confidence1);
 
-            return pred;
-	}
+            //return pred;
+            return null;
+	}*/
         
         public void nullSubsetClassifier(int i) {
             subsetClassifiers[i] = null;
         }
 
     public String getRevision() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public MultiLabelOutput makePrediction(Instance instance) throws Exception {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }

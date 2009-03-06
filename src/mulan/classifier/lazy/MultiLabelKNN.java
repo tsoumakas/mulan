@@ -2,10 +2,8 @@ package mulan.classifier.lazy;
 
 import java.util.Random;
 
-import mulan.classifier.MultiLabelClassifierBase;
-import mulan.classifier.Prediction;
+import mulan.classifier.MultiLabelLearnerBase;
 import weka.core.EuclideanDistance;
-import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.TechnicalInformation;
 import weka.core.neighboursearch.LinearNNSearch;
@@ -16,8 +14,7 @@ import weka.core.neighboursearch.LinearNNSearch;
  * @author Eleftherios Spyromitros-Xioufis ( espyromi@csd.auth.gr )
  * 
  */
-@SuppressWarnings("serial")
-public abstract class MultiLabelKNN extends MultiLabelClassifierBase {
+public abstract class MultiLabelKNN extends MultiLabelLearnerBase  {
     double threshold = 0.5;
     double[] thresholds;
 
@@ -72,7 +69,7 @@ public abstract class MultiLabelKNN extends MultiLabelClassifierBase {
 	}
 
     @Override
-    public void buildClassifier(Instances train) throws Exception {
+    public void build(Instances train) throws Exception {
         this.train = new Instances(train);
         predictors = train.numAttributes() - numLabels;
 
@@ -132,12 +129,11 @@ public abstract class MultiLabelKNN extends MultiLabelClassifierBase {
 	public int getNumOfNeighbors() {
 		return numOfNeighbors;
 	}
-
-	@Override
-	protected Prediction makePrediction(Instance instance) throws Exception {
+/*
+	protected Bipartition makePrediction(Instance instance) throws Exception {
 		return null;
 	}
-
+*/
 	/**
 	 * @return the distanceWeighting
 	 */

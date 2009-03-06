@@ -1,8 +1,12 @@
 package mulan.classifier.lazy;
 
 
+
 import java.util.Random;
-import mulan.classifier.Prediction;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import mulan.classifier.MultiLabelLearner;
+import mulan.classifier.MultiLabelOutput;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.TechnicalInformation;
@@ -55,7 +59,7 @@ import weka.core.neighboursearch.LinearNNSearch;
  * @version $Revision: 1.1 $ 
  */
 @SuppressWarnings("serial")
-public class MLkNN extends MultiLabelKNN {
+public class MLkNN extends MultiLabelKNN implements MultiLabelLearner {
 	/**
 	 * Smoothing parameter controlling the strength of uniform prior <br>
 	 * (Default value is set to 1 which yields the Laplace smoothing).
@@ -128,8 +132,8 @@ public class MLkNN extends MultiLabelKNN {
 	}
 
     @Override
-	public void buildClassifier(Instances train) throws Exception {
-		super.buildClassifier(train);
+	public void build(Instances train) throws Exception {
+		super.build(train);
 		
 		ComputePrior();
 		ComputeCond();
@@ -222,13 +226,31 @@ public class MLkNN extends MultiLabelKNN {
 		}
 	}
 
-	@Override
-	protected Prediction makePrediction(Instance instance) throws Exception {
+	public void output() {
+		System.out.println("Computed Prior Probabilities");
+		for (int i = 0; i < numLabels; i++) {
+			System.out.println("Label " + (i + 1) + ": " + PriorProbabilities[i]);
+		}
+		System.out.println("Computed Posterior Probabilities");
+		for (int i = 0; i < numLabels; i++) {
+			System.out.println("Label " + (i + 1));
+			for (int j = 0; j < numOfNeighbors + 1; j++) {
+				System.out.println(j + " neighbours: " + CondProbabilities[i][j]);
+				System.out.println(j + " neighbours: " + CondNProbabilities[i][j]);
+			}
+		}
+	}
 
+    public MultiLabelOutput makePrediction(Instance instance) throws Exception {
 		double[] confidences = new double[numLabels];
-		double[] predictions = new double[numLabels];
+		boolean[] predictions = new boolean[numLabels];
 
-		Instances knn = new Instances(lnn.kNearestNeighbours(instance, numOfNeighbors));
+		Instances knn = null;
+        try {
+            knn = new Instances(lnn.kNearestNeighbours(instance, numOfNeighbors));
+        } catch (Exception ex) {
+            Logger.getLogger(MLkNN.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
 		for (int i = 0; i < numLabels; i++) {
 			// compute sum of aces in KNN
@@ -243,33 +265,18 @@ public class MLkNN extends MultiLabelKNN {
 			double Prob_in = PriorProbabilities[i] * CondProbabilities[i][aces];
 			double Prob_out = PriorNProbabilities[i] * CondNProbabilities[i][aces];
             if (Prob_in > Prob_out)
-                predictions[i] = 1;
+                predictions[i] = true;
             else if (Prob_in < Prob_out)
-                predictions[i] = 0;
+                predictions[i] = false;
             else {
                 Random rnd = new Random();
-                predictions[i] = rnd.nextInt(2);
+                predictions[i] = (rnd.nextInt(2) == 1) ? true : false;
             }
             // ranking function
-			confidences[i] = Prob_in / (Prob_in + Prob_out); 
-		}
-		
-		Prediction result = new Prediction(predictions, confidences);
-		return result;
-	}
+			confidences[i] = Prob_in / (Prob_in + Prob_out);
+        }
+        MultiLabelOutput mlo = new MultiLabelOutput(predictions, confidences);
+        return mlo;
+    }
 
-	public void output() {
-		System.out.println("Computed Prior Probabilities");
-		for (int i = 0; i < numLabels; i++) {
-			System.out.println("Label " + (i + 1) + ": " + PriorProbabilities[i]);
-		}
-		System.out.println("Computed Posterior Probabilities");
-		for (int i = 0; i < numLabels; i++) {
-			System.out.println("Label " + (i + 1));
-			for (int j = 0; j < numOfNeighbors + 1; j++) {
-				System.out.println(j + " neighbours: " + CondProbabilities[i][j]);
-				System.out.println(j + " neighbours: " + CondNProbabilities[i][j]);
-			}
-		}
-	}	
 }

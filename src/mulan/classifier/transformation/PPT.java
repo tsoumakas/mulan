@@ -1,4 +1,4 @@
-package mulan.classifier;
+package mulan.classifier.transformation;
 
 /*
  *    This program is free software; you can redistribute it and/or modify
@@ -87,7 +87,7 @@ public class PPT extends LabelPowerset {
     }    
     
     @Override
-    public void buildClassifier(Instances data) throws Exception
+    public void build(Instances data) throws Exception
     {   
         int numInstances = data.numInstances();
         int numPredictors = data.numAttributes()-numLabels;
@@ -183,7 +183,7 @@ public class PPT extends LabelPowerset {
                 }            
         }
                        
-        super.buildClassifier(newData);
+        super.build(newData);
     }      
         
 }
