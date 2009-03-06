@@ -6,11 +6,12 @@
 package mulan.examples;
 
 import java.io.FileReader;
-import mulan.classifier.LabelPowerset;
+
+import mulan.classifier.MultiLabelLearner;
 import mulan.classifier.neural.BPMLL;
-import mulan.evaluation.BinaryPrediction;
+import mulan.classifier.transformation.LabelPowerset;
+import mulan.evaluation.Evaluation;
 import mulan.evaluation.Evaluator;
-import mulan.evaluation.IntegratedEvaluation;
 import weka.classifiers.trees.J48;
 import weka.core.Instances;
 
@@ -32,26 +33,13 @@ public class GettingPredictionsOnTestSet {
         FileReader frtestData = new FileReader(path + testfile);
         Instances testdata = new Instances(frtestData);          
         Evaluator eval = new Evaluator(5);
-        IntegratedEvaluation results;
+        Evaluation results;
         
         //* Label Powerset Classifier
         System.out.println("LP");
-        J48 lpBaseClassifier = new J48();
-        LabelPowerset lp = new LabelPowerset(lpBaseClassifier, numLabels);
+        LabelPowerset lp = new LabelPowerset(new J48(),numLabels);
         lp.build(traindata);
-        results = eval.evaluateAll(lp, testdata);
-        BinaryPrediction[][] preds = results.getPredictions();
-        for (int i=0; i<preds.length; i++)
-        {
-            System.out.print("test example " + (i+1) + ": ");                    
-            for (int j=0; j<preds[i].length; j++)
-            {
-                boolean prediction = preds[i][j].getPrediction();
-                if (prediction)
-                    System.out.print(testdata.attribute(testdata.numAttributes()-numLabels+j).name() + " ");
-            }
-            System.out.println();
-        }
+        results = eval.evaluate(lp, testdata);
         System.out.println(results.toString());
         System.gc(); 
         //*/
@@ -62,19 +50,7 @@ public class GettingPredictionsOnTestSet {
         bpmll.setHiddenLayers(new int[]{50});
         bpmll.setDebug(true);
         bpmll.build(traindata);
-        results = eval.evaluateAll(bpmll, testdata);
-        BinaryPrediction[][] predictions = results.getPredictions();
-        for (int i=0; i<predictions.length; i++)
-        {
-            System.out.print("test example " + (i+1) + ": ");                    
-            for (int j=0; j<predictions[i].length; j++)
-            {
-                boolean prediction = predictions[i][j].getPrediction();
-                if (prediction)
-                    System.out.print(testdata.attribute(testdata.numAttributes()-numLabels+j).name() + " ");
-            }
-            System.out.println();
-        }
+        results = eval.evaluate(bpmll, testdata);
         System.out.println(results.toString());
         System.gc(); 
         //*/

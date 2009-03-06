@@ -1,9 +1,6 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 
 package mulan.transformations.multiclass;
+
 import java.util.List;
 import weka.core.Instance;
 import java.util.ArrayList;
@@ -14,15 +11,13 @@ import java.util.Arrays;
  * @author Stavros
  */
 
-public class SelectRandom extends MultiClassTransformation {
+public class SelectRandom extends MultiClassTransformationBase {
 
     public SelectRandom(int numOfLabels) {
         super(numOfLabels);
     }
 
-
-    @Override
-    List<Instance> transformInstance(Instance instance) {
+    public List<Instance> transformInstance(Instance instance) {
         ArrayList<Integer> labels = new ArrayList<Integer>();
         for (int labelIndex=0; labelIndex<numOfLabels; labelIndex++)
             if (instance.attribute(numPredictors + labelIndex).value((int) instance.value(numPredictors + labelIndex)).equals("1"))

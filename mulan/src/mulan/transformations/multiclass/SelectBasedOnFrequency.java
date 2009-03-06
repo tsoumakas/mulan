@@ -1,22 +1,18 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 
 package mulan.transformations.multiclass;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import mulan.core.Statistics;
-import mulan.transformations.*;
-import weka.core.Instances;
+
 import weka.core.Instance;
+import weka.core.Instances;
 
 /**
  * Class that implement the Select-Max transformation method.
  * @author Stavros
  */
-public class SelectBasedOnFrequency extends MultiClassTransformation {
+public class SelectBasedOnFrequency extends MultiClassTransformationBase {
 
     SelectionType type;
     int[] labelOccurance;
@@ -39,8 +35,8 @@ public class SelectBasedOnFrequency extends MultiClassTransformation {
         return super.transformInstances(data);
     }
 
-    @Override
-    List<Instance> transformInstance(Instance instance) {
+
+    public List<Instance> transformInstance(Instance instance) {
         int value = labelOccurance[0];
         int labelSelected = 0;
         for (int labelIndex=1; labelIndex<numOfLabels; labelIndex++)

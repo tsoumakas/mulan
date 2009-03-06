@@ -1,9 +1,6 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 
 package mulan.transformations.multiclass;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -13,14 +10,13 @@ import weka.core.Instance;
  * Class that implement the Ignore transformation method
  * @author Stavros
  */
-public class Ignore extends MultiClassTransformation {
+public class Ignore extends MultiClassTransformationBase {
 
     public Ignore(int numOfLabels) {
         super(numOfLabels);
     }
 
-    @Override
-    List<Instance> transformInstance(Instance instance) {
+    public List<Instance> transformInstance(Instance instance) {
         List<Instance> result = new ArrayList<Instance>();
         int indexOfSingleLabel = -1;
         int counter = 0;
