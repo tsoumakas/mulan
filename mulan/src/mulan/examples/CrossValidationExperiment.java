@@ -16,37 +16,36 @@ import mulan.evaluation.Evaluation;
 import mulan.evaluation.Evaluator;
 import weka.classifiers.trees.J48;
 import weka.core.Instances;
+import weka.core.Utils;
 
 public class CrossValidationExperiment {
-    
+
     /**
      * Creates a new instance of this class
      */
     public CrossValidationExperiment() {
     }
-    
+
 	public static void main(String[] args) throws Exception
 	{
-            String path = "data/";
-            String filename = "scene.arff";
-            int numLabels = 6;
+            String path = Utils.getOption("path", args);
+            String filename = Utils.getOption("filename", args);
+            int numLabels = Integer.parseInt(Utils.getOption("labels",args));
 
             FileReader frData = new FileReader(path + filename);
-            Instances data = new Instances(frData);                
-            
-           
-            
+            Instances data = new Instances(frData);
+
             Evaluator eval = new Evaluator(5);
             Evaluation results;
 
-//            //* Binary Relevance Classifier
-//            System.out.println("BR");
-//            J48 brBaseClassifier = new J48();
-//            BinaryRelevance br = new BinaryRelevance(brBaseClassifier,numLabels);
-//            results = eval.crossValidate(br, data, 10);           
-//            System.out.println(results.toString());
-//            System.gc();
-//            //*/
+            //* Binary Relevance Classifier
+            System.out.println("BR");
+            J48 brBaseClassifier = new J48();
+            BinaryRelevance br = new BinaryRelevance(brBaseClassifier,numLabels);
+            results = eval.crossValidate(br, data, 10);
+            System.out.println(results.toString());
+            System.gc();
+            //*/
 
             //* Label Powerset Classifier
             System.out.println("LP");
@@ -56,7 +55,7 @@ public class CrossValidationExperiment {
             System.out.println(results.toString());
             System.gc();
             //*/
-            
+
             //* RAKEL
             System.out.println("RAKEL");
             J48 rakelBaseClassifier = new J48();
@@ -65,19 +64,19 @@ public class CrossValidationExperiment {
             rakel.setParamSets(3, 2, numLabels-1, 1, 500, 0.1, 0.1, 9);
             results = eval.crossValidate(rakel, data, 10);
             System.out.println(results.toString());
-            System.gc();                
-            //*/            
-            
-            //* ML-kNN 
+            System.gc();
+            //*/
+
+            //* ML-kNN
             System.out.println("ML-kNN");
             int numNeighbours = 10;
             MLkNN mlknn = new MLkNN(numLabels, numNeighbours, 1);
             results = eval.crossValidate(mlknn, data, 10);
             System.out.println(results.toString());
-            System.gc();                
-            //*/    
-            
-            //* BR-kNN 
+            System.gc();
+            //*/
+
+            //* BR-kNN
             System.out.println("BR-kNN");
             numNeighbours = 10;
             BRkNN brknn = new BRkNN(numLabels, numNeighbours, 0);
@@ -87,7 +86,7 @@ public class CrossValidationExperiment {
             brknn.build(data);
             //results = eval.crossValidateAll(brknn, data, 10);
             //System.out.println(results.toString());
-            System.gc();                
-            //*/ 
-        }    
+            System.gc();
+            //*/
+        }
 }
