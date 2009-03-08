@@ -31,7 +31,7 @@ public abstract class MultiClassTransformationBase implements MultiClassTransfor
         
         // delete all labels
         RemoveAllLabels ral = new RemoveAllLabels();
-        transformed = ral.transformInstances(data, numOfLabels);
+        transformed = ral.transformInstances(transformed, numOfLabels);
 
         // add single label attribute
         FastVector classValues = new FastVector(numOfLabels);
