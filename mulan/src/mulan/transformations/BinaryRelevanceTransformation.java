@@ -5,6 +5,7 @@
 
 package mulan.transformations;
 
+import java.io.Serializable;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.filters.Filter;
@@ -14,7 +15,7 @@ import weka.filters.unsupervised.attribute.Remove;
  *
  * @author greg
  */
-public class BinaryRelevanceTransformation {
+public class BinaryRelevanceTransformation implements Serializable {
 	int numOfLabels;
 
     public BinaryRelevanceTransformation(int num) {
