@@ -91,7 +91,6 @@ public class PPT extends LabelPowerset {
     {   
         int numInstances = data.numInstances();
         int numPredictors = data.numAttributes()-numLabels;
-        metadataTrain = new Instances(data, 0);
         
         // create a data structure that holds for each labelset a list with the 
         // corresponding instances

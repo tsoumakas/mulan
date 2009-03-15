@@ -28,7 +28,6 @@ import mulan.transformations.LabelPowersetTransformation;
 import weka.classifiers.Classifier;
 import weka.core.Instance;
 import weka.core.Instances;
-import weka.core.SparseInstance;
 
 /**
  * Class that implements a label powerset classifier <p>
@@ -61,7 +60,8 @@ public class LabelPowerset extends TransformationBasedMultiLabelLearner
      */
     protected double threshold=0.5;
 
-    protected Instances metadataTrain;
+    protected LabelPowersetTransformation transformation;
+
     protected Instances metadataTest;
         
     protected Random Rand;
@@ -105,11 +105,14 @@ public class LabelPowerset extends TransformationBasedMultiLabelLearner
     @Override
     public void build(Instances train) throws Exception
     {
-        metadataTrain = new Instances(train, 0);
+        transformation = new LabelPowersetTransformation(numLabels);
+        Instances newTrain = transformation.transformInstances(train);
 
-        LabelPowersetTransformation transformation = new LabelPowersetTransformation();
-        Instances newTrain = transformation.transformInstances(train, numLabels);
-        
+        if (getDebug()) {
+            debug("Transformed training set:");
+            debug(newTrain.toString());
+        }
+
         // keep the header of new dataset for classification
         metadataTest = new Instances(newTrain, 0);
 
@@ -121,31 +124,6 @@ public class LabelPowerset extends TransformationBasedMultiLabelLearner
 
     }
 
-    /**
-     * Extracted from makePrediction to support label subset mapping which 
-     * needs access to this distribution. The distribution contains the prior
-     * probabilities of all the label subsets when a probabilistic base
-     * classifier is used.
-     */
-    protected double[] distributionFromBaseClassifier(Instance instance) throws Exception
-    {
-        //System.out.println("old instance:" + instance.toString());
-        Instance newInstance;
-        if (instance instanceof SparseInstance) 
-            newInstance = (SparseInstance) instance.copy();            
-        else 
-            newInstance = (Instance) instance.copy();
-
-        int numAttributes = instance.numAttributes();
-        newInstance.setDataset(null);
-        for (int i=0; i<numLabels-1; i++)
-            newInstance.deleteAttributeAt(numAttributes-1-i);
-        newInstance.setDataset(metadataTest);
-        //System.out.println("new instance:" + newInstance.toString());
-        
-        return baseClassifier.distributionForInstance(newInstance); 		
-    }
-
     public String getRevision() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
@@ -155,7 +133,7 @@ public class LabelPowerset extends TransformationBasedMultiLabelLearner
         double confidences[] = null;
 
         // check for unary class
-        if (metadataTest.attribute(metadataTest.numAttributes()-1).numValues() == 1) {
+        if (metadataTest.classAttribute().numValues() == 1) {
             String strClass = (metadataTest.classAttribute()).value(0);
             LabelSet labelSet = null;
             try {
@@ -168,11 +146,27 @@ public class LabelPowerset extends TransformationBasedMultiLabelLearner
         } else {
             double[] distribution = null;
             try {
-                distribution = distributionFromBaseClassifier(instance);
+                /*
+                if (getDebug())
+                    debug("old instance:" + instance.toString());
+                */
+                Instance transformedInstance = transformation.transformInstance(instance);
+                transformedInstance.setDataset(metadataTest);
+                /*
+                if (getDebug())
+                    debug("new instance:" + transformedInstance.toString());
+                */
+                distribution = baseClassifier.distributionForInstance(transformedInstance);
+                if (getDebug()) {
+                    debug(Arrays.toString(distribution));
+                }
             } catch (Exception ex) {
                 Logger.getLogger(LabelPowerset.class.getName()).log(Level.SEVERE, null, ex);
             }
             int classIndex = Util.RandomIndexOfMax(distribution,Rand);
+            if (getDebug()) {
+                debug("" + classIndex);
+            }
             String strClass = (metadataTest.classAttribute()).value(classIndex);
             LabelSet labelSet = null;
             try {
@@ -180,7 +174,10 @@ public class LabelPowerset extends TransformationBasedMultiLabelLearner
             } catch (Exception ex) {
                 Logger.getLogger(LabelPowerset.class.getName()).log(Level.SEVERE, null, ex);
             }
+
             bipartition = labelSet.toBooleanArray();
+            if (getDebug())
+                debug(Arrays.toString(bipartition));
 
             switch (confidenceCalculationMethod)
             {
