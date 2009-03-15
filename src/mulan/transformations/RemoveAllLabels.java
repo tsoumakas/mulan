@@ -6,6 +6,7 @@
 package mulan.transformations;
 import weka.core.Instance;
 import weka.core.Instances;
+import weka.core.SparseInstance;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.Remove;
 /**
@@ -35,10 +36,14 @@ public class RemoveAllLabels {
 
     public Instance transformInstance(Instance instance, int numLabels) throws Exception
     {
-        Instance transformed = new Instance(instance);
-        transformed.setDataset(null);
+        Instance transformedInstance;
+        if (instance instanceof SparseInstance)
+            transformedInstance = (SparseInstance) instance.copy();
+        else
+            transformedInstance = (Instance) instance.copy();
+        transformedInstance.setDataset(null);
         for (int j = 0; j < numLabels; j++)
-            transformed.deleteAttributeAt((transformed.numAttributes() - numLabels + j));
-        return transformed;
+            transformedInstance.deleteAttributeAt((transformedInstance.numAttributes() - numLabels + j));
+        return transformedInstance;
     }
 }
