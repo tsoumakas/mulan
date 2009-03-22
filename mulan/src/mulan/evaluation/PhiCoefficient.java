@@ -1,6 +1,8 @@
 package mulan.evaluation;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import weka.core.Instances;
 import weka.filters.Filter;
@@ -86,5 +88,28 @@ public class PhiCoefficient {
 			}
 			System.out.println("");
 		}
+	}
+	
+	/**
+	 * returns the indices of the labels whose phi coefficient
+	 * values lie between -bound < phi < bound 
+	 * 
+	 * @param labelIndex
+	 * @param bound
+	 * @return
+	 */
+	public int [] uncorrelatedIndices(int labelIndex, double bound){
+		ArrayList<Integer>  indiceslist = new ArrayList<Integer>();
+		for(int i=0;i<numOfLabels;i++){
+			if(Math.abs(phi[labelIndex][i])<=bound){
+				indiceslist.add(i);
+			}
+		}
+		int [] indices = new int[indiceslist.size()];
+		for(int i =0;i<indiceslist.size();i++){
+			indices[i] = indiceslist.get(i);
+		}
+		//System.out.println(Arrays.toString(indices));
+		return indices;
 	}
 }
