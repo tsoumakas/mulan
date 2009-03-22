@@ -28,7 +28,7 @@ public class RemoveAllLabels {
         Remove remove = new Remove();
         remove.setAttributeIndicesArray(indices);
         remove.setInputFormat(dataSet);
-        remove.setInvertSelection(true);
+        //remove.setInvertSelection(true);
         Instances result = Filter.useFilter(dataSet, remove);
         result.setClassIndex(result.numAttributes() - 1);
         return result;
