@@ -21,7 +21,7 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner {
 	/**
 	 * the BR transformed datasets of the original dataset
 	 */
-	protected Instances[] firstlevelData;
+	protected Instances[] baseLevelData;
 	/**
 	 * the dataset produced by first level
 	 */
@@ -34,7 +34,7 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner {
 	/**
 	 * the enseble of BR classifiers of the original dataset
 	 */
-	protected Classifier[] firstlevelEnsemble;
+	protected Classifier[] baseLevelEnsemble;
 
 	/**
 	 * the enseble of BR classifiers of the meta dataset
@@ -49,26 +49,19 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner {
 	 * a table holding the predictions of the first level classifiers for each
 	 * class-label of every instance
 	 */
-	double[][] firstlevelpredictions;
+	double[][] baseLevelPredictions;
 
 	protected BinaryRelevanceTransformation transformation;
 
-	public MultiLabelStacking(Classifier classifier, int numFolds, int numLabels)
+	public MultiLabelStacking(Classifier baseClassifier,Classifier metaClassifier, int numFolds, int numLabels)
 			throws Exception {
-		super(classifier, numLabels);
+		super(numLabels);
 		transformation = new BinaryRelevanceTransformation(numLabels);
-		firstlevelData = new Instances[numLabels];
+		baseLevelData = new Instances[numLabels];
 		metalevelData = new Instances[numLabels];
 		debug("BR: making classifier copies");
-		firstlevelEnsemble = Classifier.makeCopies(classifier, numLabels);
-		metalevelEnsemble = new Classifier[numLabels];
-		for (int i = 0; i < numLabels; i++) {
-			ClassificationViaRegression cvr = new ClassificationViaRegression();
-			LinearRegression lr = new LinearRegression();
-			cvr.setClassifier(lr);
-			metalevelEnsemble[i] = cvr;
-		}
-		// metalevelEnsemble = Classifier.makeCopies(classifier, numLabels);
+		baseLevelEnsemble = Classifier.makeCopies(baseClassifier, numLabels);
+		metalevelEnsemble = Classifier.makeCopies(metaClassifier, numLabels);
 		this.numFolds = numFolds;
 	}
 
@@ -76,9 +69,9 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner {
 	public void build(Instances train) throws Exception {
 		// initialize the table holding the predictions of the first level
 		// classifiers for each label for every instance of the training set
-		firstlevelpredictions = new double[train.numInstances()][numLabels];
+		baseLevelPredictions = new double[train.numInstances()][numLabels];
 		for (int xxx1 = 0; xxx1 < train.numInstances(); xxx1++)
-			Arrays.fill(firstlevelpredictions[xxx1], -1.0);
+			Arrays.fill(baseLevelPredictions[xxx1], -1.0);
 
 		for (int labelIndex = 0; labelIndex < numLabels; labelIndex++) {
 			// for each label
@@ -86,13 +79,13 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner {
 			// transform the dataset according to the BR method
 			// and attach indexes in order to keep track of the original
 			// positions
-			firstlevelData[labelIndex] = attachIndexes(transformation
+			baseLevelData[labelIndex] = attachIndexes(transformation
 					.transformInstances(train, labelIndex));
 			// prepare the transformed dataset for stratified x-fold cv
 			Random random = new Random(1);
-			firstlevelData[labelIndex].randomize(random);
+			baseLevelData[labelIndex].randomize(random);
 			// if (firstlevelData[labelIndex].classAttribute().isNominal()) {
-			firstlevelData[labelIndex].stratify(numFolds);
+			baseLevelData[labelIndex].stratify(numFolds);
 			// }
 			// create a filtered meta classifier, used to ignore
 			// the index attribute in the build process
@@ -100,12 +93,12 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner {
 			// every instance
 			for (int j = 0; j < numFolds; j++) {
 
-				Instances subtrain = firstlevelData[labelIndex].trainCV(
+				Instances subtrain = baseLevelData[labelIndex].trainCV(
 						numFolds, j, random);
 				// Build base classifier (one classifier in our case)
 
 				FilteredClassifier fil = new FilteredClassifier();
-				fil.setClassifier(firstlevelEnsemble[j]);
+				fil.setClassifier(baseLevelEnsemble[j]);
 				Remove remove = new Remove();
 				remove.setAttributeIndices("first");
 				remove.setInputFormat(subtrain);
@@ -114,7 +107,7 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner {
 				fil.buildClassifier(subtrain);
 
 				// Classify test instance
-				Instances subtest = firstlevelData[labelIndex].testCV(numFolds,
+				Instances subtest = baseLevelData[labelIndex].testCV(numFolds,
 						j);
 				for (int i = 0; i < subtest.numInstances(); i++) {
 					double distribution[] = new double[2];
@@ -122,10 +115,10 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner {
 							.instance(i));
 					// Ensure correct predictions both for class values {0,1}
 					// and {1,0}
-					Attribute classAttribute = firstlevelData[labelIndex]
+					Attribute classAttribute = baseLevelData[labelIndex]
 							.classAttribute();
 					// System.out.println(subtest.instance(i).value(0));
-					firstlevelpredictions[(int) subtest.instance(i).value(0)][labelIndex] = distribution[classAttribute
+					baseLevelPredictions[(int) subtest.instance(i).value(0)][labelIndex] = distribution[classAttribute
 							.indexOfValue("1")];
 				}
 			}
@@ -134,7 +127,7 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner {
 
 		// now we can detach the indexes from the first level datasets
 		for (int i = 0; i < numLabels; i++) {
-			firstlevelData[i] = detachIndexes(firstlevelData[i]);
+			baseLevelData[i] = detachIndexes(baseLevelData[i]);
 		}
 		// now we are ready to build the l meta-level datasets
 
@@ -143,13 +136,13 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner {
 		// and use a filtered classifier to ignore the
 		// uncorrelated attributes
 		for (int i = 0; i < numLabels; i++) {
-			metalevelData[i] = metaFormat(firstlevelData[i]);
+			metalevelData[i] = metaFormat(baseLevelData[i]);
 			for (int l = 0; l < train.numInstances(); l++) { // add the meta
 				// instances
 				double[] values = new double[metalevelData[i].numAttributes()];
 				int k = 0;
 				for (k = 0; k < numLabels; k++) {
-					values[k] = firstlevelpredictions[l][k];
+					values[k] = baseLevelPredictions[l][k];
 				}
 
 				values[k] = train.instance(l).value(
@@ -169,7 +162,7 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner {
 
 		for (int i = 0; i < numLabels; i++) {
 			metalevelEnsemble[i].buildClassifier(metalevelData[i]);
-			firstlevelEnsemble[i].buildClassifier(firstlevelData[i]);
+			baseLevelEnsemble[i].buildClassifier(baseLevelData[i]);
 		}
 	}
 
@@ -187,8 +180,8 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner {
 		FastVector attributes = new FastVector();
 		Instances metaFormat;
 
-		for (int k = 0; k < firstlevelEnsemble.length; k++) {
-			String name = firstlevelData[k].classAttribute().toString();
+		for (int k = 0; k < baseLevelEnsemble.length; k++) {
+			String name = baseLevelData[k].classAttribute().toString();
 			attributes.addElement(new Attribute(name));
 			// attributes.addElement(firstlevelData[k].classAttribute());
 		}
@@ -263,11 +256,11 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner {
 		for (int labelIndex = 0; labelIndex < numLabels; labelIndex++) {
 			Instance newInstance = transformation.transformInstance(instance,
 					labelIndex);
-			newInstance.setDataset(firstlevelData[labelIndex]);
+			newInstance.setDataset(baseLevelData[labelIndex]);
 
 			double distribution[] = new double[2];
 			try {
-				distribution = firstlevelEnsemble[labelIndex]
+				distribution = baseLevelEnsemble[labelIndex]
 						.distributionForInstance(newInstance);
 			} catch (Exception e) {
 				System.out.println(e);
@@ -275,7 +268,7 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner {
 			}
 
 			// Ensure correct predictions both for class values {0,1} and {1,0}
-			Attribute classAttribute = firstlevelData[labelIndex]
+			Attribute classAttribute = baseLevelData[labelIndex]
 					.classAttribute();
 			// bipartition[labelIndex] =
 			// (classAttribute.value(maxIndex).equals("1")) ? true : false;
