@@ -110,7 +110,7 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner {
 				// perform stratified x-fold cv and get predictions for class l for
 				// every instance
 				FilteredClassifier fil = new FilteredClassifier();
-				fil.setClassifier(baseLevelEnsemble[j]);
+				fil.setClassifier(baseLevelEnsemble[labelIndex]);
 				Remove remove = new Remove();
 				remove.setAttributeIndices("first");
 				remove.setInputFormat(subtrain);
