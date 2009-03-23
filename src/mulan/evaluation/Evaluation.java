@@ -100,4 +100,46 @@ public class Evaluation {
 		*/
 		return description;
 	}
+
+    public String toCSV() {
+		String description = "";
+
+        if (exampleBasedMeasures != null) {
+//		description += "Average predicted labels: " + this.numPredictedLabels + "\n";
+            description += exampleBasedMeasures.getHammingLoss() + ";";
+            description += exampleBasedMeasures.getAccuracy() + ";";
+            description += exampleBasedMeasures.getPrecision() + ";";
+            description += exampleBasedMeasures.getRecall() + ";";
+            description += exampleBasedMeasures.getFMeasure() + ";";
+            description += exampleBasedMeasures.getSubsetAccuracy() + ";";
+        }
+        if (labelBasedMeasures != null) {
+            description += labelBasedMeasures.getPrecision(Averaging.MICRO) + ";";
+            description += labelBasedMeasures.getRecall(Averaging.MICRO) + ";";
+            description += labelBasedMeasures.getFMeasure(Averaging.MICRO) + ";";
+            description += labelBasedMeasures.getPrecision(Averaging.MACRO) + ";";
+            description += labelBasedMeasures.getRecall(Averaging.MACRO) + ";";
+            description += labelBasedMeasures.getFMeasure(Averaging.MACRO) + ";";
+        }
+        if (confidenceLabelBasedMeasures != null) {
+            description += confidenceLabelBasedMeasures.getAUC(Averaging.MICRO) + ";";
+            description += confidenceLabelBasedMeasures.getAUC(Averaging.MACRO) + ";";
+        }
+        if (rankingBasedMeasures != null) {
+            description += rankingBasedMeasures.getOneError() + ";";
+            description += rankingBasedMeasures.getCoverage() + ";";
+            description += rankingBasedMeasures.getRankingLoss() + ";";
+            description += rankingBasedMeasures.getAvgPrecision() + ";";
+        }
+        /*
+        description += "========Per Class Measures========\n";
+		for (int i = 0; i < numLabels(); i++) {
+			description += "Label " + i + " Accuracy   :" + labelAccuracy[i] + "\n";
+			description += "Label " + i + " Precision  :" + labelPrecision[i] + "\n";
+			description += "Label " + i + " Recall     :" + labelRecall[i] + "\n";
+			description += "Label " + i + " F1         :" + labelFmeasure[i] + "\n";
+		}
+		*/
+		return description;
+	}
 }
