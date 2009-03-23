@@ -146,10 +146,7 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner {
 		//calculate the PhiCoefficient, used in the meta-level
 		phi = new PhiCoefficient();
 		phi.calculatePhi(train, numLabels);
-	}
-
-	public void buildMetaLevel(Instances train) throws Exception {
-		debug("Building the ensemle of the meta level classifers");
+		
 		//build the l meta-level datasets
 		for (int i = 0; i < numLabels; i++) {
 			metaLevelData[i] = metaFormat(baseLevelData[i]);
@@ -170,6 +167,11 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner {
 			}
 		}
 
+	}
+
+	public void buildMetaLevel(Instances train,double phival) throws Exception {
+		this.phival = phival;
+		debug("Building the ensemle of the meta level classifers");
 		// After that we can build the metalevel ensemble of classifiers
 		// we apply a filtered classifier to prune uncorrelated labels
 		for (int i = 0; i < numLabels; i++) {
@@ -188,7 +190,7 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner {
 	@Override
 	public void build(Instances train) throws Exception {
 		buildBaseLevel(train);
-		buildMetaLevel(train);
+		buildMetaLevel(train,phival);
 		/*// initialize the table holding the predictions of the first level
 		// classifiers for each label for every instance of the training set
 		baseLevelPredictions = new double[train.numInstances()][numLabels];
