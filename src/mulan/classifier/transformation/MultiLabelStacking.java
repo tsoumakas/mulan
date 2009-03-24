@@ -60,6 +60,12 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner {
 
 	double phival;
 
+    int numUncorrelated;
+
+    public int getNumUncorrelated() {
+        return numUncorrelated;
+    }
+
 	public double getPhival() {
 		return phival;
 	}
@@ -180,6 +186,7 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner {
 			metaLevelFilteredEnsemble[i].setClassifier(metaLevelEnsemble[i]);
 			Remove remove = new Remove();
 			int[] attributes = phi.uncorrelatedIndices(i, phival);
+            numUncorrelated = attributes.length;
 			remove.setAttributeIndicesArray(attributes);
 			remove.setInputFormat(metaLevelData[i]);
 			metaLevelFilteredEnsemble[i].setFilter(remove);
