@@ -55,12 +55,28 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner {
 	double[][] baseLevelPredictions;
 
 	protected BinaryRelevanceTransformation transformation;
+	
+	/**
+	 * whether to normalize baseLevelPredictions or not.
+	 */
+	boolean normalize;
+
+	public boolean isNormalize() {
+		return normalize;
+	}
+
+	public void setNormalize(boolean normalize) {
+		this.normalize = normalize;
+	}
 
 	PhiCoefficient phi;
 
 	double phival;
+	
+	double maxProb[];
+	double minProb[];
 
-    int numUncorrelated;
+	int numUncorrelated;
 
     public int getNumUncorrelated() {
         return numUncorrelated;
@@ -87,25 +103,29 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner {
 		metaLevelFilteredEnsemble = new FilteredClassifier[numLabels];
 		this.numFolds = numFolds;
 		phival = 0;
+		normalize = false;
 	}
 
 	public void buildBaseLevel(Instances train) throws Exception {
-		debug("Building the ensemle of the base level classifers");
+		if(normalize){
+			maxProb = new double[numLabels];
+			minProb = new double[numLabels];
+			Arrays.fill(minProb, 1);
+		}
 		// initialize the table holding the predictions of the first level
 		// classifiers for each label for every instance of the training set
 		baseLevelPredictions = new double[train.numInstances()][numLabels];
-
+		// attach indexes in order to keep track of the original positions
+		Instances trainData = new Instances(attachIndexes(train));
+		
+		debug("Building the ensemle of the base level classifers");
 		for (int labelIndex = 0; labelIndex < numLabels; labelIndex++) {
-			// for each label
 			debug("BR: Building classifier for base training set " + labelIndex);
 			// transform the dataset according to the BR method
-			// and attach indexes in order to keep track of the original
-			// positions
-			baseLevelData[labelIndex] = attachIndexes(transformation
-					.transformInstances(train, labelIndex));
-			// prepare the transformed dataset for stratified x-fold cv
+			baseLevelData[labelIndex] = transformation.transformInstances(trainData, labelIndex);
+			// prepare the transformed dataset for stratified x-fold cv	
 			Random random = new Random(1);
-			baseLevelData[labelIndex].randomize(random);		
+			baseLevelData[labelIndex].randomize(random);
 			baseLevelData[labelIndex].stratify(numFolds);
 
 			for (int j = 0; j < numFolds; j++) {
@@ -136,10 +156,23 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner {
 							.classAttribute();
 					baseLevelPredictions[(int) subtest.instance(i).value(0)][labelIndex] = distribution[classAttribute
 							.indexOfValue("1")];
+					if(normalize){
+						if(distribution[classAttribute.indexOfValue("1")]> maxProb[labelIndex]){
+							maxProb[labelIndex] = distribution[classAttribute.indexOfValue("1")];
+						}
+						if(distribution[classAttribute.indexOfValue("1")]< minProb[labelIndex]){
+							minProb[labelIndex] = distribution[classAttribute.indexOfValue("1")];
+						}
+						
+					}
 				}
 			}
 		}
 
+		if(normalize){
+			normalizePredictions();
+		}
+		
 		// now we can detach the indexes from the first level datasets
 		for (int i = 0; i < numLabels; i++) {
 			baseLevelData[i] = detachIndexes(baseLevelData[i]);
@@ -147,6 +180,7 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner {
 		// build all the base classifiers on the full training data
 		for (int i = 0; i < numLabels; i++) {
 			baseLevelEnsemble[i].buildClassifier(baseLevelData[i]);
+			baseLevelData[i].delete();
 		}
 
 		//calculate the PhiCoefficient, used in the meta-level
@@ -174,6 +208,14 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner {
 		}
 
 	}
+	
+	private void normalizePredictions(){
+		for(int i=0;i<baseLevelPredictions.length;i++){
+			for(int j=0;j<numLabels;j++){
+				baseLevelPredictions[i][j]=baseLevelPredictions[i][j]-minProb[j]/maxProb[j]-minProb[j];
+			}
+		}
+	}
 
 	public void buildMetaLevel(Instances train,double phival) throws Exception {
 		this.phival = phival;
@@ -186,7 +228,7 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner {
 			metaLevelFilteredEnsemble[i].setClassifier(metaLevelEnsemble[i]);
 			Remove remove = new Remove();
 			int[] attributes = phi.uncorrelatedIndices(i, phival);
-            numUncorrelated = attributes.length;
+			numUncorrelated = attributes.length;
 			remove.setAttributeIndicesArray(attributes);
 			remove.setInputFormat(metaLevelData[i]);
 			metaLevelFilteredEnsemble[i].setFilter(remove);
