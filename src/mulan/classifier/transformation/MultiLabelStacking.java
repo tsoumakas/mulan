@@ -1,8 +1,16 @@
 package mulan.classifier.transformation;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Random;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import mulan.classifier.MultiLabelOutput;
 import mulan.evaluation.PhiCoefficient;
 import mulan.transformations.BinaryRelevanceTransformation;
@@ -15,7 +23,7 @@ import weka.core.Instances;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.Remove;
 
-public class MultiLabelStacking extends TransformationBasedMultiLabelLearner {
+public class MultiLabelStacking extends TransformationBasedMultiLabelLearner implements Serializable {
 
 	/**
 	 * the BR transformed datasets of the original dataset
@@ -76,9 +84,9 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner {
 	double maxProb[];
 	double minProb[];
 
-	int numUncorrelated;
+	int[] numUncorrelated;
 
-    public int getNumUncorrelated() {
+    public int[] getNumUncorrelated() {
         return numUncorrelated;
     }
 
@@ -118,17 +126,17 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner {
 		// attach indexes in order to keep track of the original positions
 		Instances trainData = new Instances(attachIndexes(train));
 		
-		debug("Building the ensemle of the base level classifers");
 		for (int labelIndex = 0; labelIndex < numLabels; labelIndex++) {
-			debug("BR: Building classifier for base training set " + labelIndex);
+			debug("Label: " + labelIndex);
 			// transform the dataset according to the BR method
 			baseLevelData[labelIndex] = transformation.transformInstances(trainData, labelIndex);
 			// prepare the transformed dataset for stratified x-fold cv	
 			Random random = new Random(1);
 			baseLevelData[labelIndex].randomize(random);
 			baseLevelData[labelIndex].stratify(numFolds);
-
-			for (int j = 0; j < numFolds; j++) {
+			debug("Creating meta-data");
+            for (int j = 0; j < numFolds; j++) {
+                debug("Label=" + labelIndex + ", Fold=" + j);
 				Instances subtrain = baseLevelData[labelIndex].trainCV(
 						numFolds, j, random);
 				// create a filtered meta classifier, used to ignore
@@ -167,28 +175,50 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner {
 					}
 				}
 			}
-		}
+    		// now we can detach the indexes from the first level datasets
+			baseLevelData[labelIndex] = detachIndexes(baseLevelData[labelIndex]);
+
+            debug("Building base classifier on full data");
+    		// build base classifier on the full training data
+			baseLevelEnsemble[labelIndex].buildClassifier(baseLevelData[labelIndex]);
+			baseLevelData[labelIndex].delete();
+        }
 
 		if(normalize){
 			normalizePredictions();
 		}
 		
-		// now we can detach the indexes from the first level datasets
-		for (int i = 0; i < numLabels; i++) {
-			baseLevelData[i] = detachIndexes(baseLevelData[i]);
-		}
-		// build all the base classifiers on the full training data
-		for (int i = 0; i < numLabels; i++) {
-			baseLevelEnsemble[i].buildClassifier(baseLevelData[i]);
-			baseLevelData[i].delete();
-		}
-
 		//calculate the PhiCoefficient, used in the meta-level
 		phi = new PhiCoefficient();
-		phi.calculatePhi(train, numLabels);
-		
-		//build the l meta-level datasets
-		for (int i = 0; i < numLabels; i++) {
+		phi.calculatePhi(train, numLabels);		
+	}
+	
+	private void normalizePredictions(){
+		for(int i=0;i<baseLevelPredictions.length;i++){
+			for(int j=0;j<numLabels;j++){
+				baseLevelPredictions[i][j]=baseLevelPredictions[i][j]-minProb[j]/maxProb[j]-minProb[j];
+			}
+		}
+	}
+
+    public void saveObject(String filename) {
+        try {
+            ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(filename));
+            out.writeObject(this);
+        } catch (IOException ex) {
+            Logger.getLogger(MultiLabelStacking.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+	public void buildMetaLevel(Instances train,double phival) throws Exception {
+		this.phival = phival;
+
+		debug("Building the ensemle of the meta level classifers");
+		// After that we can build the metalevel ensemble of classifiers
+		// we apply a filtered classifier to prune uncorrelated labels
+		numUncorrelated = new int[numLabels];
+        for (int i = 0; i < numLabels; i++) {
+            // creating meta-lavel data
 			metaLevelData[i] = metaFormat(baseLevelData[i]);
 			for (int l = 0; l < train.numInstances(); l++) { // add the meta
 				// instances
@@ -205,34 +235,19 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner {
 
 				metaLevelData[i].add(metaInstance);
 			}
-		}
 
-	}
-	
-	private void normalizePredictions(){
-		for(int i=0;i<baseLevelPredictions.length;i++){
-			for(int j=0;j<numLabels;j++){
-				baseLevelPredictions[i][j]=baseLevelPredictions[i][j]-minProb[j]/maxProb[j]-minProb[j];
-			}
-		}
-	}
 
-	public void buildMetaLevel(Instances train,double phival) throws Exception {
-		this.phival = phival;
-		debug("Building the ensemle of the meta level classifers");
-		// After that we can build the metalevel ensemble of classifiers
-		// we apply a filtered classifier to prune uncorrelated labels
-		for (int i = 0; i < numLabels; i++) {
-			debug("BR: Building classifier for meta training set" + i);
 			metaLevelFilteredEnsemble[i] = new FilteredClassifier();
 			metaLevelFilteredEnsemble[i].setClassifier(metaLevelEnsemble[i]);
 			Remove remove = new Remove();
 			int[] attributes = phi.uncorrelatedIndices(i, phival);
-			numUncorrelated = attributes.length;
+			numUncorrelated[i] = attributes.length;
 			remove.setAttributeIndicesArray(attributes);
 			remove.setInputFormat(metaLevelData[i]);
 			metaLevelFilteredEnsemble[i].setFilter(remove);
+            debug("Building classifier for meta training set" + i);
 			metaLevelFilteredEnsemble[i].buildClassifier(metaLevelData[i]);
+            metaLevelData[i].delete();
 		}
 	}
 
