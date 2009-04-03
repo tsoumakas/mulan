@@ -220,19 +220,9 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner imp
         for (int i = 0; i < numLabels; i++) {
             // creating meta-lavel data
 			metaLevelData[i] = metaFormat(baseLevelData[i]);
-			for (int l = 0; l < train.numInstances(); l++) { // add the meta
-				// instances
-				double[] values = new double[metaLevelData[i].numAttributes()];
-				int k = 0;
-				for (k = 0; k < numLabels; k++) {
-					values[k] = baseLevelPredictions[l][k];
-				}
-
-				values[k] = train.instance(l).value(
-						train.numAttributes() - numLabels + i);
-				Instance metaInstance = new Instance(1, values);
-				metaInstance.setDataset(metaLevelData[i]);
-
+			for (int l = 0; l < train.numInstances(); l++) {
+				// add the meta instances
+				Instance metaInstance = metaInstance(train.instance(l),i,l);
 				metaLevelData[i].add(metaInstance);
 			}
 
@@ -374,10 +364,10 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner imp
 	}
 
 	/**
-	 * Makes the format for the level-1 data.
+	 * Makes the format for the meta-level data.
+	 * The predictions of the base level classifiers + the class attribute
 	 * 
-	 * @param instances
-	 *            the level-0 format
+	 * @param instances the base-level format
 	 * @return the format for the meta data
 	 * @throws Exception
 	 *             if the format generation fails
@@ -390,12 +380,89 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner imp
 		for (int k = 0; k < baseLevelEnsemble.length; k++) {
 			String name = baseLevelData[k].classAttribute().toString();
 			attributes.addElement(new Attribute(name));
-			// attributes.addElement(firstlevelData[k].classAttribute());
 		}
 		attributes.addElement(instances.classAttribute().copy());
 		metaFormat = new Instances("Meta format", attributes, 0);
 		metaFormat.setClassIndex(metaFormat.numAttributes() - 1);
 		return metaFormat;
+	}
+	
+	/**
+	 * Makes the format for the meta-level data.
+	 * The predictions of the base level classifiers + the class attribute
+	 * 
+	 * @param instances the base-level format
+	 * @return the format for the meta data
+	 * @throws Exception
+	 *             if the format generation fails
+	 */
+	protected Instances metaFormat2(Instances instances) throws Exception {
+
+		FastVector attributes = new FastVector();
+		Instances metaFormat;
+
+		for (int i = 0; i < baseLevelEnsemble.length; i++) {
+			String name = baseLevelData[i].classAttribute().toString(); //.name
+			attributes.addElement(new Attribute(name)); //constructor for a numeric attribute
+		}
+		
+		for (int i = 0; i < instances.numAttributes()-1; i++) {
+			attributes.addElement(instances.attribute(i));
+		}
+		
+		attributes.addElement(instances.classAttribute());
+		metaFormat = new Instances("Meta format", attributes, 0);
+		metaFormat.setClassIndex(metaFormat.numAttributes() - 1);
+		return metaFormat;
+	}
+	
+	/**
+	 * 
+	 * @param instance the base-level instance
+	 * @param labelIndex
+	 * @param index
+	 * @return
+	 * @throws Exception
+	 */
+	protected Instance metaInstance(Instance instance, int labelIndex, int index) throws Exception {
+
+		double[] values = new double[metaLevelData[labelIndex].numAttributes()];
+		int k = 0;
+		for (k = 0; k < numLabels; k++) {
+			values[k] = baseLevelPredictions[index][k];
+		}
+		values[k] = instance.value(
+				instance.numAttributes() - numLabels + labelIndex);
+		Instance metaInstance = new Instance(1, values);
+		metaInstance.setDataset(metaLevelData[labelIndex]);
+		
+		return metaInstance;
+	}
+	
+	/**
+	 * 
+	 * @param instance the base-level instance
+	 * @param labelIndex
+	 * @param index
+	 * @return
+	 * @throws Exception
+	 */
+	protected Instance metaInstance2(Instance instance, int labelIndex, int index) throws Exception {
+
+		double[] values = new double[metaLevelData[labelIndex].numAttributes()];
+		int k = 0;
+		for (k = 0; k < numLabels; k++) {
+			values[k] = baseLevelPredictions[index][k];
+		}
+		for (k = numLabels ; k < instance.numAttributes(); k++){
+			values[k] = instance.value(k-numLabels);
+		}
+		values[k] = instance.value(
+				instance.numAttributes() - numLabels + labelIndex);
+		Instance metaInstance = new Instance(1, values);
+		metaInstance.setDataset(metaLevelData[labelIndex]);
+		
+		return metaInstance;
 	}
 
 	/**
