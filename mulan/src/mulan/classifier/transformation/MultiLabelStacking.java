@@ -1,16 +1,14 @@
 package mulan.classifier.transformation;
 
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Random;
-
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import mulan.classifier.MultiLabelOutput;
 import mulan.evaluation.PhiCoefficient;
 import mulan.transformations.BinaryRelevanceTransformation;
@@ -76,6 +74,16 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner imp
 	public void setNormalize(boolean normalize) {
 		this.normalize = normalize;
 	}
+	
+	boolean includeAttrs;
+
+	public boolean isIncludeAttrs() {
+		return includeAttrs;
+	}
+
+	public void setIncludeAttrs(boolean includeAttrs) {
+		this.includeAttrs = includeAttrs;
+	}
 
 	PhiCoefficient phi;
 
@@ -112,6 +120,7 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner imp
 		this.numFolds = numFolds;
 		phival = 0;
 		normalize = false;
+		includeAttrs = false;
 	}
 
 	public void buildBaseLevel(Instances train) throws Exception {
@@ -218,11 +227,23 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner imp
 		// we apply a filtered classifier to prune uncorrelated labels
 		numUncorrelated = new int[numLabels];
         for (int i = 0; i < numLabels; i++) {
-            // creating meta-lavel data
-			metaLevelData[i] = metaFormat(baseLevelData[i]);
+            // creating meta-level data
+        	if(includeAttrs){
+        		metaLevelData[i] = metaFormat2(baseLevelData[i]);
+        	}
+        	else{
+        		metaLevelData[i] = metaFormat(baseLevelData[i]);
+        	}
+        	
 			for (int l = 0; l < train.numInstances(); l++) {
 				// add the meta instances
-				Instance metaInstance = metaInstance(train.instance(l),i,l);
+				Instance metaInstance;
+				if(includeAttrs){
+					metaInstance = metaInstance2(train.instance(l),i,l);
+				}
+				else{
+					metaInstance = metaInstance(train.instance(l),i,l);
+				}
 				metaLevelData[i].add(metaInstance);
 			}
 
@@ -245,122 +266,6 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner imp
 	public void build(Instances train) throws Exception {
 		buildBaseLevel(train);
 		buildMetaLevel(train,phival);
-		/*// initialize the table holding the predictions of the first level
-		// classifiers for each label for every instance of the training set
-		baseLevelPredictions = new double[train.numInstances()][numLabels];
-		for (int xxx1 = 0; xxx1 < train.numInstances(); xxx1++)
-			Arrays.fill(baseLevelPredictions[xxx1], -1.0);
-
-		for (int labelIndex = 0; labelIndex < numLabels; labelIndex++) {
-			// for each label
-			debug("BR: transforming training set for label " + labelIndex);
-			// transform the dataset according to the BR method
-			// and attach indexes in order to keep track of the original
-			// positions
-			baseLevelData[labelIndex] = attachIndexes(transformation
-					.transformInstances(train, labelIndex));
-			// prepare the transformed dataset for stratified x-fold cv
-			Random random = new Random(1);
-			baseLevelData[labelIndex].randomize(random);
-			// if (firstlevelData[labelIndex].classAttribute().isNominal()) {
-			baseLevelData[labelIndex].stratify(numFolds);
-			// }
-			// create a filtered meta classifier, used to ignore
-			// the index attribute in the build process
-			// perform stratified x-fold cv and get predictions for class l for
-			// every instance
-			for (int j = 0; j < numFolds; j++) {
-
-				Instances subtrain = baseLevelData[labelIndex].trainCV(
-						numFolds, j, random);
-				// Build base classifier (one classifier in our case)
-
-				FilteredClassifier fil = new FilteredClassifier();
-				fil.setClassifier(baseLevelEnsemble[j]);
-				Remove remove = new Remove();
-				remove.setAttributeIndices("first");
-				remove.setInputFormat(subtrain);
-				fil.setFilter(remove);
-
-				fil.buildClassifier(subtrain);
-
-				// Classify test instance
-				Instances subtest = baseLevelData[labelIndex].testCV(numFolds,
-						j);
-				for (int i = 0; i < subtest.numInstances(); i++) {
-					double distribution[] = new double[2];
-					distribution = fil.distributionForInstance(subtest
-							.instance(i));
-					// Ensure correct predictions both for class values {0,1}
-					// and {1,0}
-					Attribute classAttribute = baseLevelData[labelIndex]
-							.classAttribute();
-					// System.out.println(subtest.instance(i).value(0));
-					baseLevelPredictions[(int) subtest.instance(i).value(0)][labelIndex] = distribution[classAttribute
-							.indexOfValue("1")];
-				}
-			}
-		}
-		// System.out.println(Arrays.deepToString(firstlevelpredictions));
-
-		// now we can detach the indexes from the first level datasets
-		for (int i = 0; i < numLabels; i++) {
-			baseLevelData[i] = detachIndexes(baseLevelData[i]);
-		}
-		// now we are ready to build the l meta-level datasets
-
-		// TO DO: here we should apply the pruning of uncorrelated labels.
-		// We can also leave the meta-level datasets intact
-		// and use a filtered classifier to ignore the
-		// uncorrelated attributes
-		for (int i = 0; i < numLabels; i++) {
-			metaLevelData[i] = metaFormat(baseLevelData[i]);
-			for (int l = 0; l < train.numInstances(); l++) { // add the meta
-				// instances
-				double[] values = new double[metaLevelData[i].numAttributes()];
-				int k = 0;
-				for (k = 0; k < numLabels; k++) {
-					values[k] = baseLevelPredictions[l][k];
-				}
-
-				values[k] = train.instance(l).value(
-						train.numAttributes() - numLabels + i);
-				// values[k] = firstlevelData[i].instance(l).classValue();
-				Instance metaInstance = new Instance(1, values);
-				metaInstance.setDataset(metaLevelData[i]);
-
-				metaLevelData[i].add(metaInstance);
-			}
-		}
-
-		// After that we can build the metalevel ensemble of classifiers
-		// TO DO: we can apply a filtered classifier to prune uncorrelated
-		// labels here.
-		if (prune) {
-			PhiCoefficient phi = new PhiCoefficient();
-			double[][] correlations = phi.calculatePhi(train, numLabels);
-			for (int i = 0; i < numLabels; i++) {
-				metaLevelFilteredEnsemble[i] = new FilteredClassifier();
-				metaLevelFilteredEnsemble[i]
-						.setClassifier(metaLevelEnsemble[i]);
-				Remove remove = new Remove();
-				int[] attributes = phi.uncorrelatedIndices(i, 0.3);
-				remove.setAttributeIndicesArray(attributes);
-				remove.setInputFormat(metaLevelData[i]);
-				metaLevelFilteredEnsemble[i].setFilter(remove);
-			}
-		}
-
-		// rebuilt all the base classifiers on the full training data
-		for (int i = 0; i < numLabels; i++) {
-			baseLevelEnsemble[i].buildClassifier(baseLevelData[i]);
-			if (!prune) {
-				metaLevelEnsemble[i].buildClassifier(metaLevelData[i]);
-			} else {
-				metaLevelFilteredEnsemble[i].buildClassifier(metaLevelData[i]);
-			}
-
-		}*/
 	}
 
 	/**
@@ -552,13 +457,28 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner imp
 
 		/* creation of the meta-instance with the appropriate values */
 		double[] classes = new double[numLabels];
-		// Concatenation of the two tables (confidences and classes)
-		double[] values = new double[confidences.length + classes.length];
-		System.arraycopy(confidences, 0, values, 0, confidences.length);
-		System
+		double[] values;
+		if(includeAttrs){
+			double[] attributes = new double[instance.numAttributes()-numLabels];
+			for(int i=0;i<instance.numAttributes()-numLabels;i++){
+				attributes[i] = instance.value(i);
+			}
+			// Concatenation of the three tables (confidences, attributes and classes)
+			values = new double[confidences.length + attributes.length + classes.length];
+			System.arraycopy(confidences, 0, values, 0, confidences.length);
+			System.arraycopy(attributes, 0, values, confidences.length, attributes.length);
+			System
+					.arraycopy(classes, 0, values, confidences.length+ attributes.length,
+							classes.length);
+		}
+		else{
+			// Concatenation of the two tables (confidences and classes)
+			values = new double[confidences.length + classes.length];
+			System.arraycopy(confidences, 0, values, 0, confidences.length);
+			System
 				.arraycopy(classes, 0, values, confidences.length,
 						classes.length);
-
+		}
 		metaInstance = new Instance(1, values);
 
 		/* application of the meta-level ensemble to the metaInstance */
@@ -592,5 +512,5 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner imp
 				metaconfidences);
 		return mlo;
 	}
-
+	
 }
