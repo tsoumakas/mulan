@@ -79,7 +79,7 @@ public class PhiCoefficient {
 	}
 
 	public void printCorrelations() {
-		String pattern = "##.##";
+		String pattern = "0.00";
 		DecimalFormat myFormatter = new DecimalFormat(pattern);
 
 		for (int i = 0; i < numOfLabels; i++) {
@@ -91,8 +91,35 @@ public class PhiCoefficient {
 	}
 	
 	/**
+	 * This method prints data, useful for the visualization of Phi per dataset.
+	 * It prints int(1/step) + 1 pairs of values.
+	 * The first value of each pair is the phi value and the second is the average
+	 * number of labels that correlate to the rest of the labels with correlation
+	 * higher than the specified phi value;
+	 * 
+	 * @param step the phi value increment step
+	 */
+	public void printDiagram(double step){
+		String pattern = "0.00";
+		DecimalFormat myFormatter = new DecimalFormat(pattern);
+		
+		System.out.println("Phi      AvgCorrelated");
+		double phi = 0;
+		while(phi<=1.001){
+			double avgCorrelated=0;
+			for(int i=0;i<numOfLabels;i++){
+				int [] temp = uncorrelatedIndices(i,phi);
+				avgCorrelated += (numOfLabels - temp.length);
+			}
+			avgCorrelated/=numOfLabels;
+			System.out.println(myFormatter.format(phi) + "     " + avgCorrelated);
+			phi+= step;
+		}
+	}
+	
+	/**
 	 * returns the indices of the labels whose phi coefficient
-	 * values lie between -bound < phi < bound 
+	 * values lie between -bound <= phi <= bound 
 	 * 
 	 * @param labelIndex
 	 * @param bound
