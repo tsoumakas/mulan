@@ -11,6 +11,7 @@ import java.util.logging.Logger;
 
 import mulan.classifier.MultiLabelLearnerBase;
 import mulan.classifier.MultiLabelOutput;
+import mulan.core.data.MultiLabelInstances;
 import mulan.evaluation.PhiCoefficient;
 import mulan.transformations.BinaryRelevanceTransformation;
 import weka.classifiers.Classifier;
@@ -125,7 +126,7 @@ public class MultiLabelStacking extends MultiLabelLearnerBase implements Seriali
 	public MultiLabelStacking(Classifier baseClassifiers [],
 			Classifier metaClassifier, int numFolds, int numLabels)
 			throws Exception {
-		super(numLabels);
+		
 		transformation = new BinaryRelevanceTransformation(numLabels);
 		baseLevelData = new Instances[numLabels];
 		metaLevelData = new Instances[numLabels];
@@ -298,10 +299,9 @@ public class MultiLabelStacking extends MultiLabelLearnerBase implements Seriali
 		}
 	}
 
-	@Override
-	public void build(Instances train) throws Exception {
-		buildBaseLevel(train);
-		buildMetaLevel(train,phival);
+	protected void buildInternal(MultiLabelInstances train) throws Exception {
+		buildBaseLevel(train.getDataSet());
+		buildMetaLevel(train.getDataSet(),phival);
 	}
 
 	/**

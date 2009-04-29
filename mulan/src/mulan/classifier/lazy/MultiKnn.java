@@ -2,6 +2,7 @@ package mulan.classifier.lazy;
 
 
 import mulan.classifier.MultiLabelOutput;
+import mulan.core.data.MultiLabelInstances;
 import weka.core.EuclideanDistance;
 import weka.core.Instance;
 import weka.core.Instances;
@@ -26,16 +27,16 @@ public class MultiKnn extends MultiLabelKNN {
 
 	private int numofNeighbours;
 
-	private Instances train;
+	//private Instances train;
 
-	public MultiKnn(int labels, int k) {
-		super(labels,k);
+	public MultiKnn(int k) {
+		super(k);
 	}
 
     @Override
-	public void build(Instances train) {
-		this.train = train;
-		predictors = train.numAttributes() - numLabels;
+	protected void buildInternal(MultiLabelInstances train) {
+		//this.train = train;
+		predictors = train.getDataSet().numAttributes() - numLabels;
 
 		dfunc = new EuclideanDistance();
 		dfunc.setDontNormalize(false);
@@ -98,27 +99,27 @@ public class MultiKnn extends MultiLabelKNN {
 			return -1;
 	}
 
-	public MultiLabelOutput makePrediction2(Instance instance) throws Exception {
-		double[] confidences = new double[numLabels];
-		boolean[] bipartition = new boolean[numLabels];
-
-		Instances newtrain = new Instances(this.train);
-		//System.out.println(newtrain.numInstances());
-
-		int result;
-		do {
-			result = toplabel(instance, newtrain, bipartition);
-			if (result != -1) {
-				bipartition[result] = true;
-		//		newtrain = new Instances(filterwithlabel(result, newtrain));
-				sumedlabels++;
-			}
-			//System.out.println(newtrain.numInstances());
-		} while (result != -1 && newtrain.numInstances() >= numofNeighbours);
-
-        MultiLabelOutput mlo = new MultiLabelOutput(bipartition, confidences);
-		return mlo;
-	}
+//	public MultiLabelOutput makePrediction2(Instance instance) throws Exception {
+//		double[] confidences = new double[numLabels];
+//		boolean[] bipartition = new boolean[numLabels];
+//
+//		Instances newtrain = new Instances(this.train);
+//		//System.out.println(newtrain.numInstances());
+//
+//		int result;
+//		do {
+//			result = toplabel(instance, newtrain, bipartition);
+//			if (result != -1) {
+//				bipartition[result] = true;
+//		//		newtrain = new Instances(filterwithlabel(result, newtrain));
+//				sumedlabels++;
+//			}
+//			//System.out.println(newtrain.numInstances());
+//		} while (result != -1 && newtrain.numInstances() >= numofNeighbours);
+//
+//        MultiLabelOutput mlo = new MultiLabelOutput(bipartition, confidences);
+//		return mlo;
+//	}
 	/*
 	public Bipartition makePrediction(Instance instance) throws Exception {
 		double[] confidences = new double[numLabels];

@@ -25,8 +25,8 @@ public class RAKELknn extends MultiLabelKNN {
 	int sizeOfSubset;
 	int[][] classIndicesPerSubset;
 
-	public RAKELknn(int labels, int neighbors, int models, int subset) {
-		super(labels, neighbors);
+	public RAKELknn(int neighbors, int models, int subset) {
+		super(neighbors);
 		numOfModels = models;
 		sizeOfSubset = subset;
 		classIndicesPerSubset = new int[numOfModels][sizeOfSubset];

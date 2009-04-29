@@ -1,11 +1,12 @@
 package mulan.classifier.transformation;
 
 import mulan.classifier.MultiLabelOutput;
+import mulan.core.data.MultiLabelInstances;
+import mulan.transformations.RemoveAllLabels;
+import mulan.transformations.multiclass.MultiClassTransformation;
 import weka.classifiers.Classifier;
 import weka.core.Instance;
 import weka.core.Instances;
-import mulan.transformations.multiclass.MultiClassTransformation;
-import mulan.transformations.RemoveAllLabels;
 
 /**
  *
@@ -16,15 +17,14 @@ public class MultiClassLearner extends TransformationBasedMultiLabelLearner {
     private Instances header;
     private MultiClassTransformation transformation;
 
-	public MultiClassLearner(Classifier baseClassifier, int numLabels, MultiClassTransformation dt)
+	public MultiClassLearner(Classifier baseClassifier, MultiClassTransformation dt)
 	{
-		super(baseClassifier, numLabels);
+		super(baseClassifier);
         transformation = dt;
     }
 
-    @Override
-    public void build(Instances train) throws Exception {
-        Instances meta = transformation.transformInstances(train);
+    protected void buildInternal(MultiLabelInstances train) throws Exception {
+        Instances meta = transformation.transformInstances(train.getDataSet());
         baseClassifier.buildClassifier(meta);
         header = new Instances(meta, 0);
     }

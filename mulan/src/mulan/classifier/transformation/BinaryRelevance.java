@@ -1,7 +1,8 @@
 package mulan.classifier.transformation;
 
 
-import mulan.classifier.*;
+import mulan.classifier.MultiLabelOutput;
+import mulan.core.data.MultiLabelInstances;
 import mulan.transformations.BinaryRelevanceTransformation;
 import weka.classifiers.Classifier;
 import weka.core.Attribute;
@@ -21,10 +22,10 @@ public class BinaryRelevance extends TransformationBasedMultiLabelLearner
 	protected Classifier[] ensemble;
     protected BinaryRelevanceTransformation transformation;
 
-	public BinaryRelevance(Classifier classifier, int numLabels)
+	public BinaryRelevance(Classifier classifier)
 			throws Exception
 	{
-		super(classifier,numLabels);
+		super(classifier);
         transformation = new BinaryRelevanceTransformation(numLabels);
 		metadataTest = new Instances[numLabels];
 		debug("BR: making classifier copies");
@@ -32,14 +33,13 @@ public class BinaryRelevance extends TransformationBasedMultiLabelLearner
 	}
 
 
-	public void build(Instances train) throws Exception
+	protected void buildInternal(MultiLabelInstances train) throws Exception
 	{
-		debug("BR: calling super constructor");
-		
+		Instances dataSet = train.getDataSet();  
 		for (int labelIndex=0; labelIndex<numLabels; labelIndex++)
 		{
 			debug("BR: transforming training set for label " + labelIndex);
-			Instances subTrain = transformation.transformInstances(train, labelIndex);
+			Instances subTrain = transformation.transformInstances(dataSet, labelIndex);
 			debug("BR: building base classifier for label " + labelIndex);
 			ensemble[labelIndex].buildClassifier(subTrain);
 			subTrain.delete();

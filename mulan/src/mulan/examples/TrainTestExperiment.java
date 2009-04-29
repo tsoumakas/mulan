@@ -4,10 +4,10 @@ import java.io.FileReader;
 import mulan.classifier.transformation.BinaryRelevance;
 import mulan.classifier.transformation.LabelPowerset;
 import mulan.classifier.transformation.MultiClassLearner;
+import mulan.core.data.MultiLabelInstances;
 import mulan.evaluation.Evaluation;
 import mulan.evaluation.Evaluator;
 import mulan.transformations.multiclass.*;
-import mulan.transformations.multiclass.MultiClassTransformation;
 import weka.classifiers.trees.J48;
 import weka.core.Instances;
 import weka.core.Utils;
@@ -28,20 +28,18 @@ public class TrainTestExperiment {
             String filestem = Utils.getOption("filestem", args);
             int labels = Integer.parseInt(Utils.getOption("labels",args));
 
-            FileReader frTrain = new FileReader(path + filestem + "-train.arff");
-            Instances train = new Instances(frTrain);
-            FileReader frTest = new FileReader(path + filestem + "-test.arff");
-            Instances test = new Instances(frTest);
-
+            MultiLabelInstances train = new MultiLabelInstances(path + filestem + "-train.arff", labels);
+            MultiLabelInstances test = new MultiLabelInstances(path + filestem + "-test.arff", labels);
+            
             Evaluator eval = new Evaluator();
             Evaluation results;
 
             //* LP
             System.out.println("LP");
             J48 lpBaseClassifier = new J48();
-            LabelPowerset lp = new LabelPowerset(lpBaseClassifier, labels);
+            LabelPowerset lp = new LabelPowerset(lpBaseClassifier);
             lp.build(train);
-            results = eval.evaluate(lp, test);
+            results = eval.evaluate(lp, test.getDataSet());
             System.out.println(results.toString());
             //*/
 
@@ -50,17 +48,17 @@ public class TrainTestExperiment {
             J48 mcBaseClassifier = new J48();
             MultiClassTransformation copy = new Copy(labels);
             MultiClassLearner mc;
-            mc = new MultiClassLearner(mcBaseClassifier, labels, copy);
+            mc = new MultiClassLearner(mcBaseClassifier, copy);
             mc.build(train);
-            results = eval.evaluate(mc, test);
+            results = eval.evaluate(mc, test.getDataSet());
             System.out.println(results.toString());
 
             //* BR
             System.out.println("BR");
             J48 brClassifier = new J48();
-            BinaryRelevance br = new BinaryRelevance(brClassifier, labels);
+            BinaryRelevance br = new BinaryRelevance(brClassifier);
             br.build(train);
-            results = eval.evaluate(br, test);
+            results = eval.evaluate(br, test.getDataSet());
             System.out.println(results.toString());
             //*/
         }

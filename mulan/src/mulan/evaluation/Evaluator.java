@@ -1,8 +1,10 @@
 package mulan.evaluation;
 
 import java.util.Random;
+
 import mulan.classifier.MultiLabelLearner;
 import mulan.classifier.MultiLabelOutput;
+import mulan.core.data.MultiLabelInstances;
 import weka.core.Instance;
 import weka.core.Instances;
 
@@ -99,15 +101,15 @@ public class Evaluator
 	 * The default number of folds {@link Evaluator#DEFAULTFOLDS} will be used. 
 	 * 
 	 * @param learner the learner to be evaluated via cross-validation
-	 * @param dataset the data set for cross-validation
+	 * @param mlDataSet the multi-label data set for cross-validation
 	 * @return the evaluation result
 	 * @throws IllegalArgumentException if either of input parameters is null.
 	 * @throws Exception
 	 */
-	public Evaluation crossValidate(MultiLabelLearner learner, Instances dataset)
+	public Evaluation crossValidate(MultiLabelLearner learner, MultiLabelInstances mlDataSet)
 	throws Exception
 	{
-		return crossValidate(learner, dataset, DEFAULTFOLDS);
+		return crossValidate(learner, mlDataSet, DEFAULTFOLDS);
 	}
 	
 	/**
@@ -118,42 +120,45 @@ public class Evaluator
 	 * of instances in the data set. 
 	 * 
 	 * @param learner the learner to be evaluated via cross-validation
-	 * @param dataset the data set for cross-validation
+	 * @param mlDataSet the multi-label data set for cross-validation
 	 * @param numFolds the number of folds to be used
 	 * @return the evaluation result
 	 * @throws IllegalArgumentException if either of learner or data set parameters is null
 	 * @throws IllegalArgumentException if number of folds is invalid 
 	 * @throws Exception
 	 */
-	public Evaluation crossValidate(MultiLabelLearner learner, Instances dataset, int numFolds)
+	public Evaluation crossValidate(MultiLabelLearner learner, MultiLabelInstances mlDataSet, int numFolds)
 	throws Exception
 	{
 		if(learner == null){
 			throw new IllegalArgumentException("Learner to be evaluated is null.");
 		}
-		if(dataset == null){
-			throw new IllegalArgumentException("Dataset for the evaluation is null.");
+		if(mlDataSet == null){
+			throw new IllegalArgumentException("MutliLabelDataset for the evaluation is null.");
 		}
 		if(numFolds == 0 || numFolds == 1){
 			throw new IllegalArgumentException("Number of folds must be at least two or higher.");
 		}
 		
-		if (numFolds < 0) numFolds = dataset.numInstances();
-        ExampleBasedMeasures[] ebm = new ExampleBasedMeasures[numFolds];
+		Instances workingSet = new Instances(mlDataSet.getDataSet());
+
+		if (numFolds < 0) 
+			numFolds = workingSet.numInstances();
+        
+		ExampleBasedMeasures[] ebm = new ExampleBasedMeasures[numFolds];
         LabelBasedMeasures[] lbm = new LabelBasedMeasures[numFolds];
         RankingBasedMeasures[] rbm = new RankingBasedMeasures[numFolds];
         ConfidenceLabelBasedMeasures[] clbm = new ConfidenceLabelBasedMeasures[numFolds];
 
 		Random random = new Random(seed);
-
-        Instances workingSet = new Instances(dataset);
 		workingSet.randomize(random);
 		for (int i=0; i<numFolds; i++)
 		{
-			Instances train = workingSet.trainCV(numFolds, i, random);  
+			Instances train = workingSet.trainCV(numFolds, i, random);
 			Instances test  = workingSet.testCV(numFolds, i);
+			MultiLabelInstances mlTrain = new MultiLabelInstances(train, mlDataSet.getLabelsMetaData());
 			MultiLabelLearner clone = learner.makeCopy();
-			clone.build(train);
+			clone.build(mlTrain);
 			Evaluation evaluation = evaluate(clone, test);
             ebm[i] = evaluation.getExampleBasedMeasures();
             lbm[i] = evaluation.getLabelBasedMeasures();

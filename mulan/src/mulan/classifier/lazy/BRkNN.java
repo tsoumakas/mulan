@@ -6,7 +6,7 @@ import java.util.Random;
 
 import mulan.classifier.MultiLabelOutput;
 import mulan.core.Util;
-import weka.classifiers.lazy.IBk;
+import mulan.core.data.MultiLabelInstances;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.Utils;
@@ -76,11 +76,10 @@ public class BRkNN extends MultiLabelKNN {
 	/**
 	 * The default constructor. (The base algorithm)
 	 * 
-	 * @param numLabels
 	 * @param numOfNeighbors
 	 */
-	public BRkNN(int numLabels, int numOfNeighbors) {
-		super(numLabels, numOfNeighbors);
+	public BRkNN(int numOfNeighbors) {
+		super(numOfNeighbors);
 		distanceWeighting = WEIGHT_NONE; // weight none
 		selectedMethod = BR; // the default method
 		Rand = new Random(1);
@@ -89,20 +88,20 @@ public class BRkNN extends MultiLabelKNN {
 	/**
 	 * Constructor giving the option to select an extension of the base version
 	 * 
-	 * @param numLabels
 	 * @param numOfNeighbors
 	 * @param method
 	 *            (2 for BRkNN-a 3 for BRkNN-b)
 	 * 
 	 */
-	public BRkNN(int numLabels, int numOfNeighbors, int method) {
-		super(numLabels, numOfNeighbors);
+	public BRkNN(int numOfNeighbors, int method) {
+		super(numOfNeighbors);
 		distanceWeighting = WEIGHT_NONE; // weight none
 		selectedMethod = method;
 		Rand = new Random(1);
 	}
 
-	public void build(Instances aTrain) throws Exception {
+	@Override
+	protected void buildInternal(MultiLabelInstances aTrain) throws Exception {
 		super.build(aTrain);
 
 		lnn = new LinearNNSearch();

@@ -16,14 +16,15 @@ package mulan.classifier.transformation;
  *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-import mulan.classifier.*;
 import java.util.Arrays;
 import java.util.Random;
-
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import mulan.classifier.MultiLabelOutput;
 import mulan.core.LabelSet;
 import mulan.core.Util;
+import mulan.core.data.MultiLabelInstances;
 import mulan.transformations.LabelPowersetTransformation;
 import weka.classifiers.Classifier;
 import weka.core.Instance;
@@ -66,9 +67,9 @@ public class LabelPowerset extends TransformationBasedMultiLabelLearner
         
     protected Random Rand;
 
-    public LabelPowerset(Classifier classifier, int numLabels) throws Exception
+    public LabelPowerset(Classifier classifier) throws Exception
     {
-        super(classifier, numLabels);
+        super(classifier);
         Rand = new Random(1);
     }
    
@@ -102,11 +103,10 @@ public class LabelPowerset extends TransformationBasedMultiLabelLearner
         return metadataTest.attribute(metadataTest.numAttributes()-1).indexOfValue(value);
     }
     
-    @Override
-    public void build(Instances train) throws Exception
+    protected void buildInternal(MultiLabelInstances train) throws Exception
     {
         transformation = new LabelPowersetTransformation(numLabels);
-        Instances newTrain = transformation.transformInstances(train);
+        Instances newTrain = transformation.transformInstances(train.getDataSet());
 
         if (getDebug()) {
             debug("Transformed training set:");
@@ -121,7 +121,6 @@ public class LabelPowerset extends TransformationBasedMultiLabelLearner
             // build classifier on new dataset
             baseClassifier.buildClassifier(newTrain);
         }
-
     }
 
     public String getRevision() {

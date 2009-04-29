@@ -7,6 +7,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import mulan.classifier.MultiLabelLearner;
 import mulan.classifier.MultiLabelOutput;
+import mulan.core.data.MultiLabelInstances;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.TechnicalInformation;
@@ -95,8 +96,8 @@ public class MLkNN extends MultiLabelKNN implements MultiLabelLearner {
 	 * @param smooth :
 	 *            the smoothing factor
 	 */
-	public MLkNN(int numLabels, int numOfNeighbors, double smooth) {
-		super(numLabels,numOfNeighbors);
+	public MLkNN(int numOfNeighbors, double smooth) {
+		super(numOfNeighbors);
 		this.smooth = smooth;
 		dontNormalize = true;
 		PriorProbabilities = new double[numLabels];
@@ -132,12 +133,10 @@ public class MLkNN extends MultiLabelKNN implements MultiLabelLearner {
 	}
 
     @Override
-	public void build(Instances train) throws Exception {
+	protected void buildInternal(MultiLabelInstances train) throws Exception {
 		super.build(train);
-		
 		ComputePrior();
 		ComputeCond();
-
 	}
 
 	/**

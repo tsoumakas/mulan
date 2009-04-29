@@ -12,6 +12,7 @@ import mulan.classifier.lazy.MLkNN;
 import mulan.classifier.transformation.BinaryRelevance;
 import mulan.classifier.transformation.LabelPowerset;
 import mulan.classifier.transformation.RAKEL;
+import mulan.core.data.MultiLabelInstances;
 import mulan.evaluation.Evaluation;
 import mulan.evaluation.Evaluator;
 import weka.classifiers.trees.J48;
@@ -32,16 +33,14 @@ public class CrossValidationExperiment {
             String filename = Utils.getOption("filename", args);
             int numLabels = Integer.parseInt(Utils.getOption("labels",args));
 
-            FileReader frData = new FileReader(path + filename);
-            Instances data = new Instances(frData);
-
+            MultiLabelInstances data = new MultiLabelInstances(path + filename, numLabels);	
             Evaluator eval = new Evaluator(5);
             Evaluation results;
 
             //* Binary Relevance Classifier
             System.out.println("BR");
             J48 brBaseClassifier = new J48();
-            BinaryRelevance br = new BinaryRelevance(brBaseClassifier,numLabels);
+            BinaryRelevance br = new BinaryRelevance(brBaseClassifier);
             results = eval.crossValidate(br, data, 10);
             System.out.println(results.toString());
             System.gc();
@@ -50,7 +49,7 @@ public class CrossValidationExperiment {
             //* Label Powerset Classifier
             System.out.println("LP");
             J48 lpBaseClassifier = new J48();
-            LabelPowerset lp = new LabelPowerset(lpBaseClassifier, numLabels);
+            LabelPowerset lp = new LabelPowerset(lpBaseClassifier);
             results = eval.crossValidate(lp, data, 10);
             System.out.println(results.toString());
             System.gc();
@@ -70,7 +69,7 @@ public class CrossValidationExperiment {
             //* ML-kNN
             System.out.println("ML-kNN");
             int numNeighbours = 10;
-            MLkNN mlknn = new MLkNN(numLabels, numNeighbours, 1);
+            MLkNN mlknn = new MLkNN(numNeighbours, 1);
             results = eval.crossValidate(mlknn, data, 10);
             System.out.println(results.toString());
             System.gc();
@@ -79,7 +78,7 @@ public class CrossValidationExperiment {
             //* BR-kNN
             System.out.println("BR-kNN");
             numNeighbours = 10;
-            BRkNN brknn = new BRkNN(numLabels, numNeighbours, 0);
+            BRkNN brknn = new BRkNN(numNeighbours, 0);
             brknn.setkSelectionViaCV(true);
             brknn.setCvMaxK(30);
             brknn.setDebug(true);
