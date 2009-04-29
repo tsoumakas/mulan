@@ -16,19 +16,17 @@ package mulan.classifier.transformation;
  *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-import mulan.classifier.*;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Random;
 
-import mulan.evaluation.Evaluator;
+import mulan.classifier.MultiLabelOutput;
+import mulan.core.data.MultiLabelInstances;
 import weka.classifiers.Classifier;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.SparseInstance;
 import weka.core.TechnicalInformation;
-import weka.core.Utils;
 import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
 import weka.filters.Filter;
@@ -97,31 +95,30 @@ public class RAKEL extends TransformationBasedMultiLabelLearner
         return result;
     }
                
-    public RAKEL(int labels) {
-        super(labels);
+    public RAKEL() {
         rnd = new Random();
     }
     
-    public RAKEL(int labels, int models, int subset) {
-        this(labels);
+    public RAKEL(int models, int subset) {
+        this();
         sizeOfSubset = subset;
         setNumModels(models);
     }
     
-    public RAKEL(Classifier baseClassifier, int labels) {
-        super(baseClassifier, labels);
+    public RAKEL(Classifier baseClassifier) {
+        super(baseClassifier);
         rnd = new Random();
     }
 
-    public RAKEL(Classifier baseClassifier, int labels, int models, int subset) {
-        super(baseClassifier, labels);
+    public RAKEL(Classifier baseClassifier, int models, int subset) {
+        super(baseClassifier);
         rnd = new Random();
         sizeOfSubset = subset;
         setNumModels(models);
     }
 	
-    public RAKEL(Classifier baseClassifier, int labels, int models, int subset, double threshold) {
-        super(baseClassifier, labels);
+    public RAKEL(Classifier baseClassifier, int models, int subset, double threshold) {
+        super(baseClassifier);
         rnd = new Random();
         sizeOfSubset = subset;
         setNumModels(models);
@@ -300,23 +297,25 @@ public class RAKEL extends TransformationBasedMultiLabelLearner
         
         
     @Override
-    public void build(Instances trainData) throws Exception {
+    protected void buildInternal(MultiLabelInstances trainData) throws Exception {
         
        // if (cvParamSelection)
          //   paramSelectionViaCV(trainData);
 
         // need a structure to hold different combinations
         combinations = new HashSet<String>();		
-
+        MultiLabelInstances mlDataSet = trainData.clone();
+        
         for (int i=0; i<numOfModels; i++)
-            updateClassifier(trainData, i);		
+            updateClassifier(mlDataSet, i);		
     }
 	
-    public void updateClassifier(Instances trainData, int model) throws Exception {
+    public void updateClassifier(MultiLabelInstances mlTrainData, int model) throws Exception {
 
         if (combinations == null)
             combinations = new HashSet<String>();
 
+        Instances trainData = mlTrainData.getDataSet();
         // select a random subset of classes not seen before
         // todo: select according to invere distribution of current selection
         boolean[] selected;
@@ -355,8 +354,8 @@ public class RAKEL extends TransformationBasedMultiLabelLearner
         //System.out.println(trainSubset.numInstances());
 
         // build a LabelPowersetClassifier for the selected label subset;
-        subsetClassifiers[model] = new LabelPowerset(Classifier.makeCopy(getBaseClassifier()), sizeOfSubset);
-        subsetClassifiers[model].build(trainSubset);
+        subsetClassifiers[model] = new LabelPowerset(Classifier.makeCopy(getBaseClassifier()));
+        subsetClassifiers[model].build(mlTrainData.reintegrateModifiedDataSet(trainSubset));
 
         // keep the header of the training data for testing
         trainSubset.delete();

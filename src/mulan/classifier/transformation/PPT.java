@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 import mulan.core.LabelSet;
+import mulan.core.data.MultiLabelInstances;
 import weka.classifiers.Classifier;
 import weka.core.Instance;
 import weka.core.Instances;
@@ -51,9 +52,9 @@ public class PPT extends LabelPowerset {
     * @paramater:
     * @param x: number of instances required for a labelset to be included.
     */
-    public PPT(Classifier classifier, int numLabels, int x) throws Exception
+    public PPT(Classifier classifier, int x) throws Exception
     {
-        super(classifier, numLabels);
+        super(classifier);
         this.x = x; // x should be larger than 0
         setMakePredictionsBasedOnConfidences(true);
         threshold = 0.21;
@@ -86,9 +87,9 @@ public class PPT extends LabelPowerset {
         return result;
     }    
     
-    @Override
-    public void build(Instances data) throws Exception
+    protected void buildInternal(MultiLabelInstances mlDataSet) throws Exception
     {   
+    	Instances data = mlDataSet.getDataSet();
         int numInstances = data.numInstances();
         int numPredictors = data.numAttributes()-numLabels;
         
@@ -182,7 +183,7 @@ public class PPT extends LabelPowerset {
                 }            
         }
                        
-        super.build(newData);
+        super.build(new MultiLabelInstances(newData, mlDataSet.getLabelsMetaData()));
     }      
         
 }

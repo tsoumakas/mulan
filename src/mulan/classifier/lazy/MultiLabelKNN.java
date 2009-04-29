@@ -3,6 +3,7 @@ package mulan.classifier.lazy;
 import java.util.Random;
 
 import mulan.classifier.MultiLabelLearnerBase;
+import mulan.core.data.MultiLabelInstances;
 import weka.core.EuclideanDistance;
 import weka.core.Instances;
 import weka.core.TechnicalInformation;
@@ -62,16 +63,17 @@ public abstract class MultiLabelKNN extends MultiLabelLearnerBase  {
 	protected Instances train = null;
 
 
-	public MultiLabelKNN(int numLabels, int numOfNeighbors) {
-		super(numLabels);
+	public MultiLabelKNN(int numOfNeighbors) {
 		this.numOfNeighbors = numOfNeighbors;
 		random = new Random(1); // seed is always 1 to reproduce results
 	}
 
-    @Override
-    public void build(Instances train) throws Exception {
-        this.train = new Instances(train);
-        predictors = train.numAttributes() - numLabels;
+    protected void buildInternal(MultiLabelInstances train) throws Exception {
+        Instances instances = train.getDataSet();
+        // TODO: maybe it would be better to store MultiLabelInstances, which can provide
+        //       usefull meta-data ... don't know ...   
+    	this.train = new Instances(instances);
+        predictors = instances.numAttributes() - numLabels;
 
         dfunc = new EuclideanDistance();
         dfunc.setDontNormalize(dontNormalize);

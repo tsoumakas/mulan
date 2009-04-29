@@ -3,6 +3,8 @@ package mulan.classifier;
 import java.io.Serializable;
 import java.util.Date;
 
+import mulan.core.data.MultiLabelInstances;
+
 import weka.core.Instances;
 import weka.core.SerializedObject;
 import weka.core.TechnicalInformation;
@@ -24,19 +26,19 @@ public abstract class MultiLabelLearnerBase
 	 * The number of labels the classifier should handle. 
 	 * The label attributes are stored at the end of {@link Instances} data.
 	 */
-	protected final int numLabels;
+	protected int numLabels;
 
 	/** Whether the classifier is run in debug mode. */
 	protected boolean isDebug = false;
 		
-	/**
-	 * Creates a {@link MultiLabelLearnerBase} instance.
-	 * 
-	 * @param numLabels the number of labels the classifier should use
-	 */
-	public MultiLabelLearnerBase(final int numLabels) {
-		this.numLabels = numLabels;
-	}
+//	/**
+//	 * Creates a {@link MultiLabelLearnerBase} instance.
+//	 * 
+//	 * @param numLabels the number of labels the classifier should use
+//	 */
+//	public MultiLabelLearnerBase(final int numLabels) {
+//		this.numLabels = numLabels;
+//	}
 	
 	public int getNumLabels()
 	{
@@ -45,7 +47,17 @@ public abstract class MultiLabelLearnerBase
 	
 	public abstract TechnicalInformation getTechnicalInformation();
 	
-	public abstract void build(Instances instances) throws Exception;
+	public final void build(MultiLabelInstances dataSet) throws Exception{
+		if(dataSet == null){
+			throw new IllegalArgumentException("The dataSet is null.");
+		}
+		numLabels = dataSet.getNumLabels();
+		buildInternal(dataSet);
+	}
+	
+	protected abstract void buildInternal(MultiLabelInstances dataSet) throws Exception;
+		
+	
 
 	/**
 	 * Set debugging mode.

@@ -42,25 +42,22 @@ public abstract class TransformationBasedMultiLabelLearner extends MultiLabelLea
 	protected final Classifier baseClassifier;
 	
 	/**
-	 * Creates a new instance
-	 *  
-	 * @param numLabels the number of labels for the classifier.
+	 * Creates a new instance of {@link TransformationBasedMultiLabelLearner} with default
+	 * {@link J48} base classifier.
 	 */
-	public TransformationBasedMultiLabelLearner(int numLabels)
+	public TransformationBasedMultiLabelLearner()
 	{
-		this(new J48(), numLabels);
+		this(new J48());
 	}
 	
 	/**
 	 * Creates a new instance.
 	 * 
 	 * @param baseClassifier the base classifier which will be used internally to handle the data.
-	 * @param numLabels the number of labels for the learner.
 	 * @see Classifier
 	 */
-	public TransformationBasedMultiLabelLearner(Classifier baseClassifier, int numLabels)
+	public TransformationBasedMultiLabelLearner(Classifier baseClassifier)
 	{
-		super(numLabels);
 		this.baseClassifier = baseClassifier;
 	}
 	

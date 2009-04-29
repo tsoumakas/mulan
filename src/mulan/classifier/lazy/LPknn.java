@@ -18,8 +18,8 @@ import weka.core.neighboursearch.LinearNNSearch;
 @SuppressWarnings("serial")
 public class LPknn extends MultiLabelKNN {
 
-	public LPknn(int numLabels, int numOfNeighbors) {
-		super(numLabels, numOfNeighbors);
+	public LPknn(int numOfNeighbors) {
+		super(numOfNeighbors);
 	}
     public MultiLabelOutput makePrediction(Instance instance) throws Exception {
 		boolean[] predictions = new boolean[numLabels];

@@ -3,11 +3,13 @@ package mulan.classifier.neural;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Enumeration;
 import java.util.List;
+import java.util.Set;
 
 import mulan.classifier.MultiLabelLearnerBase;
 import mulan.classifier.MultiLabelOutput;
+import mulan.core.WekaException;
+import mulan.core.data.MultiLabelInstances;
 import weka.core.Attribute;
 import weka.core.Instance;
 import weka.core.Instances;
@@ -49,15 +51,15 @@ public class BPMLL extends MultiLabelLearnerBase {
 	private NeuralNet model;
 	private ThresholdFunction thresholdF;
 	
-	/**
-	 * Creates a {@link BPMLL} instance.
-	 * 
-	 * @param numLabels number of labels of the classifier
-	 */
-	public BPMLL(int numLabels) {
-		super(numLabels);
-	}
-	
+//	/**
+//	 * Creates a {@link BPMLL} instance.
+//	 * 
+//	 * @param numLabels number of labels of the classifier
+//	 */
+//	public BPMLL(int numLabels) {
+//		super(numLabels);
+//	}
+
 	/**
 	 * Sets the topology of hidden layers for neural network. 
 	 * The length of passed array defines number of hidden layers. 
@@ -144,16 +146,16 @@ public class BPMLL extends MultiLabelLearnerBase {
 		normalizeAttributes = normalize;
 	}
 
-	@Override
-	public void build(final Instances instances) throws Exception {
+	protected void buildInternal(final MultiLabelInstances instances) throws Exception {
 		
 		if(instances == null){
 			throw new IllegalArgumentException("Instances must not be null.");
 		}
+		
 		// delete filter if available from previous build, a new one will be created if necessary
 		nominalToBinaryFilter = null;
 		
-		Instances trainInstances = new Instances(instances);
+		MultiLabelInstances trainInstances = instances.clone();
 		List<DataPair> trainData = prepareData(trainInstances);
 		int inputsDim = trainData.get(0).getInput().length;
 		model = buildNeuralNetwork(inputsDim); 
@@ -244,13 +246,10 @@ public class BPMLL extends MultiLabelLearnerBase {
 	 * are converted to bipolar values. Finally {@link Instance} instances are 
 	 * converted to {@link DataPair} instances, which will be used for the algorithm. 
 	 */
-	private List<DataPair> prepareData(Instances data){
+	private List<DataPair> prepareData(MultiLabelInstances mlData){
 		
-		if(!checkLabelAttributesFormat(data)){
-			throw new IllegalArgumentException("Label attributes are not in correct format. " +
-					"Label attributes must be nominal with binary values.");
-		}
-		if(!checkAttributesFormat(data)){
+		Instances data = mlData.getDataSet();
+		if(!checkAttributesFormat(data, mlData.getFeatureAttributes())){
 			throw new IllegalArgumentException("Attributes are not in correct format. " +
 					"Input attributes (all but the label attributes) must be numeric.");
 		}
@@ -280,57 +279,24 @@ public class BPMLL extends MultiLabelLearnerBase {
 		return dataPairs;
 	}
 	
-	/**
-	 * Checks {@link Instances} data if label attributes are nominal and have binary values.
-	 * 
-	 * @param data instances data to be checked
-	 * @return true if label attributes are in correct format, false otherwise
-	 */
-	@SuppressWarnings("unchecked")
-	private boolean checkLabelAttributesFormat(Instances data){
-		
-		int numAttributes = data.numAttributes();
-		for(int labelIndex = numAttributes - numLabels; labelIndex < numAttributes; labelIndex++){
-			Attribute labelAttr = data.attribute(labelIndex);
-			if(labelAttr.isNominal() != true){
-				return false;
-			}
-			List<String> allowedValues = new ArrayList<String>();
-			allowedValues.add("0");
-			allowedValues.add("1");
-			Enumeration labelValues = labelAttr.enumerateValues();
-			while (labelValues.hasMoreElements()) {
-				String value = (String)labelValues.nextElement();
-				if(allowedValues.contains(value)){
-					allowedValues.remove(value);
-				}
-			}
-			if(allowedValues.size() != 0){
-				return false;
-			}
-		}
-		
-		return true;
-	}
 	
 	/**
 	 * Checks {@link Instances} data if attributes (all but the label attributes) 
 	 * are numeric or nominal. Nominal attributes are transformed to binary by use of
 	 * {@link NominalToBinary} filter.
 	 * 
-	 * @param data instances data to be checked
+	 * @param dataSet instances data to be checked
+	 * @param inputAttributes input/feature attributes which format need to be checked
 	 * @return true if attributes are in correct format, false otherwise
 	 */
-	private boolean checkAttributesFormat(Instances data){
+	private boolean checkAttributesFormat(Instances dataSet, Set<Attribute> inputAttributes){
 		
 		StringBuilder nominalAttrRange = new StringBuilder();
 		String rangeDelimiter = ",";
-		int numAttributes = data.numAttributes();
-		for(int attrIndex = 0; attrIndex < numAttributes - numLabels; attrIndex++){
-			Attribute attribute = data.attribute(attrIndex);
+		for(Attribute attribute : inputAttributes){
 			if(attribute.isNumeric() == false){
 				if(attribute.isNominal()){
-					nominalAttrRange.append((attrIndex + 1) + rangeDelimiter);
+					nominalAttrRange.append((attribute.index() + 1) + rangeDelimiter);
 				}
 				else{
 					// fail check if any other attribute type than nominal or numeric is used
@@ -345,15 +311,15 @@ public class BPMLL extends MultiLabelLearnerBase {
 			try {
 				nominalToBinaryFilter = new NominalToBinary();
 				nominalToBinaryFilter.setAttributeIndices(nominalAttrRange.toString());
-				nominalToBinaryFilter.setInputFormat(data);
-				data = Filter.useFilter(data, nominalToBinaryFilter);
+				nominalToBinaryFilter.setInputFormat(dataSet);
+				dataSet = Filter.useFilter(dataSet, nominalToBinaryFilter);
 			} catch (Exception exception) {
 				nominalToBinaryFilter = null;
 				if(getDebug()){
 					debug("Failed to apply NominalToBinary filter to the input instances data. " +
 							"Error message: " + exception.getMessage());
 				}
-				throw new RuntimeException("Failed to apply NominalToBinary filter to the input instances data.", exception);
+				throw new WekaException("Failed to apply NominalToBinary filter to the input instances data.", exception);
 			}
 		}
 
@@ -460,5 +426,45 @@ public class BPMLL extends MultiLabelLearnerBase {
 
         MultiLabelOutput mlo = new MultiLabelOutput(labelPredictions, labelConfidences);
         return mlo;
+    }
+    
+    /**
+     * Class for holding data pair for neural network. 
+     * The data pair contains the input pattern and respected 
+     * expected/ideal network output/response pattern for the input.
+     */
+    private class DataPair {
+
+    	private final double[] input;
+    	private final double[] output;
+    	
+    	/**
+    	 * Creates a {@link DataPair} instance.
+    	 * @param input the input pattern
+    	 * @param output the ideal/expected output pattern for the input
+    	 */
+    	public DataPair(final double[] input, final double[] output){
+    		if(input == null || output == null){
+    			throw new IllegalArgumentException("Failed to create an instance. Either input or output pattern is null.");
+    		}
+    		this.input = Arrays.copyOf(input, input.length);
+    		this.output = Arrays.copyOf(output, output.length);
+    	}
+    	
+    	/**
+    	 * Gets the input pattern.
+    	 * @return the input pattern
+    	 */
+    	public double[] getInput(){
+    		return input;
+    	}
+    	
+    	/**
+    	 * Gets the idel/expected output pattern.
+    	 * @return the output pattern
+    	 */
+    	public double[] getOutput(){
+    		return output;
+    	}
     }
 }

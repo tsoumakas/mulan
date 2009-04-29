@@ -30,8 +30,8 @@ public class LabelPowersetAttributeEvaluator extends AttributeEvaluator {
 
     @Override
     public void buildEvaluator(Instances data) throws Exception {
-        LabelPowersetTransformation lbTrans = new LabelPowersetTransformation();
-        Instances newData = lbTrans.transformInstances(data, numLabels);
+        LabelPowersetTransformation lbTrans = new LabelPowersetTransformation(numLabels);
+        Instances newData = lbTrans.transformInstances(data);
         baseAttributeEvaluator.buildEvaluator(newData);
     }
 

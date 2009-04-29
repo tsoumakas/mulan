@@ -1,8 +1,9 @@
 package mulan.classifier.transformation;
 
-import mulan.classifier.*;
 import java.util.Arrays;
 
+import mulan.classifier.MultiLabelOutput;
+import mulan.core.data.MultiLabelInstances;
 import weka.classifiers.Classifier;
 import weka.core.Attribute;
 import weka.core.FastVector;
@@ -34,18 +35,18 @@ public class IncludeLabelsClassifier extends TransformationBasedMultiLabelLearne
 	protected Instances transformed;
 
 	
-	public IncludeLabelsClassifier(Classifier classifier, int numLabels)
+	public IncludeLabelsClassifier(Classifier classifier)
 	{
-		super(classifier, numLabels);
+		super(classifier);
 	}
 	
-    @Override
-    public void build(Instances instances) throws Exception
+    protected void buildInternal(MultiLabelInstances instances) throws Exception
     {
             //Do the transformation 
             //and generate the classifier
-            transformed = determineOutputFormat(instances);	
-            transform(instances, transformed);
+    		Instances dataSet = instances.getDataSet();
+            transformed = determineOutputFormat(dataSet);	
+            transform(dataSet, transformed);
 
             /* debug info
             System.out.println(instances.instance(0).toString());
