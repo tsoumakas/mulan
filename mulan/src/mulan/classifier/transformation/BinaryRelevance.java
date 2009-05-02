@@ -26,16 +26,18 @@ public class BinaryRelevance extends TransformationBasedMultiLabelLearner
 			throws Exception
 	{
 		super(classifier);
-        transformation = new BinaryRelevanceTransformation(numLabels);
-		metadataTest = new Instances[numLabels];
-		debug("BR: making classifier copies");
-		ensemble = Classifier.makeCopies(classifier, numLabels);
 	}
 
 
 	protected void buildInternal(MultiLabelInstances train) throws Exception
 	{
-		Instances dataSet = train.getDataSet();  
+        numLabels = train.getNumLabels();
+        transformation = new BinaryRelevanceTransformation(numLabels);
+		metadataTest = new Instances[numLabels];
+		debug("BR: making classifier copies");
+		ensemble = Classifier.makeCopies(baseClassifier, numLabels);
+
+        Instances dataSet = train.getDataSet();
 		for (int labelIndex=0; labelIndex<numLabels; labelIndex++)
 		{
 			debug("BR: transforming training set for label " + labelIndex);
