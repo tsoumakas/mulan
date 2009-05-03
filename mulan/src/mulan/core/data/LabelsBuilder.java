@@ -1,4 +1,4 @@
-package mulan.core.data.impl;
+package mulan.core.data;
 
 import java.io.File;
 
@@ -20,7 +20,7 @@ import org.xml.sax.SAXException;
  */
 public final class LabelsBuilder {
 
-	private static final String LABELS_SCHEMA_SOURCE = "mulan/core/data/impl/labels.xsd";
+	private static final String LABELS_SCHEMA_SOURCE = "mulan/core/data/labels.xsd";
 	protected static final String LABELS_SCHEMA_NAMESPACE = "http://mulan.sourceforge.net/labels";
 	//private static final String LABELS_SCHEMA_LOCATION_ID = "http://mulan.sourceforge.net/schemata/labels.xsd";
 	private static final String SCHEMA_FULL_CHECKING_FEATURE = "http://apache.org/xml/features/validation/schema-full-checking";

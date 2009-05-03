@@ -11,10 +11,6 @@ import java.util.Set;
 
 import mulan.core.MulanRuntimeException;
 import mulan.core.WekaException;
-import mulan.core.data.impl.LabelNodeImpl;
-import mulan.core.data.impl.LabelsBuilder;
-import mulan.core.data.impl.LabelsBuilderException;
-import mulan.core.data.impl.LabelsMetaDataImpl;
 import weka.core.Attribute;
 import weka.core.Instance;
 import weka.core.Instances;

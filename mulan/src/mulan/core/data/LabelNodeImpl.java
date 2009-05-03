@@ -1,4 +1,4 @@
-package mulan.core.data.impl;
+package mulan.core.data;
 
 import java.io.Serializable;
 import java.util.Collections;
@@ -12,7 +12,6 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-import mulan.core.data.LabelNode;
 
 /**
  * Implementation of node representing label attribute and its connection 
