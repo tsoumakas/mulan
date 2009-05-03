@@ -52,6 +52,7 @@ public abstract class MultiLabelLearnerBase
 			throw new IllegalArgumentException("The dataSet is null.");
 		}
 		numLabels = dataSet.getNumLabels();
+		dataSet.reorderLabels();
 		buildInternal(dataSet);
 	}
 	
