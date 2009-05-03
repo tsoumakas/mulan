@@ -1,4 +1,4 @@
-package mulan.core.data.impl;
+package mulan.core.data;
 
 import java.io.Serializable;
 import java.util.Collections;
@@ -15,8 +15,6 @@ import javax.xml.bind.annotation.XmlType;
 
 import mulan.core.MulanRuntimeException;
 import mulan.core.WekaException;
-import mulan.core.data.LabelNode;
-import mulan.core.data.LabelsMetaData;
 import weka.core.SerializedObject;
 
 /**

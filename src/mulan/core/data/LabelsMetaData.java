@@ -2,7 +2,6 @@ package mulan.core.data;
 
 import java.util.Set;
 
-import mulan.core.data.impl.LabelsMetaDataImpl;
 
 /**
  * Represents meta data about label attributes and their structure. 

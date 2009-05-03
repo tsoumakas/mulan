@@ -1,4 +1,4 @@
-package mulan.core.data.impl;
+package mulan.core.data;
 
 /**
  * Exception is raised by {@link LabelsBuilder} to indicate an error when creating 
