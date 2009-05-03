@@ -111,7 +111,7 @@ public class MultiLabelInstances {
 		Instances data = loadInstances(arffFile);
 		LabelsMetaDataImpl labelsData = loadLabesMeta(xmlLabelsDefFilePath);
 		
-		ensureDataFormat(data, labelsData);
+		validate(data, labelsData);
 		dataSet = data;
 		labelsMetaData = labelsData;
 	}
@@ -273,10 +273,13 @@ public class MultiLabelInstances {
 		return labelsMeta;
 	}
 	
-	
-	private void ensureDataFormat(Instances dataSet, LabelsMetaData labelsMetaData) throws InvalidDataFormatException{
-		
-		validate(dataSet, labelsMetaData);
+	/**
+	 * Reorders the labels. All the label attributes are moved to the end of 
+	 * data set. This method is introduced only for algorithms which relies on 
+	 * label being at the end of data set. Such dependency on internal data structure
+	 * should be removed and this method become obsolete.
+	 */
+	public void reorderLabels() {
 		
 		// check if label attributes are the last ones in dataSet
 		int numAttributes = dataSet.numAttributes();
@@ -333,7 +336,7 @@ public class MultiLabelInstances {
 				numMatches++;
 				if(!checkLabelAttributeFormat(attribute)){
 					throw new InvalidDataFormatException(
-							String.format("The format of label attribute '%s' is not vaild.", attribute.name()));
+							String.format("The format of label attribute '%s' is not valid.", attribute.name()));
 				}
 			}
 		}
