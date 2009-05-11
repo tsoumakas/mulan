@@ -25,10 +25,12 @@ import mulan.classifier.MultiLabelOutput;
 import mulan.core.LabelSet;
 import mulan.core.Util;
 import mulan.core.data.MultiLabelInstances;
+import mulan.transformations.LabelPowersetFilter;
 import mulan.transformations.LabelPowersetTransformation;
 import weka.classifiers.Classifier;
 import weka.core.Instance;
 import weka.core.Instances;
+import weka.filters.Filter;
 
 /**
  * Class that implements a label powerset classifier <p>
@@ -62,8 +64,6 @@ public class LabelPowerset extends TransformationBasedMultiLabelLearner
     protected double threshold=0.5;
 
     protected LabelPowersetTransformation transformation;
-
-    protected Instances metadataTest;
         
     protected Random Rand;
 
@@ -97,29 +97,25 @@ public class LabelPowerset extends TransformationBasedMultiLabelLearner
         if (method == 1 || method == 2)
             confidenceCalculationMethod = method;
     }    
-    
+    /*
     public int indexOfClassValue(String value)
     {
-        return metadataTest.attribute(metadataTest.numAttributes()-1).indexOfValue(value);
-    }
+        return transformedFormat.attribute(transformedFormat.numAttributes()-1).indexOfValue(value);
+    }*/
     
-    protected void buildInternal(MultiLabelInstances train) throws Exception
+    protected void buildInternal(MultiLabelInstances mlData) throws Exception
     {
-        transformation = new LabelPowersetTransformation(numLabels);
-        Instances newTrain = transformation.transformInstances(train.getDataSet());
+        Instances transformedData;
+        transformation = new LabelPowersetTransformation();
+        transformedData = transformation.transformInstances(mlData);
 
-        if (getDebug()) {
-            debug("Transformed training set:");
-            debug(newTrain.toString());
-        }
-
-        // keep the header of new dataset for classification
-        metadataTest = new Instances(newTrain, 0);
+        debug("Transformed training set:");
+        debug(transformedData.toString());
 
         // check for unary class
-        if (newTrain.attribute(newTrain.numAttributes()-1).numValues() > 1) {
+        if (transformedData.attribute(transformedData.numAttributes()-1).numValues() > 1) {
             // build classifier on new dataset
-            baseClassifier.buildClassifier(newTrain);
+            baseClassifier.buildClassifier(transformedData);
         }
     }
 
@@ -132,8 +128,9 @@ public class LabelPowerset extends TransformationBasedMultiLabelLearner
         double confidences[] = null;
 
         // check for unary class
-        if (metadataTest.classAttribute().numValues() == 1) {
-            String strClass = (metadataTest.classAttribute()).value(0);
+        if (transformation.getTransformedFormat().classAttribute().numValues() == 1)
+        {
+            String strClass = transformation.getTransformedFormat().classAttribute().value(0);
             LabelSet labelSet = null;
             try {
                 labelSet = LabelSet.fromBitString(strClass);
@@ -145,16 +142,9 @@ public class LabelPowerset extends TransformationBasedMultiLabelLearner
         } else {
             double[] distribution = null;
             try {
-                /*
-                if (getDebug())
-                    debug("old instance:" + instance.toString());
-                */
-                Instance transformedInstance = transformation.transformInstance(instance);
-                transformedInstance.setDataset(metadataTest);
-                /*
-                if (getDebug())
-                    debug("new instance:" + transformedInstance.toString());
-                */
+                debug("old instance:" + instance.toString());
+                Instance transformedInstance;
+                transformedInstance = transformation.transformInstance(instance, labelIndices);
                 distribution = baseClassifier.distributionForInstance(transformedInstance);
                 if (getDebug()) {
                     debug(Arrays.toString(distribution));
@@ -166,7 +156,7 @@ public class LabelPowerset extends TransformationBasedMultiLabelLearner
             if (getDebug()) {
                 debug("" + classIndex);
             }
-            String strClass = (metadataTest.classAttribute()).value(classIndex);
+            String strClass = (transformation.getTransformedFormat().classAttribute()).value(classIndex);
             LabelSet labelSet = null;
             try {
                 labelSet = LabelSet.fromBitString(strClass);
@@ -185,7 +175,7 @@ public class LabelPowerset extends TransformationBasedMultiLabelLearner
                 case 2: confidences = new double[numLabels];
                         for (int i=0; i<distribution.length; i++)
                         {
-                            strClass = (metadataTest.classAttribute()).value(i);
+                            strClass = (transformation.getTransformedFormat().classAttribute()).value(i);
                             try {
                                 labelSet = LabelSet.fromBitString(strClass);
                             } catch (Exception ex) {
