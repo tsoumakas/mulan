@@ -3,64 +3,69 @@ package mulan.classifier.transformation;
 
 import mulan.classifier.MultiLabelOutput;
 import mulan.core.data.MultiLabelInstances;
-import mulan.transformations.BinaryRelevanceTransformation;
 import weka.classifiers.Classifier;
+import weka.classifiers.meta.FilteredClassifier;
 import weka.core.Attribute;
 import weka.core.Instance;
 import weka.core.Instances;
+import weka.filters.unsupervised.attribute.Remove;
 
 /**
  * Class that implements a binary relevance classifier <p>
  *
  * @author Robert Friberg
  * @author Grigorios Tsoumakas 
- * @version $Revision: 0.04 $
+ * @version $Revision: 0.05 $
  */
 public class BinaryRelevance extends TransformationBasedMultiLabelLearner 
 {
-	protected Instances[] metadataTest;
-	protected Classifier[] ensemble;
-    protected BinaryRelevanceTransformation transformation;
-
-	public BinaryRelevance(Classifier classifier)
-			throws Exception
-	{
+	protected FilteredClassifier[] ensemble;
+    
+	public BinaryRelevance(Classifier classifier) throws Exception
+    {
 		super(classifier);
 	}
-
 
 	protected void buildInternal(MultiLabelInstances train) throws Exception
 	{
         numLabels = train.getNumLabels();
-        transformation = new BinaryRelevanceTransformation(numLabels);
-		metadataTest = new Instances[numLabels];
-		debug("BR: making classifier copies");
-		ensemble = Classifier.makeCopies(baseClassifier, numLabels);
+		ensemble = new FilteredClassifier[numLabels];
+        Instances trainingData = train.getDataSet();
+        for (int i=0; i<numLabels; i++) {
+            ensemble[i] = new FilteredClassifier();
+            ensemble[i].setClassifier(Classifier.makeCopy(baseClassifier));
 
-        Instances dataSet = train.getDataSet();
-		for (int labelIndex=0; labelIndex<numLabels; labelIndex++)
-		{
-			debug("BR: transforming training set for label " + labelIndex);
-			Instances subTrain = transformation.transformInstances(dataSet, labelIndex);
-			debug("BR: building base classifier for label " + labelIndex);
-			ensemble[labelIndex].buildClassifier(subTrain);
-			subTrain.delete();
-			metadataTest[labelIndex] = subTrain;
-		}
+            // Indices of attributes to remove
+            int[] indicesToRemove = new int[numLabels-1];
+            int counter2=0;
+            for (int counter1=0; counter1<numLabels; counter1++)
+                if (labelIndices[counter1] != labelIndices[i])
+                {
+                    indicesToRemove[counter2] = labelIndices[counter1];
+                    counter2++;
+                }
+
+            Remove remove = new Remove();
+            remove.setAttributeIndicesArray(indicesToRemove);
+            remove.setInputFormat(trainingData);
+            remove.setInvertSelection(false);
+            ensemble[i].setFilter(remove);
+
+            trainingData.setClassIndex(labelIndices[i]);
+            ensemble[i].buildClassifier(trainingData);
+        }
 	}
 
-    public MultiLabelOutput makePrediction(Instance instance) throws Exception {
+    public MultiLabelOutput makePrediction(Instance instance) throws Exception
+    {
         boolean[] bipartition = new boolean[numLabels];
 		double[] confidences = new double[numLabels];
 
-		for (int labelIndex=0; labelIndex<numLabels; labelIndex++)
+		for (int counter=0; counter<numLabels; counter++)
 		{
-			Instance newInstance = transformation.transformInstance(instance, labelIndex);
-			newInstance.setDataset(metadataTest[labelIndex]);
-
             double distribution[] = new double[2];
             try {
-                distribution = ensemble[labelIndex].distributionForInstance(newInstance);
+                distribution = ensemble[counter].distributionForInstance(instance);
             } catch (Exception e) {
                 System.out.println(e);
                 return null;
@@ -68,11 +73,11 @@ public class BinaryRelevance extends TransformationBasedMultiLabelLearner
             int maxIndex = (distribution[0] > distribution[1]) ? 0 : 1;
 
 			// Ensure correct predictions both for class values {0,1} and {1,0}
-			Attribute classAttribute = metadataTest[labelIndex].classAttribute();
-			bipartition[labelIndex] = (classAttribute.value(maxIndex).equals("1")) ? true : false;
+			Attribute classAttribute = ensemble[counter].getFilter().getOutputFormat().classAttribute();
+			bipartition[counter] = (classAttribute.value(maxIndex).equals("1")) ? true : false;
 
 			// The confidence of the label being equal to 1
-			confidences[labelIndex] = distribution[classAttribute.indexOfValue("1")];
+			confidences[counter] = distribution[classAttribute.indexOfValue("1")];
 		}
 
         MultiLabelOutput mlo = new MultiLabelOutput(bipartition, confidences);

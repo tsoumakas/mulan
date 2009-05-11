@@ -87,11 +87,11 @@ public class PPT extends LabelPowerset {
         return result;
     }    
     
+    @Override
     protected void buildInternal(MultiLabelInstances mlDataSet) throws Exception
     {   
     	Instances data = mlDataSet.getDataSet();
         int numInstances = data.numInstances();
-        int numPredictors = data.numAttributes()-numLabels;
         
         // create a data structure that holds for each labelset a list with the 
         // corresponding instances
@@ -101,7 +101,8 @@ public class PPT extends LabelPowerset {
             double[] dblLabels = new double[numLabels];
             for (int j=0; j<numLabels; j++)
             {
-            	double value = Double.parseDouble(data.attribute(numPredictors+j).value((int) data.instance(i).value(numPredictors + j))); 
+                int index = labelIndices[j];
+            	double value = Double.parseDouble(data.attribute(index).value((int) data.instance(i).value(index)));
                 dblLabels[j] = value;                 
             }
             
@@ -175,7 +176,7 @@ public class PPT extends LabelPowerset {
                         for (LabelSet l: subsetsForInsertion) {
                             double[] tempLabels = l.toDoubleArray();                            
                             for (int i=0; i<numLabels; i++)
-                                temp[numPredictors+i] = tempLabels[i];       
+                                temp[labelIndices[i]] = tempLabels[i];
                             Instance newInstance = new Instance(1, temp);
                             newData.add(newInstance);
                         }
