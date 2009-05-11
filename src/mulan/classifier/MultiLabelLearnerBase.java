@@ -17,7 +17,7 @@ import weka.core.TechnicalInformationHandler;
  * @author Robert Friberg
  * @author Jozef Vilcek
  * @author Grigorios Tsoumakas
- * @version $Revision: 0.3 $ 
+ * @version $Revision: 0.4 $
 */
 public abstract class MultiLabelLearnerBase 
 	implements TechnicalInformationHandler, MultiLabelLearner, Serializable {
@@ -28,37 +28,31 @@ public abstract class MultiLabelLearnerBase
 	 */
 	protected int numLabels;
 
-	/** Whether the classifier is run in debug mode. */
+	/**
+	 * An array containing the indexes of the label attributes within the
+     * Instances object of the training data in increasing order. The same
+     * order will be followed in the arrays of predictions given by each learner
+     * in the {@link MultiLabelOutput} object.
+	 */
+	protected int[] labelIndices;
+
+    /** Whether the classifier is run in debug mode. */
 	protected boolean isDebug = false;
-		
-//	/**
-//	 * Creates a {@link MultiLabelLearnerBase} instance.
-//	 * 
-//	 * @param numLabels the number of labels the classifier should use
-//	 */
-//	public MultiLabelLearnerBase(final int numLabels) {
-//		this.numLabels = numLabels;
-//	}
-	
-	public int getNumLabels()
-	{
-		return numLabels;
-	}
-	
+
 	public abstract TechnicalInformation getTechnicalInformation();
 	
-	public final void build(MultiLabelInstances dataSet) throws Exception{
-		if(dataSet == null){
+	public final void build(MultiLabelInstances trainingSet) throws Exception
+    {
+		if (trainingSet == null)
 			throw new IllegalArgumentException("The dataSet is null.");
-		}
-		numLabels = dataSet.getNumLabels();
-		dataSet.reorderLabels();
-		buildInternal(dataSet);
+		
+		numLabels = trainingSet.getNumLabels();
+        labelIndices = trainingSet.getLabelIndices();
+ 
+		buildInternal(trainingSet);
 	}
 	
-	protected abstract void buildInternal(MultiLabelInstances dataSet) throws Exception;
-		
-	
+	protected abstract void buildInternal(MultiLabelInstances trainingSet) throws Exception;
 
 	/**
 	 * Set debugging mode.
@@ -66,7 +60,8 @@ public abstract class MultiLabelLearnerBase
 	 * @param debug
 	 *            true if debug output should be printed
 	 */
-	public void setDebug(boolean debug) {
+	public void setDebug(boolean debug)
+    {
 		isDebug = debug;
 	}
 		
@@ -75,7 +70,8 @@ public abstract class MultiLabelLearnerBase
 	 *
 	 * @return true if debugging output is on
 	 */
-	public boolean getDebug() {
+	public boolean getDebug()
+    {
 		return isDebug;
 	}
 	
@@ -84,12 +80,13 @@ public abstract class MultiLabelLearnerBase
 	 * @param msg the message
 	 */
 	protected void debug(String msg)
-	{
+    {
 		if (!getDebug()) return;
 			System.err.println("" + new Date() + ": " + msg);
 	}
 	
-	public MultiLabelLearner makeCopy() throws Exception {      
+	public MultiLabelLearner makeCopy() throws Exception
+    {
 	    return (MultiLabelLearner) new SerializedObject(this).getObject();
 	}
 	
