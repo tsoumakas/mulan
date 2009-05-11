@@ -2,7 +2,6 @@ package mulan.classifier;
 
 import mulan.core.data.MultiLabelInstances;
 import weka.core.Instance;
-import weka.core.Instances;
 
 /**
  * Common interface for all multi-label learner types.
@@ -10,15 +9,8 @@ import weka.core.Instances;
  * @author Jozef Vilcek
  */
 public interface MultiLabelLearner {
-
-	/**
-	 * Returns a number of labels the learner is configured for.
-	 * Label attributes are assumed to be the last ones in {@link Instances} training data.
-	 * @return number of labels
-	 */
-	public int getNumLabels();
 	
-	/**
+    /**
 	 * Builds the learner model from specified {@link MultiLabelInstances} data. 
 	 *  
 	 * @param instances set of training data, upon which the classifier should be build

@@ -145,6 +145,27 @@ public class MultiLabelInstances {
 		return labelsMetaData.getNumLabels();
 	}
 
+    /**
+     * @return an array with the indices of the label attributes inside the
+     * Instances object
+     */
+	public int[] getLabelIndices() {
+        int[] labelIndices = new int[labelsMetaData.getNumLabels()];
+        int numAttributes = dataSet.numAttributes();
+		Set<String> labelNames = labelsMetaData.getLabelNames();
+        int counter=0;
+        
+        for(int index=0; index<numAttributes; index++) {
+			Attribute attr = dataSet.attribute(index);
+			if (labelNames.contains(attr.name())) {
+				labelIndices[counter] = attr.index();
+                counter++;
+            }
+		}
+
+        return labelIndices;
+	}
+
 	public Set<Attribute> getLabelAttributes() {
 		Set<String> labelNames = labelsMetaData.getLabelNames();
 		Set<Attribute> labelAttributes = new HashSet<Attribute>(getNumLabels());
@@ -247,15 +268,15 @@ public class MultiLabelInstances {
 							arffFile.getAbsolutePath()));
 		}
 		
-		Instances dataSet = null;
+		Instances aDataSet = null;
 		try {
 			FileReader reader = new FileReader(arffFile);
-			dataSet = new Instances(reader);
+			aDataSet = new Instances(reader);
 		} catch (IOException exception) {
 			throw new DataLoadException(
 					String.format("Error loading arff data file '%s'.", arffFile.getAbsolutePath()), exception);
 		}
-		return dataSet;
+		return aDataSet;
 	}
 
 	private LabelsMetaDataImpl loadLabesMeta(String xmlLabelsDefFilePath){
