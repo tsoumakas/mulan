@@ -25,12 +25,10 @@ import mulan.classifier.MultiLabelOutput;
 import mulan.core.LabelSet;
 import mulan.core.Util;
 import mulan.core.data.MultiLabelInstances;
-import mulan.transformations.LabelPowersetFilter;
 import mulan.transformations.LabelPowersetTransformation;
 import weka.classifiers.Classifier;
 import weka.core.Instance;
 import weka.core.Instances;
-import weka.filters.Filter;
 
 /**
  * Class that implements a label powerset classifier <p>
@@ -107,14 +105,14 @@ public class LabelPowerset extends TransformationBasedMultiLabelLearner
     {
         Instances transformedData;
         transformation = new LabelPowersetTransformation();
+        debug("Transforming the training set.");
         transformedData = transformation.transformInstances(mlData);
 
-        debug("Transformed training set:");
-        debug(transformedData.toString());
+        //debug("Transformed training set: \n + transformedData.toString());
 
         // check for unary class
+        debug("Building single-label classifier.");
         if (transformedData.attribute(transformedData.numAttributes()-1).numValues() > 1) {
-            // build classifier on new dataset
             baseClassifier.buildClassifier(transformedData);
         }
     }
@@ -142,20 +140,16 @@ public class LabelPowerset extends TransformationBasedMultiLabelLearner
         } else {
             double[] distribution = null;
             try {
-                debug("old instance:" + instance.toString());
+                //debug("old instance:" + instance.toString());
                 Instance transformedInstance;
                 transformedInstance = transformation.transformInstance(instance, labelIndices);
                 distribution = baseClassifier.distributionForInstance(transformedInstance);
-                if (getDebug()) {
-                    debug(Arrays.toString(distribution));
-                }
+                //debug(Arrays.toString(distribution));
             } catch (Exception ex) {
                 Logger.getLogger(LabelPowerset.class.getName()).log(Level.SEVERE, null, ex);
             }
             int classIndex = Util.RandomIndexOfMax(distribution,Rand);
-            if (getDebug()) {
-                debug("" + classIndex);
-            }
+            //debug("" + classIndex);
             String strClass = (transformation.getTransformedFormat().classAttribute()).value(classIndex);
             LabelSet labelSet = null;
             try {
@@ -165,8 +159,7 @@ public class LabelPowerset extends TransformationBasedMultiLabelLearner
             }
 
             bipartition = labelSet.toBooleanArray();
-            if (getDebug())
-                debug(Arrays.toString(bipartition));
+            //debug(Arrays.toString(bipartition));
 
             switch (confidenceCalculationMethod)
             {
