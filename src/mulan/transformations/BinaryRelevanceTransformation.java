@@ -69,4 +69,61 @@ public class BinaryRelevanceTransformation implements Serializable {
 		return result;
 	}
 
+
+	/**
+	 * Remove all label attributes except that at indexOfLabelToKeep
+	 */
+	public static Instances transformInstances(Instances train, int[] labelIndices, int indexToKeep) throws Exception
+	{
+        int numLabels = labelIndices.length;
+        
+        train.setClassIndex(indexToKeep);
+
+
+		// Indices of attributes to remove
+		int[] indicesToRemove = new int[numLabels-1];
+        int counter2=0;
+        for (int counter1=0; counter1<numLabels; counter1++)
+            if (labelIndices[counter1] != indexToKeep)
+            {
+                indicesToRemove[counter2] = labelIndices[counter1];
+                counter2++;
+            }
+
+		Remove remove = new Remove();
+		remove.setAttributeIndicesArray(indicesToRemove);
+		remove.setInputFormat(train);
+		remove.setInvertSelection(true);
+		Instances result = Filter.useFilter(train, remove);
+		return result;
+	}
+
+
+	/**
+	 * Remove all label attributes except label at position indexToKeep
+	 */
+    public static Instance transformInstance(Instance instance, int[] labelIndices, int indexToKeep)
+	{
+        double[] values = instance.toDoubleArray();
+        double[] transformedValues = new double[values.length-labelIndices.length+1];
+
+        int counterTransformed=0;
+        int counterLabelIndices=0;
+        for (int i=0; i<values.length; i++)
+        {
+            if (i == labelIndices[counterLabelIndices])
+            {
+                counterLabelIndices++;
+                if (i != indexToKeep)
+                    continue;
+            }
+            transformedValues[counterTransformed] = i;
+            counterTransformed++;
+        }
+
+        Instance transformedInstance = new Instance(1, transformedValues);
+		return transformedInstance;
+	}
+
+
 }

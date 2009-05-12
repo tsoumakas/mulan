@@ -6,7 +6,6 @@
 package mulan.transformations;
 import weka.core.Instance;
 import weka.core.Instances;
-import weka.core.SparseInstance;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.Remove;
 /**
@@ -15,35 +14,24 @@ import weka.filters.unsupervised.attribute.Remove;
  */
 public class RemoveAllLabels {
 
-    public Instances transformInstances(Instances dataSet, int numOfLabels) throws Exception {
-        //Indices of attributes to remove
-        int indices[] = new int[numOfLabels];
-        int k = 0;
-        for (int j = 0; j < numOfLabels; j++)
-        {
-            indices[k] = dataSet.numAttributes() - numOfLabels + j;
-            k++;
-        }
-
+    public static Instances transformInstances(Instances dataSet, int[] labelIndices) throws Exception
+    {
         Remove remove = new Remove();
-        remove.setAttributeIndicesArray(indices);
+        remove.setAttributeIndicesArray(labelIndices);
         remove.setInputFormat(dataSet);
-        //remove.setInvertSelection(true);
         Instances result = Filter.useFilter(dataSet, remove);
-        result.setClassIndex(result.numAttributes() - 1);
         return result;
     }
 
-    public Instance transformInstance(Instance instance, int numLabels) throws Exception
+
+    public static Instance transformInstance(Instance instance, int[] labelIndices) throws Exception
     {
-        Instance transformedInstance;
-        if (instance instanceof SparseInstance)
-            transformedInstance = (SparseInstance) instance.copy();
-        else
-            transformedInstance = (Instance) instance.copy();
-        transformedInstance.setDataset(null);
-        for (int j = 0; j < numLabels; j++)
-            transformedInstance.deleteAttributeAt((transformedInstance.numAttributes() - numLabels + j));
-        return transformedInstance;
+        Remove remove = new Remove();
+        remove.setAttributeIndicesArray(labelIndices);
+        remove.setInputFormat(instance.dataset());
+        remove.input(instance);
+        remove.batchFinished();
+        return remove.output();
     }
+
 }
