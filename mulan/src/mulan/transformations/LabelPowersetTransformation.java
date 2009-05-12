@@ -76,6 +76,7 @@ public class LabelPowersetTransformation  {
 
     public Instance transformInstance(Instance instance, int[] labelIndices) throws Exception {
         Instance transformedInstance = RemoveAllLabels.transformInstance(instance, labelIndices);
+        transformedInstance.setDataset(null);
         transformedInstance.insertAttributeAt(transformedInstance.numAttributes());
         transformedInstance.setDataset(transformedFormat);
         return transformedInstance;
