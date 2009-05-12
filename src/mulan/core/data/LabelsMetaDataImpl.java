@@ -1,3 +1,25 @@
+/*
+*    This program is free software; you can redistribute it and/or modify
+*    it under the terms of the GNU General Public License as published by
+*    the Free Software Foundation; either version 2 of the License, or
+*    (at your option) any later version.
+*
+*    This program is distributed in the hope that it will be useful,
+*    but WITHOUT ANY WARRANTY; without even the implied warranty of
+*    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*    GNU General Public License for more details.
+*
+*    You should have received a copy of the GNU General Public License
+*    along with this program; if not, write to the Free Software
+*    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+*/
+
+/*
+*    LabelsMetaDataImpl.java
+*    Copyright (C) 2009 Aristotle University of Thessaloniki, Thessaloniki, Greece
+*
+*/
+
 package mulan.core.data;
 
 import java.io.Serializable;
@@ -55,9 +77,14 @@ public class LabelsMetaDataImpl implements LabelsMetaData, Serializable {
 		if(rootNode == null){
 			throw new IllegalArgumentException("The rootNode is null.");
 		}
-		if(rootLabelNodes.add(rootNode)){
-			processNodeIndex(rootNode, IndexingAction.Add);
+		if(rootLabelNodes.contains(rootNode)){
+			throw new IllegalArgumentException(
+					String.format("The root label node '%s' is already added.", 
+							rootNode.getName()));
 		}
+		
+		rootLabelNodes.add(rootNode);
+		processNodeIndex(rootNode, IndexingAction.Add);
 	}
 	
 	public LabelNode getLabelNode(String labelName) {
@@ -72,7 +99,7 @@ public class LabelsMetaDataImpl implements LabelsMetaData, Serializable {
 		return allLabelNodes.containsKey(labelName);
 	}
 	
-	public boolean IsHierarchy() {
+	public boolean isHierarchy() {
 		return (allLabelNodes.size() == rootLabelNodes.size()) ? false : true;
 	}
 
@@ -115,7 +142,13 @@ public class LabelsMetaDataImpl implements LabelsMetaData, Serializable {
 			return 0;
 		}
 		LabelNode labelNode = allLabelNodes.get(labelName);
-		return processNodeIndex(labelNode, IndexingAction.Add);
+		
+		int result = processNodeIndex(labelNode, IndexingAction.Remove);
+		if(result > 0 && rootLabelNodes.contains(labelNode)){
+			rootLabelNodes.remove(labelNode);
+		}
+		
+		return result;
 	}
 	
 	private int processNodeIndex(LabelNode node, IndexingAction action){
