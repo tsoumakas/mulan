@@ -1,7 +1,10 @@
 package mulan.evaluation;
 
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Random;
 
+import java.util.Set;
 import mulan.classifier.MultiLabelLearner;
 import mulan.classifier.MultiLabelOutput;
 import mulan.core.data.MultiLabelInstances;
@@ -40,30 +43,34 @@ public class Evaluator
 	 * @param learner the learner to be evaluated via cross-validation
 	 * @param dataset the data set for cross-validation
 	 * @param learner
-	 * @param dataSet
+	 * @param testSet
 	 * @return the evaluation result
 	 * @throws IllegalArgumentException if either of input parameters is null.
 	 * @throws Exception
 	 */
-	public Evaluation evaluate(MultiLabelLearner learner, Instances dataSet) throws Exception{
+	public Evaluation evaluate(MultiLabelLearner learner, MultiLabelInstances testSet) throws Exception{
 	
 		if(learner == null){
 			throw new IllegalArgumentException("Learner to be evaluated is null.");
 		}
-		if(dataSet == null){
+		if(testSet == null){
 			throw new IllegalArgumentException("TestDataSet for the evaluation is null.");
 		}
 	
 		// collect output
-		int numInstances = dataSet.numInstances();
-		int numLabels = learner.getNumLabels();
+        Instances testData = testSet.getDataSet();
+		int numInstances = testData.numInstances();
+		int numLabels = testSet.getNumLabels();
 
         MultiLabelOutput[] output = new MultiLabelOutput[numInstances];
         boolean trueLabels[][] = new boolean[numInstances][numLabels];
+
+        // Create array of indexes of labels in the test set in prediction order
+        int[] indices = testSet.getLabelIndices();
         for (int instanceIndex=0; instanceIndex<numInstances; instanceIndex++) {
-            Instance instance = dataSet.instance(instanceIndex);
+            Instance instance = testData.instance(instanceIndex);
             output[instanceIndex] = learner.makePrediction(instance);
-            trueLabels[instanceIndex] = getTrueLabels(instance, numLabels);
+            trueLabels[instanceIndex] = getTrueLabels(instance, numLabels, indices);
         }
 		Evaluation evaluation = new Evaluation();
         if (output[0].hasBipartition()) {
@@ -83,14 +90,14 @@ public class Evaluator
 		return evaluation;
 	}
 	
-	private boolean[] getTrueLabels(Instance instance, int numLabels){
+	private boolean[] getTrueLabels(Instance instance, int numLabels, int[] labelIndices) {
 		
 		boolean[] trueLabels = new boolean[numLabels];
-		for(int labelIndex = 0; labelIndex < numLabels; labelIndex++)
+		for(int counter = 0; counter < numLabels; counter++)
 		{
-			int classIdx = instance.numAttributes() - numLabels + labelIndex;
+			int classIdx = labelIndices[counter];
 			String classValue = instance.attribute(classIdx).value((int) instance.value(classIdx));
-            trueLabels[labelIndex] = classValue.equals("1");
+            trueLabels[counter] = classValue.equals("1");
 		}
 		
 		return trueLabels;
@@ -157,9 +164,12 @@ public class Evaluator
 			Instances train = workingSet.trainCV(numFolds, i, random);
 			Instances test  = workingSet.testCV(numFolds, i);
 			MultiLabelInstances mlTrain = new MultiLabelInstances(train, mlDataSet.getLabelsMetaData());
+			MultiLabelInstances mlTest = new MultiLabelInstances(test, mlDataSet.getLabelsMetaData());
 			MultiLabelLearner clone = learner.makeCopy();
 			clone.build(mlTrain);
-			Evaluation evaluation = evaluate(clone, test);
+
+            // Create array of indexes of labels in the test set in prediction order
+			Evaluation evaluation = evaluate(clone, mlTest);
             ebm[i] = evaluation.getExampleBasedMeasures();
             lbm[i] = evaluation.getLabelBasedMeasures();
             rbm[i] = evaluation.getRankingBasedMeasures();
