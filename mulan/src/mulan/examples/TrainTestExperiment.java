@@ -3,6 +3,7 @@ package mulan.examples;
 import mulan.classifier.transformation.BinaryRelevance;
 import mulan.classifier.transformation.CalibratedLabelRanking;
 import mulan.classifier.transformation.LabelPowerset;
+import mulan.classifier.transformation.RAkEL;
 import mulan.core.data.MultiLabelInstances;
 import mulan.evaluation.Evaluation;
 import mulan.evaluation.Evaluator;
@@ -16,7 +17,7 @@ import weka.core.Utils;
 public class TrainTestExperiment {
 
     public static void main(String[] args) {
-        String[] methodsToCompare = {"LP", "CLR", "BR"};
+        String[] methodsToCompare = {"RAkEL", "LP", "CLR", "BR"};
 
         try {
             String path = Utils.getOption("path", args);
@@ -55,6 +56,16 @@ public class TrainTestExperiment {
                     lp.setDebug(true);
                     lp.build(train);
                     results = eval.evaluate(lp, test);
+                    System.out.println(results.toString());
+                }
+
+                if (methodsToCompare[i].equals("RAkEL")) {
+                    System.out.println(methodsToCompare[i]);
+                    LabelPowerset lp = new LabelPowerset(new J48());
+                    RAkEL rakel = new RAkEL(lp);
+                    rakel.setDebug(true);
+                    rakel.build(train);
+                    results = eval.evaluate(rakel, test);
                     System.out.println(results.toString());
                 }
             }
