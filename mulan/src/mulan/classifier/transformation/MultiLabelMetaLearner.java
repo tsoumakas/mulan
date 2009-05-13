@@ -23,9 +23,6 @@ package mulan.classifier.transformation;
 
 import mulan.classifier.*;
 import weka.classifiers.trees.J48;
-import weka.core.TechnicalInformation;
-import weka.core.TechnicalInformation.Field;
-import weka.core.TechnicalInformation.Type;
 
 
 /**
