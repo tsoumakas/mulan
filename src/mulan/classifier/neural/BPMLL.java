@@ -1,3 +1,25 @@
+/*
+*    This program is free software; you can redistribute it and/or modify
+*    it under the terms of the GNU General Public License as published by
+*    the Free Software Foundation; either version 2 of the License, or
+*    (at your option) any later version.
+*
+*    This program is distributed in the hope that it will be useful,
+*    but WITHOUT ANY WARRANTY; without even the implied warranty of
+*    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*    GNU General Public License for more details.
+*
+*    You should have received a copy of the GNU General Public License
+*    along with this program; if not, write to the Free Software
+*    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+*/
+
+/*
+*    BPMLL.java
+*    Copyright (C) 2009 Aristotle University of Thessaloniki, Thessaloniki, Greece
+*
+*/
+
 package mulan.classifier.neural;
 
 import java.util.ArrayList;
@@ -19,7 +41,6 @@ import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.NominalToBinary;
-
 
 
 /**
@@ -45,21 +66,14 @@ public class BPMLL extends MultiLabelLearnerBase {
 	
 	// members related to normalization or attributes
 	private boolean normalizeAttributes = true;
+	// the indexes in this array does not necessarily corresponds to attribute indices, 
+	// because feature attributes can mixed with label attributes in random order    
 	private double[] attRanges;
 	private double[] attBases;
 
 	private NeuralNet model;
 	private ThresholdFunction thresholdF;
 	
-//	/**
-//	 * Creates a {@link BPMLL} instance.
-//	 * 
-//	 * @param numLabels number of labels of the classifier
-//	 */
-//	public BPMLL(int numLabels) {
-//		super(numLabels);
-//	}
-
 	/**
 	 * Sets the topology of hidden layers for neural network. 
 	 * The length of passed array defines number of hidden layers. 
@@ -255,24 +269,36 @@ public class BPMLL extends MultiLabelLearnerBase {
 		}
 				
 		if(normalizeAttributes){
-			normalizeAttributes(data);
+			normalizeAttributes(mlData);
 		}
 		else{
 			attBases = null;
 			attRanges = null;
 		}
 		int numInstances = data.numInstances();
+		int numAttributes = data.numAttributes();
 		int inputDim = data.numAttributes() - numLabels;
 		List<DataPair> dataPairs = new ArrayList<DataPair>();
 		for(int index = 0; index < numInstances; index++){
-			double[] instance = data.instance(index).toDoubleArray();
-			double[] input = Arrays.copyOfRange(instance, 0, inputDim);
-			double[] output = Arrays.copyOfRange(instance, inputDim, instance.length);
-			for(int i = 0; i < output.length; i++){
-				if(output[i] == 0){
-					output[i] = -1;
+			Instance instance = data.instance(index);
+
+			double[] input = new double[inputDim];
+			Set<Attribute> features = mlData.getFeatureAttributes();  
+			int indexCounter = 0;
+			for(int i = 0; i < numAttributes; i++){
+				Attribute attr = instance.attribute(i);
+				if(features.contains(attr)){
+					input[indexCounter] = instance.value(attr.index());
+					indexCounter++;					
 				}
 			}
+			
+			double[] output = new double[numLabels];
+			for(int i = 0; i < numLabels; i++){
+				double value = instance.value(labelIndices[i]);
+				output[i] = value == 0 ? -1 : value;
+			}
+
 			dataPairs.add(new DataPair(input, output));
 		}
 		
@@ -331,34 +357,41 @@ public class BPMLL extends MultiLabelLearnerBase {
 	 * 
 	 * @param data instances data of which attributes should be normalized
 	 */
-	private void normalizeAttributes(Instances data){
+	private void normalizeAttributes(MultiLabelInstances mlData){
 		
+		Instances data = mlData.getDataSet();
+		Set<Attribute> features = mlData.getFeatureAttributes();
 		int numInstances = data.numInstances();
 		int numAttributes = data.numAttributes();
+		int indexCounter = 0;
 		attRanges = new double[numAttributes - numLabels];
 		attBases = new double[numAttributes - numLabels];
 		for(int attIndex = 0; attIndex < numAttributes - numLabels; attIndex++){
-			// get min max values of attribute
-			double min = Double.POSITIVE_INFINITY;
-			double max = Double.NEGATIVE_INFINITY;
-			for (int i = 0; i < numInstances; i++) {
-				Instance instance = data.instance(i);
-				if (!instance.isMissing(attIndex)) {
-					double value = instance.value(attIndex);
-					if (value < min) {
-						min = value;
-					}
-					if (value > max) {
-						max = value;
+			if(features.contains(data.attribute(attIndex))){
+				// get min max values of attribute
+				double min = Double.POSITIVE_INFINITY;
+				double max = Double.NEGATIVE_INFINITY;
+				for (int i = 0; i < numInstances; i++) {
+					Instance instance = data.instance(i);
+					if (!instance.isMissing(attIndex)) {
+						double value = instance.value(attIndex);
+						if (value < min) {
+							min = value;
+						}
+						if (value > max) {
+							max = value;
+						}
 					}
 				}
-			}
-			// normalize values of the attribute to <-1,1>
-			attRanges[attIndex] = (max - min) / 2;
-			attBases[attIndex] = (max + min) / 2;
-			for (int i = 0; i < numInstances; i++) {
-				Instance instance = data.instance(i);
-				normalizeAttribute(instance, attIndex, attRanges[attIndex], attBases[attIndex]);
+				// normalize values of the attribute to <-1,1>
+				attRanges[indexCounter] = (max - min) / 2;
+				attBases[indexCounter] = (max + min) / 2;
+				for (int i = 0; i < numInstances; i++) {
+					Instance instance = data.instance(i);
+					normalizeAttribute(instance, attIndex, attRanges[indexCounter], attBases[indexCounter]);
+				}
+				
+				indexCounter++;
 			}
 		}
 	}
@@ -382,7 +415,8 @@ public class BPMLL extends MultiLabelLearnerBase {
 		if(instance == null){
 			throw new IllegalArgumentException("Input instance for prediction is null.");
 		}
-		if(instance.numAttributes() < model.getNetInputSize()){
+		int numAttributes = instance.numAttributes();
+		if(numAttributes < model.getNetInputSize()){
 			throw new IllegalArgumentException("Input instance do not have enough attributes " +
 					"to be processed by the model. Instance is not consistent with the data the model was built for.");
 		}
@@ -396,21 +430,39 @@ public class BPMLL extends MultiLabelLearnerBase {
 			inputInstance.setDataset(null);
 		}
 
-		// remove label attributes from the end of instance if they are available there
-		if(inputInstance.numAttributes() > model.getNetInputSize()){
-			int diff = inputInstance.numAttributes() - model.getNetInputSize();
-			for(int i = 0; i < diff; i++)
-				inputInstance.deleteAttributeAt(model.getNetInputSize());
+		// if instance has more attributes than model input, we assume that true outputs 
+		// are there, so we remove them
+		List<Integer> labelIndices = new ArrayList<Integer>();
+		boolean labelsAreThere = false;
+		if(numAttributes > model.getNetInputSize()){
+			for(int index : this.labelIndices)
+				labelIndices.add(index);
+			
+			labelsAreThere = true;
 		}
 
 		if(normalizeAttributes){
-			int numAttributes = inputInstance.numAttributes();
+			int indexCounter = 0;
 			for (int attIndex = 0; attIndex < numAttributes; attIndex++) {
-				normalizeAttribute(inputInstance, attIndex, attRanges[attIndex], attBases[attIndex]);
+				if(labelsAreThere && labelIndices.contains(attIndex)){
+					continue;
+				}
+				normalizeAttribute(inputInstance, attIndex, attRanges[indexCounter], attBases[indexCounter]);
+				indexCounter++;
 			}
 		}
-
-		double[] inputPattern = Arrays.copyOfRange(inputInstance.toDoubleArray(), 0, inputInstance.numAttributes());
+		
+		int inputDim = model.getNetInputSize();
+		double[] inputPattern = new double[inputDim];
+		int indexCounter = 0;
+		for(int attrIndex = 0; attrIndex < numAttributes; attrIndex++){
+			if(labelsAreThere && labelIndices.contains(attrIndex)){
+					continue;
+			}
+			inputPattern[indexCounter] = inputInstance.value(attrIndex);
+			indexCounter++;
+		}
+		
 		double[] labelConfidences = model.feedForward(inputPattern);
 		double threshold = thresholdF.computeThreshold(labelConfidences);
 		boolean[] labelPredictions = new boolean[numLabels];
