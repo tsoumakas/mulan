@@ -24,7 +24,6 @@ package mulan.classifier.transformation;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Random;
-
 import mulan.classifier.MultiLabelLearner;
 import mulan.classifier.MultiLabelOutput;
 import mulan.core.data.MultiLabelInstances;
@@ -41,7 +40,7 @@ import weka.filters.unsupervised.attribute.Remove;
  * <!-- globalinfo-start -->
  *
  * <pre>
- * Class implementing the RAkEL (RAndom k-labELsets) algorithm.
+ * Class implementing a generalized version of the RAkEL (RAndom k-labELsets) algorithm.
  * </pre>
  *
  * For more information:
@@ -232,7 +231,7 @@ public class RAkEL extends MultiLabelMetaLearner
             }
             Arrays.sort(classIndicesPerSubset[model]);
         } while (combinations.add(Arrays.toString(classIndicesPerSubset[model])) == false);
-        debug("Building model " + model + ", subset: " + Arrays.toString(classIndicesPerSubset[model]));
+        debug("Building model " + (model+1) + "/" + numOfModels + ", subset: " + Arrays.toString(classIndicesPerSubset[model]));
         // remove the unselected labels
         absoluteIndicesToRemove[model] = new int[numLabels-sizeOfSubset]; 
         int k=0;

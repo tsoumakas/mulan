@@ -1,5 +1,24 @@
-package mulan.classifier.transformation;
+/*
+ *    This program is free software; you can redistribute it and/or modify
+ *    it under the terms of the GNU General Public License as published by
+ *    the Free Software Foundation; either version 2 of the License, or
+ *    (at your option) any later version.
+ *
+ *    This program is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *    GNU General Public License for more details.
+ *
+ *    You should have received a copy of the GNU General Public License
+ *    along with this program; if not, write to the Free Software
+ *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
 
+/*
+ *    BinaryRelevance.java
+ *    Copyright (C) 2009 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ */
+package mulan.classifier.transformation;
 
 import mulan.classifier.MultiLabelOutput;
 import mulan.core.data.MultiLabelInstances;
@@ -11,16 +30,52 @@ import weka.core.Instances;
 import weka.filters.unsupervised.attribute.Remove;
 
 /**
- * Class that implements a binary relevance classifier <p>
+ *
+ * <!-- globalinfo-start -->
+ *
+ * Class that implements the Binary Relevance (BR) method. For more information, see <br/>
+ * <br/>
+ * G. Tsoumakas, I. Katakis, I. Vlahavas, "Mining Multi-label Data",
+ * Data Mining and Knowledge Discovery Handbook (draft of preliminary accepted chapter),
+ * O. Maimon, L. Rokach (Ed.), 2nd edition, Springer, 2009.
+ * </p>
+ *
+ * <!-- globalinfo-end -->
+ *
+ * <!-- technical-bibtex-start -->
+ * BibTeX:
+ *
+ * <pre>
+ * &#064;inbook{tsoumakas+etal:2009,
+ *    author =    {Tsoumakas, G. and Katakis, I. and Vlahavas, I.},
+ *    title =     {Mining Multi-label Data},
+ *    booktitle = {Data Mining and Knowledge Discovery Handbook, 2nd edition},
+ *    year =      {2009},
+ *    editor =    {Maimon, O. and Rokach, L.},
+ * }
+ * </pre>
+ *
+ * <p/> <!-- technical-bibtex-end -->
  *
  * @author Robert Friberg
  * @author Grigorios Tsoumakas 
- * @version $Revision: 0.05 $
+ * @version $Revision: 0.05$
  */
 public class BinaryRelevance extends TransformationBasedMultiLabelLearner 
 {
+    /**
+     * The ensemble of binary relevance models. These are Weka FilteredClassifier
+     * objects, where the filter corresponds to removing all label apart from
+     * the one that serves as a target for the corresponding model.
+     */
 	protected FilteredClassifier[] ensemble;
     
+    /**
+     * Creates a new instance
+     *
+     * @param classifier: the base-level classification algorithm that will
+     * be used for training each of the binary models
+     */
 	public BinaryRelevance(Classifier classifier) throws Exception
     {
 		super(classifier);
