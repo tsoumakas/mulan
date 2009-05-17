@@ -4,6 +4,7 @@
  */
 
 package mulan.transformations;
+import mulan.core.data.MultiLabelInstances;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.filters.Filter;
@@ -14,6 +15,13 @@ import weka.filters.unsupervised.attribute.Remove;
  */
 public class RemoveAllLabels {
 
+    public static Instances transformInstances(MultiLabelInstances mlData) throws Exception
+    {
+        Instances result;
+        result = transformInstances(mlData.getDataSet(), mlData.getLabelIndices());
+        return result;
+    }
+
     public static Instances transformInstances(Instances dataSet, int[] labelIndices) throws Exception
     {
         Remove remove = new Remove();
@@ -22,7 +30,6 @@ public class RemoveAllLabels {
         Instances result = Filter.useFilter(dataSet, remove);
         return result;
     }
-
 
     public static Instance transformInstance(Instance instance, int[] labelIndices) throws Exception
     {

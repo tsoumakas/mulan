@@ -1,5 +1,3 @@
-package mulan.classifier.transformation;
-
 /*
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -15,6 +13,12 @@ package mulan.classifier.transformation;
  *    along with this program; if not, write to the Free Software
  *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
+
+/*
+ *    PPT.java
+ *    Copyright (C) 2009 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ */
+package mulan.classifier.transformation;
 
 import java.util.ArrayList;
 import java.util.Collections;

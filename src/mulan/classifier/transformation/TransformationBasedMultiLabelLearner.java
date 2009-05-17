@@ -40,7 +40,7 @@ import weka.core.TechnicalInformation.Type;
 public abstract class TransformationBasedMultiLabelLearner extends MultiLabelLearnerBase {
 	
 	/**
-	 * The encapsulated classifier or used for making clones in the 
+	 * The encapsulated classifier used for making clones in the 
 	 * case of ensemble classifiers. 
 	 */
 	protected final Classifier baseClassifier;
@@ -62,6 +62,7 @@ public abstract class TransformationBasedMultiLabelLearner extends MultiLabelLea
 	 */
 	public TransformationBasedMultiLabelLearner(Classifier baseClassifier)
 	{
+        // todo: check if it is not a regressor
 		this.baseClassifier = baseClassifier;
 	}
 	
