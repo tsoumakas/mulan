@@ -5,6 +5,7 @@
 
 package mulan.attributeSelection;
 
+import mulan.core.data.MultiLabelInstances;
 import mulan.transformations.LabelPowersetTransformation;
 import weka.attributeSelection.AttributeEvaluator;
 import weka.core.Instances;
@@ -13,14 +14,14 @@ import weka.core.Instances;
  *
  * @author greg
  */
-public class LabelPowersetAttributeEvaluator extends AttributeEvaluator {
+public class LabelPowersetAttributeEvaluator extends AttributeEvaluator
+{
     // number of labels
     int numLabels;
     // The single-label attributed evaluator to use underneath
     AttributeEvaluator baseAttributeEvaluator;
-    
-    public LabelPowersetAttributeEvaluator(int l) {
-        numLabels = l;
+
+    public LabelPowersetAttributeEvaluator() {
     } 
     
     @Override
@@ -28,14 +29,19 @@ public class LabelPowersetAttributeEvaluator extends AttributeEvaluator {
         return baseAttributeEvaluator.evaluateAttribute(attribute);
     }
 
-    @Override
-    public void buildEvaluator(Instances data) throws Exception {
-        LabelPowersetTransformation lbTrans = new LabelPowersetTransformation(numLabels);
-        Instances newData = lbTrans.transformInstances(data);
+    public void buildEvaluator(MultiLabelInstances mlData) throws Exception
+    {
+        LabelPowersetTransformation lbTrans = new LabelPowersetTransformation();
+        Instances newData = lbTrans.transformInstances(mlData);
         baseAttributeEvaluator.buildEvaluator(newData);
     }
 
     public void setAttributeEvaluator(AttributeEvaluator x) {
         baseAttributeEvaluator = x;
+    }
+
+    @Override
+    public void buildEvaluator(Instances arg0) throws Exception {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

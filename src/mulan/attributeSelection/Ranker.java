@@ -1,5 +1,6 @@
 package mulan.attributeSelection;
 
+import mulan.core.data.MultiLabelInstances;
 import weka.attributeSelection.ASEvaluation;
 import weka.core.Instances;
 
@@ -7,13 +8,16 @@ import weka.core.Instances;
  * 
  * @author greg
  */
-public class Ranker extends weka.attributeSelection.Ranker {
+public class Ranker extends weka.attributeSelection.Ranker
+{
     private int numLabels;
     
-    public Ranker(int l) {
-        numLabels = l;
+    public int[] search(ASEvaluation ASEval, MultiLabelInstances mlData) throws Exception
+    {
+        numLabels = mlData.getNumLabels();
+        return search(ASEval, mlData.getDataSet());
     }
-    
+
     @Override
     public int[] search (ASEvaluation ASEval, Instances data) throws Exception 
     {
