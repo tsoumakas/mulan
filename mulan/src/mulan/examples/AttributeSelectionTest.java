@@ -6,11 +6,13 @@
 package mulan.examples;
 
 
-import java.io.FileReader;
+import java.util.Arrays;
 import mulan.attributeSelection.LabelPowersetAttributeEvaluator;
 import mulan.attributeSelection.Ranker;
+import mulan.core.data.MultiLabelInstances;
 import weka.attributeSelection.ChiSquaredAttributeEval;
 import weka.core.Instances;
+import weka.core.Utils;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.Remove;
 
@@ -19,34 +21,34 @@ import weka.filters.unsupervised.attribute.Remove;
  * @author greg
  */
 public class AttributeSelectionTest {
-    public static void main(String[] args) throws Exception {
-        final int NUM_LABELS = 6;
-        String filename = "d:/work/datasets/multilabel/emotions/emotions.arff";
-        FileReader frData = null;
-        frData = new FileReader(filename);
-        Instances data = new Instances(frData);                
+    
+    public static void main(String[] args) throws Exception
+    {
+        String path = Utils.getOption("path", args);
+        String filestem = Utils.getOption("filestem", args);
+        MultiLabelInstances data = new MultiLabelInstances(path + filestem + ".arff", path + filestem + ".xml");
 
         ChiSquaredAttributeEval csae = new ChiSquaredAttributeEval();
-        LabelPowersetAttributeEvaluator lpae = new LabelPowersetAttributeEvaluator(NUM_LABELS);
+        LabelPowersetAttributeEvaluator lpae = new LabelPowersetAttributeEvaluator();
         lpae.setAttributeEvaluator(csae);
         lpae.buildEvaluator(data);
         
-        Ranker r = new Ranker(NUM_LABELS);
+        Ranker r = new Ranker();
         int[] result = r.search(lpae, data);        
-        //System.out.println(Arrays.toString(result));
+        System.out.println(Arrays.toString(result));
         
         final int NUM_TO_KEEP=10;
-        int[] toKeep = new int[NUM_TO_KEEP+NUM_LABELS];
+        int[] toKeep = new int[NUM_TO_KEEP+data.getNumLabels()];
         System.arraycopy(result, 0, toKeep, 0, NUM_TO_KEEP);
-        for (int i=0; i<NUM_LABELS; i++)
-            toKeep[NUM_TO_KEEP+i] = data.numAttributes()-1-i;
+        for (int i=0; i<data.getNumLabels(); i++)
+            toKeep[NUM_TO_KEEP+i] = data.getDataSet().numAttributes()-1-i;
         
         Remove filterRemove = new Remove();
         filterRemove.setAttributeIndicesArray(toKeep);
         filterRemove.setInvertSelection(true);
-        filterRemove.setInputFormat(data);
-        Instances filtered = Filter.useFilter(data, filterRemove);
+        filterRemove.setInputFormat(data.getDataSet());
+        Instances filtered = Filter.useFilter(data.getDataSet(), filterRemove);
         
-        //System.out.println(filtered.toString());
+        System.out.println(filtered.toString());
     }
 }
