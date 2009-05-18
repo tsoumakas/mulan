@@ -1,3 +1,25 @@
+/*
+*    This program is free software; you can redistribute it and/or modify
+*    it under the terms of the GNU General Public License as published by
+*    the Free Software Foundation; either version 2 of the License, or
+*    (at your option) any later version.
+*
+*    This program is distributed in the hope that it will be useful,
+*    but WITHOUT ANY WARRANTY; without even the implied warranty of
+*    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*    GNU General Public License for more details.
+*
+*    You should have received a copy of the GNU General Public License
+*    along with this program; if not, write to the Free Software
+*    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+*/
+
+/*
+*    LabelNodeImpl.java
+*    Copyright (C) 2009 Aristotle University of Thessaloniki, Thessaloniki, Greece
+*
+*/
+
 package mulan.core.data;
 
 import java.io.Serializable;
@@ -14,7 +36,7 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * Implementation of node representing label attribute and its connection 
+ * Implementation of {@link LabelNode}, representing a label attribute and its connection 
  * within a hierarchy of labels. 
  * 
  * @author Jozef Vilcek
@@ -51,7 +73,6 @@ public class LabelNodeImpl implements LabelNode, Serializable {
 		name = "";
 		childrenNodes = new HashSet<LabelNode>();
 	}
-	
 	
 	/**
 	 * Adds the specified {@link LabelNode} to the set of child nodes. 
@@ -95,7 +116,6 @@ public class LabelNodeImpl implements LabelNode, Serializable {
 		return childrenNodes.remove(node);
 	}
 	
-	
 	public Set<LabelNode> getChildren() {
 		return Collections.unmodifiableSet(childrenNodes);
 	}
@@ -120,7 +140,10 @@ public class LabelNodeImpl implements LabelNode, Serializable {
 		return (parentNode == null) ? false : true;
 	}
 
-	
+	/**
+	 * The hash code is computed based on label name attribute, which defines the
+	 * identity of the {@link LabelNodeImpl} node.
+	 */
 	@Override
 	public int hashCode(){
 		int hash = 1;
@@ -128,6 +151,11 @@ public class LabelNodeImpl implements LabelNode, Serializable {
 		return hash;
 	}
 	
+	/**
+	 * The two {@link LabelNodeImpl} nodes are equal if the are the same 
+	 * (points to the same object) of if they returns same {@link #getName()} value.
+	 * The name of the labels gives the identity to the {@link LabelNodeImpl}.
+	 */
 	@Override
 	public boolean equals(Object obj){
 		
@@ -141,5 +169,4 @@ public class LabelNodeImpl implements LabelNode, Serializable {
 		LabelNodeImpl labelNode = (LabelNodeImpl)obj;
 		return name == labelNode.getName();
 	}
-
 }

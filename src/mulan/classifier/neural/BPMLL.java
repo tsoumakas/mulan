@@ -42,12 +42,13 @@ import weka.core.TechnicalInformation.Type;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.NominalToBinary;
 
-
 /**
- * 
- * The network is created when classifier is being build. The input and output layer is determined from input training data.
+ * The implementation of Back-Propagation Multi-Label Learning (BPMLL) learner.
+ * The learned model is stored in {@link NeuralNet} neural network. The models of the
+ * learner is built by {@link BPMLLAlgorithm} from given training data set.
  * 
  * @author Jozef Vilcek
+ * @see BPMLLAlgorithm
  */
 public class BPMLL extends MultiLabelLearnerBase {
 
@@ -56,7 +57,7 @@ public class BPMLL extends MultiLabelLearnerBase {
 	private static final double ERROR_SMALL_CHANGE = 0.000001;
 	
 	// filter used to convert nominal input attributes into binary-numeric 
-	NominalToBinary nominalToBinaryFilter;
+	private NominalToBinary nominalToBinaryFilter;
 	
 	// algorithm parameters 
 	private int epochs = 100;
@@ -78,9 +79,9 @@ public class BPMLL extends MultiLabelLearnerBase {
 	 * Sets the topology of hidden layers for neural network. 
 	 * The length of passed array defines number of hidden layers. 
 	 * The value at particular index of array defines number of neurons in that layer.
-	 * If null is specified, no hidden layers will be created.
+	 * If <code>null</code> is specified, no hidden layers will be created.
 	 * <br/>
-	 * The network is created when classifier is being built.
+	 * The network is created when learner is being built.
 	 * The input and output layer is determined from input training data.
 	 * 
 	 * @param hiddenLayers
@@ -147,7 +148,7 @@ public class BPMLL extends MultiLabelLearnerBase {
 	
 	/**
 	 * Sets whether attributes of instances data (except label attributes) should 
-	 * be normalized prior to building the classifier. Normalization is performed 
+	 * be normalized prior to building the learner. Normalization is performed 
 	 * on numeric attributes to the range {-1,1}).<br/> 
 	 * When making prediction, attributes of passed input instance are also 
 	 * normalized prior to making prediction.<br/>
@@ -219,7 +220,6 @@ public class BPMLL extends MultiLabelLearnerBase {
 	    technicalInfo.setValue(Field.PAGES, "1338-1351");
 	    return technicalInfo;
 	}
-	
 	
 	private ThresholdFunction buildThresholdFunction(List<DataPair> trainData){
 		

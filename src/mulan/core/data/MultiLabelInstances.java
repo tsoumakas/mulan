@@ -188,6 +188,11 @@ public class MultiLabelInstances {
         return labelIndices;
 	}
 
+	/**
+	 * Gets the {@link Set} of label {@link Attribute} instances of 
+	 * this {@link MultiLabelInstances} instance.   
+	 * @return
+	 */
 	public Set<Attribute> getLabelAttributes() {
 		Set<String> labelNames = labelsMetaData.getLabelNames();
 		Set<Attribute> labelAttributes = new HashSet<Attribute>(getNumLabels());
@@ -201,6 +206,11 @@ public class MultiLabelInstances {
 		return labelAttributes;
 	}
 	
+	/**
+	 * Gets the {@link Set} of feature {@link Attribute} instances of 
+	 * this {@link MultiLabelInstances} instance.   
+	 * @return
+	 */
 	public Set<Attribute> getFeatureAttributes(){
 		Set<String> labelNames = labelsMetaData.getLabelNames();
 		Set<Attribute> featureAttributes = new HashSet<Attribute>(getNumLabels());

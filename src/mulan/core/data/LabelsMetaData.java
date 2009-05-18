@@ -65,7 +65,8 @@ public interface LabelsMetaData {
 	 * Determines if {@link LabelsMetaData} contains a label with specified name.
 	 * 
 	 * @param labelName the label name
-	 * @return 
+	 * @return <code>true</code> if meta data contains the given label name; 
+	 * 		   <code>false</code> otherwise.
 	 */
 	boolean containsLabel(String labelName);
 	

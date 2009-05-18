@@ -1,3 +1,24 @@
+/*
+*    This program is free software; you can redistribute it and/or modify
+*    it under the terms of the GNU General Public License as published by
+*    the Free Software Foundation; either version 2 of the License, or
+*    (at your option) any later version.
+*
+*    This program is distributed in the hope that it will be useful,
+*    but WITHOUT ANY WARRANTY; without even the implied warranty of
+*    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*    GNU General Public License for more details.
+*
+*    You should have received a copy of the GNU General Public License
+*    along with this program; if not, write to the Free Software
+*    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+*/
+
+/*
+*    Neuron.java
+*    Copyright (C) 2009 Aristotle University of Thessaloniki, Thessaloniki, Greece
+*
+*/
 
 package mulan.classifier.neural;
 
@@ -8,7 +29,8 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * Implementation of a neuron.  
+ * Implementation of a neuron unit. 
+ * The neurons are used as processing elements in {@link NeuralNet}. 
  * 
  * @author Jozef Vilcek
  */
@@ -30,7 +52,7 @@ public class Neuron implements Serializable {
 	
 	
 	/**
-	 * Creates a {@link Neuron} instance.
+	 * Creates a new {@link Neuron} instance.
 	 * 
 	 * @param function the activation function of the neuron
 	 * @param inputDim the dimension of input pattern vector the neuron can process (the bias not included). 
@@ -56,7 +78,7 @@ public class Neuron implements Serializable {
 	}
 
 	/**
-	 * Creates a {@link Neuron} instance.
+	 * Creates a new {@link Neuron} instance.
 	 * 
 	 * @param function the activation function of the neuron
 	 * @param inputDim the dimension of input pattern vector the neuron can process (the bias not included)
@@ -76,8 +98,8 @@ public class Neuron implements Serializable {
 	}
 
 	/**
-	 * Returns activation function used by the neural layer.
-	 * @return
+	 * Returns the {@link ActivationFunction} used by the {@link Neuron}.
+	 * @return the activation function
 	 */
 	public ActivationFunction getActivationFunction(){
 		return function;
@@ -156,7 +178,7 @@ public class Neuron implements Serializable {
 	 * The output value is cached from processing of last input.
 	 * 
 	 * @return output of the {@link Neuron} or 0 if no 
-	 * 			pattern was processed yet or layer is after reset.
+	 * 			pattern was processed yet or neuron is after reset.
 	 */
 	public double getOutput() {
 		return neuronOutput;
@@ -171,7 +193,7 @@ public class Neuron implements Serializable {
 	 * The input values are cached from last processed input pattern.
 	 * 
 	 * @return the input value of the {@link Neuron} or 0 if no 
-	 * 			pattern was processed yet or layer is after reset.
+	 * 			pattern was processed yet or neuron is after reset.
 	 */
 	public double getNeuronInput(){
 		return neuronInput;
@@ -264,7 +286,6 @@ public class Neuron implements Serializable {
 			inputWeights[i] = Math.random() * (max - min) + min;
 		}
 	}
-	
 
 	/**
 	 * Gets the count of neurons connected to the output of this neuron instance.
