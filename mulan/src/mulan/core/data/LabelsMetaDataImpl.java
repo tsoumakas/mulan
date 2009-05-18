@@ -40,7 +40,7 @@ import mulan.core.WekaException;
 import weka.core.SerializedObject;
 
 /**
- * Represents a meta data info about labels and their structure. 
+ * Implementation of {@link LabelsMetaData} info about labels and their structure. 
  * 
  * @author Jozef Vilcek
  * @see LabelsMetaData
@@ -196,7 +196,6 @@ public class LabelsMetaDataImpl implements LabelsMetaData, Serializable {
 			processNodeIndex(node, IndexingAction.Add);
 		}
 	}
-
 	
 	private enum IndexingAction {
 		Add,

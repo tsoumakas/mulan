@@ -1,3 +1,24 @@
+/*
+*    This program is free software; you can redistribute it and/or modify
+*    it under the terms of the GNU General Public License as published by
+*    the Free Software Foundation; either version 2 of the License, or
+*    (at your option) any later version.
+*
+*    This program is distributed in the hope that it will be useful,
+*    but WITHOUT ANY WARRANTY; without even the implied warranty of
+*    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*    GNU General Public License for more details.
+*
+*    You should have received a copy of the GNU General Public License
+*    along with this program; if not, write to the Free Software
+*    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+*/
+
+/*
+*    NeuralNet.java
+*    Copyright (C) 2009 Aristotle University of Thessaloniki, Thessaloniki, Greece
+*
+*/
 
 package mulan.classifier.neural;
 
@@ -36,10 +57,9 @@ public interface NeuralNet {
 	int getNetOutputSize();
 	
 	/**
-	 * Returns a total number of layers of neural network.
+	 * Returns a total number of layers of the neural network.
 	 *  
-	 * @return
-	 * @see NeuralNet
+	 * @return the number of layers in the neural network
 	 */
 	int getLayersCount();
 
@@ -52,10 +72,9 @@ public interface NeuralNet {
 	 * 
 	 * @param layerIndex
 	 * @return returns an unmodifiable list of units of the particular layer
-	 * 		   @see Collections#unmodifiableList(List)
 	 * @throws IndexOutOfBoundsException if the index is out of range
-	 * @see NeuralNet
 	 * @see NeuralLayer
+	 * @see Collections#unmodifiableList(List)
 	 */
 	List<Neuron> getLayerUnits(int layerIndex);
 
@@ -80,7 +99,6 @@ public interface NeuralNet {
 	/**
 	 * Perform reset, re-initialization of neural network. 
 	 * All learned knowledge stored in the network will be lost. 
-	 * 
 	 */
 	void reset();
 
