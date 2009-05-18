@@ -1,6 +1,25 @@
+/*
+ *    This program is free software; you can redistribute it and/or modify
+ *    it under the terms of the GNU General Public License as published by
+ *    the Free Software Foundation; either version 2 of the License, or
+ *    (at your option) any later version.
+ *
+ *    This program is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *    GNU General Public License for more details.
+ *
+ *    You should have received a copy of the GNU General Public License
+ *    along with this program; if not, write to the Free Software
+ *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+/*
+ *    MLkNN.java
+ *    Copyright (C) 2009 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ */
+
 package mulan.classifier.lazy;
-
-
 
 import java.util.Random;
 import java.util.logging.Level;
@@ -149,14 +168,14 @@ public class MLkNN extends MultiLabelKNN implements MultiLabelLearner {
 	private void ComputePrior() {
 		for (int i = 0; i < numLabels; i++) {
 			int temp_Ci = 0;
-			for (int j = 0; j < train.numInstances(); j++) {
-				double value = Double.parseDouble(train.attribute(predictors + i).value(
-						(int) train.instance(j).value(predictors + i)));
+			for (int j = 0; j < train.getDataSet().numInstances(); j++) {
+				double value = Double.parseDouble(train.getDataSet().attribute(labelIndices[i]).value(
+						(int) train.getDataSet().instance(j).value(labelIndices[i])));
 				if (Utils.eq(value, 1.0)) {
 					temp_Ci++;
 				}
 			}
-			PriorProbabilities[i] = (smooth + temp_Ci) / (smooth * 2 + train.numInstances());
+			PriorProbabilities[i] = (smooth + temp_Ci) / (smooth * 2 + train.getDataSet().numInstances());
 			PriorNProbabilities[i] = 1 - PriorProbabilities[i];
 		}
 	}
@@ -171,36 +190,34 @@ public class MLkNN extends MultiLabelKNN implements MultiLabelLearner {
 
 		lnn = new LinearNNSearch();
 		lnn.setDistanceFunction(dfunc);
-		lnn.setInstances(train);
+		lnn.setInstances(train.getDataSet());
 		lnn.setMeasurePerformance(false);
 		
 		// this implementation doesn't need it 
 		// lnn.setSkipIdentical(true); 
 
-		// c[k] counts the number of training instances with label i whose k
-		// nearest neighbours contain exactly k instances with label i
 		int[][] temp_Ci = new int[numLabels][numOfNeighbors + 1];
 		int[][] temp_NCi = new int[numLabels][numOfNeighbors + 1];
 
-		for (int i = 0; i < train.numInstances(); i++) {
+		for (int i = 0; i < train.getDataSet().numInstances(); i++) {
 
 			Instances knn = new Instances(lnn
-					.kNearestNeighbours(train.instance(i), numOfNeighbors));
+					.kNearestNeighbours(train.getDataSet().instance(i), numOfNeighbors));
 
 			// now compute values of temp_Ci and temp_NCi for every class label
 			for (int j = 0; j < numLabels; j++) {
 
 				int aces = 0; // num of aces in Knn for j
 				for (int k = 0; k < numOfNeighbors; k++) {
-					double value = Double.parseDouble(train.attribute(predictors + j).value(
-							(int) knn.instance(k).value(predictors + j)));
+					double value = Double.parseDouble(train.getDataSet().attribute(labelIndices[j]).value(
+							(int) knn.instance(k).value(labelIndices[j])));
 					if (Utils.eq(value, 1.0)) {
 						aces++;
 					}
 				}
 				// raise the counter of temp_Ci[j][aces] and temp_NCi[j][aces] by 1
-				if (Utils.eq(Double.parseDouble(train.attribute(predictors + j).value(
-						(int) train.instance(i).value(predictors + j))), 1.0)) {
+				if (Utils.eq(Double.parseDouble(train.getDataSet().attribute(labelIndices[j]).value(
+						(int) train.getDataSet().instance(i).value(labelIndices[j]))), 1.0)) {
 					temp_Ci[j][aces]++;
 				} else {
 					temp_NCi[j][aces]++;
@@ -255,8 +272,8 @@ public class MLkNN extends MultiLabelKNN implements MultiLabelLearner {
 			// compute sum of aces in KNN
 			int aces = 0; // num of aces in Knn for i
 			for (int k = 0; k < numOfNeighbors; k++) {
-				double value = Double.parseDouble(train.attribute(predictors + i).value(
-						(int) knn.instance(k).value(predictors + i)));
+				double value = Double.parseDouble(train.getDataSet().attribute(labelIndices[i]).value(
+						(int) knn.instance(k).value(labelIndices[i])));
 				if (Utils.eq(value, 1.0)) {
 					aces++;
 				}

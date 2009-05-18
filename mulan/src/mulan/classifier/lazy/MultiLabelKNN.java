@@ -1,3 +1,24 @@
+/*
+ *    This program is free software; you can redistribute it and/or modify
+ *    it under the terms of the GNU General Public License as published by
+ *    the Free Software Foundation; either version 2 of the License, or
+ *    (at your option) any later version.
+ *
+ *    This program is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *    GNU General Public License for more details.
+ *
+ *    You should have received a copy of the GNU General Public License
+ *    along with this program; if not, write to the Free Software
+ *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+/*
+ *    MultiLabelKNN.java
+ *    Copyright (C) 2009 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ */
+
 package mulan.classifier.lazy;
 
 import java.util.Random;
@@ -5,7 +26,6 @@ import java.util.Random;
 import mulan.classifier.MultiLabelLearnerBase;
 import mulan.core.data.MultiLabelInstances;
 import weka.core.EuclideanDistance;
-import weka.core.Instances;
 import weka.core.TechnicalInformation;
 import weka.core.neighboursearch.LinearNNSearch;
 
@@ -15,6 +35,7 @@ import weka.core.neighboursearch.LinearNNSearch;
  * @author Eleftherios Spyromitros-Xioufis ( espyromi@csd.auth.gr )
  * 
  */
+@SuppressWarnings("serial")
 public abstract class MultiLabelKNN extends MultiLabelLearnerBase  {
     double threshold = 0.5;
     double[] thresholds;
@@ -37,10 +58,6 @@ public abstract class MultiLabelKNN extends MultiLabelLearnerBase  {
 	 */
 	protected long sumedLabels;
 	/**
-	 * Number of predictor attributes
-	 */
-	protected int predictors;
-	/**
 	 * Number of neighbors used in the k-nearest neighbor algorithm
 	 */
 	protected int numOfNeighbors;
@@ -60,7 +77,7 @@ public abstract class MultiLabelKNN extends MultiLabelLearnerBase  {
 	/**
 	 * The training instances
 	 */
-	protected Instances train = null;
+	protected MultiLabelInstances train = null;
 
 
 	public MultiLabelKNN(int numOfNeighbors) {
@@ -68,16 +85,21 @@ public abstract class MultiLabelKNN extends MultiLabelLearnerBase  {
 		random = new Random(1); // seed is always 1 to reproduce results
 	}
 
-    protected void buildInternal(MultiLabelInstances train) throws Exception {
-        Instances instances = train.getDataSet();
-        // TODO: maybe it would be better to store MultiLabelInstances, which can provide
-        //       usefull meta-data ... don't know ...   
-    	this.train = new Instances(instances);
-        predictors = instances.numAttributes() - numLabels;
+    protected void buildInternal(MultiLabelInstances trainSet) throws Exception {
+    	train = trainSet;
 
         dfunc = new EuclideanDistance();
         dfunc.setDontNormalize(dontNormalize);
-        dfunc.setAttributeIndices("first-" + predictors);
+        //dfunc.setAttributeIndices("first-" + predictors);
+        // TODO: use the meta-data to set the predictor attributes (as they may not appear first)
+        int [] labelIndices = train.getLabelIndices();
+        String labelIndicesString = "";
+        for (int i =0;i<numLabels-1;i++){
+        	labelIndicesString += (labelIndices[i]+1) + ",";
+        }
+        labelIndicesString += (labelIndices[numLabels-1]+1);
+        dfunc.setAttributeIndices(labelIndicesString);
+        dfunc.setInvertSelection(true);
     }
 
 	/**
@@ -119,20 +141,13 @@ public abstract class MultiLabelKNN extends MultiLabelLearnerBase  {
 	}
 
 	/**
-	 * @return the predictors
-	 */
-	public int getPredictors() {
-		return predictors;
-	}
-
-	/**
 	 * @return the numOfNeighbors
 	 */
 	public int getNumOfNeighbors() {
 		return numOfNeighbors;
 	}
 /*
-	protected Bipartition makePrediction(Instance instance) throws Exception {
+	protected MultiLabelOutput makePrediction(Instance instance) throws Exception {
 		return null;
 	}
 */
