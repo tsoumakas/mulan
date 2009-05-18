@@ -32,7 +32,7 @@ import weka.core.Instances;
 /**
  * @author Stavros Mpakirtzoglou
  * @author Grigorios Tsoumakas
- * @version $Revision: 0.05 $
+ * @version $Revision: 0.05$
  */
 public class MultiClassLearner extends TransformationBasedMultiLabelLearner
 {
@@ -46,7 +46,11 @@ public class MultiClassLearner extends TransformationBasedMultiLabelLearner
     }
 
     protected void buildInternal(MultiLabelInstances train) throws Exception {
+        debug(train.getDataSet().instance(0).toString());
+        debug("Transforming the training set");
         Instances meta = transformation.transformInstances(train);
+        for (int i=0;i <numLabels; i++)
+            debug(meta.instance(i).toString());
         baseClassifier.buildClassifier(meta);
         header = new Instances(meta, 0);
     }

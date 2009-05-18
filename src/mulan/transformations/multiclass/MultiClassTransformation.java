@@ -3,6 +3,7 @@ package mulan.transformations.multiclass;
 
 import java.util.List;
 
+import mulan.core.data.MultiLabelInstances;
 import weka.core.Instance;
 import weka.core.Instances;
 
@@ -13,7 +14,7 @@ import weka.core.Instances;
  */
 public interface MultiClassTransformation {
 
-    public Instances transformInstances(Instances dataSet) throws Exception;
+    public Instances transformInstances(MultiLabelInstances dataSet) throws Exception;
      
     public List<Instance> transformInstance(Instance instance);
 }
