@@ -1,10 +1,7 @@
 package mulan.evaluation;
 
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.Random;
 
-import java.util.Set;
 import mulan.classifier.MultiLabelLearner;
 import mulan.classifier.MultiLabelOutput;
 import mulan.core.data.MultiLabelInstances;
