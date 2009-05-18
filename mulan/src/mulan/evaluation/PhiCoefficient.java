@@ -1,14 +1,14 @@
 package mulan.evaluation;
 
+import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import weka.core.Instances;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.Remove;
 
-public class PhiCoefficient {
+public class PhiCoefficient implements Serializable {
 
 	int numOfLabels;
 	double[][] phi;
@@ -89,6 +89,19 @@ public class PhiCoefficient {
 			System.out.println("");
 		}
 	}
+
+
+    public double[] getHistogram() {
+        double[] pairs = new double[numOfLabels*(numOfLabels-1)/2];
+        int counter=0;
+        for (int i=0; i<numOfLabels-1; i++)
+            for (int j=i+1; j<numOfLabels; j++)
+            {
+                pairs[counter] = phi[i][j];
+                counter++;
+            }
+        return pairs;
+    }
 	
 	/**
 	 * This method prints data, useful for the visualization of Phi per dataset.
