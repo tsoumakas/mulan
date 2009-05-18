@@ -31,6 +31,7 @@ import mulan.classifier.transformation.RAkEL;
 import mulan.core.data.MultiLabelInstances;
 import mulan.evaluation.Evaluation;
 import mulan.evaluation.Evaluator;
+import mulan.transformations.multiclass.Copy;
 import mulan.transformations.multiclass.Ignore;
 import mulan.transformations.multiclass.MultiClassTransformation;
 import weka.classifiers.Classifier;
@@ -44,7 +45,7 @@ import weka.core.Utils;
 public class TrainTestExperiment {
 
     public static void main(String[] args) {
-        String[] methodsToCompare = {"IncludeLabels","MC-Ignore","RAkEL", "LP", "CLR", "BR"};
+        String[] methodsToCompare = {"MC-Copy", "IncludeLabels","MC-Ignore","RAkEL", "LP", "CLR", "BR"};
 
         try {
             String path = Utils.getOption("path", args);
@@ -93,6 +94,17 @@ public class TrainTestExperiment {
                     rakel.setDebug(true);
                     rakel.build(train);
                     results = eval.evaluate(rakel, test);
+                    System.out.println(results.toString());
+                }
+
+                if (methodsToCompare[i].equals("MC-Copy")) {
+                    System.out.println(methodsToCompare[i]);
+                    Classifier mclClassifier = new J48();
+                    MultiClassTransformation mcTrans = new Copy();
+                    MultiClassLearner mcl = new MultiClassLearner(mclClassifier, mcTrans);
+                    mcl.setDebug(true);
+                    mcl.build(train);
+                    results = eval.evaluate(mcl, test);
                     System.out.println(results.toString());
                 }
 

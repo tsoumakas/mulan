@@ -35,7 +35,7 @@ public class GettingPredictionsOnTestSet {
         System.out.println("LP");
         LabelPowerset lp = new LabelPowerset(new J48());
         lp.build(traindata);
-        results = eval.evaluate(lp, testdata.getDataSet());
+        results = eval.evaluate(lp, testdata);
         System.out.println(results.toString());
         System.gc(); 
         //*/
@@ -46,7 +46,7 @@ public class GettingPredictionsOnTestSet {
         bpmll.setHiddenLayers(new int[]{50});
         bpmll.setDebug(true);
         bpmll.build(traindata);
-        results = eval.evaluate(bpmll, testdata.getDataSet());
+        results = eval.evaluate(bpmll, testdata);
         System.out.println(results.toString());
         System.gc(); 
         //*/
