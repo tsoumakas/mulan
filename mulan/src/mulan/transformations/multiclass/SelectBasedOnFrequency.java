@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import mulan.core.data.MultiLabelInstances;
 import weka.core.Instance;
 import weka.core.Instances;
 
@@ -17,14 +18,15 @@ public class SelectBasedOnFrequency extends MultiClassTransformationBase {
     SelectionType type;
     int[] labelOccurance;
 
-    public SelectBasedOnFrequency(int numOfLabels, SelectionType type) {
-        super(numOfLabels);
+    public SelectBasedOnFrequency(SelectionType type)
+    {
         this.type = type;
     }
 
     @Override
-    public Instances transformInstances(Instances data) throws Exception {
+    public Instances transformInstances(MultiLabelInstances mlData) throws Exception {
         // calculate label occurences
+        Instances data = mlData.getDataSet();
         labelOccurance = new int[numOfLabels];
         int numInstances = data.numInstances();
         numPredictors = data.numAttributes() - numOfLabels;
@@ -32,7 +34,7 @@ public class SelectBasedOnFrequency extends MultiClassTransformationBase {
             for (int j=0; j<numOfLabels; j++)
             	if (data.instance(i).attribute(numPredictors + j).value((int) data.instance(i).value(numPredictors + j)).equals("1"))
             		labelOccurance[j]++;
-        return super.transformInstances(data);
+        return super.transformInstances(mlData);
     }
 
 

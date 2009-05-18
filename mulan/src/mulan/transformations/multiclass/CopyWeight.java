@@ -10,10 +10,6 @@ import weka.core.Instance;
  */
 public class CopyWeight extends Copy {
 
-    public CopyWeight(int numOfLabels) {
-        super(numOfLabels);
-    }
-
     public List<Instance> transformInstance(Instance instance) {
         List<Instance> copy = super.transformInstance(instance);
         for (Instance anInstance : copy)

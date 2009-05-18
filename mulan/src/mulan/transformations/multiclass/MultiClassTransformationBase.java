@@ -2,6 +2,7 @@
 package mulan.transformations.multiclass;
 
 import java.util.List;
+import mulan.core.data.MultiLabelInstances;
 import mulan.transformations.*;
 import weka.core.Attribute;
 import weka.core.FastVector;
@@ -19,19 +20,18 @@ public abstract class MultiClassTransformationBase implements MultiClassTransfor
 
     protected int numOfLabels;
     protected int numPredictors;
+    protected int[] labelIndices;
 
-    MultiClassTransformationBase(int numOfLabels) {
-        this.numOfLabels = numOfLabels;
-    }
+    public Instances transformInstances(MultiLabelInstances mlData) throws Exception {
+        labelIndices = mlData.getLabelIndices();
+        numOfLabels = mlData.getNumLabels();
+        Instances data = mlData.getDataSet();
+        numPredictors = mlData.getDataSet().numAttributes()-numOfLabels;
 
-    public Instances transformInstances(Instances data) throws Exception {
-        numPredictors = data.numAttributes()-numOfLabels;
-        
-        Instances transformed = new Instances(data, 0);
+        Instances transformed = new Instances(mlData.getDataSet(), 0);
         
         // delete all labels
-        RemoveAllLabels ral = new RemoveAllLabels();
-        transformed = ral.transformInstances(transformed, numOfLabels);
+        transformed = RemoveAllLabels.transformInstances(mlData.getDataSet(), labelIndices);
 
         // add single label attribute
         FastVector classValues = new FastVector(numOfLabels);
@@ -42,9 +42,14 @@ public abstract class MultiClassTransformationBase implements MultiClassTransfor
         transformed.setClassIndex(transformed.numAttributes()-1);
 
         for (int instanceIndex=0; instanceIndex<data.numInstances(); instanceIndex++) {
+            System.out.println(data.instance(instanceIndex).toString());
             List<Instance> result = transformInstance(data.instance(instanceIndex));
             for (Instance instance : result)
+            {
+                System.out.println(instance.toString());
                 transformed.add(instance);
+                System.out.println(transformed.instance(transformed.numInstances()-1));
+            }
         }
         return transformed;
     }

@@ -13,9 +13,6 @@ import java.util.Arrays;
 
 public class SelectRandom extends MultiClassTransformationBase {
 
-    public SelectRandom(int numOfLabels) {
-        super(numOfLabels);
-    }
 
     public List<Instance> transformInstance(Instance instance) {
         ArrayList<Integer> labels = new ArrayList<Integer>();
