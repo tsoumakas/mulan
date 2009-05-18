@@ -7,11 +7,12 @@ package mulan.examples;
 
 import java.io.FileReader;
 
+import mulan.classifier.MultiLabelLearner;
 import mulan.classifier.lazy.BRkNN;
 import mulan.classifier.lazy.MLkNN;
 import mulan.classifier.transformation.BinaryRelevance;
 import mulan.classifier.transformation.LabelPowerset;
-import mulan.classifier.transformation.RAKEL;
+import mulan.classifier.transformation.RAkEL;
 import mulan.core.data.MultiLabelInstances;
 import mulan.evaluation.Evaluation;
 import mulan.evaluation.Evaluator;
@@ -58,9 +59,8 @@ public class CrossValidationExperiment {
             //* RAKEL
             System.out.println("RAKEL");
             J48 rakelBaseClassifier = new J48();
-            RAKEL rakel = new RAKEL(rakelBaseClassifier, numLabels, 10, 3);
-            rakel.setParamSelectionViaCV(true);
-            rakel.setParamSets(3, 2, numLabels-1, 1, 500, 0.1, 0.1, 9);
+            MultiLabelLearner lpBase = new LabelPowerset(new J48());
+            RAkEL rakel = new RAkEL(lpBase);
             results = eval.crossValidate(rakel, data, 10);
             System.out.println(results.toString());
             System.gc();
