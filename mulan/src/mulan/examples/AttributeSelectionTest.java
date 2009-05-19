@@ -10,6 +10,7 @@ import java.util.Arrays;
 import mulan.attributeSelection.LabelPowersetAttributeEvaluator;
 import mulan.attributeSelection.Ranker;
 import mulan.core.data.MultiLabelInstances;
+import weka.attributeSelection.AttributeEvaluator;
 import weka.attributeSelection.ChiSquaredAttributeEval;
 import weka.core.Instances;
 import weka.core.Utils;
@@ -26,29 +27,29 @@ public class AttributeSelectionTest {
     {
         String path = Utils.getOption("path", args);
         String filestem = Utils.getOption("filestem", args);
-        MultiLabelInstances data = new MultiLabelInstances(path + filestem + ".arff", path + filestem + ".xml");
+        MultiLabelInstances mlData = new MultiLabelInstances(path + filestem + ".arff", path + filestem + ".xml");
 
-        ChiSquaredAttributeEval csae = new ChiSquaredAttributeEval();
-        LabelPowersetAttributeEvaluator lpae = new LabelPowersetAttributeEvaluator();
-        lpae.setAttributeEvaluator(csae);
-        lpae.buildEvaluator(data);
+        AttributeEvaluator ae = new ChiSquaredAttributeEval();
+        LabelPowersetAttributeEvaluator lpae = new LabelPowersetAttributeEvaluator(ae, mlData);
         
         Ranker r = new Ranker();
-        int[] result = r.search(lpae, data);        
+        int[] result = r.search(lpae, mlData);
         System.out.println(Arrays.toString(result));
         
         final int NUM_TO_KEEP=10;
-        int[] toKeep = new int[NUM_TO_KEEP+data.getNumLabels()];
+        int[] toKeep = new int[NUM_TO_KEEP+mlData.getNumLabels()];
         System.arraycopy(result, 0, toKeep, 0, NUM_TO_KEEP);
-        for (int i=0; i<data.getNumLabels(); i++)
-            toKeep[NUM_TO_KEEP+i] = data.getDataSet().numAttributes()-1-i;
+        int[] labelIndices = mlData.getLabelIndices();
+        for (int i=0; i<mlData.getNumLabels(); i++)
+            toKeep[NUM_TO_KEEP+i] = labelIndices[i];
         
         Remove filterRemove = new Remove();
         filterRemove.setAttributeIndicesArray(toKeep);
         filterRemove.setInvertSelection(true);
-        filterRemove.setInputFormat(data.getDataSet());
-        Instances filtered = Filter.useFilter(data.getDataSet(), filterRemove);
-        
-        System.out.println(filtered.toString());
+        filterRemove.setInputFormat(mlData.getDataSet());
+        Instances filtered = Filter.useFilter(mlData.getDataSet(), filterRemove);
+        MultiLabelInstances mlFiltered = new MultiLabelInstances(filtered, mlData.getLabelsMetaData());
+
+        // You can now work on the reduced multi-label dataset mlFiltered
     }
 }
