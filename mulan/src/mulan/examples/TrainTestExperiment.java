@@ -22,6 +22,7 @@
 package mulan.examples;
 
 import mulan.classifier.MultiLabelLearner;
+import mulan.classifier.lazy.MLkNN;
 import mulan.classifier.transformation.BinaryRelevance;
 import mulan.classifier.transformation.CalibratedLabelRanking;
 import mulan.classifier.transformation.IncludeLabelsClassifier;
@@ -45,7 +46,7 @@ import weka.core.Utils;
 public class TrainTestExperiment {
 
     public static void main(String[] args) {
-        String[] methodsToCompare = {"MC-Copy", "IncludeLabels","MC-Ignore","RAkEL", "LP", "CLR", "BR"};
+        String[] methodsToCompare = {"MC-Copy", "IncludeLabels","MC-Ignore","RAkEL", "LP", "CLR", "BR", "MLkNN"};
 
         try {
             String path = Utils.getOption("path", args);
@@ -125,6 +126,17 @@ public class TrainTestExperiment {
                     il.setDebug(true);
                     il.build(train);
                     results = eval.evaluate(il, test);
+                    System.out.println(results.toString());
+                }
+                
+                if (methodsToCompare[i].equals("MLkNN")) {
+                    System.out.println(methodsToCompare[i]);
+                    int numOfNeighbors = 10;
+                    double smooth = 1.0;
+                    MLkNN mlknn = new MLkNN(numOfNeighbors,smooth);
+                    mlknn.setDebug(true);
+                    mlknn.build(train);
+                    results = eval.evaluate(mlknn, test);
                     System.out.println(results.toString());
                 }
             }
