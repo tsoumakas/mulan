@@ -207,6 +207,29 @@ public class MultiLabelInstances {
 	}
 	
 	/**
+	 * Gets the array with indices of feature attributes stored in 
+	 * underlying {@link Instances} data set. 
+     * 
+     * @return an array with the indices of the feature attributes
+     */
+	public int[] getFeatureIndices() {
+
+        int numAttributes = dataSet.numAttributes();
+		Set<Attribute> featureAttributes = getFeatureAttributes();
+        int[] featureIndices = new int[featureAttributes.size()];
+        int counter=0;
+        for(int index = 0; index < numAttributes; index++) {
+			Attribute attr = dataSet.attribute(index);
+			if (featureAttributes.contains(attr)) {
+				featureIndices[counter] = attr.index();
+                counter++;
+            }
+		}
+
+        return featureIndices;
+	}
+	
+	/**
 	 * Gets the {@link Set} of feature {@link Attribute} instances of 
 	 * this {@link MultiLabelInstances} instance.   
 	 * @return
