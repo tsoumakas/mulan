@@ -119,10 +119,6 @@ public class MLkNN extends MultiLabelKNN implements MultiLabelLearner {
 		super(numOfNeighbors);
 		this.smooth = smooth;
 		dontNormalize = true;
-		PriorProbabilities = new double[numLabels];
-		PriorNProbabilities = new double[numLabels];
-		CondProbabilities = new double[numLabels][numOfNeighbors + 1];
-		CondNProbabilities = new double[numLabels][numOfNeighbors + 1];
 	}
 
 	/**
@@ -153,7 +149,11 @@ public class MLkNN extends MultiLabelKNN implements MultiLabelLearner {
 
     @Override
 	protected void buildInternal(MultiLabelInstances train) throws Exception {
-		super.build(train);
+		super.buildInternal(train);
+		PriorProbabilities = new double[numLabels];
+		PriorNProbabilities = new double[numLabels];
+		CondProbabilities = new double[numLabels][numOfNeighbors + 1];
+		CondNProbabilities = new double[numLabels][numOfNeighbors + 1];
 		ComputePrior();
 		ComputeCond();
 	}
