@@ -2,29 +2,36 @@ package mulan.attributeSelection;
 
 import mulan.core.data.MultiLabelInstances;
 import weka.attributeSelection.ASEvaluation;
+import weka.attributeSelection.AttributeEvaluator;
 import weka.core.Instances;
+import weka.core.Range;
 
 /**
  * 
  * @author greg
  */
-public class Ranker extends weka.attributeSelection.Ranker
+public class Ranker
 {
-    private int numLabels;
-    
-    public int[] search(ASEvaluation ASEval, MultiLabelInstances mlData) throws Exception
+	
+	/**
+	 * Calls a specifier {@link AttributeEvaluator} to evaluate each feature attribute
+	 * of specified {@link MultiLabelInstances} data set. 
+	 * Internally it uses {@link weka.attributeSelection.Ranker}, where 
+	 * {@link weka.attributeSelection.Ranker#setStartSet(String)} is preset with range of
+	 * only feature attributes indices.
+	 * 
+	 * @param attributeEval the attribute evaluator to guide the search
+	 * @param mlData the multi-label instances data set
+	 * @return an array (not necessarily ordered) of selected attribute indexes
+	 * @throws Exception if an error occur in search
+	 */
+    public int[] search(AttributeEvaluator attributeEval, MultiLabelInstances mlData) throws Exception
     {
-        numLabels = mlData.getNumLabels();
-        return search(ASEval, mlData.getDataSet());
-    }
-
-    @Override
-    public int[] search (ASEvaluation ASEval, Instances data) throws Exception 
-    {
-        String startSet = "" + data.numAttributes();
-        for (int i=0; i<numLabels-1; i++)
-            startSet += "," + (data.numAttributes()-i-1);
-        setStartSet(startSet);
-        return super.search(ASEval, data);
+        Instances data = mlData.getDataSet();
+        String startSet = Range.indicesToRangeList(mlData.getLabelIndices());
+	    weka.attributeSelection.Ranker wekaRanker = new weka.attributeSelection.Ranker();
+	    wekaRanker.setStartSet(startSet);
+	    
+        return wekaRanker.search((ASEvaluation)attributeEval, data);
     }
 }
