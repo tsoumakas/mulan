@@ -27,6 +27,7 @@ import java.util.Arrays;
 import mulan.classifier.MultiLabelOutput;
 import mulan.core.Util;
 import mulan.core.data.MultiLabelInstances;
+import weka.classifiers.lazy.IBk;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.TechnicalInformation;
@@ -54,7 +55,21 @@ import weka.core.neighboursearch.LinearNNSearch;
  * 
  * <!-- technical-bibtex-start --> BibTeX:
  * 
- * <p/>
+ * <pre>
+ * &#064;inproceedings{1428385,
+ *    author = {Spyromitros, Eleftherios and Tsoumakas, Grigorios and Vlahavas, Ioannis},
+ *    title = {An Empirical Study of Lazy Multilabel Classification Algorithms},
+ *    booktitle = {SETN '08: Proceedings of the 5th Hellenic conference on Artificial Intelligence},
+ *    year = {2008},
+ *    isbn = {978-3-540-87880-3},
+ *    pages = {401--406},
+ *    doi = {http://dx.doi.org/10.1007/978-3-540-87881-0_40},
+ *    publisher = {Springer-Verlag},
+ *    address = {Berlin, Heidelberg},
+ * }
+ * 
+ * </pre>
+ * 
  * <!-- technical-bibtex-end -->
  * 
  * @author Eleftherios Spyromitros-Xioufis ( espyromi@csd.auth.gr )
@@ -115,7 +130,7 @@ public class BRkNN extends MultiLabelKNN {
 		distanceWeighting = WEIGHT_NONE; // weight none
 		selectedMethod = method;
 	}
-	
+
 	/**
 	 * Returns an instance of a TechnicalInformation object, containing detailed
 	 * information about the technical background of this class, e.g., paper
@@ -123,17 +138,24 @@ public class BRkNN extends MultiLabelKNN {
 	 * 
 	 * @return the technical information about this class
 	 */
-    @Override
-    public TechnicalInformation getTechnicalInformation() {
-        TechnicalInformation result = new TechnicalInformation(Type.INPROCEEDINGS);
-        result.setValue(Field.AUTHOR, "Eleftherios Spyromitros, Grigorios Tsoumakas, Ioannis Vlahavas");
-        result.setValue(Field.TITLE, "An Empirical Study of Lazy Multilabel Classification Algorithms");
-        result.setValue(Field.BOOKTITLE, "Proc. 5th Hellenic Conference on Artificial Intelligence (SETN 2008)");
-        result.setValue(Field.LOCATION, "Syros, Greece");
-        result.setValue(Field.YEAR, "2008");
+	@Override
+	public TechnicalInformation getTechnicalInformation() {
+		TechnicalInformation result = new TechnicalInformation(
+				Type.INPROCEEDINGS);
+		result
+				.setValue(Field.AUTHOR,
+						"Eleftherios Spyromitros, Grigorios Tsoumakas, Ioannis Vlahavas");
+		result
+				.setValue(Field.TITLE,
+						"An Empirical Study of Lazy Multilabel Classification Algorithms");
+		result
+				.setValue(Field.BOOKTITLE,
+						"Proc. 5th Hellenic Conference on Artificial Intelligence (SETN 2008)");
+		result.setValue(Field.LOCATION, "Syros, Greece");
+		result.setValue(Field.YEAR, "2008");
 
-        return result;
-    }
+		return result;
+	}
 
 	@Override
 	protected void buildInternal(MultiLabelInstances aTrain) throws Exception {
@@ -145,7 +167,7 @@ public class BRkNN extends MultiLabelKNN {
 		lnn.setMeasurePerformance(false);
 
 		if (cvkSelection == true) {
-//			crossValidate();
+			crossValidate();
 		}
 	}
 
@@ -163,34 +185,39 @@ public class BRkNN extends MultiLabelKNN {
 	 * Loss is minimized
 	 * 
 	 * @throws Exception
-	 *//*
+	 */
 	protected void crossValidate() throws Exception {
 		try {
 			// the performance for each different k
-			double[] performanceMetric = new double[cvMaxK];
+			double[] hammingLoss = new double[cvMaxK];
 
 			for (int i = 0; i < cvMaxK; i++) {
-				performanceMetric[i] = 0;
+				hammingLoss[i] = 0;
 			}
 
 			Instances dataSet = train.getDataSet();
-			Instance instance;
-			Instances neighbours;
+			Instance instance; // the hold out instance
+			Instances neighbours; // the neighboring instances
 			double[] origDistances, convertedDistances;
 			for (int i = 0; i < dataSet.numInstances(); i++) {
-				if (isDebug && (i % 50 == 0)) {
-					debug("Cross validating " + i + "/" + dataSet.numInstances()
-							+ "\r");
+				if (getDebug() && (i % 50 == 0)) {
+					debug("Cross validating " + i + "/"
+							+ dataSet.numInstances() + "\r");
 				}
 				instance = dataSet.instance(i);
 				neighbours = lnn.kNearestNeighbours(instance, cvMaxK);
 				origDistances = lnn.getDistances();
-				
-				Evaluator eval = new Evaluator();
-				eval.getTrueLabels(instance, numLabels, labelIndices);
 
+				// gathering the true labels for the instance
+				boolean[] trueLabels = new boolean[numLabels];
+				for (int counter = 0; counter < numLabels; counter++) {
+					int classIdx = labelIndices[counter];
+					String classValue = instance.attribute(classIdx).value(
+							(int) instance.value(classIdx));
+					trueLabels[counter] = classValue.equals("1");
+				}
+				// calculate the performance metric for each different k
 				for (int j = cvMaxK; j > 0; j--) {
-					// Update the performance metric
 					convertedDistances = new double[origDistances.length];
 					System.arraycopy(origDistances, 0, convertedDistances, 0,
 							origDistances.length);
@@ -205,24 +232,17 @@ public class BRkNN extends MultiLabelKNN {
 					} else if (selectedMethod == BRextb) {// BRknn-b
 						bipartition = labelsFromConfidences3(confidences);
 					}
-					MultiLabelOutput thisPrediction = new MultiLabelOutput (bipartition,
-							confidences);
 
-					BinaryPrediction[][] bpredictions = new BinaryPrediction[1][numLabels];
-					for (int k = 0; k < numLabels; k++) {
-						int classIdx = predictors + k;
-						String classValue = instance.attribute(classIdx).value(
-								(int) instance.value(classIdx));
-						boolean actual = classValue.equals("1");
-						bpredictions[0][k] = new BinaryPrediction(
-								thisPrediction.getPrediction(k), actual,
-								thisPrediction.getConfidence(k));
+					double symmetricDifference = 0; // |Y xor Z|
+					for (int labelIndex = 0; labelIndex < numLabels; labelIndex++) {
+						boolean actual = trueLabels[labelIndex];
+						boolean predicted = bipartition[labelIndex];
+
+						if (predicted != actual) {
+							symmetricDifference++;
+						}
 					}
-
-					Evaluation result = new Evaluation(
-							bpredictions);
-
-					performanceMetric[j - 1] += result.hammingLoss();
+					hammingLoss[j - 1] += (symmetricDifference / numLabels);
 
 					neighbours = new IBk().pruneToK(neighbours,
 							convertedDistances, j - 1);
@@ -230,19 +250,17 @@ public class BRkNN extends MultiLabelKNN {
 			}
 
 			// Display the results of the cross-validation
-			for (int i = cvMaxK; i > 0; i--) {
-				if (isDebug) {
+			if (getDebug()) {
+				for (int i = cvMaxK; i > 0; i--) {
 					debug("Hold-one-out performance of " + (i) + " neighbors ");
-				}
-				if (isDebug) {
-					debug("(Hamming Loss) = " + performanceMetric[i - 1]
+					debug("(Hamming Loss) = " + hammingLoss[i - 1]
 							/ dataSet.numInstances());
 				}
 			}
 
 			// Check through the performance stats and select the best
 			// k value (or the lowest k if more than one best)
-			double[] searchStats = performanceMetric;
+			double[] searchStats = hammingLoss;
 
 			double bestPerformance = Double.NaN;
 			int bestK = 1;
@@ -254,7 +272,7 @@ public class BRkNN extends MultiLabelKNN {
 				}
 			}
 			numOfNeighbors = bestK;
-			if (isDebug) {
+			if (getDebug()) {
 				System.err.println("Selected k = " + bestK);
 			}
 
@@ -262,12 +280,12 @@ public class BRkNN extends MultiLabelKNN {
 			throw new Error("Couldn't optimize by cross-validation: "
 					+ ex.getMessage());
 		}
-	}*/
+	}
 
 	/**
 	 * weka Ibk style prediction
 	 */
-    
+
 	public MultiLabelOutput makePrediction(Instance instance) throws Exception {
 
 		Instances knn = lnn.kNearestNeighbours(instance, numOfNeighbors);
@@ -283,12 +301,12 @@ public class BRkNN extends MultiLabelKNN {
 		} else if (selectedMethod == BRextb) {// BRknn-b
 			bipartition = labelsFromConfidences3(confidences);
 		}
-		MultiLabelOutput results = new MultiLabelOutput(bipartition, confidences);
+		MultiLabelOutput results = new MultiLabelOutput(bipartition,
+				confidences);
 		return results;
 
 	}
-	
-	// TO DO: need to chech the label positions, may not appear at the end
+
 	/**
 	 * Calculates the confidences of the labels, based on the neighboring
 	 * instances
@@ -306,15 +324,18 @@ public class BRkNN extends MultiLabelKNN {
 
 		// Set up a correction to the estimator
 		for (int i = 0; i < numLabels; i++) {
-			confidences[i] = 1.0 / Math.max(1, train.getDataSet().numInstances());
+			confidences[i] = 1.0 / Math.max(1, train.getDataSet()
+					.numInstances());
 		}
-		total = (double) numLabels / Math.max(1, train.getDataSet().numInstances());
+		total = (double) numLabels
+				/ Math.max(1, train.getDataSet().numInstances());
 
 		for (int i = 0; i < neighbours.numInstances(); i++) {
 			// Collect class counts
 			Instance current = neighbours.instance(i);
 			distances[i] = distances[i] * distances[i];
-			distances[i] = Math.sqrt(distances[i] / (train.getDataSet().numAttributes() - numLabels));
+			distances[i] = Math.sqrt(distances[i]
+					/ (train.getDataSet().numAttributes() - numLabels));
 			switch (distanceWeighting) {
 			case WEIGHT_INVERSE:
 				weight = 1.0 / (distances[i] + 0.001); // to avoid division by
@@ -356,7 +377,8 @@ public class BRkNN extends MultiLabelKNN {
 	 * @return
 	 * @throws Exception
 	 */
-    public MultiLabelOutput makePrediction2(Instance instance) throws Exception {
+	public MultiLabelOutput makePredictionOld(Instance instance)
+			throws Exception {
 		double[] confidences = new double[numLabels];
 		boolean[] bipartition = new boolean[numLabels];
 
@@ -384,12 +406,16 @@ public class BRkNN extends MultiLabelKNN {
 
 		bipartition = labelsFromConfidences(confidences);
 
-		MultiLabelOutput results = new MultiLabelOutput(bipartition, confidences);
+		MultiLabelOutput results = new MultiLabelOutput(bipartition,
+				confidences);
 		return results;
 	}
-    
+
 	/**
 	 * Derive output labels from distributions.
+	 * 
+	 * @param confidences
+	 * @return
 	 */
 	protected boolean[] labelsFromConfidences(double[] confidences) {
 		if (thresholds == null) {
@@ -469,27 +495,7 @@ public class BRkNN extends MultiLabelKNN {
 	}
 
 	/**
-	 * old style used for BRkNN-b (not in use)
-	 */
-	protected double[] labelsFromConfidences3old(double[] confidences) {
-		double[] result = new double[numLabels];
-
-		double[] conf2 = new double[numLabels];
-		for (int i = 0; i < numLabels; i++) {
-			conf2[i] = confidences[i];
-		}
-
-		for (int i = 0; i < avgPredictedLabels; i++) {
-			int maxindex = Utils.maxIndex(conf2);
-			result[maxindex] = 1.0;
-			conf2[maxindex] = -1.0;
-		}
-		return result;
-	}
-
-	/**
-	 * set the maximum number of neighbors to be evaluated
-	 * via cross-validation
+	 * set the maximum number of neighbors to be evaluated via cross-validation
 	 * 
 	 * @param cvMaxK
 	 */
