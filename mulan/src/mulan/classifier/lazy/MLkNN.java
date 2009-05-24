@@ -55,7 +55,7 @@ import weka.core.neighboursearch.LinearNNSearch;
  * 
  * <!-- globalinfo-end -->
  * 
- * <!-- technical-bibtex-start --> BibTeX:
+ * <!-- technical-bibtex-start -->
  * 
  * <pre>
  * &#064;article{zhang+zhou:2007,
@@ -73,7 +73,7 @@ import weka.core.neighboursearch.LinearNNSearch;
  * }
  * </pre>
  * 
- * <p/> <!-- technical-bibtex-end -->
+ * <!-- technical-bibtex-end -->
  *
  * @author Eleftherios Spyromitros-Xioufis ( espyromi@csd.auth.gr )
  * @version $Revision: 1.1 $ 
@@ -121,6 +121,19 @@ public class MLkNN extends MultiLabelKNN implements MultiLabelLearner {
 		dontNormalize = true;
 	}
 
+	  /**
+	   * Returns a string describing classifier.
+	   * @return a description suitable for
+	   * displaying in the explorer/experimenter gui
+	   */
+	  public String globalInfo() {
+
+	    return  "Class implementing the ML-kNN (Multi-Label k Nearest Neighbours) algorithm."
+	      + "\n\n"
+	      + "For more information, see\n\n"
+	      + getTechnicalInformation().toString();
+	  }
+	
 	/**
 	 * Returns an instance of a TechnicalInformation object, containing detailed
 	 * information about the technical background of this class, e.g., paper
@@ -159,11 +172,7 @@ public class MLkNN extends MultiLabelKNN implements MultiLabelLearner {
 	}
 
 	/**
-	 * Computing Prior and PriorN Probabilities for each class of the training
-	 * set
-	 * 
-	 * @param train :
-	 *            the training dataset
+	 * Computing Prior and PriorN Probabilities for each class of the training set
 	 */
 	private void ComputePrior() {
 		for (int i = 0; i < numLabels; i++) {
@@ -180,11 +189,10 @@ public class MLkNN extends MultiLabelKNN implements MultiLabelLearner {
 		}
 	}
 
-	/**
+	/** 
 	 * Computing Cond and CondN Probabilities for each class of the training set
 	 * 
-	 * @param train :
-	 *            the training dataset
+	 * @throws Exception
 	 */
 	private void ComputeCond() throws Exception {
 
