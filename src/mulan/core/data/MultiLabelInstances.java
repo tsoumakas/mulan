@@ -26,6 +26,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -186,6 +187,27 @@ public class MultiLabelInstances {
 		}
 
         return labelIndices;
+	}
+
+    /**
+     * @return a mapping of attribute names and their indices
+     * Instances object
+     */
+	public HashMap<String,Integer> getLabelsOrder() {
+        int numAttributes = dataSet.numAttributes();
+		Set<String> labelNames = labelsMetaData.getLabelNames();
+        HashMap<String,Integer> assoc = new HashMap<String,Integer>();
+
+        int counter=0;
+        for(int index=0; index<numAttributes; index++) {
+			Attribute attr = dataSet.attribute(index);
+			if (labelNames.contains(attr.name())) {
+                assoc.put(attr.name(), counter);
+                counter++;
+            }
+		}
+
+        return assoc;
 	}
 
 	/**
