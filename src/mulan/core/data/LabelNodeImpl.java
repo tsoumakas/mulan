@@ -115,8 +115,37 @@ public class LabelNodeImpl implements LabelNode, Serializable {
 		}
 		return childrenNodes.remove(node);
 	}
-	
-	public Set<LabelNode> getChildren() {
+
+    public Set<String> getChildrenLabels() {
+        Set<String> labels = new HashSet<String>();
+        for (LabelNode child : childrenNodes) {
+            labels.add(child.getName());
+        }
+        return labels;
+    }
+
+	public Set<String> getDescendantLabels() {
+        if (hasChildren()) {
+            Set<String> labels = new HashSet<String>();
+            for (LabelNode child : childrenNodes) {
+                labels.addAll(getDescendantLabelsRec(child));
+            }
+            return labels;
+        } else
+            return null;
+    }
+
+    private Set<String> getDescendantLabelsRec(LabelNode node) {
+        Set<String> labels = new HashSet<String>();
+        labels.add(node.getName());
+        if (node.hasChildren())
+            for (LabelNode child : node.getChildren())
+                labels.addAll(getDescendantLabelsRec(child));
+        return labels;
+    }
+
+
+    public Set<LabelNode> getChildren() {
 		return Collections.unmodifiableSet(childrenNodes);
 	}
 
@@ -167,6 +196,6 @@ public class LabelNodeImpl implements LabelNode, Serializable {
 		}
 
 		LabelNodeImpl labelNode = (LabelNodeImpl)obj;
-		return name == labelNode.getName();
+		return name.equals(labelNode.getName());
 	}
 }
