@@ -72,5 +72,13 @@ public interface LabelNode {
 	 * @return the {@link Set} of child nodes
 	 */
 	Set<LabelNode> getChildren();
+
+	/**
+	 * Gets a {@link Set} of the names of descendant {@link LabelNode} of this node, if hierarchy exists.
+	 * If no descendant nodes exists for this {@link LabelNode}, empty {@link Set} is returned.
+	 *
+	 * @return the {@link Set} of child nodes
+	 */
+  	Set<String> getDescendantLabels();
 	
 }
