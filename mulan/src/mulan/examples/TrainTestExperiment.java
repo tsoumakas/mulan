@@ -22,9 +22,11 @@
 package mulan.examples;
 
 import mulan.classifier.MultiLabelLearner;
+import mulan.classifier.hierarchical.HMC;
 import mulan.classifier.lazy.MLkNN;
 import mulan.classifier.transformation.BinaryRelevance;
 import mulan.classifier.transformation.CalibratedLabelRanking;
+import mulan.classifier.transformation.HOMER;
 import mulan.classifier.transformation.IncludeLabelsClassifier;
 import mulan.classifier.transformation.LabelPowerset;
 import mulan.classifier.transformation.MultiClassLearner;
@@ -36,6 +38,8 @@ import mulan.transformations.multiclass.Copy;
 import mulan.transformations.multiclass.Ignore;
 import mulan.transformations.multiclass.MultiClassTransformation;
 import weka.classifiers.Classifier;
+import weka.classifiers.bayes.NaiveBayes;
+import weka.classifiers.functions.SMO;
 import weka.classifiers.trees.J48;
 import weka.core.Utils;
 
@@ -46,12 +50,14 @@ import weka.core.Utils;
 public class TrainTestExperiment {
 
     public static void main(String[] args) {
-        String[] methodsToCompare = {"MC-Copy", "IncludeLabels","MC-Ignore","RAkEL", "LP", "CLR", "BR", "MLkNN"};
+        String[] methodsToCompare = {"HOMER", "BR", "CLR", "MLkNN", "MC-Copy", "IncludeLabels","MC-Ignore","RAkEL", "LP",};
 
         try {
             String path = Utils.getOption("path", args);
             String filestem = Utils.getOption("filestem", args);
+            System.out.println("Loading the training set");
             MultiLabelInstances train = new MultiLabelInstances(path + filestem + "-train.arff", path + filestem + ".xml");
+            System.out.println("Loading the test set");
             MultiLabelInstances test = new MultiLabelInstances(path + filestem + "-test.arff", path + filestem + ".xml");
             
             Evaluator eval = new Evaluator();
@@ -61,8 +67,9 @@ public class TrainTestExperiment {
 
                 if (methodsToCompare[i].equals("BR")) {
                     System.out.println(methodsToCompare[i]);
-                    Classifier brClassifier = new J48();
+                    Classifier brClassifier = new NaiveBayes();
                     BinaryRelevance br = new BinaryRelevance(brClassifier);
+                    br.setDebug(true);
                     br.build(train);
                     results = eval.evaluate(br, test);
                     System.out.println(results.toString());
@@ -139,6 +146,30 @@ public class TrainTestExperiment {
                     results = eval.evaluate(mlknn, test);
                     System.out.println(results.toString());
                 }
+
+                if (methodsToCompare[i].equals("HMC")) {
+                    System.out.println(methodsToCompare[i]);
+                    Classifier baseClassifier = new J48();
+                    LabelPowerset lp = new LabelPowerset(baseClassifier);
+                    RAkEL rakel = new RAkEL(lp);
+                    HMC hmc = new HMC(rakel);
+                    hmc.build(train);
+                    results = eval.evaluate(hmc, test);
+                    System.out.println(results.toString());
+                }
+
+                if (methodsToCompare[i].equals("HOMER")) {
+                    System.out.println(methodsToCompare[i]);
+                    Classifier baseClassifier = new SMO();
+                    CalibratedLabelRanking learner = new CalibratedLabelRanking(baseClassifier);
+                    learner.setDebug(true);
+                    HOMER homer = new HOMER(learner, 3);
+                    homer.setDebug(true);
+                    homer.build(train);
+                    results = eval.evaluate(homer, test);
+                    System.out.println(results.toString());
+                }
+
             }
         }
         catch (Exception e) {
