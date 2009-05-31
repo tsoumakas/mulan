@@ -52,7 +52,6 @@ import weka.filters.unsupervised.attribute.Reorder;
  * - each label attribute must be nominal with binary values<br></br>
  * - if labels has hierarchy, then if child labels indicates <code>true</code> of some
  *   data instance, then all its parent labels must indicate also <code>true</code> for that instance<br></br>
- * - the label attributes are moved to the end of data set
  * 
  * @author Jozef Vilcek
  */
@@ -61,7 +60,7 @@ public class MultiLabelInstances {
 	private Instances dataSet;
 	private final LabelsMetaDataImpl labelsMetaData;
 	
-	
+		
 	/**
 	 * Creates a new instance of {@link MultiLabelInstances} data.
 	 * The label attributes are assumed to be at the end of ARFF data file. The count
@@ -509,6 +508,8 @@ public class MultiLabelInstances {
 		double value = instance.value(attr);
 		return (value == 1) ? true : false; 
 	}
+
+	
 }
 
 

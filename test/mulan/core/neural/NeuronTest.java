@@ -1,4 +1,4 @@
-package mulan.classifier.neural;
+package mulan.core.neural;
 
 import static org.junit.Assert.*;
 
