@@ -20,7 +20,7 @@
 *
 */
 
-package mulan.classifier.neural;
+package mulan.core.neural;
 
 import java.io.Serializable;
 	

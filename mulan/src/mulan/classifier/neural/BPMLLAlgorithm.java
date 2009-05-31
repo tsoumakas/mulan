@@ -26,6 +26,10 @@ package mulan.classifier.neural;
 import java.util.ArrayList;
 import java.util.List;
 
+import mulan.core.neural.ActivationFunction;
+import mulan.core.neural.NeuralNet;
+import mulan.core.neural.Neuron;
+
 /**
  * The implementation of Back-Propagation Multi-Label Learning (BPMLL) algorithm for neural networks.
  * The algorithm uses weights decay regularization to avoid overfitting.

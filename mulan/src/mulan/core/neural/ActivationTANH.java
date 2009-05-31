@@ -15,38 +15,39 @@
 */
 
 /*
-*    ActivationLinear.java
+*    ActivationTANH.java
 *    Copyright (C) 2009 Aristotle University of Thessaloniki, Thessaloniki, Greece
 *
 */
 
-package mulan.classifier.neural;
-
+package mulan.core.neural;
 
 /**
- * Implements the linear activation function. The input is simply passed to the output. 
- * This activation function is commonly used for input units of networks, which serves 
- * as a place holders for input pattern and forwards them for processing. 
+ * Implements the hyperbolic tangent activation function.
+ * The function output values are from interval <-1,1>.
  * 
  * @author Jozef Vilcek
  */
-public class ActivationLinear extends ActivationFunction {
+public class ActivationTANH extends ActivationFunction {
 
-	private static final long serialVersionUID = 4255801421493489832L;
-
+	private static final long serialVersionUID = -8707244320811304601L;
+	public final static double MAX = +1.0;
+	public final static double MIN = -1.0;
+	
 	public double activate(final double input) {
-		return input;
+        return 2.0 / (1.0 + Math.exp(-2.0 * input)) - 1.0; 
 	}
 
 	public double derivative(final double input) {
-		throw new UnsupportedOperationException("Can't compute a derivative of the linear activation function."); 
+		return 1.0 - Math.pow(activate(input), 2.0);
 	}
 
 	public double getMax() {
-		return Double.POSITIVE_INFINITY;
+		return MAX;
 	}
 
 	public double getMin() {
-		return Double.NEGATIVE_INFINITY;
+		return MIN;
 	}
+	
 }

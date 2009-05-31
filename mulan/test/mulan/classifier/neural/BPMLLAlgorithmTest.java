@@ -1,6 +1,12 @@
 package mulan.classifier.neural;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import mulan.core.neural.ActivationTANH;
+import mulan.core.neural.BasicNeuralNet;
+import mulan.core.neural.NeuralNet;
 
 import org.junit.After;
 import org.junit.Before;
