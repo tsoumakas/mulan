@@ -1,3 +1,24 @@
+/*
+*    This program is free software; you can redistribute it and/or modify
+*    it under the terms of the GNU General Public License as published by
+*    the Free Software Foundation; either version 2 of the License, or
+*    (at your option) any later version.
+*
+*    This program is distributed in the hope that it will be useful,
+*    but WITHOUT ANY WARRANTY; without even the implied warranty of
+*    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*    GNU General Public License for more details.
+*
+*    You should have received a copy of the GNU General Public License
+*    along with this program; if not, write to the Free Software
+*    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+*/
+
+/*
+*    Evaluator.java
+*    Copyright (C) 2009 Aristotle University of Thessaloniki, Thessaloniki, Greece
+*/
+
 package mulan.evaluation;
 
 import java.util.Random;
@@ -84,6 +105,11 @@ public class Evaluator
             ConfidenceLabelBasedMeasures clbm = new ConfidenceLabelBasedMeasures(output, trueLabels);
             evaluation.setConfidenceLabelBasedMeasures(clbm);
         }
+        if (testSet.getLabelsMetaData().isHierarchy()) {
+            HierarchicalMeasures hm = new HierarchicalMeasures(output, trueLabels, testSet.getLabelsMetaData());
+            evaluation.setHierarchicalMeasures(hm);
+        }
+
 		return evaluation;
 	}
 	
@@ -184,200 +210,6 @@ public class Evaluator
 
         return evaluation;
     }
-//		}
-//		
-//		return new CrossValidation(
-//				new LabelBasedCrossValidation(labelBased),
-//				new ExampleBasedCrossValidation(exampleBased),
-//				new LabelRankingBasedCrossValidation(rankingBased),
-//				numFolds); 
-//
-//	}
-//	
-//	public IntegratedCrossvalidation crossValidateAll(MultiLabelLearner learner, Instances dataset, int numFolds)
-//	throws Exception
-//	{
-//		if (numFolds == -1) numFolds = dataset.numInstances();
-//		IntegratedEvaluation[] integrated=new IntegratedEvaluation[numFolds];
-//		Random random = new Random(seed);
-//		
-//		Instances workingSet = new Instances(dataset);
-//		workingSet.randomize(random);
-//		for(int i = 0; i < numFolds; i++)
-//		{
-//			Instances train = workingSet.trainCV(numFolds, i, random);  
-//			Instances test  = workingSet.testCV(numFolds, i);
-//			MultiLabelLearner clone = learner.makeCopy(learner);
-//			//long start = System.currentTimeMillis();
-//			clone.build(train);
-//			//long end = System.currentTimeMillis();
-//			//System.out.print(i + "Buildclassifier Time: " + (end - start) + "\n");
-//			//start = System.currentTimeMillis();
-//			integrated[i] = evaluateAll(clone, test);
-//			//end = System.currentTimeMillis();
-//			//System.out.print(i + "Evaluation Time: " + (end - start) + "\n");
-//		}
-//		return new IntegratedCrossvalidation(integrated); 
-//	}
-//	
-//	public IntegratedCrossvalidation[] crossvalidateOverThreshold(
-//			BinaryPrediction[][][] predictions, Instances dataset, double start, double increment,
-//			int steps, int numFolds) throws Exception {
-//		IntegratedCrossvalidation[] crossvalidations = new IntegratedCrossvalidation[steps];
-//
-//		double threshold = start;
-//		for (int i = 0; i < steps; i++) { //for every step
-//			crossvalidations[i] = new IntegratedCrossvalidation(numFolds);
-//			for (int l = 0; l < numFolds; l++) { //for every fold that has been evaluated
-//				//calculate the predictions based on threshold
-//				for (int labelIndex = 0; labelIndex < predictions[l].length; labelIndex++) {
-//
-//					boolean flag = false;
-//					double[] confidences = new double[predictions[l][0].length];
-//
-//					for (int k = 0; k < predictions[l][0].length; k++) {
-//						confidences[k] = predictions[l][labelIndex][k].confidenceTrue;
-//						if (predictions[l][labelIndex][k].confidenceTrue >= threshold) {
-//							predictions[l][labelIndex][k].predicted = true;
-//							flag = true;
-//						} else {
-//							predictions[l][labelIndex][k].predicted = false;
-//						}
-//					}
-//					//assign the class with the greater confidence
-//					if (flag == false) {
-//						int index = Utils.maxIndex(confidences);
-//						predictions[l][labelIndex][index].predicted = true;
-//					}
-//				}
-//				//assign the prediction to the l th fold of this step's crossvalidation
-//				crossvalidations[i].folds[l] = new IntegratedEvaluation(predictions[l]);
-//			}
-//			crossvalidations[i].computeMeasures();
-//			threshold += increment; //increase threshold for the next step
-//		}
-//
-//		return crossvalidations;
-//
-//	}
-//
-//	public IntegratedCrossvalidation[] crossvalidateOverThreshold(MultiLabelLearner learner,
-//			Instances dataset, double start, double increment, int steps, int numFolds)
-//			throws Exception {
-//		//create a crossvalidation of the classifier in order to get predictions
-//		IntegratedCrossvalidation cv = crossValidateAll(learner, dataset, numFolds);
-//		BinaryPrediction[][][] predictions2 = new BinaryPrediction[numFolds][][];
-//		for (int i = 0; i < numFolds; i++) {
-//			predictions2[i] = cv.folds[i].predictions;
-//		}
-//
-//return crossvalidateOverThreshold(predictions2, dataset, start, increment, steps,numFolds);
-//}
-//	
-//	protected BinaryPrediction[][] getPredictions(MultiLabelLearner learner, Instances dataset)
-//	throws Exception
-//	{
-//		BinaryPrediction[][] predictions = 
-//			new BinaryPrediction[dataset.numInstances()][learner.getNumLabels()];
-//		
-//		for(int i = 0; i < dataset.numInstances(); i++)
-//		{
-//			Instance instance = dataset.instance(i);
-//			Prediction result = learner.predict(instance);
-//			//System.out.println(java.util.Arrays.toString(result.getConfidences()));
-//			for(int labelIndex = 0; labelIndex < learner.getNumLabels(); labelIndex++)
-//			{
-//				int classIdx = dataset.numAttributes() - learner.getNumLabels() + labelIndex;
-//				String classValue = dataset.attribute(classIdx).value((int) instance.value(classIdx));
-//                                boolean actual = classValue.equals("1");
-//				predictions[i][labelIndex] = new BinaryPrediction(
-//							result.getPrediction(labelIndex),
-//							actual, 
-//							result.getConfidence(labelIndex));
-//			}
-//		}
-//		return predictions;
-//	}
-//	
-//
-//	public IntegratedEvaluation[] evaluateOverThreshold(BinaryPrediction[][] predictions,
-//											  Instances dataset,
-//											  double start,
-//											  double increment,
-//											  int steps)
-//	throws Exception
-//	{
-//		IntegratedEvaluation[] evaluations = new IntegratedEvaluation[steps];
-//		
-//		double threshold = start;
-//		for(int i = 0; i < steps; i++)
-//		{
-//			for(int labelIndex = 0; labelIndex < predictions.length; labelIndex++)
-//				for(int k = 0; k < predictions[0].length; k++)
-//					predictions[labelIndex][k].predicted = predictions[labelIndex][k].confidenceTrue >= threshold;
-//			threshold += increment;
-//			evaluations[i] = new IntegratedEvaluation(predictions);
-//		}
-//		
-//		return evaluations;
-//		
-//	}
-//	
-//	public IntegratedEvaluation[] evaluateOverThreshold(MultiLabelLearner learner, 
-//											  Instances dataset, 
-//											  double start, 
-//											  double increment, 
-//											  int steps)
-//	throws Exception
-//	{
-//		BinaryPrediction[][] predictions = getPredictions(learner, dataset);
-//		return evaluateOverThreshold(predictions, dataset, start, increment, steps);
-//	}
-//	
-//	public Evaluation evaluate(BinaryPrediction[][] predictions)
-//	throws Exception
-//	{
-//		return new Evaluation(
-//				new LabelBasedEvaluation(predictions),
-//				new ExampleBasedEvaluation(predictions),
-//				new LabelRankingBasedEvaluation(predictions));
-//	}
-//	
-//	
-//	public Evaluation evaluate(MultiLabelLearner learner, Instances dataset)
-//	throws Exception
-//	{
-//		BinaryPrediction[][] predictions = getPredictions(learner, dataset);
-//		return evaluate(predictions);
-//	}
-//	
-//	public IntegratedEvaluation evaluateAll(MultiLabelLearner learner, Instances dataset)
-//	throws Exception
-//	{
-//		BinaryPrediction[][] predictions = getPredictions(learner, dataset);
-//		return new IntegratedEvaluation(predictions);
-//	}
-//	
-//	public ExampleBasedEvaluation evaluateExample(MultiLabelLearner learner, Instances dataset)
-//	throws Exception
-//	{
-//		BinaryPrediction[][] predictions = getPredictions(learner, dataset);
-//		return new ExampleBasedEvaluation(predictions);
-//	}
-//	
-//	public LabelRankingBasedEvaluation evaluateRanking(MultiLabelLearner learner, Instances dataset)
-//	throws Exception
-//	{
-//		BinaryPrediction[][] predictions = getPredictions(learner, dataset);
-//		return new LabelRankingBasedEvaluation(predictions);
-//	}
-//	
-//	public LabelBasedEvaluation evaluateLabel(MultiLabelLearner learner, Instances dataset)
-//	throws Exception
-//	{
-//		BinaryPrediction[][] predictions = getPredictions(learner, dataset);
-//		return new LabelBasedEvaluation(predictions);
-//	}
 
 }
 
