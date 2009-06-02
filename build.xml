@@ -42,6 +42,11 @@
 			   destdir="${target.classes.dir}">
 			<classpath refid="dependency.libs.path" />
 		</javac>
+		<copy todir="${target.classes.dir}" preservelastmodified="true">
+			<fileset dir="${src.dir}">
+				<include name="**/*.xsd"/>
+			</fileset>
+		</copy>
 	</target>
 	
 	<target name="build-test" depends="build" description="Builds tests classes.">
