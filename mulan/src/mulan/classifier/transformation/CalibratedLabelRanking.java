@@ -21,14 +21,15 @@
 
 package mulan.classifier.transformation;
 
+import java.util.Arrays;
 import mulan.classifier.MultiLabelOutput;
 import mulan.core.data.MultiLabelInstances;
+import mulan.transformations.RemoveAllLabels;
 import weka.classifiers.Classifier;
 import weka.core.Attribute;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.filters.Filter;
-import weka.filters.unsupervised.attribute.Remove;
 import weka.filters.unsupervised.attribute.Reorder;
 
 /**
@@ -119,6 +120,7 @@ public class CalibratedLabelRanking extends TransformationBasedMultiLabelLearner
         // Virtual label models
         debug("Building calibration label models");
         virtualLabelModels = new BinaryRelevance(getBaseClassifier());
+        virtualLabelModels.setDebug(getDebug());
         virtualLabelModels.build(trainingSet);
 
         // One-vs-one models
@@ -142,7 +144,6 @@ public class CalibratedLabelRanking extends TransformationBasedMultiLabelLearner
 
                 // initialize training set
                 Instances dataOneVsOne = new Instances(trainingData, 0);
-
                 // filter out examples with no preference
                 for (int i=0; i<trainingData.numInstances(); i++)
                 {
@@ -203,22 +204,14 @@ public class CalibratedLabelRanking extends TransformationBasedMultiLabelLearner
 		double[] confidences = new double[numLabels];
         int[] voteLabel = new int[numLabels+1];
 
+        //System.out.println("Instance:" + instance.toString());
+
         // delete all labels and add a new atribute at the end
-        Remove remove = new Remove();
-        remove.setAttributeIndicesArray(labelIndices);
-        remove.setInputFormat(instance.dataset());
-        remove.setInvertSelection(false);
-        Instance newInstance = null;
-        if (remove.input(instance))
-        {
-            newInstance = remove.output();
-        }
-        newInstance.setDataset(null);
-        newInstance.insertAttributeAt(numLabels);
+        Instance newInstance = RemoveAllLabels.transformInstance(instance, labelIndices);
+        newInstance.insertAttributeAt(newInstance.numAttributes());
 
         //initialize the array voteLabel
-        for(int i=0; i<numLabels; i++) 
-            voteLabel[i]=0;
+        Arrays.fill(voteLabel, 0);
 
         int counter=0;
         for (int label1=0; label1<numLabels-1; label1++)
@@ -238,9 +231,9 @@ public class CalibratedLabelRanking extends TransformationBasedMultiLabelLearner
                 // Ensure correct predictions both for class values {0,1} and {1,0}
                 Attribute classAttribute = metaDataTest[counter].classAttribute();
 
-                if (classAttribute.value(maxIndex).equals("1"))
+                if (classAttribute.value(maxIndex).equals("1")) 
                     voteLabel[label1]++;
-                else
+                else 
                     voteLabel[label2]++;
 
                 counter++;
