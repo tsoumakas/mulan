@@ -65,14 +65,11 @@ public class HierarchyBuilder {
         numPartitions = partitions;
     }
     /**
-     * Builds a random hierarchy on the labels of multilabel data.
-     *
-     * Firstly a xml file is created with the hierarchy of labels. The flat labels
-     * that were in the initial xml file now will be the leafs of the new hierarchy.
-     * The new labels that are added to the xml are called 'metaLabel' and the xml
-     * file is called 'metaLabels.xml'. Besides that a new arff file is created too.
-     * It contains the same instances as the initial one, which were modified properly
-     * to the new hierarchy.
+     * Builds a hierarhical multi-label dataset. Firstly a random hierarchy is
+     * built on top of the labels of a flat multi-label dataset, by recursively
+     * randomly partitioning the labels into a specified number of clusters.
+     * Then the values for the new "meta-labels" are properly set, so that
+     * the hierarchy is respected.
      *
      * @param mlData the multiLabel data on with the new hierarchy will be built
      * @return the new multiLabel data
