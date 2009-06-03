@@ -107,6 +107,7 @@ public class BinaryRelevance extends TransformationBasedMultiLabelLearner
             ensemble[i].setFilter(remove);
 
             trainingData.setClassIndex(labelIndices[i]);
+            debug("Bulding model " + (i+1) + "/" + numLabels);
             ensemble[i].buildClassifier(trainingData);
         }
 	}
