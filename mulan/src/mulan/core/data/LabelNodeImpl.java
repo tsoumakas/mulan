@@ -125,14 +125,13 @@ public class LabelNodeImpl implements LabelNode, Serializable {
     }
 
 	public Set<String> getDescendantLabels() {
-        if (hasChildren()) {
-            Set<String> labels = new HashSet<String>();
+		Set<String> labels = new HashSet<String>();
+		if (hasChildren()) {
             for (LabelNode child : childrenNodes) {
                 labels.addAll(getDescendantLabelsRec(child));
             }
-            return labels;
-        } else
-            return null;
+        }
+		return labels;
     }
 
     private Set<String> getDescendantLabelsRec(LabelNode node) {
@@ -143,7 +142,6 @@ public class LabelNodeImpl implements LabelNode, Serializable {
                 labels.addAll(getDescendantLabelsRec(child));
         return labels;
     }
-
 
     public Set<LabelNode> getChildren() {
 		return Collections.unmodifiableSet(childrenNodes);
