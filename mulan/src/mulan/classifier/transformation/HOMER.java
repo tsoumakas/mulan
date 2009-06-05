@@ -25,6 +25,7 @@ import mulan.classifier.MultiLabelOutput;
 import mulan.classifier.hierarchical.HMC;
 import mulan.core.data.MultiLabelInstances;
 import mulan.classifier.hierarchical.HierarchyBuilder;
+import mulan.classifier.hierarchical.HierarchyBuilder.Method;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.TechnicalInformation;
@@ -60,17 +61,19 @@ public class HOMER extends MultiLabelMetaLearner
     private HMC hmc;
     private HierarchyBuilder hb;
     private Instances header;
+    private Method method;
 
-    public HOMER(MultiLabelLearner mll, int clusters)
+    public HOMER(MultiLabelLearner mll, int clusters, Method method)
     {
         super(mll);
+        this.method = method;
         numClusters = clusters;
     }
 
     @Override
     protected void buildInternal(MultiLabelInstances trainingSet) throws Exception {
         debug("Constructing the hierarchical multilabel dataset");
-        hb = new HierarchyBuilder(numClusters, HierarchyBuilder.Method.Random);
+        hb = new HierarchyBuilder(numClusters, method);
         MultiLabelInstances meta = hb.buildHierarchy(trainingSet);
         header = new Instances(meta.getDataSet(), 0);
         debug("Training the hierarchical classifier");
