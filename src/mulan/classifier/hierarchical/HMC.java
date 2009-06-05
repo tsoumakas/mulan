@@ -20,8 +20,6 @@
  */
 package mulan.classifier.hierarchical;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
@@ -51,6 +49,7 @@ import weka.filters.unsupervised.attribute.Remove;
  * are unnecessary are removed also.
  *
  * @author George Saridis
+ * @author Grigorios Tsoumakas
  * @version 0.2
  */
 public class HMC extends MultiLabelMetaLearner {
@@ -78,7 +77,7 @@ public class HMC extends MultiLabelMetaLearner {
         String metaLabel = node.getName();
         debug(metaLabel);
 
-        debug("Preparing node data");
+        //debug("Preparing node data");
         Set<String> childrenLabels = new HashSet<String>();
         Set<String> currentlyAvailableLabels = new HashSet<String>();
         if (metaLabel.equals("root")) {
@@ -95,8 +94,8 @@ public class HMC extends MultiLabelMetaLearner {
         // delete non-children labels
         Set<String> labelsToDelete = new HashSet(currentlyAvailableLabels);
         labelsToDelete.removeAll(childrenLabels);
-        System.out.println("Children: " + Arrays.toString(childrenLabels.toArray()));
-        System.out.println("Labels to delete:" + Arrays.toString(labelsToDelete.toArray()));
+        //System.out.println("Children: " + Arrays.toString(childrenLabels.toArray()));
+        //System.out.println("Labels to delete:" + Arrays.toString(labelsToDelete.toArray()));
 
         int[] indicesToDelete = new int[labelsToDelete.size()];
         int counter1 = 0;
@@ -119,14 +118,14 @@ public class HMC extends MultiLabelMetaLearner {
         // create multi-label instance
         MultiLabelInstances nodeData = new MultiLabelInstances(nodeInstances, nodeMetaData);
         
-        debug("Building model");
+        //debug("Building model");
         node.build(nodeData);
 
         for (String childLabel : childrenLabels) {
             LabelNode childNode = originalMetaData.getLabelNode(childLabel);
             if (!childNode.hasChildren())
                 continue;
-            debug("Preparing child data");
+            //debug("Preparing child data");
 
             // remove instances where child is 0
             int childMetaLabelIndex = data.attribute(childLabel).index();
@@ -142,7 +141,7 @@ public class HMC extends MultiLabelMetaLearner {
             Set<String> descendantLabels = childNode.getDescendantLabels();
             Set<String> labelsToDelete2 = new HashSet(currentlyAvailableLabels);
             labelsToDelete2.removeAll(descendantLabels);
-            System.out.println("Labels to delete:" + Arrays.toString(labelsToDelete2.toArray()));
+            //System.out.println("Labels to delete:" + Arrays.toString(labelsToDelete2.toArray()));
             int[] indicesToDelete2 = new int[labelsToDelete2.size()];
             int counter2 = 0;
             for (String label : labelsToDelete2) {
