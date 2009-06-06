@@ -169,27 +169,35 @@ public class HierarchyBuilder {
         ArrayList<String>[] childrenLabels = null;
         switch (method) {
             case Random:
-                childrenLabels = randomPartitioning(numPartitions, labels);
+                childrenLabels = randomPartitioning(numChildren, labels);
                 break;
             case Clustering:
-                childrenLabels = clustering(numPartitions, labels, mlData, false);
+                childrenLabels = clustering(numChildren, labels, mlData, false);
                 break;
             case BalancedClustering:
-                childrenLabels = clustering(numPartitions, labels, mlData, true);
+                childrenLabels = clustering(numChildren, labels, mlData, true);
                 break;
         }
 
+        for (int i=0; i<numChildren; i++)
+            if (childrenLabels[i].size() == labels.size())
+            {
+                childrenLabels = randomPartitioning(numChildren, labels);
+                break;
+            }
 
         for (int i=0; i<numChildren; i++) {
-            if (childrenLabels[i].size() > 1) {
-                LabelNodeImpl child = new LabelNodeImpl(node.getName() + "." + (i+1));
-                node.addChildNode(child);
-                createLabelsMetaDataRecursive(child, childrenLabels[i], mlData);
-            }
+            if (childrenLabels[i].size() == 0)
+                continue;
             if (childrenLabels[i].size() == 1)
             {
                 LabelNodeImpl child = new LabelNodeImpl(childrenLabels[i].get(0));
                 node.addChildNode(child);
+            }
+            if (childrenLabels[i].size() > 1) {
+                LabelNodeImpl child = new LabelNodeImpl(node.getName() + "." + (i+1));
+                node.addChildNode(child);
+                createLabelsMetaDataRecursive(child, childrenLabels[i], mlData);
             }
         }
     }
