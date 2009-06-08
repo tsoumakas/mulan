@@ -16,7 +16,7 @@
 	
 	<property name="mulan.title" value="MULAN - MUlti-LAbel classificatioN" />
 	<property name="mulan.version" value="0.3.0" />
-	<property name="weka.version" value="3.6.0" />
+	<property name="weka.version" value="3.7.0" />
 	<property name="junit.version" value="4.5" />
 
 	
