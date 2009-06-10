@@ -10,25 +10,24 @@ import weka.filters.unsupervised.attribute.Remove;
 
 public class PhiCoefficient implements Serializable {
 
+	Instances dataSet;
+	int[] labelIndices;
 	int numOfLabels;
 	double[][] phi;
 
-	public double[][] calculatePhi(Instances dataSet, int numOfLabels)
-			throws Exception {
-		this.numOfLabels = numOfLabels;
-		int predictors = dataSet.numAttributes() - numOfLabels;
+	public PhiCoefficient(Instances dataSet, int[] labelIndices) {
+		this.dataSet = dataSet;
+		this.labelIndices = labelIndices;
+		this.numOfLabels = labelIndices.length;
 		phi = new double[numOfLabels][numOfLabels];
-		// Indices of label attributes
-		int indices[] = new int[numOfLabels];
-		int k = 0;
-		for (int j = 0; j < numOfLabels; j++) {
-			indices[k] = predictors + j;
-			k++;
-		}
+	}
 
+	public double[][] calculatePhi()
+			throws Exception {
+		
 		Remove remove = new Remove();
 		remove.setInvertSelection(true);
-		remove.setAttributeIndicesArray(indices);
+		remove.setAttributeIndicesArray(labelIndices);
 		remove.setInputFormat(dataSet);
 		Instances result = Filter.useFilter(dataSet, remove);
 		result.setClassIndex(result.numAttributes() - 1);
@@ -90,66 +89,66 @@ public class PhiCoefficient implements Serializable {
 		}
 	}
 
+	public double[] getHistogram() {
+		double[] pairs = new double[numOfLabels * (numOfLabels - 1) / 2];
+		int counter = 0;
+		for (int i = 0; i < numOfLabels - 1; i++)
+			for (int j = i + 1; j < numOfLabels; j++) {
+				pairs[counter] = phi[i][j];
+				counter++;
+			}
+		return pairs;
+	}
 
-    public double[] getHistogram() {
-        double[] pairs = new double[numOfLabels*(numOfLabels-1)/2];
-        int counter=0;
-        for (int i=0; i<numOfLabels-1; i++)
-            for (int j=i+1; j<numOfLabels; j++)
-            {
-                pairs[counter] = phi[i][j];
-                counter++;
-            }
-        return pairs;
-    }
-	
 	/**
 	 * This method prints data, useful for the visualization of Phi per dataset.
-	 * It prints int(1/step) + 1 pairs of values.
-	 * The first value of each pair is the phi value and the second is the average
-	 * number of labels that correlate to the rest of the labels with correlation
-	 * higher than the specified phi value;
+	 * It prints int(1/step) + 1 pairs of values. The first value of each pair
+	 * is the phi value and the second is the average number of labels that
+	 * correlate to the rest of the labels with correlation higher than the
+	 * specified phi value;
 	 * 
-	 * @param step the phi value increment step
+	 * @param step
+	 *            the phi value increment step
 	 */
-	public void printDiagram(double step){
+	public void printDiagram(double step) {
 		String pattern = "0.00";
 		DecimalFormat myFormatter = new DecimalFormat(pattern);
-		
+
 		System.out.println("Phi      AvgCorrelated");
 		double phi = 0;
-		while(phi<=1.001){
-			double avgCorrelated=0;
-			for(int i=0;i<numOfLabels;i++){
-				int [] temp = uncorrelatedIndices(i,phi);
+		while (phi <= 1.001) {
+			double avgCorrelated = 0;
+			for (int i = 0; i < numOfLabels; i++) {
+				int[] temp = uncorrelatedLabels(i, phi);
 				avgCorrelated += (numOfLabels - temp.length);
 			}
-			avgCorrelated/=numOfLabels;
-			System.out.println(myFormatter.format(phi) + "     " + avgCorrelated);
-			phi+= step;
+			avgCorrelated /= numOfLabels;
+			System.out.println(myFormatter.format(phi) + "     "
+					+ avgCorrelated);
+			phi += step;
 		}
 	}
-	
+
 	/**
-	 * returns the indices of the labels whose phi coefficient
-	 * values lie between -bound <= phi <= bound 
+	 * returns the indices of the labels whose phi coefficient values lie
+	 * between -bound <= phi <= bound
 	 * 
 	 * @param labelIndex
 	 * @param bound
 	 * @return
 	 */
-	public int [] uncorrelatedIndices(int labelIndex, double bound){
-		ArrayList<Integer>  indiceslist = new ArrayList<Integer>();
-		for(int i=0;i<numOfLabels;i++){
-			if(Math.abs(phi[labelIndex][i])<=bound){
+	public int[] uncorrelatedLabels(int labelIndex, double bound) {
+		ArrayList<Integer> indiceslist = new ArrayList<Integer>();
+		for (int i = 0; i < numOfLabels; i++) {
+			if (Math.abs(phi[labelIndex][i]) <= bound) {
 				indiceslist.add(i);
 			}
 		}
-		int [] indices = new int[indiceslist.size()];
-		for(int i =0;i<indiceslist.size();i++){
+		int[] indices = new int[indiceslist.size()];
+		for (int i = 0; i < indiceslist.size(); i++) {
 			indices[i] = indiceslist.get(i);
 		}
-		//System.out.println(Arrays.toString(indices));
+		// System.out.println(Arrays.toString(indices));
 		return indices;
 	}
 }
