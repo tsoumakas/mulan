@@ -117,7 +117,7 @@ public class BinaryRelevanceTransformation implements Serializable {
                 if (i != indexToKeep)
                     continue;
             }
-            transformedValues[counterTransformed] = i;
+            transformedValues[counterTransformed] = instance.value(i);
             counterTransformed++;
         }
 
