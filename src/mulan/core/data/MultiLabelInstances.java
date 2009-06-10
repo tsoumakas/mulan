@@ -180,7 +180,7 @@ public class MultiLabelInstances {
         for(int index=0; index<numAttributes; index++) {
 			Attribute attr = dataSet.attribute(index);
 			if (labelNames.contains(attr.name())) {
-				labelIndices[counter] = attr.index();
+				labelIndices[counter] = index;
                 counter++;
             }
 		}
