@@ -30,6 +30,7 @@ import mulan.classifier.transformation.HOMER;
 import mulan.classifier.transformation.IncludeLabelsClassifier;
 import mulan.classifier.transformation.LabelPowerset;
 import mulan.classifier.transformation.MultiClassLearner;
+import mulan.classifier.transformation.MultiLabelStacking;
 import mulan.classifier.transformation.RAkEL;
 import mulan.core.data.MultiLabelInstances;
 import mulan.evaluation.Evaluation;
@@ -50,7 +51,7 @@ import weka.core.Utils;
 public class TrainTestExperiment {
 
     public static void main(String[] args) {
-        String[] methodsToCompare = {"HOMER", "BR", "CLR", "MLkNN", "MC-Copy", "IncludeLabels","MC-Ignore","RAkEL", "LP",};
+        String[] methodsToCompare = {"HOMER", "BR", "CLR", "MLkNN", "MC-Copy", "IncludeLabels","MC-Ignore","RAkEL", "LP", "MLStacking"};
 
         try {
             String path = Utils.getOption("path", args);
@@ -167,6 +168,19 @@ public class TrainTestExperiment {
                     homer.setDebug(true);
                     homer.build(train);
                     results = eval.evaluate(homer, test);
+                    System.out.println(results.toString());
+                }
+                if (methodsToCompare[i].equals("MLStacking")) {
+                    System.out.println(methodsToCompare[i]);           
+                    J48 baseClassifier = new J48(); 
+                    J48 metaClassifier = new J48();                   
+                    baseClassifier.setUseLaplace(true);
+                    metaClassifier.setUseLaplace(true);
+                    MultiLabelStacking mls = new MultiLabelStacking(baseClassifier, metaClassifier, 10);
+                    mls.setDebug(true);
+                    mls.setPhival(0.06);
+                    mls.build(train);
+                    results = eval.evaluate(mls, test);
                     System.out.println(results.toString());
                 }
 
