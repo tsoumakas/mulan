@@ -57,6 +57,12 @@ public abstract class MultiLabelLearnerBase
      * in the {@link MultiLabelOutput} object.
 	 */
 	protected int[] labelIndices;
+	
+	/**
+	 * An array containing the indexes of the feature attributes within the
+     * {@link Instances} object of the training data in increasing order.
+	 */
+	protected int[] featureIndices;
 
 	private boolean isDebug = false;
 
@@ -72,6 +78,7 @@ public abstract class MultiLabelLearnerBase
 		
 		numLabels = trainingSet.getNumLabels();
         labelIndices = trainingSet.getLabelIndices();
+        featureIndices = trainingSet.getFeatureIndices();
  
 		buildInternal(trainingSet);
 	}
