@@ -41,7 +41,7 @@ import mulan.core.data.LabelsMetaData;
 import mulan.core.data.LabelsMetaDataImpl;
 import mulan.core.data.MultiLabelInstances;
 import org.w3c.dom.Element;
-import weka.clusterers.SimpleKMeans;
+import weka.clusterers.EM;
 import weka.core.Attribute;
 import weka.core.FastVector;
 import weka.core.Instance;
@@ -146,6 +146,15 @@ public class HierarchyBuilder {
                 break;
         }
 
+        
+        for (int i=0; i<numPartitions; i++)
+            if (childrenLabels[i].size() == listOfLabels.size())
+            {
+                // another idea is to add leaves here
+                childrenLabels = randomPartitioning(numPartitions, listOfLabels);
+                break;
+            }
+
         LabelsMetaDataImpl metaData = new LabelsMetaDataImpl();
         for (int i=0; i<numPartitions; i++) {
             if (childrenLabels[i].size() == 0)
@@ -154,9 +163,11 @@ public class HierarchyBuilder {
                 metaData.addRootNode(new LabelNodeImpl(childrenLabels[i].get(0)));
                 continue;
             }
-            LabelNodeImpl metaLabel = new LabelNodeImpl("MetaLabel " + (i+1));
-            createLabelsMetaDataRecursive(metaLabel, childrenLabels[i], mlData);
-            metaData.addRootNode(metaLabel);
+            if (childrenLabels[i].size() > 1) {
+                LabelNodeImpl metaLabel = new LabelNodeImpl("MetaLabel " + (i+1));
+                createLabelsMetaDataRecursive(metaLabel, childrenLabels[i], mlData);
+                metaData.addRootNode(metaLabel);
+            }
         }
 
         return metaData;
@@ -164,35 +175,43 @@ public class HierarchyBuilder {
 
     private void createLabelsMetaDataRecursive(LabelNodeImpl node, List<String> labels, MultiLabelInstances mlData)
     {
-        int numChildren = Math.min(numPartitions, labels.size());
+        if (labels.size() <= numPartitions) {
+            for (int i=0; i<labels.size(); i++) {
+                LabelNodeImpl child = new LabelNodeImpl(labels.get(i));
+                node.addChildNode(child);
+            }
+            return;
+        }
 
         ArrayList<String>[] childrenLabels = null;
         switch (method) {
             case Random:
-                childrenLabels = randomPartitioning(numChildren, labels);
+                childrenLabels = randomPartitioning(numPartitions, labels);
                 break;
             case Clustering:
-                childrenLabels = clustering(numChildren, labels, mlData, false);
+                childrenLabels = clustering(numPartitions, labels, mlData, false);
                 break;
             case BalancedClustering:
-                childrenLabels = clustering(numChildren, labels, mlData, true);
+                childrenLabels = clustering(numPartitions, labels, mlData, true);
                 break;
         }
 
-        for (int i=0; i<numChildren; i++)
+        for (int i=0; i<numPartitions; i++)
             if (childrenLabels[i].size() == labels.size())
             {
-                childrenLabels = randomPartitioning(numChildren, labels);
+                // another idea is to add leaves here
+                childrenLabels = randomPartitioning(numPartitions, labels);
                 break;
             }
 
-        for (int i=0; i<numChildren; i++) {
+        for (int i=0; i<numPartitions; i++) {
             if (childrenLabels[i].size() == 0)
                 continue;
             if (childrenLabels[i].size() == 1)
             {
                 LabelNodeImpl child = new LabelNodeImpl(childrenLabels[i].get(0));
                 node.addChildNode(child);
+                continue;
             }
             if (childrenLabels[i].size() > 1) {
                 LabelNodeImpl child = new LabelNodeImpl(node.getName() + "." + (i+1));
@@ -215,6 +234,7 @@ public class HierarchyBuilder {
             Attribute att = new Attribute("instance"+(i+1));
             attInfo.addElement(att);
         }
+        System.out.println("constructing instances");
         Instances transposed = new Instances("transposed", attInfo, 0);
         for (int i=0; i<labels.size(); i++) {
             double[] values = new double[numInstances];
@@ -225,10 +245,11 @@ public class HierarchyBuilder {
         }
 
         if (!balanced) {
-            SimpleKMeans clusterer = new SimpleKMeans();
+            EM clusterer = new EM();
             try {
                 // cluster the labels
                 clusterer.setNumClusters(clusters);
+                System.out.println("clustering");
                 clusterer.buildClusterer(transposed);
                 // return the clustering
                 for (int i=0; i<labels.size(); i++)
@@ -238,10 +259,11 @@ public class HierarchyBuilder {
             }
         } else {
             ConstrainedKMeans clusterer = new ConstrainedKMeans();
-            clusterer.setMaxIterations(20);
             try {
                 // cluster the labels
+                clusterer.setMaxIterations(20);
                 clusterer.setNumClusters(clusters);
+                System.out.println("balanced clustering");
                 clusterer.buildClusterer(transposed);
                 // return the clustering
                 for (int i=0; i<labels.size(); i++)
