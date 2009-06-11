@@ -1,29 +1,31 @@
-package mulan.core;
+/*
+*    This program is free software; you can redistribute it and/or modify
+*    it under the terms of the GNU General Public License as published by
+*    the Free Software Foundation; either version 2 of the License, or
+*    (at your option) any later version.
+*
+*    This program is distributed in the hope that it will be useful,
+*    but WITHOUT ANY WARRANTY; without even the implied warranty of
+*    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*    GNU General Public License for more details.
+*
+*    You should have received a copy of the GNU General Public License
+*    along with this program; if not, write to the Free Software
+*    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+*/
 
 /*
- *    This program is free software; you can redistribute it and/or modify
- *    it under the terms of the GNU General Public License as published by
- *    the Free Software Foundation; either version 2 of the License, or
- *    (at your option) any later version.
- *
- *    This program is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU General Public License for more details.
- *
- *    You should have received a copy of the GNU General Public License
- *    along with this program; if not, write to the Free Software
- *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
- */
+*    Statistics.java
+*    Copyright (C) 2009 Aristotle University of Thessaloniki, Thessaloniki, Greece
+*/
+package mulan.core;
 
-import java.io.FileReader;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Set;
-
+import mulan.core.data.MultiLabelInstances;
 import weka.core.Instance;
 import weka.core.Instances;
-import weka.core.Utils;
 
 /**
  <!-- globalinfo-start -->
@@ -55,7 +57,7 @@ import weka.core.Utils;
  * Valid options are: <p/>
  * 
  * <pre> -F &lt;filename&gt;
- *  The filename (including full path) of the multilabel data set).</pre>
+ *  The filename (including full path) of the multilabel mlData set).</pre>
  * 
  * <pre> -L &lt;number of labels&gt;
  *  Number of labels. </pre>
@@ -147,10 +149,15 @@ public class Statistics implements Serializable
      * calculates various multilabel statistics, such as label cardinality, <br>
      * label density and the set of distinct labels along with their frequency
      */
-    public void calculateStats(Instances data, int labels) {        
+    public void calculateStats(MultiLabelInstances mlData)
+    {
         // initialize statistics
-        numLabels = labels;
-        numPredictors = data.numAttributes()-numLabels;
+        Instances data = mlData.getDataSet();
+        numLabels = mlData.getNumLabels();
+        int[] labelIndices = mlData.getLabelIndices();
+        int[] featureIndices = mlData.getFeatureIndices();
+        numPredictors = featureIndices.length;
+
         labelCardinality = 0;
         numNominal = 0;
         numNumeric = 0;
@@ -159,38 +166,38 @@ public class Statistics implements Serializable
         labelsets = new HashMap<LabelSet,Integer>();
              
         // gather statistics
-        for (int i=0; i<numPredictors; i++) {
-            if (data.attribute(i).isNominal())
+        for (int i=0; i<featureIndices.length; i++) {
+            if (data.attribute(featureIndices[i]).isNominal())
                 numNominal++;
-            if (data.attribute(i).isNumeric())
+            if (data.attribute(featureIndices[i]).isNumeric())
                 numNumeric++;
         }        
         
-        numInstances = data.numInstances(); 
+        numInstances = data.numInstances();
         for (int i=0; i<numInstances; i++)
         {
             int exampleCardinality=0;
             double[] dblLabels = new double[numLabels];
             for (int j=0; j<numLabels; j++)
             {
-            	double value = Double.parseDouble(data.attribute(numPredictors+j).value((int) data.instance(i).value(numPredictors + j))); 
-                dblLabels[j] = value; 
+            	double value = Double.parseDouble(data.attribute(labelIndices[j]).value((int) data.instance(i).value(labelIndices[j])));
                 
-                if (Utils.eq(value, 1.0))
+                if (data.attribute(labelIndices[j]).value((int) value).equals("1"))
                 {
+                    dblLabels[j] = 1;
                     exampleCardinality++;
                     labelCardinality++;
                     examplesPerLabel[j]++;
-                }
+                } else
+                    dblLabels[j] = 0;
             }
             cardinalityDistribution[exampleCardinality]++;
             
             LabelSet labelSet = new LabelSet(dblLabels);
             if (labelsets.containsKey(labelSet))
-            {
                 labelsets.put(labelSet, labelsets.get(labelSet) + 1);
-            }
-            else labelsets.put(labelSet, 1);
+            else
+                labelsets.put(labelSet, 1);
         }
         
         labelCardinality /= numInstances;
@@ -272,23 +279,11 @@ public class Statistics implements Serializable
         return labelsets.get(x);
     }
     
-    public static void main(String[] args) throws Exception {
-        String filename = Utils.getOption('F', args);
-        FileReader frData = new FileReader(filename);
-        Instances data = new Instances(frData);                
-        int numLabels = Integer.parseInt(Utils.getOption('L',args));
-        
-        Statistics stats = new Statistics();
-        stats.calculateCoocurrence(data, numLabels);
-        stats.calculateStats(data, numLabels);
-        System.out.println(stats.toString());
-    }
-    
     /**
      * Estimates the number of labels by counting the number of binary <br>
      * attributes at the end of the attribute list
      * 
-     * @param data
+     * @param mlData
      * @return the number of labels in the dataset
      */
     public static int guessLabels(Instances data) 
