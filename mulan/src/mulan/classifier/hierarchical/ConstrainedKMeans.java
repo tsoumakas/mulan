@@ -72,6 +72,7 @@ public class ConstrainedKMeans extends RandomizableClusterer implements NumberOf
  private int bucketSize;
  private int maxIterations;
 
+    @Override
     public String getRevision() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
@@ -187,15 +188,18 @@ public class ConstrainedKMeans extends RandomizableClusterer implements NumberOf
   *
   * @return      the capabilities of this clusterer
   */
+ @Override
  public Capabilities getCapabilities() {
-   Capabilities result = super.getCapabilities();
+    Capabilities result = super.getCapabilities();
+    result.disableAll();
+    result.enable(Capability.NO_CLASS);
 
-   // attributes
-   result.enable(Capability.NOMINAL_ATTRIBUTES);
-   result.enable(Capability.NUMERIC_ATTRIBUTES);
-   result.enable(Capability.MISSING_VALUES);
+    // attributes
+    result.enable(Capability.NOMINAL_ATTRIBUTES);
+    result.enable(Capability.NUMERIC_ATTRIBUTES);
+    result.enable(Capability.MISSING_VALUES);
 
-   return result;
+    return result;
  }
 
  public void setMaxIterations(int x)
@@ -216,7 +220,7 @@ public class ConstrainedKMeans extends RandomizableClusterer implements NumberOf
    for (int i=0; i<m_NumClusters; i++) bucket[i] = new ArrayList<bucketInstance>();
    // calculate bucket size
    bucketSize = (int) Math.ceil(data.numInstances() / (double) m_NumClusters);           //System.out.print("bucketSize = " + bucketSize + "\n");                // can clusterer handle the data?
-   
+
    getCapabilities().testWithFail(data);
 
    m_Iterations = 0;
@@ -400,6 +404,7 @@ public class ConstrainedKMeans extends RandomizableClusterer implements NumberOf
   * @throws Exception if instance could not be classified
   * successfully
   */
+    @Override
  public int clusterInstance(Instance instance) throws Exception {
    m_ReplaceMissingFilter.input(instance);
    m_ReplaceMissingFilter.batchFinished();
@@ -563,7 +568,8 @@ public class ConstrainedKMeans extends RandomizableClusterer implements NumberOf
   *
   * @return an enumeration of all the available options.
   */
- public Enumeration listOptions () {
+    @Override
+public Enumeration listOptions () {
    Vector result = new Vector();
 
    result.addElement(new Option(
@@ -629,6 +635,7 @@ public class ConstrainedKMeans extends RandomizableClusterer implements NumberOf
   * @param options the list of options as an array of strings
   * @throws Exception if an option is not supported
   */
+    @Override
  public void setOptions (String[] options)
    throws Exception {
 
@@ -645,6 +652,7 @@ public class ConstrainedKMeans extends RandomizableClusterer implements NumberOf
   *
   * @return an array of strings suitable for passing to setOptions()
   */
+    @Override
  public String[] getOptions () {
    int           i;
    Vector        result;
@@ -666,6 +674,7 @@ public class ConstrainedKMeans extends RandomizableClusterer implements NumberOf
   *
   * @return a description of the clusterer as a string
   */
+    @Override
  public String toString() {
    int maxWidth = 0;
    for (int i = 0; i < m_NumClusters; i++) {
