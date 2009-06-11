@@ -23,6 +23,7 @@ package mulan.examples;
 
 import mulan.classifier.MultiLabelLearner;
 import mulan.classifier.hierarchical.HMC;
+import mulan.classifier.hierarchical.HierarchyBuilder;
 import mulan.classifier.lazy.MLkNN;
 import mulan.classifier.transformation.BinaryRelevance;
 import mulan.classifier.transformation.CalibratedLabelRanking;
@@ -164,7 +165,7 @@ public class TrainTestExperiment {
                     Classifier baseClassifier = new SMO();
                     CalibratedLabelRanking learner = new CalibratedLabelRanking(baseClassifier);
                     learner.setDebug(true);
-                    HOMER homer = new HOMER(learner, 3);
+                    HOMER homer = new HOMER(learner, 3, HierarchyBuilder.Method.Random);
                     homer.setDebug(true);
                     homer.build(train);
                     results = eval.evaluate(homer, test);
