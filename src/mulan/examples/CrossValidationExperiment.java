@@ -7,6 +7,7 @@ package mulan.examples;
 
 import mulan.classifier.MultiLabelLearner;
 import mulan.classifier.hierarchical.HMC;
+import mulan.classifier.hierarchical.HierarchyBuilder;
 import mulan.classifier.lazy.MLkNN;
 import mulan.classifier.transformation.BinaryRelevance;
 import mulan.classifier.transformation.CalibratedLabelRanking;
@@ -148,7 +149,7 @@ public class CrossValidationExperiment {
 					CalibratedLabelRanking learner = new CalibratedLabelRanking(
 							baseClassifier);
 					learner.setDebug(true);
-					HOMER homer = new HOMER(learner, 3);
+					HOMER homer = new HOMER(learner, 3, HierarchyBuilder.Method.Random);
 					homer.setDebug(true);
 					results = eval.crossValidate(homer, dataSet, numFolds);
 					System.out.println(results.toString());
