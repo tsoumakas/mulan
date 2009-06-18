@@ -24,7 +24,7 @@ import java.util.Arrays;
 import mulan.attributeSelection.LabelPowersetAttributeEvaluator;
 import mulan.attributeSelection.Ranker;
 import mulan.core.data.MultiLabelInstances;
-import weka.attributeSelection.AttributeEvaluator;
+import weka.attributeSelection.ASEvaluation;
 import weka.attributeSelection.ChiSquaredAttributeEval;
 import weka.core.Instances;
 import weka.core.Utils;
@@ -44,11 +44,12 @@ public class AttributeSelectionTest {
         String filestem = Utils.getOption("filestem", args);
         MultiLabelInstances mlData = new MultiLabelInstances(path + filestem + ".arff", path + filestem + ".xml");
 
-        AttributeEvaluator ae = new ChiSquaredAttributeEval();
-        LabelPowersetAttributeEvaluator lpae = new LabelPowersetAttributeEvaluator(ae, mlData);
+        ASEvaluation ase = new ChiSquaredAttributeEval();
+        LabelPowersetAttributeEvaluator ae = new LabelPowersetAttributeEvaluator(ase, mlData);
+        //BinaryRelevanceAttributeEvaluator ae = new BinaryRelevanceAttributeEvaluator(ase, mlData, "max", "dl", "eval");
         
         Ranker r = new Ranker();
-        int[] result = r.search(lpae, mlData);
+        int[] result = r.search(ae, mlData);
         System.out.println(Arrays.toString(result));
         
         final int NUM_TO_KEEP=10;
