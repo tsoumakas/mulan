@@ -55,10 +55,10 @@ import weka.core.Instances;
 public class LabelPowersetAttributeEvaluator extends ASEvaluation implements AttributeEvaluator
 {
    /** The single-label attribute evaluator to use underneath */
-    private AttributeEvaluator baseAttributeEvaluator;
+    private ASEvaluation baseAttributeEvaluator;
 
     /** Constructor that uses an evaluator on a multi-label dataset */
-    public LabelPowersetAttributeEvaluator(AttributeEvaluator x, MultiLabelInstances mlData)
+    public LabelPowersetAttributeEvaluator(ASEvaluation x, MultiLabelInstances mlData)
     {
         baseAttributeEvaluator = x;
         LabelPowersetTransformation lpt = new LabelPowersetTransformation();
@@ -73,7 +73,7 @@ public class LabelPowersetAttributeEvaluator extends ASEvaluation implements Att
 
     @Override
     public double evaluateAttribute(int attribute) throws Exception {
-        return baseAttributeEvaluator.evaluateAttribute(attribute);
+        return ((AttributeEvaluator) baseAttributeEvaluator).evaluateAttribute(attribute);
     }
 
     @Override
