@@ -5,7 +5,7 @@
 
 package mulan.examples;
 
-import mulan.core.Statistics;
+import mulan.core.data.Statistics;
 import mulan.core.data.MultiLabelInstances;
 import weka.core.Utils;
 
