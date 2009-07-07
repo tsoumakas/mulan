@@ -31,7 +31,7 @@ import java.util.logging.Logger;
 
 import mulan.classifier.MultiLabelOutput;
 import mulan.core.data.MultiLabelInstances;
-import mulan.evaluation.PhiCoefficient;
+import mulan.core.data.Statistics;
 import mulan.transformations.BinaryRelevanceTransformation;
 import weka.classifiers.Classifier;
 import weka.classifiers.meta.FilteredClassifier;
@@ -107,7 +107,7 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner imp
 		this.includeAttrs = includeAttrs;
 	}
 
-	PhiCoefficient phi;
+	Statistics phi;
 
 	double phival;
 	
@@ -213,9 +213,6 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner imp
 			normalizePredictions();
 		}
 		
-		//calculate the PhiCoefficient, used in the meta-level
-		phi = new PhiCoefficient(train, labelIndices);
-		phi.calculatePhi();		
 	}
 	
 	private void normalizePredictions(){
@@ -289,6 +286,9 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner imp
 		metaLevelFilteredEnsemble = new FilteredClassifier[numLabels];
     	Instances train = dataSet.getDataSet();
     	buildBaseLevel(train);
+		//calculate the PhiCoefficient, used in the meta-level
+		phi = new Statistics();
+		phi.calculatePhi(dataSet);	
 		buildMetaLevel(train,phival);
     }
 
@@ -405,7 +405,7 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner imp
 		for (int i = 0; i < original.numAttributes(); i++) {
 			attributes.addElement(original.attribute(i));
 		}
-		// Add attribute for holding the index at the end.
+		// Add attribute for holding the index at the beginning.
 		attributes.insertElementAt(new Attribute("Index"), 0);
 		Instances transformed = new Instances("Meta format", attributes, 0);
 		for (int i = 0; i < original.numInstances(); i++) {
@@ -418,7 +418,7 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner imp
 			transformed.add(newInstance);
 		}
 
-		transformed.setClassIndex(transformed.numAttributes() - 1);
+		transformed.setClassIndex(original.classIndex()+1);
 		return transformed;
 	}
 
