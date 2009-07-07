@@ -105,23 +105,31 @@ public class BinaryRelevanceTransformation implements Serializable {
     public static Instance transformInstance(Instance instance, int[] labelIndices, int indexToKeep)
 	{
         double[] values = instance.toDoubleArray();
-        double[] transformedValues = new double[values.length-labelIndices.length+1];
+		double[] transformedValues = new double[values.length
+				- labelIndices.length + 1];
 
-        int counterTransformed=0;
-        int counterLabelIndices=0;
-        for (int i=0; i<values.length; i++)
-        {
-            if (i == labelIndices[counterLabelIndices])
-            {
-                counterLabelIndices++;
-                if (i != indexToKeep)
-                    continue;
-            }
-            transformedValues[counterTransformed] = instance.value(i);
-            counterTransformed++;
-        }
+		int counterTransformed = 0;
+		int counterLabelIndices = 0;
+		boolean isLabel = false;
+		
+		for (int i = 0; i < values.length; i++) {
+			if (counterLabelIndices < labelIndices.length) {
+				for (int j = 0; j < labelIndices.length; j++) {
+					if (i == labelIndices[j] && i != indexToKeep) {
+						isLabel = true;
+						break;
+					} 
+				}
+				
+			} 
+			if(!isLabel){
+				transformedValues[counterTransformed] = instance.value(i);
+				counterTransformed++;
+			}
+			isLabel = false;
+		}
 
-        Instance transformedInstance = new Instance(1, transformedValues);
+		Instance transformedInstance = new Instance(1, transformedValues);
 		return transformedInstance;
 	}
 
