@@ -18,14 +18,13 @@
  *    HOMER.java
  *    Copyright (C) 2009 Aristotle University of Thessaloniki, Thessaloniki, Greece
  */
-package mulan.classifier.transformation;
+package mulan.classifier.meta;
 
 import mulan.classifier.MultiLabelLearner;
 import mulan.classifier.MultiLabelOutput;
-import mulan.classifier.hierarchical.HMC;
+import mulan.classifier.meta.HMC;
 import mulan.core.data.MultiLabelInstances;
-import mulan.classifier.hierarchical.HierarchyBuilder;
-import mulan.classifier.hierarchical.HierarchyBuilder.Method;
+import mulan.classifier.meta.HierarchyBuilder.Method;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.TechnicalInformation;

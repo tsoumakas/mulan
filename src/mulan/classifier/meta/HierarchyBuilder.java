@@ -18,8 +18,9 @@
  *    HierarchyBuilder.java
  *    Copyright (C) 2009 Aristotle University of Thessaloniki, Thessaloniki, Greece
  */
-package mulan.classifier.hierarchical;
+package mulan.classifier.meta;
 
+import mulan.classifier.hierarchical.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;

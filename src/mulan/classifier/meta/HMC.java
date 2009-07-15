@@ -18,14 +18,14 @@
  *    HMC.java
  *    Copyright (C) 2009 Aristotle University of Thessaloniki, Thessaloniki, Greece
  */
-package mulan.classifier.hierarchical;
+package mulan.classifier.meta;
 
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 import mulan.classifier.MultiLabelLearner;
 import mulan.classifier.MultiLabelOutput;
-import mulan.classifier.transformation.MultiLabelMetaLearner;
+import mulan.classifier.meta.MultiLabelMetaLearner;
 import mulan.core.data.InvalidDataFormatException;
 import mulan.core.data.LabelNode;
 import mulan.core.data.LabelNodeImpl;
