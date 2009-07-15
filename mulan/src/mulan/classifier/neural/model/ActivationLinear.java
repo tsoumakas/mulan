@@ -20,7 +20,7 @@
 *
 */
 
-package mulan.core.neural;
+package mulan.classifier.neural.model;
 
 
 /**

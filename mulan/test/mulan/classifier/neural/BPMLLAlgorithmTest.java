@@ -4,9 +4,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
-import mulan.core.neural.ActivationTANH;
-import mulan.core.neural.BasicNeuralNet;
-import mulan.core.neural.NeuralNet;
+import mulan.classifier.neural.model.ActivationTANH;
+import mulan.classifier.neural.model.BasicNeuralNet;
+import mulan.classifier.neural.model.NeuralNet;
 
 import org.junit.After;
 import org.junit.Before;

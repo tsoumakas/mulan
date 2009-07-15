@@ -1,9 +1,14 @@
-package mulan.core.neural;
+package mulan.classifier.neural.model;
 
 import static org.junit.Assert.*;
 
 import java.util.Arrays;
 import java.util.List;
+
+import mulan.classifier.neural.model.ActivationLinear;
+import mulan.classifier.neural.model.ActivationTANH;
+import mulan.classifier.neural.model.BasicNeuralNet;
+import mulan.classifier.neural.model.Neuron;
 
 import org.junit.After;
 import org.junit.Before;

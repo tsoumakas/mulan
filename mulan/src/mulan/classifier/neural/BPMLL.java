@@ -30,11 +30,11 @@ import java.util.Set;
 
 import mulan.classifier.MultiLabelLearnerBase;
 import mulan.classifier.MultiLabelOutput;
+import mulan.classifier.neural.model.ActivationTANH;
+import mulan.classifier.neural.model.BasicNeuralNet;
+import mulan.classifier.neural.model.NeuralNet;
 import mulan.core.WekaException;
 import mulan.core.data.MultiLabelInstances;
-import mulan.core.neural.ActivationTANH;
-import mulan.core.neural.BasicNeuralNet;
-import mulan.core.neural.NeuralNet;
 import weka.core.Attribute;
 import weka.core.Instance;
 import weka.core.Instances;
