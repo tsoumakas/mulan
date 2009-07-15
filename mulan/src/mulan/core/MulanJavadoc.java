@@ -15,7 +15,7 @@
  */
 
 /*
- *    TrainTestExperiment.java
+ *    MulanJavadoc.java
  *    Copyright (C) 2009 Aristotle University of Thessaloniki, Thessaloniki, Greece
  */
 
@@ -24,7 +24,6 @@ package mulan.core;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.util.Enumeration;
 import java.util.Vector;
 
