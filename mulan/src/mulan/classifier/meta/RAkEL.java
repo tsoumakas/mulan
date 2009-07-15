@@ -19,7 +19,7 @@
  *    Copyright (C) 2009 Aristotle University of Thessaloniki, Thessaloniki, Greece
  */
 
-package mulan.classifier.transformation;
+package mulan.classifier.meta;
 
 import java.util.Arrays;
 import java.util.HashSet;

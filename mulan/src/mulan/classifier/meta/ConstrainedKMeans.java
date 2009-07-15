@@ -19,7 +19,7 @@
 *    Copyright (C) 2000 University of Waikato, Hamilton, New Zealand
 *
 */
-package mulan.classifier.hierarchical;
+package mulan.classifier.meta;
 
 import java.util.ArrayList;
 import weka.classifiers.rules.DecisionTableHashKey;

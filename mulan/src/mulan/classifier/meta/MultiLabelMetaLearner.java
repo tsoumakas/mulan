@@ -19,8 +19,9 @@
  *    Copyright (C) 2009 Aristotle University of Thessaloniki, Thessaloniki, Greece
  */
 
-package mulan.classifier.transformation;
+package mulan.classifier.meta;
 
+import mulan.classifier.transformation.*;
 import mulan.classifier.*;
 import weka.classifiers.trees.J48;
 
