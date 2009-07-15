@@ -26,9 +26,9 @@ package mulan.classifier.neural;
 import java.util.ArrayList;
 import java.util.List;
 
-import mulan.core.neural.ActivationFunction;
-import mulan.core.neural.NeuralNet;
-import mulan.core.neural.Neuron;
+import mulan.classifier.neural.model.ActivationFunction;
+import mulan.classifier.neural.model.NeuralNet;
+import mulan.classifier.neural.model.Neuron;
 
 /**
  * The implementation of Back-Propagation Multi-Label Learning (BPMLL) algorithm for neural networks.

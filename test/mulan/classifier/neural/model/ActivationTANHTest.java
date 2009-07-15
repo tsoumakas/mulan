@@ -1,6 +1,8 @@
-package mulan.core.neural;
+package mulan.classifier.neural.model;
 
 import static org.junit.Assert.*;
+
+import mulan.classifier.neural.model.ActivationTANH;
 
 import org.junit.After;
 import org.junit.Before;
