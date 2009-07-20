@@ -21,9 +21,13 @@
 package mulan.examples;
 
 import java.util.Arrays;
+import mulan.attributeSelection.BinaryRelevanceAttributeEvaluator;
 import mulan.attributeSelection.LabelPowersetAttributeEvaluator;
 import mulan.attributeSelection.Ranker;
+import mulan.attributeSelection.MultiClassAttributeEvaluator;
 import mulan.core.data.MultiLabelInstances;
+import mulan.transformations.multiclass.Copy;
+import mulan.transformations.multiclass.MultiClassTransformation;
 import weka.attributeSelection.ASEvaluation;
 import weka.attributeSelection.ChiSquaredAttributeEval;
 import weka.core.Instances;
@@ -45,9 +49,11 @@ public class AttributeSelectionTest {
         MultiLabelInstances mlData = new MultiLabelInstances(path + filestem + ".arff", path + filestem + ".xml");
 
         ASEvaluation ase = new ChiSquaredAttributeEval();
-        LabelPowersetAttributeEvaluator ae = new LabelPowersetAttributeEvaluator(ase, mlData);
+        //LabelPowersetAttributeEvaluator ae = new LabelPowersetAttributeEvaluator(ase, mlData);
         //BinaryRelevanceAttributeEvaluator ae = new BinaryRelevanceAttributeEvaluator(ase, mlData, "max", "dl", "eval");
-        
+        MultiClassTransformation mt = new Copy();
+        MultiClassAttributeEvaluator ae = new MultiClassAttributeEvaluator(ase, mt, mlData);
+
         Ranker r = new Ranker();
         int[] result = r.search(ae, mlData);
         System.out.println(Arrays.toString(result));
