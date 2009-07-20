@@ -31,7 +31,7 @@ public abstract class MultiClassTransformationBase implements MultiClassTransfor
         Instances transformed = new Instances(mlData.getDataSet(), 0);
         
         // delete all labels
-        transformed = RemoveAllLabels.transformInstances(mlData.getDataSet(), labelIndices);
+        transformed = RemoveAllLabels.transformInstances(transformed, labelIndices);
 
         // add single label attribute
         FastVector classValues = new FastVector(numOfLabels);
@@ -42,13 +42,13 @@ public abstract class MultiClassTransformationBase implements MultiClassTransfor
         transformed.setClassIndex(transformed.numAttributes()-1);
 
         for (int instanceIndex=0; instanceIndex<data.numInstances(); instanceIndex++) {
-            System.out.println(data.instance(instanceIndex).toString());
+            //System.out.println(data.instance(instanceIndex).toString());
             List<Instance> result = transformInstance(data.instance(instanceIndex));
             for (Instance instance : result)
             {
-                System.out.println(instance.toString());
+                //System.out.println(instance.toString());
                 transformed.add(instance);
-                System.out.println(transformed.instance(transformed.numInstances()-1));
+                //System.out.println(transformed.instance(transformed.numInstances()-1));
             }
         }
         return transformed;
