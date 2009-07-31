@@ -6,17 +6,17 @@ package mulan.examples;
  */
 
 import mulan.classifier.MultiLabelLearner;
-import mulan.classifier.hierarchical.HMC;
-import mulan.classifier.hierarchical.HierarchyBuilder;
 import mulan.classifier.lazy.MLkNN;
+import mulan.classifier.meta.HMC;
+import mulan.classifier.meta.HOMER;
+import mulan.classifier.meta.HierarchyBuilder;
+import mulan.classifier.meta.RAkEL;
 import mulan.classifier.transformation.BinaryRelevance;
 import mulan.classifier.transformation.CalibratedLabelRanking;
-import mulan.classifier.transformation.HOMER;
 import mulan.classifier.transformation.IncludeLabelsClassifier;
 import mulan.classifier.transformation.LabelPowerset;
 import mulan.classifier.transformation.MultiClassLearner;
 import mulan.classifier.transformation.MultiLabelStacking;
-import mulan.classifier.transformation.RAkEL;
 import mulan.core.data.MultiLabelInstances;
 import mulan.evaluation.Evaluation;
 import mulan.evaluation.Evaluator;
