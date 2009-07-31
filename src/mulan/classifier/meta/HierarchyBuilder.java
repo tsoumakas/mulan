@@ -20,7 +20,6 @@
  */
 package mulan.classifier.meta;
 
-import mulan.classifier.hierarchical.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -30,18 +29,25 @@ import java.util.Random;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.transform.*;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import org.w3c.dom.Document;
+
 import mulan.core.data.LabelNode;
 import mulan.core.data.LabelNodeImpl;
 import mulan.core.data.LabelsMetaData;
 import mulan.core.data.LabelsMetaDataImpl;
 import mulan.core.data.MultiLabelInstances;
+
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+
 import weka.clusterers.EM;
 import weka.core.Attribute;
 import weka.core.FastVector;
