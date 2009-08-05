@@ -65,9 +65,8 @@ public class MultiLabelOutput {
      * Creates a new instance of {@link MultiLabelOutput}.
      * @param bipartition bipartition of labels
      * @param someConfidences values of labels
-     * @throws IllegalArgumentException if either of input parameters is null
-     * @throws IllegalArgumentException if dimension of bipartition and 
-     * 									values does not match
+     * @throws IllegalArgumentException if either of the input parameters is null or
+     * their dimensions do not match
      */
     public MultiLabelOutput(boolean[] bipartition, double[] someConfidences) {
         this(bipartition);
@@ -76,8 +75,8 @@ public class MultiLabelOutput {
     	}
         if(bipartition.length != someConfidences.length){
         	this.bipartition = null;
-        	throw new IllegalArgumentException("The bipartitons and respective " +
-        			"confidences dimansions does not match.");
+        	throw new IllegalArgumentException("The dimensions of the bipartition " +
+                    " and confidences arrays do not match.");
         }
         confidences = Arrays.copyOf(someConfidences, someConfidences.length);
         ranking = ranksFromValues(someConfidences);
