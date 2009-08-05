@@ -50,9 +50,10 @@ public interface MultiLabelLearner {
 
 
 	/**
-	 * Returns the prediction of the learner for given input {@link Instance}. .
+	 * Returns the prediction of the learner for a given input {@link Instance}.
 	 *
-	 * @return a prediction of the learner in form of {@link MultiLabelOutput}.
+     * @param instance the input given to the learner in the form of {@link Instance}
+     * @return a prediction of the learner in form of {@link MultiLabelOutput}.
 	 * @exception Exception if an error occurs while making the prediction.
 	 */
     public MultiLabelOutput makePrediction(Instance instance) throws Exception;

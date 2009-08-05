@@ -68,7 +68,9 @@ public abstract class MultiLabelLearnerBase
 
 	/**
 	 * Gets the {@link TechnicalInformation} for the current learner type.
-	 */
+     *
+     * @return technical information
+     */
 	public abstract TechnicalInformation getTechnicalInformation();
 	
 	public final void build(MultiLabelInstances trainingSet) throws Exception
