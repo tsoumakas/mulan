@@ -1,24 +1,23 @@
 /*
-*    This program is free software; you can redistribute it and/or modify
-*    it under the terms of the GNU General Public License as published by
-*    the Free Software Foundation; either version 2 of the License, or
-*    (at your option) any later version.
-*
-*    This program is distributed in the hope that it will be useful,
-*    but WITHOUT ANY WARRANTY; without even the implied warranty of
-*    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*    GNU General Public License for more details.
-*
-*    You should have received a copy of the GNU General Public License
-*    along with this program; if not, write to the Free Software
-*    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-*/
+ *    This program is free software; you can redistribute it and/or modify
+ *    it under the terms of the GNU General Public License as published by
+ *    the Free Software Foundation; either version 2 of the License, or
+ *    (at your option) any later version.
+ *
+ *    This program is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *    GNU General Public License for more details.
+ *
+ *    You should have received a copy of the GNU General Public License
+ *    along with this program; if not, write to the Free Software
+ *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
 
 /*
-*    MultiLabelOutput.java
-*    Copyright (C) 2009 Aristotle University of Thessaloniki, Thessaloniki, Greece
-*
-*/
+ *    MultiLabelOutput.java
+ *    Copyright (C) 2009 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ */
 
 package mulan.classifier;
 
@@ -33,8 +32,13 @@ import java.util.Arrays;
  */
 public class MultiLabelOutput {
 
+    /** a bipartition of the labels into relevant and irrelevant */
     private boolean[] bipartition;
+
+    /** the rank of each label, ranging from 1 to array length */
     private int[] ranking;
+
+    /** the probability of each label being positive */
     private double[] confidences;
 
     /**
@@ -59,6 +63,26 @@ public class MultiLabelOutput {
     		throw new IllegalArgumentException("The ranking is null.");
     	}
         this.ranking = Arrays.copyOf(ranking, ranking.length);
+    }
+
+    /**
+     * Creates a new instance of {@link MultiLabelOutput}. It creates a ranking
+     * based on the probabilities and a bipartition based on a threshold for the probabilities.
+     *
+     * @param probabilities score of each label
+     * @param threshold threshold to output bipartition based on probabilities
+     * @throws IllegalArgumentException if probabilities is null
+     */
+    public MultiLabelOutput(double[] probabilities, double threshold) {
+        if(probabilities == null){
+    		throw new IllegalArgumentException("The probabilities array is null.");
+    	}
+        confidences = probabilities;
+        ranking = ranksFromValues(probabilities);
+        bipartition = new boolean[probabilities.length];
+        for (int i=0; i<probabilities.length; i++)
+            if (probabilities[i] >= threshold)
+                bipartition[i] = true;
     }
 
     /**
