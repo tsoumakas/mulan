@@ -45,11 +45,12 @@ public class LabelPowerset extends TransformationBasedMultiLabelLearner
 {
     /**
      * The confidence values for each label are calculated in the following ways
-     * 1: Confidence of 1/0 for all labels (1 if label true, 0 if label is false)
+     * 0: Confidence 0 1/0 for all labels, (1 if label true, 0 if label is false)
+     * 1: Confidence of x/(1-x) for all labels, where x is the probability of the winning class (x if label true, (1-x) if label is false)
      * 2: Confidence calculated based on the distribution of probabilities 
      *    obtained from the base classifier, as introduced by the PPT algorithm
      */
-    private int confidenceCalculationMethod = 2;
+    private int confidenceCalculationMethod = 1;
 
     /**
      * Whether the method introduced by the PPT algorithm will be used to
@@ -65,16 +66,30 @@ public class LabelPowerset extends TransformationBasedMultiLabelLearner
      */
     protected double threshold=0.5;
 
-    protected LabelPowersetTransformation transformation;
+    /** The object that performs the data transformation */
+    private LabelPowersetTransformation transformation;
         
+    /**
+     * Random number generator for randomly solving tied predictions
+     */
     protected Random Rand;
 
-    public LabelPowerset(Classifier classifier) throws Exception
+    /**
+     * Conststructor that initializes the learner with a base classifier
+     * 
+     * @param classifier the base single-label classification algorithm
+     */
+    public LabelPowerset(Classifier classifier)
     {
         super(classifier);
         Rand = new Random(1);
     }
    
+    /**
+     * Sets a threshold for obtaining the bipartition
+     *
+     * @param value the threshold's value
+     */
     public void setMakePredictionsBasedOnConfidences(boolean value)
     {
         makePredictionsBasedOnConfidences = value;
@@ -82,6 +97,8 @@ public class LabelPowerset extends TransformationBasedMultiLabelLearner
 
     /**
      * Setting a seed for random selection in case of ties during prediction
+     * 
+     * @param s the seed
      */
     public void setSeed(int s) 
     {
@@ -89,21 +106,26 @@ public class LabelPowerset extends TransformationBasedMultiLabelLearner
     }
     
 
+    /**
+     * The threshold for obtaining the bipartition from probabilities
+     * 
+     * @param t
+     */
     public void setThreshold(double t)
     {
         threshold = t;
     }
 
+    /**
+     * Sets the method of calculating probabilities for each label
+     * 
+     * @param method
+     */
     public void setConfidenceCalculationMethod(int method)
     {
-        if (method == 1 || method == 2)
+        if (method == 0 || method == 1 || method == 2)
             confidenceCalculationMethod = method;
     }    
-    /*
-    public int indexOfClassValue(String value)
-    {
-        return transformedFormat.attribute(transformedFormat.numAttributes()-1).indexOfValue(value);
-    }*/
     
     protected void buildInternal(MultiLabelInstances mlData) throws Exception
     {
@@ -119,10 +141,6 @@ public class LabelPowerset extends TransformationBasedMultiLabelLearner
         if (transformedData.attribute(transformedData.numAttributes()-1).numValues() > 1) {
             baseClassifier.buildClassifier(transformedData);
         }
-    }
-
-    public String getRevision() {
-        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     public MultiLabelOutput makePrediction(Instance instance) throws Exception {
@@ -167,7 +185,12 @@ public class LabelPowerset extends TransformationBasedMultiLabelLearner
 
             switch (confidenceCalculationMethod)
             {
-                case 1: confidences = Arrays.copyOf(labelSet.toDoubleArray(), labelSet.size());
+                case 0: confidences = Arrays.copyOf(labelSet.toDoubleArray(), labelSet.size());
+                        break;
+                case 1: confidences = new double[numLabels];
+                        double prob = distribution[classIndex];
+                        for (int i=0; i<numLabels; i++)
+                           confidences[i] = bipartition[i] ? prob : 1-prob;
                         break;
                 case 2: confidences = new double[numLabels];
                         for (int i=0; i<distribution.length; i++)

@@ -20,7 +20,6 @@
  */
 package mulan.classifier.transformation;
 
-import java.util.Arrays;
 import mulan.classifier.*;
 import mulan.core.data.MultiLabelInstances;
 import mulan.transformations.PT6Transformation;
@@ -50,7 +49,12 @@ public class IncludeLabelsClassifier extends TransformationBasedMultiLabelLearne
 	 */
 	protected Instances transformed;
 
-	public IncludeLabelsClassifier(Classifier classifier)
+    /**
+     * Constructor that initializes a new learner with the given base classifier
+     *
+     * @param classifier
+     */
+    public IncludeLabelsClassifier(Classifier classifier)
 	{
 		super(classifier);
 	}
@@ -66,10 +70,6 @@ public class IncludeLabelsClassifier extends TransformationBasedMultiLabelLearne
         debug("Building the base-level classifier");
         baseClassifier.buildClassifier(transformed);
         transformed.delete();
-    }
-
-    public String getRevision() {
-        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     public MultiLabelOutput makePrediction(Instance instance) throws Exception {

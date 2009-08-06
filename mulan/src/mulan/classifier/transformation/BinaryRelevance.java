@@ -73,10 +73,10 @@ public class BinaryRelevance extends TransformationBasedMultiLabelLearner
     /**
      * Creates a new instance
      *
-     * @param classifier: the base-level classification algorithm that will
+     * @param classifier the base-level classification algorithm that will
      * be used for training each of the binary models
      */
-	public BinaryRelevance(Classifier classifier) throws Exception
+	public BinaryRelevance(Classifier classifier)
     {
 		super(classifier);
 	}
