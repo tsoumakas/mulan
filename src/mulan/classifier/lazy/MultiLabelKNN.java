@@ -21,12 +21,10 @@
 
 package mulan.classifier.lazy;
 
-import java.util.Random;
-
 import mulan.classifier.MultiLabelLearnerBase;
 import mulan.core.data.MultiLabelInstances;
 import weka.core.EuclideanDistance;
-import weka.core.TechnicalInformation;
+import weka.core.Instances;
 import weka.core.neighboursearch.LinearNNSearch;
 
 /**
@@ -37,62 +35,62 @@ import weka.core.neighboursearch.LinearNNSearch;
  */
 @SuppressWarnings("serial")
 public abstract class MultiLabelKNN extends MultiLabelLearnerBase  {
-    double threshold = 0.5;
-    double[] thresholds;
-
 	/** Whether the neighbors should be distance-weighted. */
 	protected int distanceWeighting;
+
 	/** no weighting. */
-	public static final int WEIGHT_NONE = 1;
-	/** weight by 1/distance. */
+    public static final int WEIGHT_NONE = 1;
+
+    /** weight by 1/distance. */
 	public static final int WEIGHT_INVERSE = 2;
-	/** weight by 1-distance. */
+
+    /** weight by 1-distance. */
 	public static final int WEIGHT_SIMILARITY = 4;
-	//TODO weight each neighbor's vote according to the inverse square of its distance
-	/**
-	 * Random number generator.
-	 */
-	Random random = null;
-	/**
-	 * Sum of predicted labels for all instances
-	 */
-	protected long sumedLabels;
-	/**
+
+    //TODO weight each neighbor's vote according to the inverse square of its distance
+
+    /**
 	 * Number of neighbors used in the k-nearest neighbor algorithm
 	 */
 	protected int numOfNeighbors;
-	/**
+
+    /**
 	 * Whether to use normalized Euclidean distance
 	 */
 	protected boolean dontNormalize;
-	/**
+
+    /**
 	 * Class implementing the brute force search algorithm for nearest neighbour
 	 * search. Default value is true.
 	 */
 	protected LinearNNSearch lnn = null;
-	/**
+
+    /**
 	 * Implementing Euclidean distance (or similarity) function.
 	 */
 	protected EuclideanDistance dfunc = null;
-	/**
+
+    /**
 	 * The training instances
 	 */
-	protected MultiLabelInstances train = null;
+    protected Instances train;
 
-
-	public MultiLabelKNN(int numOfNeighbors) {
+    /**
+     * Initializes the number of neighbors
+     *
+     * @param numOfNeighbors the number of neighbors
+     */
+    public MultiLabelKNN(int numOfNeighbors) {
 		this.numOfNeighbors = numOfNeighbors;
-		random = new Random(1); // seed is always 1 to reproduce results
 	}
 
     protected void buildInternal(MultiLabelInstances trainSet) throws Exception {
-    	train = trainSet;
+        train = new Instances(trainSet.getDataSet());
 
         dfunc = new EuclideanDistance();
         dfunc.setDontNormalize(dontNormalize);
-        //dfunc.setAttributeIndices("first-" + predictors);
-        // TODO: use the meta-data to set the predictor attributes (as they may not appear first)
-        int [] labelIndices = train.getLabelIndices();
+
+        // label attributes don't influence distance estimation
         String labelIndicesString = "";
         for (int i =0;i<numLabels-1;i++){
         	labelIndicesString += (labelIndices[i]+1) + ",";
@@ -100,62 +98,20 @@ public abstract class MultiLabelKNN extends MultiLabelLearnerBase  {
         labelIndicesString += (labelIndices[numLabels-1]+1);
         dfunc.setAttributeIndices(labelIndicesString);
         dfunc.setInvertSelection(true);
+
+   		lnn = new LinearNNSearch();
+		lnn.setDistanceFunction(dfunc);
+		lnn.setInstances(train);
+		lnn.setMeasurePerformance(false);
     }
 
 	/**
-	 * Derive output labels from distribution
-	 * currently not in use
-	 */
-	protected double[] labelsFromConfidencesRandom(double[] confidences) {
-		double[] result = new double[confidences.length];
-		for (int i = 0; i < result.length; i++) {
-			if (confidences[i] > threshold) {
-				result[i] = 1.0;
-			} else if (confidences[i] == threshold) {
-				result[i] = random.nextInt(2);
-			}
-		}
-		return result;
-	}
-
-	/**
-	 * @return the dontNormalize
-	 */
-	public boolean isDontNormalize() {
-		return dontNormalize;
-	}
-
-	/**
-	 * @param dontNormalize
-	 *            the dontNormalize to set
+     * Sets normalization off or on
+     *
+	 * @param dontNormalize the value of {@link dontNormalize}
 	 */
 	public void setDontNormalize(boolean dontNormalize) {
 		this.dontNormalize = dontNormalize;
-	}
-
-	/**
-	 * @return the sumedLabels
-	 */
-	public long getSumedLabels() {
-		return sumedLabels;
-	}
-
-	/**
-	 * @return the numOfNeighbors
-	 */
-	public int getNumOfNeighbors() {
-		return numOfNeighbors;
-	}
-/*
-	protected MultiLabelOutput makePrediction(Instance instance) throws Exception {
-		return null;
-	}
-*/
-	/**
-	 * @return the distanceWeighting
-	 */
-	public int getDistanceWeighting() {
-		return distanceWeighting;
 	}
 
     /**
@@ -164,9 +120,5 @@ public abstract class MultiLabelKNN extends MultiLabelLearnerBase  {
     public void setDistanceWeighting(int distanceWeighting) {
         this.distanceWeighting = distanceWeighting;
     }
-    
-    public TechnicalInformation getTechnicalInformation(){
-		return null;//TODO: implement in subclasses
-    	
-    }
+
 }

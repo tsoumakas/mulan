@@ -24,7 +24,6 @@ package mulan.classifier.lazy;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import mulan.classifier.MultiLabelLearner;
 import mulan.classifier.MultiLabelOutput;
 import mulan.core.data.MultiLabelInstances;
 import weka.core.Instance;
@@ -79,22 +78,26 @@ import weka.core.neighboursearch.LinearNNSearch;
  * @version $Revision: 1.1 $ 
  */
 @SuppressWarnings("serial")
-public class MLkNN extends MultiLabelKNN implements MultiLabelLearner {
-	/**
+public class MLkNN extends MultiLabelKNN {
+
+    /**
 	 * Smoothing parameter controlling the strength of uniform prior <br>
 	 * (Default value is set to 1 which yields the Laplace smoothing).
 	 */
 	private double smooth;
-	/**
+
+    /**
 	 * A table holding the prior probability for an instance to belong in each
 	 * class
 	 */
+
 	private double[] PriorProbabilities;
 	/**
 	 * A table holding the prior probability for an instance not to belong in
 	 * each class
 	 */
-	private double[] PriorNProbabilities;
+
+    private double[] PriorNProbabilities;
 	/**
 	 * A table holding the probability for an instance to belong in each class<br>
 	 * given that i:0..k of its neighbors belong to that class
@@ -108,8 +111,6 @@ public class MLkNN extends MultiLabelKNN implements MultiLabelLearner {
 	private double[][] CondNProbabilities;
 
 	/**
-	 * @param numLabels:
-	 *            the number of labels of the dataset
 	 * @param numOfNeighbors :
 	 *            the number of neighbors
 	 * @param smooth :
@@ -169,6 +170,21 @@ public class MLkNN extends MultiLabelKNN implements MultiLabelLearner {
 		CondNProbabilities = new double[numLabels][numOfNeighbors + 1];
 		ComputePrior();
 		ComputeCond();
+
+        if (getDebug()) {
+            System.out.println("Computed Prior Probabilities");
+            for (int i = 0; i < numLabels; i++) {
+                System.out.println("Label " + (i + 1) + ": " + PriorProbabilities[i]);
+            }
+            System.out.println("Computed Posterior Probabilities");
+            for (int i = 0; i < numLabels; i++) {
+                System.out.println("Label " + (i + 1));
+                for (int j = 0; j < numOfNeighbors + 1; j++) {
+                    System.out.println(j + " neighbours: " + CondProbabilities[i][j]);
+                    System.out.println(j + " neighbours: " + CondNProbabilities[i][j]);
+                }
+            }
+        }
 	}
 
 	/**
@@ -177,14 +193,14 @@ public class MLkNN extends MultiLabelKNN implements MultiLabelLearner {
 	private void ComputePrior() {
 		for (int i = 0; i < numLabels; i++) {
 			int temp_Ci = 0;
-			for (int j = 0; j < train.getDataSet().numInstances(); j++) {
-				double value = Double.parseDouble(train.getDataSet().attribute(labelIndices[i]).value(
-						(int) train.getDataSet().instance(j).value(labelIndices[i])));
+			for (int j = 0; j < train.numInstances(); j++) {
+				double value = Double.parseDouble(train.attribute(labelIndices[i]).value(
+						(int) train.instance(j).value(labelIndices[i])));
 				if (Utils.eq(value, 1.0)) {
 					temp_Ci++;
 				}
 			}
-			PriorProbabilities[i] = (smooth + temp_Ci) / (smooth * 2 + train.getDataSet().numInstances());
+			PriorProbabilities[i] = (smooth + temp_Ci) / (smooth * 2 + train.numInstances());
 			PriorNProbabilities[i] = 1 - PriorProbabilities[i];
 		}
 	}
@@ -195,37 +211,28 @@ public class MLkNN extends MultiLabelKNN implements MultiLabelLearner {
 	 * @throws Exception
 	 */
 	private void ComputeCond() throws Exception {
-
-		lnn = new LinearNNSearch();
-		lnn.setDistanceFunction(dfunc);
-		lnn.setInstances(train.getDataSet());
-		lnn.setMeasurePerformance(false);
-		
-		// this implementation doesn't need it 
-		// lnn.setSkipIdentical(true); 
-
 		int[][] temp_Ci = new int[numLabels][numOfNeighbors + 1];
 		int[][] temp_NCi = new int[numLabels][numOfNeighbors + 1];
 
-		for (int i = 0; i < train.getDataSet().numInstances(); i++) {
+		for (int i = 0; i < train.numInstances(); i++) {
 
 			Instances knn = new Instances(lnn
-					.kNearestNeighbours(train.getDataSet().instance(i), numOfNeighbors));
+					.kNearestNeighbours(train.instance(i), numOfNeighbors));
 
 			// now compute values of temp_Ci and temp_NCi for every class label
 			for (int j = 0; j < numLabels; j++) {
 
 				int aces = 0; // num of aces in Knn for j
 				for (int k = 0; k < numOfNeighbors; k++) {
-					double value = Double.parseDouble(train.getDataSet().attribute(labelIndices[j]).value(
+					double value = Double.parseDouble(train.attribute(labelIndices[j]).value(
 							(int) knn.instance(k).value(labelIndices[j])));
 					if (Utils.eq(value, 1.0)) {
 						aces++;
 					}
 				}
 				// raise the counter of temp_Ci[j][aces] and temp_NCi[j][aces] by 1
-				if (Utils.eq(Double.parseDouble(train.getDataSet().attribute(labelIndices[j]).value(
-						(int) train.getDataSet().instance(i).value(labelIndices[j]))), 1.0)) {
+				if (Utils.eq(Double.parseDouble(train.attribute(labelIndices[j]).value(
+						(int) train.instance(i).value(labelIndices[j]))), 1.0)) {
 					temp_Ci[j][aces]++;
 				} else {
 					temp_NCi[j][aces]++;
@@ -250,21 +257,6 @@ public class MLkNN extends MultiLabelKNN implements MultiLabelLearner {
 		}
 	}
 
-	public void output() {
-		System.out.println("Computed Prior Probabilities");
-		for (int i = 0; i < numLabels; i++) {
-			System.out.println("Label " + (i + 1) + ": " + PriorProbabilities[i]);
-		}
-		System.out.println("Computed Posterior Probabilities");
-		for (int i = 0; i < numLabels; i++) {
-			System.out.println("Label " + (i + 1));
-			for (int j = 0; j < numOfNeighbors + 1; j++) {
-				System.out.println(j + " neighbours: " + CondProbabilities[i][j]);
-				System.out.println(j + " neighbours: " + CondNProbabilities[i][j]);
-			}
-		}
-	}
-
     public MultiLabelOutput makePrediction(Instance instance) throws Exception {
 		double[] confidences = new double[numLabels];
 		boolean[] predictions = new boolean[numLabels];
@@ -280,7 +272,7 @@ public class MLkNN extends MultiLabelKNN implements MultiLabelLearner {
 			// compute sum of aces in KNN
 			int aces = 0; // num of aces in Knn for i
 			for (int k = 0; k < numOfNeighbors; k++) {
-				double value = Double.parseDouble(train.getDataSet().attribute(labelIndices[i]).value(
+				double value = Double.parseDouble(train.attribute(labelIndices[i]).value(
 						(int) knn.instance(k).value(labelIndices[i])));
 				if (Utils.eq(value, 1.0)) {
 					aces++;
