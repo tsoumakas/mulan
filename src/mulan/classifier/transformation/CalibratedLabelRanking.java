@@ -75,16 +75,30 @@ import weka.filters.unsupervised.attribute.Reorder;
  */
 public class CalibratedLabelRanking extends TransformationBasedMultiLabelLearner
 {
-     protected Instances[] dataset;
-     protected Classifier[] oneVsOneModels;
-     protected int numModels;
-     protected int Matrix[][];
-     protected Instances trainingdata;
-     protected Instances[] metaDataTest;
-     protected BinaryRelevance virtualLabelModels;
-     private boolean useStandardVoting = false;
+    /** array holding the one vs one models */
+    protected Classifier[] oneVsOneModels;
 
-    public CalibratedLabelRanking(Classifier classifier) throws Exception
+    /** number of one vs one models */
+    protected int numModels;
+
+    /** temporary training data for each one vs one model */
+    protected Instances trainingdata;
+
+    /** headers of the training sets of the one vs one models */
+    protected Instances[] metaDataTest;
+    
+    /** binary relevance models for the virtual label */
+    protected BinaryRelevance virtualLabelModels;
+
+    /** whether to use standard voting or the fast qweighted algorithm */
+    private boolean useStandardVoting = true;
+
+    /**
+     * Constructor that initializes the learner with a base algorithm
+     *
+     * @param classifier the binary classification algorithm to use
+     */
+    public CalibratedLabelRanking(Classifier classifier)
     {
         super(classifier);
     }

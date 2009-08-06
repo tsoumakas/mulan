@@ -43,23 +43,26 @@ import weka.core.TechnicalInformation.Type;
  */
 public class PPT extends LabelPowerset {
     
-    /*parameter for the threshold of number of occurences of a labelset */
+    /** parameter for the threshold of number of occurences of a labelset */
     protected int x;
     
-    /*parameter for the threshold of number of occurences of a labelset */
+    /** parameter for the threshold of number of occurences of a labelset */
     protected boolean informationLoss=true;
             
     /** labelsets and their frequency of all label*/
     private HashMap<LabelSet,Integer> labelsets = new HashMap<LabelSet,Integer>();;          
 
-    /** 
-    * @paramater:
-    * @param x: number of instances required for a labelset to be included.
-    */
-    public PPT(Classifier classifier, int x) throws Exception
+    /**
+     * Constructor that initializes learner with base algorithm and main parameter
+     *
+     * @param classifier base single-label classification algorithm
+     * @param x number of instances required for a labelset to be included.
+     */
+    public PPT(Classifier classifier, int x)
     {
         super(classifier);
         this.x = x; // x should be larger than 0
+        setConfidenceCalculationMethod(2);
         setMakePredictionsBasedOnConfidences(true);
         threshold = 0.21;
     }
