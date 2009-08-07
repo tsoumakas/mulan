@@ -1,5 +1,3 @@
-package mulan.core;
-
 /*
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -15,6 +13,13 @@ package mulan.core;
  *    along with this program; if not, write to the Free Software
  *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
+
+/*
+ *    LabelSet.java
+ *    Copyright (C) 2009 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ */
+
+package mulan.core;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -40,6 +45,11 @@ public class LabelSet implements Serializable, Comparable<LabelSet>
     protected int[] labelSet;
 
 	
+    /**
+     * Initializes an object based on an array of doubles containing 0/1
+     * 
+     * @param set
+     */
     public LabelSet(double[] set)
     {
         labelSet = new int[set.length];
@@ -49,16 +59,19 @@ public class LabelSet implements Serializable, Comparable<LabelSet>
     /**
      * A comma-separated list of label names enclosed in curlies.
      */
+    @Override
     public String toString()
     {
         return toBitString();
     }	
 
+    @Override
     public int hashCode()
     {
         return toString().hashCode();
     }
 
+    @Override
     public boolean equals(Object obj)
     {
         if (obj instanceof LabelSet)
@@ -114,7 +127,9 @@ public class LabelSet implements Serializable, Comparable<LabelSet>
     }
 
     /**
-     * calculates the Hamming Distance between the current labelset and another labelset.
+     * Calculates the Hamming Distance between the current labelset and another labelset.
+     * 
+     * @param other the other LabelSet object.
      * @return the Hamming Distance.
      */    
     public int hammingDifference(LabelSet other) 
@@ -139,7 +154,10 @@ public class LabelSet implements Serializable, Comparable<LabelSet>
 	        
     /**
      * Constructs a LabelSet object from a bitstring.
+     *
+     * @param bits the bitstring
      * @return the labelset.
+     * @throws Exception
      */    
     public static LabelSet fromBitString(String bits) throws Exception
     {
@@ -158,7 +176,9 @@ public class LabelSet implements Serializable, Comparable<LabelSet>
     
     /**
      * Constructs all subsets of a labelset (apart from the empty one).
+     * 
      * @return an ArrayList of LabelSet objects with the subsets.
+     * @throws Exception
      */    
     public ArrayList<LabelSet> getSubsets() throws Exception 
     {

@@ -55,7 +55,13 @@ public class MulanJavadoc implements OptionHandler {
 	static File originalDir;
 	static String dir;
 
-	public static void main(String[] args) throws Exception {
+    /**
+     * Command line interface
+     *
+     * @param args
+     * @throws java.lang.Exception
+     */
+    public static void main(String[] args) throws Exception {
 
 		dir = Utils.getOption("dir", args);
 		originalDir = new File(dir);
@@ -63,7 +69,13 @@ public class MulanJavadoc implements OptionHandler {
 
 	}
 
-	public static void updateJavadoc(String classname) throws Exception {
+    /**
+     * Updates comments
+     *
+     * @param classname
+     * @throws java.lang.Exception
+     */
+    public static void updateJavadoc(String classname) throws Exception {
 
 		AllJavadoc jdoc = new AllJavadoc();
 		jdoc.setClassname(classname);
@@ -107,11 +119,22 @@ public class MulanJavadoc implements OptionHandler {
 		
 	}
 
-	public static void traverse() throws Exception {
+    /**
+     * Recursively visit all files
+     *
+     * @throws java.lang.Exception
+     */
+    public static void traverse() throws Exception {
 		recursiveTraversal(originalDir);
 	}
 
-	public static void recursiveTraversal(File fileObject) throws Exception {
+    /**
+     * Recursively visit all files
+     *
+     * @param fileObject
+     * @throws java.lang.Exception
+     */
+    public static void recursiveTraversal(File fileObject) throws Exception {
 		if (fileObject.isDirectory()) {
 			//System.out.println(fileObject.getName());
 			File allFiles[] = fileObject.listFiles();
@@ -130,23 +153,33 @@ public class MulanJavadoc implements OptionHandler {
 		}
 	}
 
-	public String globalInfo() {
+    /**
+     * Returns global information about the class
+     *
+     * @return global information
+     */
+    public String globalInfo() {
 		return "This class uses weka's Javadoc auto-generation classes to generate Javadoc\n"
 				+ "comments and replaces the content between certain comment tags.";
 	}
 
-	@Override
+    /**
+     * Gets options
+     *
+     * @return
+     */
+    @Override
 	public String[] getOptions() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
-	/*
-	 * * Returns an enumeration describing the available options.
-	 * 
-	 * @return an enumeration of all the available options.
-	 */
+    /**
+     * Returns an enumeration describing the available options.
+     *
+     * @return an enumeration of all the available options.
+     */
+    @Override
 	public Enumeration listOptions() {
 
 		Vector result = new Vector(1);
@@ -158,7 +191,13 @@ public class MulanJavadoc implements OptionHandler {
 		return result.elements();
 	}
 
-	@Override
+    /**
+     * Sets options
+     *
+     * @param options
+     * @throws java.lang.Exception
+     */
+    @Override
 	public void setOptions(String[] options) throws Exception {
 		// TODO Auto-generated method stub
 
