@@ -2,7 +2,6 @@
 package mulan.transformations.multiclass;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -15,6 +14,15 @@ import weka.core.Instance;
  */
 public class Ignore extends MultiClassTransformationBase {
 
+    /**
+     * Transforms a multi-label example with a single annotation to a
+     * single-label example and ignores multi-label example with more
+     * annotations
+     *
+     * @param instance a multi-label example
+     * @return a list that is either empty or contains the transformed
+     * single-label example
+     */
     public List<Instance> transformInstance(Instance instance) {
         List<Instance> result = new ArrayList<Instance>();
         int indexOfSingleLabel = -1;
@@ -37,20 +45,12 @@ public class Ignore extends MultiClassTransformationBase {
             transformedInstance = RemoveAllLabels.transformInstance(instance, labelIndices);
             transformedInstance.setDataset(null);
             transformedInstance.insertAttributeAt(transformedInstance.numAttributes());
+            transformedInstance.setValue(transformedInstance.numAttributes()-1, indexOfSingleLabel);
             result.add(transformedInstance);
         } catch (Exception ex) {
             Logger.getLogger(Ignore.class.getName()).log(Level.SEVERE, null, ex);
         }
         return result;
-
-//        double[] instanceValues = instance.toDoubleArray();
-//        double[] newValues = Arrays.copyOfRange(instanceValues, 0, numPredictors+1);
-//        newValues[numPredictors] = indexOfSingleLabel;
-//        Instance tempInstance = new Instance(1, newValues);
     }
 
-    private double[] removeAllLabelsAndAddOneAtTheEnd(double[] oldValues) {
-       return null;
-        // for (int i)
-    }
 }
