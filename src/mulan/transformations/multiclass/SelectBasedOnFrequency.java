@@ -32,13 +32,17 @@ import weka.core.Instance;
 import weka.core.Instances;
 
 /**
- * Class that implement the Select-Max transformation method.
+ * Class that implement the Select-Max and Select-Min transformation methods.
+ *
  * @author Stavros
  */
 public class SelectBasedOnFrequency extends MultiClassTransformationBase {
 
-    SelectionType type;
-    int[] labelOccurance;
+    /** type of frequency */
+    private SelectionType type;
+
+    /** occurences of each label */
+    private int[] labelOccurance;
 
     /**
      * Initializes the transformation with a {@link SelectionType}
