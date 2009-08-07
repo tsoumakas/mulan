@@ -1,3 +1,23 @@
+/*
+ *    This program is free software; you can redistribute it and/or modify
+ *    it under the terms of the GNU General Public License as published by
+ *    the Free Software Foundation; either version 2 of the License, or
+ *    (at your option) any later version.
+ *
+ *    This program is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *    GNU General Public License for more details.
+ *
+ *    You should have received a copy of the GNU General Public License
+ *    along with this program; if not, write to the Free Software
+ *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+/*
+ *    Converter.java
+ *    Copyright (C) 2009 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ */
 package mulan.core;
 
 import java.util.*;
@@ -5,14 +25,25 @@ import java.io.*;
 import weka.core.*;
 
 /**
- * Class that converts LibSVM multilabel data sets to MULAN .arff data sets <p>
+ * Class that converts LibSVM multi-label data sets to Mulan compatible format <p>
  *
  * @author Grigorios Tsoumakas
  * @version $Revision: 0.01 $
  */
 public class Converter {
 
-    public static void convertLibSVMtoArff(String sourceFilename, String targetFilename, String relationName) {
+    /**
+     * Converts a multi-label dataset from LibSVM format to the format
+     * that is compatible with Mulan. It constructs one ARFF and one XML file. 
+     *
+     * @param path the directory that contains the source file and will contain 
+     * the target files
+     * @param sourceFilename the name of the source file
+     * @param relationName the relation name of the arff file that will be 
+     * constructed
+     * @param targetFilestem the filestem for the target files (.arff and .xml)
+     */
+    public static void convertFromLibSVM(String path, String sourceFilename, String targetFilestem, String relationName) {
         BufferedReader aReader = null;
         BufferedWriter aWriter = null;
 
@@ -25,41 +56,52 @@ public class Converter {
 
         String Line = null;
         try {
-          aReader = new BufferedReader(new FileReader(sourceFilename));
+            aReader = new BufferedReader(new FileReader(path + sourceFilename));
 
-          while ((Line = aReader.readLine()) != null) {
-              numInstances++;
+            while ((Line = aReader.readLine()) != null) {
+                numInstances++;
 
-              StringTokenizer strTok = new StringTokenizer(Line, " ");
-              while (strTok.hasMoreTokens()) {
-                  String token = strTok.nextToken();
+                StringTokenizer strTok = new StringTokenizer(Line, " ");
+                while (strTok.hasMoreTokens()) {
+                    String token = strTok.nextToken();
 
-                  if (token.indexOf(":") == -1) {
-                      // parse label info
-                      StringTokenizer labelTok = new StringTokenizer(token, ",");
-                      while (labelTok.hasMoreTokens()) {
-                          String strLabel = labelTok.nextToken();
-                          int intLabel = Integer.parseInt(strLabel);
-                          if (intLabel > numLabels)
-                              numLabels = intLabel;
-                      }
-                  } else {
-                      // parse attribute info
-                      meanParsedAttributes++;
-                      StringTokenizer attrTok = new StringTokenizer(token, ":");
-                      String strAttrIndex = attrTok.nextToken();
-                      int intAttrIndex = Integer.parseInt(strAttrIndex);
-                      if (intAttrIndex > numAttributes)
-                          numAttributes = intAttrIndex;
-                  }
-              }
+                    if (token.indexOf(":") == -1) {
+                        // parse label info
+                        StringTokenizer labelTok = new StringTokenizer(token, ",");
+                        while (labelTok.hasMoreTokens()) {
+                            String strLabel = labelTok.nextToken();
+                            int intLabel = Integer.parseInt(strLabel);
+                            if (intLabel > numLabels)
+                                numLabels = intLabel;
+                        }
+                    } else {
+                        // parse attribute info
+                        meanParsedAttributes++;
+                        StringTokenizer attrTok = new StringTokenizer(token, ":");
+                        String strAttrIndex = attrTok.nextToken();
+                        int intAttrIndex = Integer.parseInt(strAttrIndex);
+                        if (intAttrIndex > numAttributes)
+                            numAttributes = intAttrIndex;
+                    }
+                }
+            }
 
-          }
-          numLabels++;
+            numLabels++;
 
             System.out.println("Number of attributes: " + numAttributes);
             System.out.println("Number of instances: " + numInstances);
             System.out.println("Number of classes: " + numLabels);
+
+            System.out.print("Constructing XML file... ");
+            aWriter = new BufferedWriter(new FileWriter(path + targetFilestem +".xml"));
+            aWriter.write("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n");
+            aWriter.write("<labels xmlns=\"http://mulan.sourceforge.net/labels\">\n");
+            for (int i=0; i<numLabels; i++)
+                aWriter.write("<label name=\"Label"+(i+1)+"\"></label>\n");
+            aWriter.write("</labels>");
+            aWriter.close();
+            System.out.println("Done!");
+
             meanParsedAttributes /= numInstances;
             boolean Sparse = false;
             if (meanParsedAttributes < numAttributes)
@@ -80,18 +122,18 @@ public class Converter {
             ClassValues.addElement("0");
             ClassValues.addElement("1");
             for (int i=0; i<numLabels; i++) {
-              att[numAttributes+i] = new Attribute("Class"+(i+1), ClassValues);
+              att[numAttributes+i] = new Attribute("Label"+(i+1), ClassValues);
               attInfo.addElement(att[numAttributes+i]);
             }
 
             // Re-read file and convert into multi-label arff
             int countInstances = 0;
 
-            aWriter = new BufferedWriter(new FileWriter(targetFilename));
+            aWriter = new BufferedWriter(new FileWriter(path + targetFilestem +".arff"));
             Instances data = new Instances(relationName, attInfo, 0);
             aWriter.write(data.toString());
 
-            aReader = new BufferedReader(new FileReader(sourceFilename));
+            aReader = new BufferedReader(new FileReader(path + sourceFilename));
 
             while ((Line = aReader.readLine()) != null) {
               countInstances++;
@@ -150,15 +192,22 @@ public class Converter {
         }
     }
 
+    /**
+     * Command line interface for the converter
+     *
+     * @param args command line arguments
+     */
     public static void main(String[] args) {
+        String path = null;
         String source = null;
         String target = null;
         String relationName = "LibSVM";
         try {
+            path = Utils.getOption("path", args);
             source = Utils.getOption("source", args);
             target = Utils.getOption("target", args);
             relationName = Utils.getOption("name", args);
-            Converter.convertLibSVMtoArff(source, target, relationName);
+            Converter.convertFromLibSVM(path, source, target, relationName);
         }
         catch (Exception e) {
             e.printStackTrace();
