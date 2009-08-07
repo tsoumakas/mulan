@@ -1,3 +1,23 @@
+/*
+ *    This program is free software; you can redistribute it and/or modify
+ *    it under the terms of the GNU General Public License as published by
+ *    the Free Software Foundation; either version 2 of the License, or
+ *    (at your option) any later version.
+ *
+ *    This program is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *    GNU General Public License for more details.
+ *
+ *    You should have received a copy of the GNU General Public License
+ *    along with this program; if not, write to the Free Software
+ *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+/*
+ *    MultiClassTransformationBase.java
+ *    Copyright (C) 2009 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ */
 
 package mulan.transformations.multiclass;
 
@@ -10,23 +30,24 @@ import weka.core.Instance;
 import weka.core.Instances;
 
 /**
- * The base class for multi-class transformation methods. It provides initial implementation
- * of {@link MultiClassTransformation} interface. All implementations of transformation 
- * methods should reuse this base class.
+ * The base class for multi-class transformation methods. It provides initial 
+ * implementation of the {@link MultiClassTransformation} interface. All
+ * implementations of transformation methods should reuse this base class.
  *  
  * @author Stavros
  */
 public abstract class MultiClassTransformationBase implements MultiClassTransformation {
 
+    /** the number of labels */
     protected int numOfLabels;
-    protected int numPredictors;
+
+    /** the array with the label indices */
     protected int[] labelIndices;
 
     public Instances transformInstances(MultiLabelInstances mlData) throws Exception {
         labelIndices = mlData.getLabelIndices();
         numOfLabels = mlData.getNumLabels();
         Instances data = mlData.getDataSet();
-        numPredictors = mlData.getDataSet().numAttributes()-numOfLabels;
 
         Instances transformed = new Instances(mlData.getDataSet(), 0);
         
@@ -54,5 +75,5 @@ public abstract class MultiClassTransformationBase implements MultiClassTransfor
         return transformed;
     }
 
-    
+    abstract List<Instance> transformInstance(Instance instance);
 }

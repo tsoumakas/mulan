@@ -39,7 +39,13 @@ public class MultiClassLearner extends TransformationBasedMultiLabelLearner
     private Instances header;
     private MultiClassTransformation transformation;
 
-	public MultiClassLearner(Classifier baseClassifier, MultiClassTransformation dt)
+    /**
+     * Initializes learner
+     *
+     * @param baseClassifier the base single-label classification algorithm
+     * @param dt the {@link MultiClassTransformation} to use
+     */
+    public MultiClassLearner(Classifier baseClassifier, MultiClassTransformation dt)
 	{
 		super(baseClassifier);
         transformation = dt;
