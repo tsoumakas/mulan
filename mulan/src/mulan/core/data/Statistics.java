@@ -1,23 +1,23 @@
 /*
-*    This program is free software; you can redistribute it and/or modify
-*    it under the terms of the GNU General Public License as published by
-*    the Free Software Foundation; either version 2 of the License, or
-*    (at your option) any later version.
-*
-*    This program is distributed in the hope that it will be useful,
-*    but WITHOUT ANY WARRANTY; without even the implied warranty of
-*    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*    GNU General Public License for more details.
-*
-*    You should have received a copy of the GNU General Public License
-*    along with this program; if not, write to the Free Software
-*    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-*/
+ *    This program is free software; you can redistribute it and/or modify
+ *    it under the terms of the GNU General Public License as published by
+ *    the Free Software Foundation; either version 2 of the License, or
+ *    (at your option) any later version.
+ *
+ *    This program is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *    GNU General Public License for more details.
+ *
+ *    You should have received a copy of the GNU General Public License
+ *    along with this program; if not, write to the Free Software
+ *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
 
 /*
-*    Statistics.java
-*    Copyright (C) 2009 Aristotle University of Thessaloniki, Thessaloniki, Greece
-*/
+ *    Statistics.java
+ *    Copyright (C) 2009 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ */
 package mulan.core.data;
 
 import mulan.core.*;
@@ -110,11 +110,11 @@ public class Statistics implements Serializable
     
 	/** the array holding the phi correlations*/
 	double[][] phi;
-        
-    public Statistics() { }
-    
+            
     /** 
      * returns the HashMap containing the distinct labelsets and their frequencies
+     * 
+     * @return HashMap with distinct labelsest and their frequencies
      */
     public HashMap<LabelSet,Integer> labelCombCount() {
     	return labelsets;
@@ -123,9 +123,14 @@ public class Statistics implements Serializable
     
     /** 
      * This method calculates and prints a matrix with the coocurrences of <br>
-     * pairs of labels 
+     * pairs of labels
+     *
+     * @param mdata a multi-label data set
+     * @return a matrix of co-occurences
      */
-    public double[][] calculateCoocurrence(Instances data, int labels) {
+    public double[][] calculateCoocurrence(MultiLabelInstances mdata) {
+        Instances data = mdata.getDataSet();
+        int labels = mdata.getNumLabels();
         double[][] coocurrenceMatrix = new double[labels][labels];
         
         numPredictors = data.numAttributes()-labels;
@@ -154,6 +159,8 @@ public class Statistics implements Serializable
     /** 
      * calculates various multilabel statistics, such as label cardinality, <br>
      * label density and the set of distinct labels along with their frequency
+     * 
+     * @param mlData a multi-label dataset
      */
     public void calculateStats(MultiLabelInstances mlData)
     {
@@ -212,6 +219,13 @@ public class Statistics implements Serializable
             examplesPerLabel[j] /= numInstances;        
     }
     
+    /**
+     * Calculates phi correlation
+     *
+     * @param dataSet a multi-label dataset
+     * @return a matrix containing phi correlations
+     * @throws java.lang.Exception
+     */
     public double[][] calculatePhi(MultiLabelInstances dataSet) throws Exception {
 
         numLabels = dataSet.getNumLabels();
@@ -274,7 +288,10 @@ public class Statistics implements Serializable
 		return phi;
 	}
     
-	public void printPhiCorrelations() {
+    /**
+     * Prints out phi correlations
+     */
+    public void printPhiCorrelations() {
 		String pattern = "0.00";
 		DecimalFormat myFormatter = new DecimalFormat(pattern);
 
@@ -286,7 +303,12 @@ public class Statistics implements Serializable
 		}
 	}
 	
-	public double[] getPhiHistogram() {
+    /**
+     * Calculates a histogram of phi correlations
+     *
+     * @return an array with phi correlations
+     */
+    public double[] getPhiHistogram() {
 		double[] pairs = new double[numLabels * (numLabels - 1) / 2];
 		int counter = 0;
 		for (int i = 0; i < numLabels - 1; i++)
@@ -385,6 +407,8 @@ public class Statistics implements Serializable
            
     /** 
      * returns the prior probabilities of the labels
+     * 
+     * @return array of prior probabilities of labels
      */
     public double[] priors() {
         double[] pr = new double[numLabels];
@@ -395,6 +419,8 @@ public class Statistics implements Serializable
 
     /** 
      * returns the label cardinality of the dataset
+     * 
+     * @return label cardinality
      */
     public double cardinality() {
         return labelCardinality;
@@ -402,6 +428,8 @@ public class Statistics implements Serializable
     
     /** 
      * returns the label density of the dataset
+     * 
+     * @return label density
      */
     public double density() {
         return labelDensity;
@@ -409,6 +437,8 @@ public class Statistics implements Serializable
 
     /** 
      * returns a set with the distinct labelsets of the dataset
+     * 
+     * @return set of distinct labelsets
      */
     public Set<LabelSet> labelSets() {
         return labelsets.keySet();
@@ -416,28 +446,13 @@ public class Statistics implements Serializable
     
     /** 
      * returns the frequency of a labelset in the dataset
+     * 
+     * @param x a labelset
+     * @return the frequency of the given labelset
      */
     public int labelFrequency(LabelSet x) {
         return labelsets.get(x);
     }
     
-    /**
-     * Estimates the number of labels by counting the number of binary <br>
-     * attributes at the end of the attribute list
-     * 
-     * @param mlData
-     * @return the number of labels in the dataset
-     */
-    public static int guessLabels(Instances data) 
-    {
-        int numAtts = data.numAttributes();
-        int labels=0;
-        for (int i=numAtts-1; i>=0; i--)
-            if (data.attribute(i).isNominal() && data.attribute(i).numValues() == 2)
-                labels++;
-            else
-                break;
-        return labels;
-    }
 }
 

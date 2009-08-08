@@ -1,24 +1,24 @@
 /*
-*    This program is free software; you can redistribute it and/or modify
-*    it under the terms of the GNU General Public License as published by
-*    the Free Software Foundation; either version 2 of the License, or
-*    (at your option) any later version.
-*
-*    This program is distributed in the hope that it will be useful,
-*    but WITHOUT ANY WARRANTY; without even the implied warranty of
-*    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*    GNU General Public License for more details.
-*
-*    You should have received a copy of the GNU General Public License
-*    along with this program; if not, write to the Free Software
-*    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-*/
+ *    This program is free software; you can redistribute it and/or modify
+ *    it under the terms of the GNU General Public License as published by
+ *    the Free Software Foundation; either version 2 of the License, or
+ *    (at your option) any later version.
+ *
+ *    This program is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *    GNU General Public License for more details.
+ *
+ *    You should have received a copy of the GNU General Public License
+ *    along with this program; if not, write to the Free Software
+ *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
 
 /*
-*    MultiLabelInstances.java
-*    Copyright (C) 2009 Aristotle University of Thessaloniki, Thessaloniki, Greece
-*
-*/
+ *    MultiLabelInstances.java
+ *    Copyright (C) 2009 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *
+ */
 
 package mulan.core.data;
 
@@ -69,8 +69,7 @@ public class MultiLabelInstances {
 	 * 
 	 * @param arffFilePath the path to ARFF file containing the data
 	 * @param numLabelAttributes the number of ARFF data set attributes which are labels.
-	 * @throws IllegalArgumentException if arrfFilePath is null
-	 * @throws IllegalArgumentException if numLabelAttribures is less than 2
+	 * @throws IllegalArgumentException if arrfFilePath is null or numLabelAttribures is less than 2
 	 * @throws InvalidDataFormatException if format of loaded multi-label data is invalid
  	 * @throws DataLoadException if ARFF data file can not be loaded  
 	 */

@@ -116,6 +116,11 @@ public class LabelNodeImpl implements LabelNode, Serializable {
 		return childrenNodes.remove(node);
 	}
 
+    /**
+     * Gets the children of a label
+     *
+     * @return a Set of labels
+     */
     public Set<String> getChildrenLabels() {
         Set<String> labels = new HashSet<String>();
         for (LabelNode child : childrenNodes) {
@@ -155,7 +160,12 @@ public class LabelNodeImpl implements LabelNode, Serializable {
 		return parentNode;
 	}
 	
-	protected void setParent(LabelNode node){
+    /**
+     * Sets a node as the parent of this node
+     *
+     * @param node a node to be set as parent
+     */
+    protected void setParent(LabelNode node){
 		parentNode = node;
 	}
 
