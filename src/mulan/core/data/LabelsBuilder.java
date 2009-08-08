@@ -1,24 +1,23 @@
 /*
-*    This program is free software; you can redistribute it and/or modify
-*    it under the terms of the GNU General Public License as published by
-*    the Free Software Foundation; either version 2 of the License, or
-*    (at your option) any later version.
-*
-*    This program is distributed in the hope that it will be useful,
-*    but WITHOUT ANY WARRANTY; without even the implied warranty of
-*    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*    GNU General Public License for more details.
-*
-*    You should have received a copy of the GNU General Public License
-*    along with this program; if not, write to the Free Software
-*    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-*/
+ *    This program is free software; you can redistribute it and/or modify
+ *    it under the terms of the GNU General Public License as published by
+ *    the Free Software Foundation; either version 2 of the License, or
+ *    (at your option) any later version.
+ *
+ *    This program is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *    GNU General Public License for more details.
+ *
+ *    You should have received a copy of the GNU General Public License
+ *    along with this program; if not, write to the Free Software
+ *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
 
 /*
-*    LabelsBuilder.java
-*    Copyright (C) 2009 Aristotle University of Thessaloniki, Thessaloniki, Greece
-*
-*/
+ *    LabelsBuilder.java
+ *    Copyright (C) 2009 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ */
 
 package mulan.core.data;
 
@@ -43,7 +42,10 @@ import org.xml.sax.SAXException;
 public final class LabelsBuilder {
 
 	private static final String LABELS_SCHEMA_SOURCE = "mulan/core/data/labels.xsd";
-	protected static final String LABELS_SCHEMA_NAMESPACE = "http://mulan.sourceforge.net/labels";
+    /**
+     * The namespace of the schema for label representation
+     */
+    protected static final String LABELS_SCHEMA_NAMESPACE = "http://mulan.sourceforge.net/labels";
 	//private static final String LABELS_SCHEMA_LOCATION_ID = "http://mulan.sourceforge.net/schemata/labels.xsd";
 	private static final String SCHEMA_FULL_CHECKING_FEATURE = "http://apache.org/xml/features/validation/schema-full-checking";
 
@@ -53,8 +55,7 @@ public final class LabelsBuilder {
 	 * 
 	 * @param xmlLabelsFilePath the path to XML file containing labels definition
 	 * @return a labels meta data instance 
-	 * @throws IllegalArgumentException if input parameter is null
-	 * @throws IllegalArgumentException if XML file does not exists under specified path
+	 * @throws IllegalArgumentException if input parameter is null or XML file does not exists under specified path
 	 * @throws LabelsBuilderException if any error occur when validating XML against 
 	 * 								  schema or when creating labels data
 	 */
