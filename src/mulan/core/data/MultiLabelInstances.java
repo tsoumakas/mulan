@@ -58,7 +58,7 @@ import weka.filters.unsupervised.attribute.Reorder;
 public class MultiLabelInstances {
 	
 	private Instances dataSet;
-	private final LabelsMetaDataImpl labelsMetaData;
+	private final LabelsMetaData labelsMetaData;
 	
 		
 	/**
@@ -126,7 +126,7 @@ public class MultiLabelInstances {
 		
 		File arffFile = new File(arffFilePath);
 		Instances data = loadInstances(arffFile);
-		LabelsMetaDataImpl labelsData = loadLabesMeta(xmlLabelsDefFilePath);
+		LabelsMetaData labelsData = loadLabesMeta(xmlLabelsDefFilePath);
 		
 		validate(data, labelsData);
 		dataSet = data;
@@ -354,8 +354,8 @@ public class MultiLabelInstances {
 		return aDataSet;
 	}
 
-	private LabelsMetaDataImpl loadLabesMeta(String xmlLabelsDefFilePath){
-		LabelsMetaDataImpl labelsMeta = null;
+	private LabelsMetaData loadLabesMeta(String xmlLabelsDefFilePath){
+		LabelsMetaData labelsMeta = null;
 		try {
 			labelsMeta = LabelsBuilder.createLabels(xmlLabelsDefFilePath);
 		} catch (LabelsBuilderException exception) {

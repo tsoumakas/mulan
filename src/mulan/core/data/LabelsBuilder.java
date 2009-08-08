@@ -51,7 +51,7 @@ public final class LabelsBuilder {
 
 	
 	/**
-	 * Creates a {@link LabelsMetaDataImpl} instance form XML file specified by path
+	 * Creates a {@link LabelsMetaData} instance from XML file specified by path
 	 * 
 	 * @param xmlLabelsFilePath the path to XML file containing labels definition
 	 * @return a labels meta data instance 
@@ -59,7 +59,7 @@ public final class LabelsBuilder {
 	 * @throws LabelsBuilderException if any error occur when validating XML against 
 	 * 								  schema or when creating labels data
 	 */
-	public static LabelsMetaDataImpl createLabels(String xmlLabelsFilePath) throws LabelsBuilderException{
+	public static LabelsMetaData createLabels(String xmlLabelsFilePath) throws LabelsBuilderException{
 		
 		if(xmlLabelsFilePath == null){
 			throw new IllegalArgumentException("The xmlLabelsFilePath parameter is null.");
