@@ -20,7 +20,6 @@
  */
 package mulan.core.data;
 
-import mulan.core.*;
 import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -357,17 +356,17 @@ public class Statistics implements Serializable
 		DecimalFormat myFormatter = new DecimalFormat(pattern);
 
 		System.out.println("Phi      AvgCorrelated");
-		double phi = 0;
-		while (phi <= 1.001) {
+		double tempPhi = 0;
+		while (tempPhi <= 1.001) {
 			double avgCorrelated = 0;
 			for (int i = 0; i < numLabels; i++) {
-				int[] temp = uncorrelatedLabels(i, phi);
+				int[] temp = uncorrelatedLabels(i, tempPhi);
 				avgCorrelated += (numLabels - temp.length);
 			}
 			avgCorrelated /= numLabels;
 			System.out.println(myFormatter.format(phi) + "     "
 					+ avgCorrelated);
-			phi += step;
+			tempPhi += step;
 		}
 	}
     

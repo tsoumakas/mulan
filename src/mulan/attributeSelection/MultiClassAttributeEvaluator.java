@@ -24,7 +24,6 @@ package mulan.attributeSelection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import mulan.core.data.MultiLabelInstances;
-import mulan.transformations.LabelPowersetTransformation;
 import mulan.transformations.multiclass.MultiClassTransformation;
 import weka.attributeSelection.ASEvaluation;
 import weka.attributeSelection.AttributeEvaluator;
