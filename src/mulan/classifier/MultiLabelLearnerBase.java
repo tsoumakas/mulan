@@ -25,7 +25,7 @@ package mulan.classifier;
 import java.io.Serializable;
 import java.util.Date;
 
-import mulan.core.data.MultiLabelInstances;
+import mulan.data.MultiLabelInstances;
 
 import weka.core.Instances;
 import weka.core.SerializedObject;
