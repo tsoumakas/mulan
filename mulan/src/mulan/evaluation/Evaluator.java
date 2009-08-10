@@ -1,23 +1,23 @@
 /*
-*    This program is free software; you can redistribute it and/or modify
-*    it under the terms of the GNU General Public License as published by
-*    the Free Software Foundation; either version 2 of the License, or
-*    (at your option) any later version.
-*
-*    This program is distributed in the hope that it will be useful,
-*    but WITHOUT ANY WARRANTY; without even the implied warranty of
-*    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*    GNU General Public License for more details.
-*
-*    You should have received a copy of the GNU General Public License
-*    along with this program; if not, write to the Free Software
-*    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-*/
+ *    This program is free software; you can redistribute it and/or modify
+ *    it under the terms of the GNU General Public License as published by
+ *    the Free Software Foundation; either version 2 of the License, or
+ *    (at your option) any later version.
+ *
+ *    This program is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *    GNU General Public License for more details.
+ *
+ *    You should have received a copy of the GNU General Public License
+ *    along with this program; if not, write to the Free Software
+ *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
 
 /*
-*    Evaluator.java
-*    Copyright (C) 2009 Aristotle University of Thessaloniki, Thessaloniki, Greece
-*/
+ *    Evaluator.java
+ *    Copyright (C) 2009 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ */
 
 package mulan.evaluation;
 
@@ -179,6 +179,7 @@ public class Evaluator
         LabelBasedMeasures[] lbm = new LabelBasedMeasures[numFolds];
         RankingBasedMeasures[] rbm = new RankingBasedMeasures[numFolds];
         ConfidenceLabelBasedMeasures[] clbm = new ConfidenceLabelBasedMeasures[numFolds];
+        HierarchicalMeasures[] hm = new HierarchicalMeasures[numFolds];
 
 		Random random = new Random(seed);
 		workingSet.randomize(random);
@@ -197,17 +198,19 @@ public class Evaluator
             lbm[i] = evaluation.getLabelBasedMeasures();
             rbm[i] = evaluation.getRankingBasedMeasures();
             clbm[i] = evaluation.getConfidenceLabelBasedMeasures();
+            hm[i] = evaluation.getHierarchicalMeasures();
         }
         ExampleBasedMeasures exampleBasedMeasures = new ExampleBasedMeasures(ebm);
         LabelBasedMeasures labelBasedMeasures = new LabelBasedMeasures(lbm);
         RankingBasedMeasures rankingBasedMeasures = new RankingBasedMeasures(rbm);
         ConfidenceLabelBasedMeasures confidenceLabelBasedMeasures = new ConfidenceLabelBasedMeasures(clbm);
+        HierarchicalMeasures hierarchicalMeasures = new HierarchicalMeasures(hm);
         Evaluation evaluation = new Evaluation();
         evaluation.setExampleBasedMeasures(exampleBasedMeasures);
         evaluation.setLabelBasedMeasures(labelBasedMeasures);
         evaluation.setRankingBasedMeasures(rankingBasedMeasures);
         evaluation.setConfidenceLabelBasedMeasures(confidenceLabelBasedMeasures);
-
+        evaluation.setHierarchicalMeasures(hierarchicalMeasures);
         return evaluation;
     }
 
