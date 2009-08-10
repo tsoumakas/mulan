@@ -25,7 +25,7 @@ import mulan.attributeSelection.BinaryRelevanceAttributeEvaluator;
 import mulan.attributeSelection.LabelPowersetAttributeEvaluator;
 import mulan.attributeSelection.Ranker;
 import mulan.attributeSelection.MultiClassAttributeEvaluator;
-import mulan.core.data.MultiLabelInstances;
+import mulan.data.MultiLabelInstances;
 import mulan.transformations.multiclass.Copy;
 import mulan.transformations.multiclass.MultiClassTransformation;
 import weka.attributeSelection.ASEvaluation;

@@ -21,7 +21,7 @@
 
 package mulan.transformations.multiclass;
 
-import mulan.core.data.MultiLabelInstances;
+import mulan.data.MultiLabelInstances;
 import weka.core.Instances;
 
 /**

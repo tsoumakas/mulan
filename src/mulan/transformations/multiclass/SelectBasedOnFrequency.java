@@ -26,7 +26,7 @@ import java.util.List;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import mulan.core.data.MultiLabelInstances;
+import mulan.data.MultiLabelInstances;
 import mulan.transformations.RemoveAllLabels;
 import weka.core.Instance;
 import weka.core.Instances;

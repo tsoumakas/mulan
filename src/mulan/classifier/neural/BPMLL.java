@@ -34,7 +34,7 @@ import mulan.classifier.neural.model.ActivationTANH;
 import mulan.classifier.neural.model.BasicNeuralNet;
 import mulan.classifier.neural.model.NeuralNet;
 import mulan.core.WekaException;
-import mulan.core.data.MultiLabelInstances;
+import mulan.data.MultiLabelInstances;
 import weka.core.Attribute;
 import weka.core.Instance;
 import weka.core.Instances;
