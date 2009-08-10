@@ -15,7 +15,7 @@
  */
 
 /*
- *    Converter.java
+ *    ConverterLibSVM.java
  *    Copyright (C) 2009 Aristotle University of Thessaloniki, Thessaloniki, Greece
  */
 package mulan.core.data;
@@ -30,7 +30,7 @@ import weka.core.*;
  * @author Grigorios Tsoumakas
  * @version $Revision: 0.01 $
  */
-public class Converter {
+public class ConverterLibSVM {
 
     /**
      * Converts a multi-label dataset from LibSVM format to the format
@@ -207,7 +207,7 @@ public class Converter {
             source = Utils.getOption("source", args);
             target = Utils.getOption("target", args);
             relationName = Utils.getOption("name", args);
-            Converter.convertFromLibSVM(path, source, target, relationName);
+            ConverterLibSVM.convertFromLibSVM(path, source, target, relationName);
         }
         catch (Exception e) {
             e.printStackTrace();
