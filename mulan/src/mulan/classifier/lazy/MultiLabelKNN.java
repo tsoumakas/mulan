@@ -22,7 +22,7 @@
 package mulan.classifier.lazy;
 
 import mulan.classifier.MultiLabelLearnerBase;
-import mulan.core.data.MultiLabelInstances;
+import mulan.data.MultiLabelInstances;
 import weka.core.EuclideanDistance;
 import weka.core.Instances;
 import weka.core.neighboursearch.LinearNNSearch;

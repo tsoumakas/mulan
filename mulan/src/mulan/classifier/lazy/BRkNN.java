@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.Random;
 import mulan.classifier.MultiLabelOutput;
 import mulan.core.Util;
-import mulan.core.data.MultiLabelInstances;
+import mulan.data.MultiLabelInstances;
 import weka.classifiers.lazy.IBk;
 import weka.core.Instance;
 import weka.core.Instances;

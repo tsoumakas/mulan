@@ -22,7 +22,7 @@
 
 package mulan.classifier;
 
-import mulan.core.data.MultiLabelInstances;
+import mulan.data.MultiLabelInstances;
 import weka.core.Instance;
 
 /**

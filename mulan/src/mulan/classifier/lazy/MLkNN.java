@@ -25,7 +25,7 @@ import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import mulan.classifier.MultiLabelOutput;
-import mulan.core.data.MultiLabelInstances;
+import mulan.data.MultiLabelInstances;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.TechnicalInformation;
