@@ -22,7 +22,7 @@
 package mulan.classifier.transformation;
 
 import mulan.classifier.MultiLabelOutput;
-import mulan.core.data.MultiLabelInstances;
+import mulan.data.MultiLabelInstances;
 import mulan.transformations.RemoveAllLabels;
 import mulan.transformations.multiclass.MultiClassTransformation;
 import weka.classifiers.Classifier;

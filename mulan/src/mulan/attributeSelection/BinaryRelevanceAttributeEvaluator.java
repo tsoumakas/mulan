@@ -20,7 +20,7 @@
  */
 package mulan.attributeSelection;
 
-import mulan.core.data.MultiLabelInstances;
+import mulan.data.MultiLabelInstances;
 import mulan.transformations.BinaryRelevanceTransformation;
 import weka.attributeSelection.ASEvaluation;
 import weka.attributeSelection.AttributeEvaluator;

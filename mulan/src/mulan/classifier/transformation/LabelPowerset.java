@@ -26,9 +26,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import mulan.classifier.MultiLabelOutput;
-import mulan.core.data.LabelSet;
+import mulan.data.LabelSet;
 import mulan.core.Util;
-import mulan.core.data.MultiLabelInstances;
+import mulan.data.MultiLabelInstances;
 import mulan.transformations.LabelPowersetTransformation;
 import weka.classifiers.Classifier;
 import weka.core.Instance;

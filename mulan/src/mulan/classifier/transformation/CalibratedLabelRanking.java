@@ -23,7 +23,7 @@ package mulan.classifier.transformation;
 
 import java.util.Arrays;
 import mulan.classifier.MultiLabelOutput;
-import mulan.core.data.MultiLabelInstances;
+import mulan.data.MultiLabelInstances;
 import mulan.transformations.RemoveAllLabels;
 import weka.classifiers.Classifier;
 import weka.core.Attribute;

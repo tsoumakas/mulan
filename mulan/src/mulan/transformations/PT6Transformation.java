@@ -20,7 +20,7 @@
  */
 package mulan.transformations;
 
-import mulan.core.data.MultiLabelInstances;
+import mulan.data.MultiLabelInstances;
 import weka.core.Attribute;
 import weka.core.FastVector;
 import weka.core.Instance;
