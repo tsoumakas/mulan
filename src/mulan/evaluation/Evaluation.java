@@ -65,6 +65,10 @@ public class Evaluation {
 		this.rankingBasedMeasures = rankingBasedMeasures;
 	}
 
+	public HierarchicalMeasures getHierarchicalMeasures() {
+		return hierarchicalMeasures;
+	}
+
 	protected void setHierarchicalMeasures(HierarchicalMeasures hierarchicalMeasures) {
 		this.hierarchicalMeasures = hierarchicalMeasures;
 	}

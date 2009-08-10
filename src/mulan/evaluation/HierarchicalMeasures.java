@@ -17,7 +17,6 @@
 /*
  *    HierarchicalMeasures.java
  *    Copyright (C) 2009 Aristotle University of Thessaloniki, Thessaloniki, Greece
- *
  */
 package mulan.evaluation;
 
@@ -44,6 +43,17 @@ public class HierarchicalMeasures {
 
 	protected HierarchicalMeasures(MultiLabelOutput[] output, boolean[][] trueLabels, LabelsMetaData metaData) {
         computeMeasures(output, trueLabels, metaData);
+    }
+
+    HierarchicalMeasures(HierarchicalMeasures[] arrayOfMeasures) {
+        hierarchicalLoss = 0;
+
+        for (HierarchicalMeasures measures : arrayOfMeasures) {
+            hierarchicalLoss += measures.getHierarchicalLoss();
+        }
+
+        int arraySize = arrayOfMeasures.length;
+        hierarchicalLoss /= arraySize;
     }
 
 
