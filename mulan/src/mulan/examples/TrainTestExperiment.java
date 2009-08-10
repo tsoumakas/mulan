@@ -33,7 +33,7 @@ import mulan.classifier.transformation.IncludeLabelsClassifier;
 import mulan.classifier.transformation.LabelPowerset;
 import mulan.classifier.transformation.MultiClassLearner;
 import mulan.classifier.transformation.MultiLabelStacking;
-import mulan.core.data.MultiLabelInstances;
+import mulan.data.MultiLabelInstances;
 import mulan.evaluation.Evaluation;
 import mulan.evaluation.Evaluator;
 import mulan.transformations.multiclass.Copy;

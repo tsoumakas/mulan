@@ -24,8 +24,8 @@ package mulan.evaluation;
 import java.util.ArrayList;
 import java.util.Set;
 import mulan.classifier.*;
-import mulan.core.data.LabelNode;
-import mulan.core.data.LabelsMetaData;
+import mulan.data.LabelNode;
+import mulan.data.LabelsMetaData;
 
 /**
  * The hierarchical loss is a modified version of the Hamming loss that takes

@@ -7,7 +7,7 @@ package mulan.examples;
 
 import mulan.classifier.neural.BPMLL;
 import mulan.classifier.transformation.LabelPowerset;
-import mulan.core.data.MultiLabelInstances;
+import mulan.data.MultiLabelInstances;
 import mulan.evaluation.Evaluation;
 import mulan.evaluation.Evaluator;
 import weka.classifiers.trees.J48;

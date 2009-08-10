@@ -22,7 +22,7 @@
 package mulan.transformations.multiclass;
 
 import java.util.List;
-import mulan.core.data.MultiLabelInstances;
+import mulan.data.MultiLabelInstances;
 import mulan.transformations.*;
 import weka.core.Attribute;
 import weka.core.FastVector;
