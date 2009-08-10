@@ -19,7 +19,7 @@
  *    Copyright (C) 2009 Aristotle University of Thessaloniki, Thessaloniki, Greece
  */
 
-package mulan.core;
+package mulan.core.data;
 
 import java.io.Serializable;
 import java.util.ArrayList;
