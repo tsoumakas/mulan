@@ -25,8 +25,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import mulan.core.data.LabelSet;
-import mulan.core.data.MultiLabelInstances;
+import mulan.data.LabelSet;
+import mulan.data.MultiLabelInstances;
 import weka.classifiers.Classifier;
 import weka.core.Instance;
 import weka.core.Instances;

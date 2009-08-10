@@ -21,7 +21,7 @@
 package mulan.classifier.transformation;
 
 import mulan.classifier.MultiLabelOutput;
-import mulan.core.data.MultiLabelInstances;
+import mulan.data.MultiLabelInstances;
 import weka.classifiers.Classifier;
 import weka.classifiers.meta.FilteredClassifier;
 import weka.core.Attribute;

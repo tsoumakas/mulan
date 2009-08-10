@@ -39,11 +39,11 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import mulan.core.data.LabelNode;
-import mulan.core.data.LabelNodeImpl;
-import mulan.core.data.LabelsMetaData;
-import mulan.core.data.LabelsMetaDataImpl;
-import mulan.core.data.MultiLabelInstances;
+import mulan.data.LabelNode;
+import mulan.data.LabelNodeImpl;
+import mulan.data.LabelsMetaData;
+import mulan.data.LabelsMetaDataImpl;
+import mulan.data.MultiLabelInstances;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

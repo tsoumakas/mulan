@@ -23,7 +23,7 @@ package mulan.classifier.meta;
 import mulan.classifier.MultiLabelLearner;
 import mulan.classifier.MultiLabelOutput;
 import mulan.classifier.meta.HMC;
-import mulan.core.data.MultiLabelInstances;
+import mulan.data.MultiLabelInstances;
 import mulan.classifier.meta.HierarchyBuilder.Method;
 import weka.core.Instance;
 import weka.core.Instances;

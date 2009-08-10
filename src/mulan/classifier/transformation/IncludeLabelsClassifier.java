@@ -21,7 +21,7 @@
 package mulan.classifier.transformation;
 
 import mulan.classifier.*;
-import mulan.core.data.MultiLabelInstances;
+import mulan.data.MultiLabelInstances;
 import mulan.transformations.PT6Transformation;
 import weka.classifiers.Classifier;
 import weka.core.Instance;

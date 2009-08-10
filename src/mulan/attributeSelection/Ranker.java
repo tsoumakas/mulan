@@ -21,7 +21,7 @@
 
 package mulan.attributeSelection;
 
-import mulan.core.data.MultiLabelInstances;
+import mulan.data.MultiLabelInstances;
 import weka.attributeSelection.ASEvaluation;
 import weka.attributeSelection.AttributeEvaluator;
 import weka.core.Instances;

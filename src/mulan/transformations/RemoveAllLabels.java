@@ -4,7 +4,7 @@
  */
 
 package mulan.transformations;
-import mulan.core.data.MultiLabelInstances;
+import mulan.data.MultiLabelInstances;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.filters.Filter;
