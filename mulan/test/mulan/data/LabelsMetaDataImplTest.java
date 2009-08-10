@@ -19,8 +19,11 @@
 *    Copyright (C) 2009 Aristotle University of Thessaloniki, Thessaloniki, Greece
 *
 */
-package mulan.core.data;
+package mulan.data;
 
+import mulan.data.LabelNodeImpl;
+import mulan.data.LabelsMetaData;
+import mulan.data.LabelsMetaDataImpl;
 import junit.framework.Assert;
 
 import org.junit.After;
