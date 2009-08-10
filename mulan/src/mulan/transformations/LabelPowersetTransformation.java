@@ -1,7 +1,7 @@
 
 package mulan.transformations;
 import java.util.HashSet;
-import mulan.core.LabelSet;
+import mulan.core.data.LabelSet;
 import mulan.core.data.MultiLabelInstances;
 import weka.core.Attribute;
 import weka.core.FastVector;
