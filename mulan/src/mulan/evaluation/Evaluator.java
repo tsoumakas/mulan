@@ -33,7 +33,7 @@ import weka.core.Instances;
 /**
  * Evaluator - responsible for generating evaluation data
  * @author rofr
- *
+ * @author Grigorios Tsoumakas
  */
 public class Evaluator
 {
@@ -198,19 +198,23 @@ public class Evaluator
             lbm[i] = evaluation.getLabelBasedMeasures();
             rbm[i] = evaluation.getRankingBasedMeasures();
             clbm[i] = evaluation.getConfidenceLabelBasedMeasures();
-            hm[i] = evaluation.getHierarchicalMeasures();
+            if (mlDataSet.getLabelsMetaData().isHierarchy())
+               hm[i] = evaluation.getHierarchicalMeasures();
         }
         ExampleBasedMeasures exampleBasedMeasures = new ExampleBasedMeasures(ebm);
         LabelBasedMeasures labelBasedMeasures = new LabelBasedMeasures(lbm);
         RankingBasedMeasures rankingBasedMeasures = new RankingBasedMeasures(rbm);
         ConfidenceLabelBasedMeasures confidenceLabelBasedMeasures = new ConfidenceLabelBasedMeasures(clbm);
-        HierarchicalMeasures hierarchicalMeasures = new HierarchicalMeasures(hm);
+        HierarchicalMeasures hierarchicalMeasures = null;
+        if (mlDataSet.getLabelsMetaData().isHierarchy())
+            hierarchicalMeasures = new HierarchicalMeasures(hm);
         Evaluation evaluation = new Evaluation();
         evaluation.setExampleBasedMeasures(exampleBasedMeasures);
         evaluation.setLabelBasedMeasures(labelBasedMeasures);
         evaluation.setRankingBasedMeasures(rankingBasedMeasures);
         evaluation.setConfidenceLabelBasedMeasures(confidenceLabelBasedMeasures);
-        evaluation.setHierarchicalMeasures(hierarchicalMeasures);
+        if (mlDataSet.getLabelsMetaData().isHierarchy())
+            evaluation.setHierarchicalMeasures(hierarchicalMeasures);
         return evaluation;
     }
 
