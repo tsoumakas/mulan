@@ -55,7 +55,16 @@ public class MulanJavadoc implements OptionHandler {
 	static File originalDir;
 	static String dir;
 
-    /**
+	/**
+	 * Sets the direcrory
+	 * 
+	 * @param dir
+	 */
+    public static void setDir(String dir) {
+		MulanJavadoc.dir = dir;
+	}
+
+	/**
      * Command line interface
      *
      * @param args
