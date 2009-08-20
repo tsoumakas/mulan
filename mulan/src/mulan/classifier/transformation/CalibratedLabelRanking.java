@@ -68,7 +68,7 @@ import weka.filters.unsupervised.attribute.Reorder;
  *
  * <p/> <!-- technical-bibtex-end -->
  *
- * @author Louise Rairat
+ * @author Elise Rairat
  * @author Grigorios Tsoumakas
  * @author Sang-Hyeun Park
  * @version $Revision: 1.0 $
