@@ -15,7 +15,7 @@
 	<property name="test.includes" value="mulan/**/*Test*" description="Default pattern used to identify tests implementation." />
 	
 	<property name="mulan.title" value="MULAN - MUlti-LAbel classificatioN" />
-	<property name="mulan.version" value="1.0.0" />
+	<property name="mulan.version" value="1.0.1" />
 	<property name="weka.version" value="3.7.0" />
 	<property name="junit.version" value="4.5" />
 
