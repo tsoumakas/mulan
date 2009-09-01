@@ -41,7 +41,7 @@ import org.xml.sax.SAXException;
  */
 public final class LabelsBuilder {
 
-	private static final String LABELS_SCHEMA_SOURCE = "mulan/core/data/labels.xsd";
+	private static final String LABELS_SCHEMA_SOURCE = "mulan/data/labels.xsd";
     /**
      * The namespace of the schema for label representation
      */
