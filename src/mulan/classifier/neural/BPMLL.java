@@ -22,9 +22,12 @@
 
 package mulan.classifier.neural;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Enumeration;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Set;
 
@@ -42,6 +45,7 @@ import weka.core.SparseInstance;
 import weka.core.TechnicalInformation;
 import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
+import weka.experiment.Stats;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.NominalToBinary;
 
@@ -70,10 +74,7 @@ public class BPMLL extends MultiLabelLearnerBase {
 	
 	// members related to normalization or attributes
 	private boolean normalizeAttributes = true;
-	// the indexes in this array does not necessarily corresponds to attribute indices, 
-	// because feature attributes can mixed with label attributes in random order    
-	private double[] attRanges;
-	private double[] attBases;
+	private Normalizer normalizer; 
 
 	private NeuralNet model;
 	private ThresholdFunction thresholdF;
@@ -270,29 +271,29 @@ public class BPMLL extends MultiLabelLearnerBase {
 			throw new IllegalArgumentException("Attributes are not in correct format. " +
 					"Input attributes (all but the label attributes) must be numeric.");
 		}
-				
+		
 		if(normalizeAttributes){
-			normalizeAttributes(mlData);
+			normalizer = new Normalizer(mlData, true);
 		}
-		else{
-			attBases = null;
-			attRanges = null;
-		}
+		
 		int numInstances = data.numInstances();
-		int numAttributes = data.numAttributes();
-		int inputDim = data.numAttributes() - numLabels;
+		 
+		
+		int[] featureIndices = mlData.getFeatureIndices();
+		int numFeatures = featureIndices.length;
 		List<DataPair> dataPairs = new ArrayList<DataPair>();
 		for(int index = 0; index < numInstances; index++){
 			Instance instance = data.instance(index);
-
-			double[] input = new double[inputDim];
-			Set<Attribute> features = mlData.getFeatureAttributes();  
-			int indexCounter = 0;
-			for(int i = 0; i < numAttributes; i++){
-				Attribute attr = instance.attribute(i);
-				if(features.contains(attr)){
-					input[indexCounter] = instance.value(attr.index());
-					indexCounter++;					
+			
+			double[] input = new double[numFeatures];
+			for(int i = 0; i < numFeatures; i++){
+				int featureIndex = featureIndices[i];
+				Attribute featureAttr = instance.attribute(featureIndex);
+				if(featureAttr.isNominal()){
+					input[i] = Double.parseDouble(instance.stringValue(featureIndex));
+				}
+				else{
+					input[i] = instance.value(featureIndex);
 				}
 			}
 			
@@ -355,64 +356,6 @@ public class BPMLL extends MultiLabelLearnerBase {
 		return true;
 	}
 	
-	/**
-	 * Performs normalization of all but label attributes into the range <-1,1>
-	 * 
-	 * @param data instances data of which attributes should be normalized
-	 */
-	private void normalizeAttributes(MultiLabelInstances mlData){
-		
-		Instances data = mlData.getDataSet();
-		Set<Attribute> features = mlData.getFeatureAttributes();
-		int numInstances = data.numInstances();
-		int numAttributes = data.numAttributes();
-		int indexCounter = 0;
-		attRanges = new double[numAttributes - numLabels];
-		attBases = new double[numAttributes - numLabels];
-		for(int attIndex = 0; attIndex < numAttributes - numLabels; attIndex++){
-			if(features.contains(data.attribute(attIndex))){
-				// get min max values of attribute
-				double min = Double.POSITIVE_INFINITY;
-				double max = Double.NEGATIVE_INFINITY;
-				for (int i = 0; i < numInstances; i++) {
-					Instance instance = data.instance(i);
-					if (!instance.isMissing(attIndex)) {
-						double value = instance.value(attIndex);
-						if (value < min) {
-							min = value;
-						}
-						if (value > max) {
-							max = value;
-						}
-					}
-				}
-				// normalize values of the attribute to <-1,1>
-				attRanges[indexCounter] = (max - min) / 2;
-				attBases[indexCounter] = (max + min) / 2;
-				for (int i = 0; i < numInstances; i++) {
-					Instance instance = data.instance(i);
-					normalizeAttribute(instance, attIndex, attRanges[indexCounter], attBases[indexCounter]);
-				}
-				
-				indexCounter++;
-			}
-		}
-	}
-	
-	private void normalizeAttribute(Instance instance, int attIndex, double attRange, double attBase){
-		
-		if (attRange != 0) {
-			double value = instance.value(attIndex);
-			value = (value - attBase) / attRange;
-			instance.setValue(attIndex, value);
-		} 
-		else {
-			double value = instance.value(attIndex);
-			value = value - attBase;
-			instance.setValue(attIndex, value);
-		}
-	}
-
     public MultiLabelOutput makePrediction(Instance instance) throws Exception {
 
 		if(instance == null){
@@ -445,14 +388,7 @@ public class BPMLL extends MultiLabelLearnerBase {
 		}
 
 		if(normalizeAttributes){
-			int indexCounter = 0;
-			for (int attIndex = 0; attIndex < numAttributes; attIndex++) {
-				if(labelsAreThere && labelIndices.contains(attIndex)){
-					continue;
-				}
-				normalizeAttribute(inputInstance, attIndex, attRanges[indexCounter], attBases[indexCounter]);
-				indexCounter++;
-			}
+			normalizer.normalize(inputInstance);
 		}
 		
 		int inputDim = model.getNetInputSize();
@@ -465,7 +401,7 @@ public class BPMLL extends MultiLabelLearnerBase {
 			inputPattern[indexCounter] = inputInstance.value(attrIndex);
 			indexCounter++;
 		}
-		
+	
 		double[] labelConfidences = model.feedForward(inputPattern);
 		double threshold = thresholdF.computeThreshold(labelConfidences);
 		boolean[] labelPredictions = new boolean[numLabels];
@@ -521,5 +457,104 @@ public class BPMLL extends MultiLabelLearnerBase {
     	public double[] getOutput(){
     		return output;
     	}
+    }
+    
+    /**
+     * Normalizer performas a normalization of numeric attributes of the data set.
+     * It is initialized based on given {@link MultiLabelInstances} data set and then can 
+     * be used to normalize {@link Instance} instances which conform to the format of the 
+     * data set the {@link Normalizer} was initialized from. 
+     * 
+     * @author Jozef Vilcek
+     */
+    public class Normalizer implements Serializable {
+
+		/** Serial UID for serialization */
+		private static final long serialVersionUID = -2575012048861337275L;
+		private final double maxValue;
+		private final double minValue;
+		private Hashtable<Integer, double[]> attStats;
+		
+		/**
+		 * Creates a new instance of {@link Normalizer} class for given data set.
+		 * 
+		 * @param mlData the {@link MultiLabelInstances} data set from which normalizer
+		 * should be initialized.
+		 * @param performNormalization indicates whether normalization of instances contained 
+		 * in the data set used for initialization should be performed
+		 * @param minValue the minimum value of the normalization range for numerical attributes
+		 * @param maxValue the maximum value of the normalization range for numerical attributes
+		 */
+		public Normalizer(MultiLabelInstances mlData, boolean performNormalization, double minValue, double maxValue){
+			if(mlData == null){
+				throw new IllegalArgumentException("Parameter 'mlData' is null.");
+			}
+			if(maxValue <= minValue){
+				throw new IllegalArgumentException(
+						String.format("Parameters 'minValue=%f' and 'maxValue=%f' does not define valid range.",
+								minValue, maxValue));
+			}
+			
+			this.minValue = minValue;
+			this.maxValue = maxValue;
+			this.attStats = new Hashtable<Integer, double[]>();
+			
+			Initialize(mlData);
+			
+			if(performNormalization){
+				Instances instances = mlData.getDataSet();
+				int numInstance = instances.numInstances();
+				for(int i=0; i<numInstance; i++){
+					normalize(instances.instance(i));
+				}
+			}
+		}
+		
+		/**
+		 * Creates a new instance of {@link Normalizer} class for given data set.
+		 * The normalizer will be initialized to perform normalization to the default
+		 * range <-1,1>.  
+		 * 
+		 * @param mlData the {@link MultiLabelInstances} data set from which normalizer
+		 * should be initialized.
+		 * @param performNormalization indicates whether normalization of instances contained 
+		 * in the data set used for initialization should be performed
+		 */
+		public Normalizer(MultiLabelInstances mlData, boolean performNormalization) {
+			this(mlData, performNormalization, -1, 1);
+		}
+		
+		/**
+		 * Performs a normalization of numerical attributes on given instance.
+		 * The instance must conform to format of instances data the {@link Normalizer} 
+		 * was initialized with.
+		 * @param instance the instance to be normalized
+		 */
+		public void normalize(Instance instance){
+			Set<Integer> normScope = attStats.keySet(); 
+			for(Integer attIndex : normScope){
+				double[] stats = attStats.get(attIndex);
+				double attMin = stats[0];
+				double attMax = stats[1];
+				double value = instance.value(attIndex);
+				if(attMin == attMax){
+					instance.setValue(attIndex, minValue);
+				}else{
+					instance.setValue(attIndex, (((value - stats[0]) / (stats[1] - stats[0])) * (maxValue - minValue)) + minValue);
+				}
+			}
+		}
+		
+		private void Initialize(MultiLabelInstances mlData){
+			Instances dataSet = mlData.getDataSet();
+			int[] featureIndices = mlData.getFeatureIndices();
+			for(int attIndex : featureIndices){
+				Attribute feature = dataSet.attribute(attIndex);
+				if(feature.isNumeric()){
+					Stats stats = dataSet.attributeStats(attIndex).numericStats;
+					attStats.put(attIndex, new double[]{stats.min, stats.max});
+				}
+			}
+		}
     }
 }
