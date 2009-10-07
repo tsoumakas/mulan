@@ -26,7 +26,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Set;
@@ -258,7 +257,7 @@ public class BPMLL extends MultiLabelLearnerBase {
 	}
 	
 	/**
-	 * Prepares {@link Instances} data for the learning algorithm.
+	 * Prepares {@link MultiLabelInstances} data for the learning algorithm.
 	 * <br/>
 	 * The data are checked for correct format, label attributes 
 	 * are converted to bipolar values. Finally {@link Instance} instances are 
@@ -276,37 +275,7 @@ public class BPMLL extends MultiLabelLearnerBase {
 			normalizer = new Normalizer(mlData, true);
 		}
 		
-		int numInstances = data.numInstances();
-		 
-		
-		int[] featureIndices = mlData.getFeatureIndices();
-		int numFeatures = featureIndices.length;
-		List<DataPair> dataPairs = new ArrayList<DataPair>();
-		for(int index = 0; index < numInstances; index++){
-			Instance instance = data.instance(index);
-			
-			double[] input = new double[numFeatures];
-			for(int i = 0; i < numFeatures; i++){
-				int featureIndex = featureIndices[i];
-				Attribute featureAttr = instance.attribute(featureIndex);
-				if(featureAttr.isNominal()){
-					input[i] = Double.parseDouble(instance.stringValue(featureIndex));
-				}
-				else{
-					input[i] = instance.value(featureIndex);
-				}
-			}
-			
-			double[] output = new double[numLabels];
-			for(int i = 0; i < numLabels; i++){
-				double value = instance.value(labelIndices[i]);
-				output[i] = value == 0 ? -1 : value;
-			}
-
-			dataPairs.add(new DataPair(input, output));
-		}
-		
-		return dataPairs;
+		return DataPair.createDataPairs(mlData, true);
 	}
 	
 	
@@ -417,46 +386,6 @@ public class BPMLL extends MultiLabelLearnerBase {
 
         MultiLabelOutput mlo = new MultiLabelOutput(labelPredictions, labelConfidences);
         return mlo;
-    }
-    
-    /**
-     * Class for holding data pair for neural network. 
-     * The data pair contains the input pattern and respected 
-     * expected/ideal network output/response pattern for the input.
-     */
-    private class DataPair {
-
-    	private final double[] input;
-    	private final double[] output;
-    	
-    	/**
-    	 * Creates a {@link DataPair} instance.
-    	 * @param input the input pattern
-    	 * @param output the ideal/expected output pattern for the input
-    	 */
-    	public DataPair(final double[] input, final double[] output){
-    		if(input == null || output == null){
-    			throw new IllegalArgumentException("Failed to create an instance. Either input or output pattern is null.");
-    		}
-    		this.input = Arrays.copyOf(input, input.length);
-    		this.output = Arrays.copyOf(output, output.length);
-    	}
-    	
-    	/**
-    	 * Gets the input pattern.
-    	 * @return the input pattern
-    	 */
-    	public double[] getInput(){
-    		return input;
-    	}
-    	
-    	/**
-    	 * Gets the idel/expected output pattern.
-    	 * @return the output pattern
-    	 */
-    	public double[] getOutput(){
-    		return output;
-    	}
     }
     
     /**

@@ -73,6 +73,11 @@ public abstract class MultiLabelLearnerBase
      */
 	public abstract TechnicalInformation getTechnicalInformation();
 	
+	public boolean isUpdatable(){
+		/** as default learners are assumed not to be updatable */
+		return false;
+	}
+	
 	public final void build(MultiLabelInstances trainingSet) throws Exception
     {
 		if (trainingSet == null)
