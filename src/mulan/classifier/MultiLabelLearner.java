@@ -32,11 +32,31 @@ import weka.core.Instance;
  */
 public interface MultiLabelLearner {
 	
+	/**
+	 * Returns value indicating if learner is updatable, so if learner is able to
+	 * perform on-line learning. The fact if learner is updatable or not influences 
+	 * the behavior of {@link MultiLabelLearner#build(MultiLabelInstances)} method.<br></br>
+	 * When <code>false</code> is returned, each call of the 
+	 * {@link MultiLabelLearner#build(MultiLabelInstances)} will initialize the learner from
+	 * the scratch, removing any potential knowledge built by previously entered training data.
+	 * When <code>true</code> is returned, than on the first call of the 
+	 * {@link MultiLabelLearner#build(MultiLabelInstances)} the learner is initialized
+	 * with the passed training data. All other calls contribute to the existing learner's 
+	 * model with new data.<br></br>
+	 * 
+	 * @return <code>true</code> if learner is updatable (on-line), <code>false</code> otherwise.
+	 */
+	public boolean isUpdatable();
+	
     /**
-	 * Builds the learner model from specified {@link MultiLabelInstances} data. 
+	 * Builds the learner model from specified {@link MultiLabelInstances} data.
+	 * Sequential calls to this method either re-build the learners model with new data
+	 * (off-line learner) or contribute to the existing model with new data (on-line learner).
+	 * The behavior is determined by the outcome of {@link MultiLabelLearner#isUpdatable()} method.  
 	 *  
 	 * @param instances set of training data, upon which the learner model should be built
 	 * @throws Exception if learner model was not created successfully
+	 * @see MultiLabelLearner#isUpdatable()
 	 */
 	public void build(MultiLabelInstances instances) throws Exception;
 	

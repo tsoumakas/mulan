@@ -6,6 +6,9 @@
 package mulan.examples;
 
 import mulan.classifier.neural.BPMLL;
+import mulan.classifier.neural.LossMeasure;
+import mulan.classifier.neural.MMPLearner;
+import mulan.classifier.neural.MMPUpdateRuleType;
 import mulan.classifier.transformation.LabelPowerset;
 import mulan.data.MultiLabelInstances;
 import mulan.evaluation.Evaluation;
@@ -47,6 +50,16 @@ public class GettingPredictionsOnTestSet {
         bpmll.setDebug(true);
         bpmll.build(traindata);
         results = eval.evaluate(bpmll, testdata);
+        System.out.println(results.toString());
+        System.gc(); 
+        //*/
+        
+        //* MMP Learner
+        System.out.println("MMP");
+        MMPLearner mmp = new MMPLearner(LossMeasure.OneError, MMPUpdateRuleType.UniformUpdate);
+        mmp.setDebug(true);
+        mmp.build(traindata);
+        results = eval.evaluate(mmp, testdata);
         System.out.println(results.toString());
         System.gc(); 
         //*/
