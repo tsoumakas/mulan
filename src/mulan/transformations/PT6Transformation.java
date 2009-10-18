@@ -25,12 +25,14 @@ import weka.core.Attribute;
 import weka.core.FastVector;
 import weka.core.Instance;
 import weka.core.Instances;
+
 /**
  *
- * @author Stavros
- * @author Greg
+ * @author Stavros Mpakirtzoglou
+ * @author Grigorios Tsoumakas
  */
 public class PT6Transformation {
+
     private int[] labelIndices;
 
     public Instances transformInstances(MultiLabelInstances mlData) throws Exception {
@@ -42,8 +44,9 @@ public class PT6Transformation {
 
         // add at the end an attribute with values the label names
         FastVector labelNames = new FastVector(numLabels);
-        for (int counter=0; counter<numLabels; counter++)
+        for (int counter = 0; counter < numLabels; counter++) {
             labelNames.addElement(mlData.getDataSet().attribute(labelIndices[counter]).name());
+        }
         Attribute attrLabel = new Attribute("Label", labelNames);
         transformed.insertAttributeAt(attrLabel, transformed.numAttributes());
 
@@ -55,13 +58,11 @@ public class PT6Transformation {
         transformed.insertAttributeAt(classAttr, transformed.numAttributes());
 
         // add instances
-        transformed = new Instances(transformed,0);
-        transformed.setClassIndex(transformed.numAttributes()-1);
+        transformed = new Instances(transformed, 0);
+        transformed.setClassIndex(transformed.numAttributes() - 1);
         Instances data = mlData.getDataSet();
-        for (int instanceIndex=0; instanceIndex<data.numInstances(); instanceIndex++)
-        {
-            for (int labelCounter=0; labelCounter<numLabels; labelCounter++)
-            {
+        for (int instanceIndex = 0; instanceIndex < data.numInstances(); instanceIndex++) {
+            for (int labelCounter = 0; labelCounter < numLabels; labelCounter++) {
                 Instance temp = new Instance(data.instance(instanceIndex));
                 temp.setDataset(data);
                 temp = RemoveAllLabels.transformInstance(temp, labelIndices);
@@ -69,11 +70,12 @@ public class PT6Transformation {
                 temp.insertAttributeAt(temp.numAttributes());
                 temp.insertAttributeAt(temp.numAttributes());
                 temp.setDataset(transformed);
-                temp.setValue(temp.numAttributes()-2, (String) labelNames.elementAt(labelCounter));
-                if (data.attribute(labelIndices[labelCounter]).value((int) data.instance(instanceIndex).value(labelIndices[labelCounter])).equals("1"))
-                    temp.setValue(temp.numAttributes()-1, "1");
-                else
-                    temp.setValue(temp.numAttributes()-1, "0");
+                temp.setValue(temp.numAttributes() - 2, (String) labelNames.elementAt(labelCounter));
+                if (data.attribute(labelIndices[labelCounter]).value((int) data.instance(instanceIndex).value(labelIndices[labelCounter])).equals("1")) {
+                    temp.setValue(temp.numAttributes() - 1, "1");
+                } else {
+                    temp.setValue(temp.numAttributes() - 1, "0");
+                }
                 transformed.add(temp);
             }
         }
@@ -82,8 +84,7 @@ public class PT6Transformation {
     }
 
     public Instance transformInstance(Instance instance) throws Exception {
-        if (labelIndices == null)
-        {
+        if (labelIndices == null) {
             System.out.println("Label Indices not set!!");
             return null;
         }
@@ -93,5 +94,4 @@ public class PT6Transformation {
         transformedInstance.insertAttributeAt(transformedInstance.numAttributes());
         return transformedInstance;
     }
-
 }
