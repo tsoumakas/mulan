@@ -38,7 +38,7 @@ import weka.filters.unsupervised.attribute.Remove;
 /**
  * Demonstrates the attribute selection capabilities of Mulan
  *
- * @author greg
+ * @author Grigorios Tsoumakas
  */
 public class AttributeSelectionTest {
     

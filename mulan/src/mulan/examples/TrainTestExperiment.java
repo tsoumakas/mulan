@@ -18,7 +18,6 @@
  *    TrainTestExperiment.java
  *    Copyright (C) 2009 Aristotle University of Thessaloniki, Thessaloniki, Greece
  */
-
 package mulan.examples;
 
 import mulan.classifier.MultiLabelLearner;
@@ -47,12 +46,12 @@ import weka.core.Utils;
 
 /**
  *
- * @author greg
+ * @author Grigorios Tsoumakas
  */
 public class TrainTestExperiment {
 
     public static void main(String[] args) {
-        String[] methodsToCompare = {"HOMER", "BR", "CLR", "MLkNN", "MC-Copy", "IncludeLabels","MC-Ignore","RAkEL", "LP", "MLStacking"};
+        String[] methodsToCompare = {"HOMER", "BR", "CLR", "MLkNN", "MC-Copy", "IncludeLabels", "MC-Ignore", "RAkEL", "LP", "MLStacking"};
 
         try {
             String path = Utils.getOption("path", args);
@@ -61,11 +60,11 @@ public class TrainTestExperiment {
             MultiLabelInstances train = new MultiLabelInstances(path + filestem + "-train.arff", path + filestem + ".xml");
             System.out.println("Loading the test set");
             MultiLabelInstances test = new MultiLabelInstances(path + filestem + "-test.arff", path + filestem + ".xml");
-            
+
             Evaluator eval = new Evaluator();
             Evaluation results;
 
-            for (int i=0; i<methodsToCompare.length; i++) {
+            for (int i = 0; i < methodsToCompare.length; i++) {
 
                 if (methodsToCompare[i].equals("BR")) {
                     System.out.println(methodsToCompare[i]);
@@ -137,12 +136,12 @@ public class TrainTestExperiment {
                     results = eval.evaluate(il, test);
                     System.out.println(results.toString());
                 }
-                
+
                 if (methodsToCompare[i].equals("MLkNN")) {
                     System.out.println(methodsToCompare[i]);
                     int numOfNeighbors = 10;
                     double smooth = 1.0;
-                    MLkNN mlknn = new MLkNN(numOfNeighbors,smooth);
+                    MLkNN mlknn = new MLkNN(numOfNeighbors, smooth);
                     mlknn.setDebug(true);
                     mlknn.build(train);
                     results = eval.evaluate(mlknn, test);
@@ -172,9 +171,9 @@ public class TrainTestExperiment {
                     System.out.println(results.toString());
                 }
                 if (methodsToCompare[i].equals("MLStacking")) {
-                    System.out.println(methodsToCompare[i]);           
-                    J48 baseClassifier = new J48(); 
-                    J48 metaClassifier = new J48();                   
+                    System.out.println(methodsToCompare[i]);
+                    J48 baseClassifier = new J48();
+                    J48 metaClassifier = new J48();
                     baseClassifier.setUseLaplace(true);
                     metaClassifier.setUseLaplace(true);
                     MultiLabelStacking mls = new MultiLabelStacking(baseClassifier, metaClassifier, 10);
@@ -186,10 +185,8 @@ public class TrainTestExperiment {
                 }
 
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
 }
