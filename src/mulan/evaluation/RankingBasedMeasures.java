@@ -24,6 +24,7 @@ package mulan.evaluation;
 
 import java.util.ArrayList;
 import mulan.classifier.MultiLabelOutput;
+import mulan.core.Util;
 
 
 public class RankingBasedMeasures {
@@ -159,9 +160,19 @@ public class RankingBasedMeasures {
         return oneError;
     }
 	
-    @Override
-	public String toString(){
-        return "not implemented yet!";
+	/**
+	 * Creates a summary string reporting values of all measures.
+	 * @return the summary string
+	 */
+	public String toSummaryString(){
+		String newLine = Util.getNewLineSeparator();
+		StringBuilder summary = new StringBuilder();
+		summary.append("========Ranking Based Measures========").append(newLine);
+		summary.append("One-error\t: ").append(getOneError()).append(newLine);
+		summary.append("Coverage\t: ").append(getCoverage()).append(newLine);
+		summary.append("Ranking Loss\t: ").append(getRankingLoss()).append(newLine);
+		summary.append("AvgPrecision\t: ").append(getAvgPrecision()).append(newLine);
+		return summary.toString();
 	}
 
 }

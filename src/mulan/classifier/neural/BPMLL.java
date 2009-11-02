@@ -53,6 +53,10 @@ import weka.filters.unsupervised.attribute.NominalToBinary;
  * The learned model is stored in {@link NeuralNet} neural network. The models of the
  * learner is built by {@link BPMLLAlgorithm} from given training data set.
  * 
+ * <!-- technical-bibtex-start -->
+ * 
+ * <!-- technical-bibtex-end -->
+ * 
  * @author Jozef Vilcek
  * @see BPMLLAlgorithm
  */

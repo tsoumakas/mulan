@@ -23,6 +23,8 @@ package mulan.classifier;
 
 import java.util.Arrays;
 
+import mulan.core.ArgumentNullException;
+
 /**
  * Class representing the output of a {@link MultiLabelLearner}.
  * This can be a bipartition of labels into <code>true</code> and <code>false</code>,
@@ -44,11 +46,11 @@ public class MultiLabelOutput {
     /**
      * Creates a new instance of {@link MultiLabelOutput}.
      * @param bipartition bipartition of labels
-     * @throws IllegalArgumentException if bipartitions is null.
+     * @throws ArgumentNullException if bipartitions is null.
      */
     public MultiLabelOutput(boolean[] bipartition) {
     	if(bipartition == null){
-    		throw new IllegalArgumentException("The bipartitions is null.");
+    		throw new ArgumentNullException("bipartitions");
     	}
         this.bipartition = Arrays.copyOf(bipartition, bipartition.length);
     }
@@ -56,11 +58,11 @@ public class MultiLabelOutput {
     /**
      * Creates a new instance of {@link MultiLabelOutput}.
      * @param ranking ranking of labels
-     * @throws IllegalArgumentException if ranking is null
+     * @throws ArgumentNullException if ranking is null
      */
     public MultiLabelOutput(int[] ranking) {
         if (ranking == null) {
-    		throw new IllegalArgumentException("The ranking is null.");
+    		throw new ArgumentNullException("ranking");
     	}
         this.ranking = Arrays.copyOf(ranking, ranking.length);
     }
@@ -71,11 +73,11 @@ public class MultiLabelOutput {
      *
      * @param probabilities score of each label
      * @param threshold threshold to output bipartition based on probabilities
-     * @throws IllegalArgumentException if probabilities is null
+     * @throws ArgumentNullException if probabilities is null
      */
     public MultiLabelOutput(double[] probabilities, double threshold) {
         if(probabilities == null){
-    		throw new IllegalArgumentException("The probabilities array is null.");
+    		throw new ArgumentNullException("probabilities");
     	}
         confidences = probabilities;
         ranking = ranksFromValues(probabilities);
@@ -89,13 +91,13 @@ public class MultiLabelOutput {
      * Creates a new instance of {@link MultiLabelOutput}.
      * @param bipartition bipartition of labels
      * @param someConfidences values of labels
-     * @throws IllegalArgumentException if either of the input parameters is null or
+     * @throws ArgumentNullException if either of the input parameters is null or
      * their dimensions do not match
      */
     public MultiLabelOutput(boolean[] bipartition, double[] someConfidences) {
         this(bipartition);
         if(someConfidences == null){
-    		throw new IllegalArgumentException("The confidences is null.");
+    		throw new ArgumentNullException("someConfidences");
     	}
         if(bipartition.length != someConfidences.length){
         	this.bipartition = null;

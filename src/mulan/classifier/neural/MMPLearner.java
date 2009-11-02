@@ -50,10 +50,12 @@ import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.NominalToBinary;
 
 /**
- * Implementation of Multiclass Multilabel Percpetrons learner. For more information refere
- * to :<br></br>
- * Koby Crammer and Yoram Singer. A Family of Additive Online Algorithms for Category Ranking. 
- * Journal of Machine Learning Research, 3(6):1025–1058, 2003.
+ * Implementation of Multiclass Multilabel Percpetrons learner. For more information refer
+ * to technical paper describing the learner.
+ * 
+ * <!-- technical-bibtex-start -->
+ * 
+ * <!-- technical-bibtex-end -->
  * 
  * @author Jozef Vilcek
  */
@@ -240,6 +242,9 @@ public class MMPLearner extends MultiLabelLearnerBase {
 	
 			case MaxUpdate:
 				return new MMPMaxUpdateRule(perceptrons, lossMeasure);
+				
+			case RandomizedUpdate:
+				return new MMPRandomizedUpdateRule(perceptrons, lossMeasure);
 				
 			default:
 				throw new IllegalArgumentException(String.format(

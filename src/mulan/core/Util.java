@@ -30,6 +30,9 @@ import java.util.Random;
  */
 public class Util {
 
+	/** Constant representing a new line */
+	private static final String NEW_LINE = System.getProperty("line.separator");
+	
 	/**
 	 * Procedure to find index of maximum value in the specified array.
 	 * If there is only one unique maximum, the index of this maximum is returned.
@@ -66,4 +69,13 @@ public class Util {
 			return maxIndexes[choose];
 		}
 	}
+
+	/**
+	 * Returns a correct new line separator string for the underlying operating system.
+	 * @return the new line separator string
+	 */
+	public static String getNewLineSeparator(){
+		return NEW_LINE;
+	}
+	
 }
