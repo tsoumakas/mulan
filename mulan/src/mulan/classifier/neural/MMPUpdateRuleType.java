@@ -34,4 +34,6 @@ public enum MMPUpdateRuleType {
 	UniformUpdate,
 	/** Indicates usage of maximum update rule */
 	MaxUpdate,
+	/** Indicates usage of randomized update rule */
+	RandomizedUpdate,
 }

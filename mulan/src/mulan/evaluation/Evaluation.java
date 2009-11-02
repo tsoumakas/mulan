@@ -22,6 +22,8 @@
 
 package mulan.evaluation;
 
+import mulan.core.Util;
+
 /**
  * Simple aggregation class which provides all possible evaluation measure types.
  * The evaluation is providing measures for particular multi-label learner type.
@@ -83,41 +85,19 @@ public class Evaluation {
 
     @Override
 	public String toString() {
-		String description = "";
-
+    	String newLine = Util.getNewLineSeparator();
+		StringBuilder summary = new StringBuilder();
         if (exampleBasedMeasures != null) {
-//		description += "Average predicted labels: " + this.numPredictedLabels + "\n";
-            description += "========Example Based Measures========\n";
-            description += "HammingLoss    : " + exampleBasedMeasures.getHammingLoss() + "\n";
-            description += "Accuracy       : " + exampleBasedMeasures.getAccuracy() + "\n";
-            description += "Precision      : " + exampleBasedMeasures.getPrecision() + "\n";
-            description += "Recall         : " + exampleBasedMeasures.getRecall() + "\n";
-            description += "Fmeasure       : " + exampleBasedMeasures.getFMeasure() + "\n";
-            description += "SubsetAccuracy : " + exampleBasedMeasures.getSubsetAccuracy() + "\n";
+        	summary.append(exampleBasedMeasures.toSummaryString()).append(newLine);
         }
         if (labelBasedMeasures != null) {
-            description += "========Label Based Measures========\n";
-            description += "MICRO\n";
-            description += "Precision    : " + labelBasedMeasures.getPrecision(Averaging.MICRO) + "\n";
-            description += "Recall       : " + labelBasedMeasures.getRecall(Averaging.MICRO) + "\n";
-            description += "F1           : " + labelBasedMeasures.getFMeasure(Averaging.MICRO) + "\n";
-            description += "MACRO\n";
-            description += "Precision    : " + labelBasedMeasures.getPrecision(Averaging.MACRO) + "\n";
-            description += "Recall       : " + labelBasedMeasures.getRecall(Averaging.MACRO) + "\n";
-            description += "F1           : " + labelBasedMeasures.getFMeasure(Averaging.MACRO) + "\n";
+        	summary.append(labelBasedMeasures.toSummaryString()).append(newLine);
         }
         if (confidenceLabelBasedMeasures != null) {
-            description += "MICRO\n";
-            description += "AUC          : " + confidenceLabelBasedMeasures.getAUC(Averaging.MICRO) + "\n";
-            description += "MACRO\n";
-            description += "AUC          : " + confidenceLabelBasedMeasures.getAUC(Averaging.MACRO) + "\n";
+        	summary.append(confidenceLabelBasedMeasures.toSummaryString()).append(newLine);
         }
         if (rankingBasedMeasures != null) {
-            description += "========Ranking Based Measures========\n";
-            description += "One-error    : " + rankingBasedMeasures.getOneError() + "\n";
-            description += "Coverage     : " + rankingBasedMeasures.getCoverage() + "\n";
-            description += "Ranking Loss : " + rankingBasedMeasures.getRankingLoss() + "\n";
-            description += "AvgPrecision : " + rankingBasedMeasures.getAvgPrecision() + "\n";
+        	summary.append(rankingBasedMeasures.toSummaryString()).append(newLine);
         }
         /*
         description += "========Per Class Measures========\n";
@@ -128,7 +108,7 @@ public class Evaluation {
 			description += "Label " + i + " F1         :" + labelFmeasure[i] + "\n";
 		}
 		*/
-		return description;
+		return summary.toString();
 	}
 
     public String toCSV() {

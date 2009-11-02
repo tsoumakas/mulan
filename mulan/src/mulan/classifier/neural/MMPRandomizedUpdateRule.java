@@ -22,7 +22,12 @@
 
 package mulan.classifier.neural;
 
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.Set;
 
 import mulan.classifier.neural.model.Neuron;
 import mulan.evaluation.measure.Measure;
@@ -53,45 +58,44 @@ public class MMPRandomizedUpdateRule extends MMPUpdateRuleBase {
 
 	@Override
 	protected double[] computeUpdateParameters(DataPair example, double[] confidences, double loss) {
-//		int numLabels = example.getOutput().length;
-//		
-//		boolean[] trueOutput = example.getOutputBoolean();
-//		
-//		Set<Integer> relevant = new HashSet<Integer>();
-//		Set<Integer> irrelevant = new HashSet<Integer>();
-//		for(int index = 0; index < numLabels; index++){
-//			if(trueOutput[index]){
-//				relevant.add(index);
-//			} else {
-//				irrelevant.add(index);
-//			}
-//		}
-//		
-//		// discover wrongly ordered pairs of labels and count number of positive 
-//		// (relevant label need higher rank) and negative (irrelevant label needs 
-//		// lower rank) hits for each label ... these will be turned  to update 
-//		// parameters for update (shift) of particular perceptrons.
-//		int setCount = 0;
-//		Random rnd = new Random();
-//		double[] params = new double[numLabels];
-//		for(int rLabel : relevant){
-//			for(int irLabel : irrelevant){
-//				if(confidences[rLabel] <= confidences[irLabel]){
-//					params[rLabel]++;
-//					params[irLabel]--;
-//					setCount++;
-//				}
-//			}
-//		}
-//		
-//		for(int index = 0; index < numLabels; index++){
-//			if(params[index] > 0){
-//				params[index] *= loss / setCount;
-//			}
-//		}
-//		
-//		return params;
+		int numLabels = example.getOutput().length;
 		
-		throw new NotImplementedException();
+		boolean[] trueOutput = example.getOutputBoolean();
+		
+		Set<Integer> relevant = new HashSet<Integer>();
+		Set<Integer> irrelevant = new HashSet<Integer>();
+		for(int index = 0; index < numLabels; index++){
+			if(trueOutput[index]){
+				relevant.add(index);
+			} else {
+				irrelevant.add(index);
+			}
+		}
+		
+		// discover wrongly ordered pairs of labels and assign a random weight. 
+		//	we keep collecting the sum as it will be later used for normalization
+		double weightsSum = 0;
+		Map<int[],Double> weightedErrorSet = new HashMap<int[], Double>();
+		Random rnd = new Random();
+		for(int rLabel : relevant){
+			for(int irLabel : irrelevant){
+				if(confidences[rLabel] <= confidences[irLabel]){
+					double weight = rnd.nextDouble();
+					weightsSum += weight;
+					weightedErrorSet.put(new int[] { rLabel, irLabel }, weight);
+				}
+			}
+		}
+		
+		// normalize weights so they all sum to 1 and compute update parameters for perceptrons
+		double[] params = new double[numLabels];
+		Set<int[]> labelPairs = weightedErrorSet.keySet();
+		for(int[] pair : labelPairs){
+			double weight = weightedErrorSet.get(pair);
+			params[pair[0]] += weight * loss;
+			params[pair[1]] -= weight * loss;
+		}
+		
+		return params;
 	}
 }

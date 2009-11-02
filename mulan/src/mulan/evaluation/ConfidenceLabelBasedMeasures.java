@@ -21,6 +21,7 @@
  */package mulan.evaluation;
 
 import mulan.classifier.MultiLabelOutput;
+import mulan.core.Util;
 import weka.classifiers.evaluation.NominalPrediction;
 import weka.classifiers.evaluation.ThresholdCurve;
 import weka.core.FastVector;
@@ -114,6 +115,21 @@ public class ConfidenceLabelBasedMeasures {
 	
 	public double getAUC(Averaging averagingType){
 		return auc[averagingType.ordinal()];
+	}
+	
+	/**
+	 * Creates a summary string reporting values of all measures.
+	 * @return the summary string
+	 */
+	public String toSummaryString(){
+		String newLine = Util.getNewLineSeparator();
+		StringBuilder summary = new StringBuilder();
+		summary.append("========Confidence Label Based Measures========").append(newLine);
+		summary.append("MICRO").append(newLine);
+		summary.append("AUC\t\t: ").append(getAUC(Averaging.MICRO)).append(newLine);
+		summary.append("MACRO").append(newLine);
+		summary.append("AUC\t\t: ").append(getAUC(Averaging.MACRO)).append(newLine);
+		return summary.toString();
 	}
 
 }

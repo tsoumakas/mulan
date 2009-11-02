@@ -25,6 +25,7 @@ package mulan.classifier;
 import java.io.Serializable;
 import java.util.Date;
 
+import mulan.core.ArgumentNullException;
 import mulan.data.MultiLabelInstances;
 
 import weka.core.Instances;
@@ -81,7 +82,7 @@ public abstract class MultiLabelLearnerBase
 	public final void build(MultiLabelInstances trainingSet) throws Exception
     {
 		if (trainingSet == null)
-			throw new IllegalArgumentException("The dataSet is null.");
+			throw new ArgumentNullException("trainingSet");
 		
 		numLabels = trainingSet.getNumLabels();
         labelIndices = trainingSet.getLabelIndices();

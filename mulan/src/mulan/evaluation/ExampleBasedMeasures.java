@@ -23,6 +23,7 @@
 package mulan.evaluation;
 
 import mulan.classifier.MultiLabelOutput;
+import mulan.core.Util;
 import weka.core.Utils;
 
 
@@ -177,4 +178,20 @@ public class ExampleBasedMeasures {
 		return recall;
 	}
 
+	/**
+	 * Creates a summary string reporting values of all measures.
+	 * @return the summary string
+	 */
+	public String toSummaryString(){
+		String newLine = Util.getNewLineSeparator();
+		StringBuilder summary = new StringBuilder();
+		summary.append("========Example Based Measures========").append(newLine);
+		summary.append("HammingLoss\t: ").append(getHammingLoss()).append(newLine);
+		summary.append("Accuracy\t: ").append(getAccuracy()).append(newLine);
+		summary.append("Precision\t: ").append(getPrecision()).append(newLine);
+		summary.append("Recall\t\t: ").append(getRecall()).append(newLine);
+		summary.append("Fmeasure\t: ").append(getFMeasure()).append(newLine);
+		summary.append("SubsetAccuracy\t: ").append(getSubsetAccuracy()).append(newLine);
+		return summary.toString();
+	}
 }

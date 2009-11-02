@@ -23,6 +23,7 @@
 package mulan.evaluation;
 
 import mulan.classifier.MultiLabelOutput;
+import mulan.core.Util;
 import weka.core.Utils;
 
 public class LabelBasedMeasures {
@@ -198,5 +199,24 @@ public class LabelBasedMeasures {
             return 0;
 	    else
             return (2 * precision * recall) / (precision + recall);
+	}
+    
+    /**
+	 * Creates a summary string reporting values of all measures.
+	 * @return the summary string
+	 */
+	public String toSummaryString(){
+    	String newLine = Util.getNewLineSeparator();
+		StringBuilder summary = new StringBuilder();
+		summary.append("========Label Based Measures========").append(newLine);
+		summary.append("MICRO").append(newLine);
+		summary.append("Precision\t: ").append(getPrecision(Averaging.MICRO)).append(newLine);
+		summary.append("Recall\t\t: ").append(getRecall(Averaging.MICRO)).append(newLine);
+		summary.append("F1\t\t: ").append(getFMeasure(Averaging.MICRO)).append(newLine);
+		summary.append("MACRO").append(newLine);
+		summary.append("Precision\t: ").append(getPrecision(Averaging.MACRO)).append(newLine);
+		summary.append("Recall\t\t: ").append(getRecall(Averaging.MACRO)).append(newLine);
+		summary.append("F1\t\t: ").append(getFMeasure(Averaging.MACRO)).append(newLine);
+		return summary.toString();
 	}
 }
