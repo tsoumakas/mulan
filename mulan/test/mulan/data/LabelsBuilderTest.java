@@ -23,8 +23,6 @@ package mulan.data;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.OutputStreamWriter;
-import java.io.StringWriter;
 import java.util.Set;
 
 import junit.framework.Assert;

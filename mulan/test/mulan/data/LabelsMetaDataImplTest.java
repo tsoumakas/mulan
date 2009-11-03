@@ -21,10 +21,8 @@
 */
 package mulan.data;
 
-import mulan.data.LabelNodeImpl;
-import mulan.data.LabelsMetaData;
-import mulan.data.LabelsMetaDataImpl;
 import junit.framework.Assert;
+import mulan.core.ArgumentNullException;
 
 import org.junit.After;
 import org.junit.Before;
@@ -65,7 +63,7 @@ public class LabelsMetaDataImplTest {
 		metaData = null;
 	}
 	
-	@Test(expected=IllegalArgumentException.class)
+	@Test(expected=ArgumentNullException.class)
 	public void testAddRootNode_WithNullNode(){
 		metaData.addRootNode(null);
 	}
