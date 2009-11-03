@@ -31,7 +31,6 @@ import java.util.Set;
 
 import mulan.classifier.neural.model.Neuron;
 import mulan.evaluation.measure.Measure;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /**
  * Implementation of randomized update rule for {@link MMPLearner}. It is a randomized variation 

@@ -35,6 +35,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+import mulan.core.ArgumentNullException;
 import mulan.core.MulanRuntimeException;
 import mulan.core.WekaException;
 import weka.core.SerializedObject;
@@ -71,11 +72,11 @@ public class LabelsMetaDataImpl implements LabelsMetaData, Serializable {
 	 * The node is uniquely identified by the label name. 
 	 * 
 	 * @param rootNode the root node with underlying hierarchy of nodes
-	 * @throws IllegalArgumentException if specified root node is null
+	 * @throws ArgumentNullException if specified root node is null
 	 */
 	public void addRootNode(LabelNode rootNode){
 		if(rootNode == null){
-			throw new IllegalArgumentException("The rootNode is null.");
+			throw new ArgumentNullException("rootNode");
 		}
 		if(rootLabelNodes.contains(rootNode)){
 			throw new IllegalArgumentException(

@@ -34,6 +34,8 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+import mulan.core.ArgumentNullException;
+
 
 /**
  * Implementation of {@link LabelNode}, representing a label attribute and its connection 
@@ -59,6 +61,9 @@ public class LabelNodeImpl implements LabelNode, Serializable {
 	 * @param name the name of the label attribute this node represents
 	 */
 	public LabelNodeImpl(String name){
+		if(name == null){
+			throw new ArgumentNullException("name");
+		}
 		this.name = name;
 		parentNode = null;
 		childrenNodes = new HashSet<LabelNode>();
@@ -81,11 +86,15 @@ public class LabelNodeImpl implements LabelNode, Serializable {
 	 * 
 	 * @param node the {@link LabelNode} to be removed
 	 * @return true if node was actually removed; false node was not in child nodes set
-	 * @throws IllegalArgumentException if specified {@link LabelNode} parameter is null
+	 * @throws ArgumentNullException if specified {@link LabelNode} parameter is null
+	 * @throws IllegalArgumentException if {@link LabelNode} being added has same name as this {@link LabelNode} instance (parent)
 	 */
 	public boolean addChildNode(LabelNode node){
 		if(node == null){
-			throw new IllegalArgumentException("The label node is null.");
+			throw new ArgumentNullException("node");
+		}
+		if(node.getName().equals(name)){
+			throw new IllegalArgumentException("The child label node can not have same name as parent.");
 		}
 		if(!childrenNodes.contains(node)){
 			((LabelNodeImpl)node).setParent(this);
@@ -99,11 +108,11 @@ public class LabelNodeImpl implements LabelNode, Serializable {
 	 * 
 	 * @param node the {@link LabelNode} to be removed
 	 * @return true if node was actually removed; false node was not in child nodes set
-	 * @throws IllegalArgumentException if specified {@link LabelNode} parameter is null
+	 * @throws ArgumentNullException if specified {@link LabelNode} parameter is null
 	 */
 	public boolean removeChildNode(LabelNode node){
 		if(node == null){
-			throw new IllegalArgumentException("The label node is null.");
+			throw new ArgumentNullException("node");
 		}
 		if(childrenNodes.contains(node)){
 			for(LabelNode item : childrenNodes){
