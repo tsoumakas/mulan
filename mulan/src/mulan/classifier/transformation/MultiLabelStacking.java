@@ -161,6 +161,12 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner
 	 */
 	private LinearNNSearch lnn = null;
 
+	/**
+	 * Whether base and meta level are going to be built separately.
+	 * If true then the buildInternal method doesn't build anything. 
+	 */
+	private boolean partialBuild;
+	
 	/*
 	 * private BRkNN brknn;
 	 */
@@ -232,10 +238,15 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner
 		eval = null; // no feature selection by default
 		normalize = false; // no normalization performed
 		includeAttrs = false; // original attributes are not included
+		partialBuild = false;
 	}
 
 	@Override
 	protected void buildInternal(MultiLabelInstances dataSet) throws Exception {
+		if(partialBuild){ // build base/meta level will be called separately
+			return;
+		}
+		
 		if (baseClassifier instanceof IBk) {
 			buildBaseLevelKNN(dataSet);
 		} else {
@@ -247,14 +258,13 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner
 
 		buildMetaLevel();
 	}
-
+	
 	/**
 	 * Initializes all the parameters used in the meta-level.
 	 * Calculates the correlated labels if meta-level pruning is applied.
 	 * 
+	 * @param dataSet
 	 * @param metaClassifier
-	 * @param numFolds
-	 * @param normalize
 	 * @param includeAttrs
 	 * @param metaPercentage
 	 * @param eval
@@ -330,8 +340,8 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner
 	 * @param dataSet
 	 * @throws Exception
 	 */
-	public void buildBaseLevel(MultiLabelInstances dataSet) throws Exception {
-		train = new Instances(dataSet.getDataSet());
+	public void buildBaseLevel(MultiLabelInstances trainingSet) throws Exception {
+		train = new Instances(trainingSet.getDataSet());
 		baseLevelData = new Instances[numLabels];
 		baseLevelEnsemble = Classifier.makeCopies(baseClassifier, numLabels);
 		if (normalize) {
@@ -783,5 +793,12 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner
 	public void setMetaAlgorithm(Classifier metaClassifier) throws Exception {
 		this.metaClassifier = metaClassifier; 
 		metaLevelEnsemble = Classifier.makeCopies(metaClassifier, numLabels);
+	}
+	
+	/**
+	 * sets the value for {@link #partialBuild}
+	 */
+	public void setPartialBuild(boolean partialBuild) {
+		this.partialBuild = partialBuild;
 	}
 }
