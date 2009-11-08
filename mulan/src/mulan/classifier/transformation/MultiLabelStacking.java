@@ -33,114 +33,308 @@ import mulan.classifier.MultiLabelOutput;
 import mulan.data.MultiLabelInstances;
 import mulan.data.Statistics;
 import mulan.transformations.BinaryRelevanceTransformation;
+import weka.attributeSelection.ASEvaluation;
+import weka.attributeSelection.AttributeSelection;
+import weka.attributeSelection.Ranker;
 import weka.classifiers.Classifier;
+import weka.classifiers.lazy.IBk;
 import weka.classifiers.meta.FilteredClassifier;
 import weka.core.Attribute;
+import weka.core.EuclideanDistance;
 import weka.core.FastVector;
 import weka.core.Instance;
 import weka.core.Instances;
+import weka.core.TechnicalInformation;
+import weka.core.Utils;
+import weka.core.TechnicalInformation.Field;
+import weka.core.TechnicalInformation.Type;
+import weka.core.neighboursearch.LinearNNSearch;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.Remove;
 
-public class MultiLabelStacking extends TransformationBasedMultiLabelLearner implements Serializable {
+/**
+ * <!-- globalinfo-start -->
+ * This class is an implementation of the (BR)^2 or Multi-Label stacking method.<br/>
+ * <br/>
+ * For more information, see<br/>
+ * <br/>
+ * Grigorios Tsoumakas, Anastasios Dimou, Eleftherios Spyromitros, Vasileios Mezaris, Ioannis Kompatsiaris, Ioannis Vlahavas: Correlation-Based Pruning of Stacked Binary Relevance Models for Multi-Label Learning. In: Proc. ECML/PKDD 2009 Workshop on Learning from Multi-Label Data (MLD'09), 101-116, 2009.
+ * <p/>
+ * <!-- globalinfo-end -->
+ * 
+ * <!-- technical-bibtex-start -->
+ * BibTeX:
+ * <pre>
+ * &#64;inproceedings{GrigoriosTsoumakas2009,
+ *    author = {Grigorios Tsoumakas, Anastasios Dimou, Eleftherios Spyromitros, Vasileios Mezaris, Ioannis Kompatsiaris, Ioannis Vlahavas},
+ *    booktitle = {Proc. ECML/PKDD 2009 Workshop on Learning from Multi-Label Data (MLD'09)},
+ *    pages = {101-116},
+ *    title = {Correlation-Based Pruning of Stacked Binary Relevance Models for Multi-Label Learning},
+ *    year = {2009},
+ *    location = {Bled, Slovenia}
+ * }
+ * </pre>
+ * <p/>
+ * <!-- technical-bibtex-end -->
+ * 
+ * @author Eleftherios Spyromitros-Xioufis ( espyromi@csd.auth.gr )
+ *
+ */
+public class MultiLabelStacking extends TransformationBasedMultiLabelLearner
+		implements Serializable {
 
+	private static final long serialVersionUID = 1L;
+
+	/** the type of the classifier used in the meta-level */
 	private Classifier metaClassifier;
-	/**
-	 * the BR transformed datasets of the original dataset
-	 */
-	protected Instances[] baseLevelData;
-	/**
-	 * the dataset produced by first level
-	 */
-	// protected Instances metaData;
-	/**
-	 * the BR transformed datasets of the meta dataset
-	 */
-	protected Instances[] metaLevelData;
 
-	/**
-	 * the enseble of BR classifiers of the original dataset
-	 */
-	protected Classifier[] baseLevelEnsemble;
+	/** the BR transformed datasets of the original dataset */
+	private Instances[] baseLevelData;
 
-	/**
-	 * the enseble of BR classifiers of the meta dataset
-	 */
-	protected Classifier[] metaLevelEnsemble;
-	/**
-	 * the enseble of pruned BR classifiers of the meta dataset
-	 */
-	protected FilteredClassifier[] metaLevelFilteredEnsemble;
-	/**
-	 * the number of folds used in the first level
-	 */
-	int numFolds;
+	/** the BR transformed datasets of the meta dataset */
+	private Instances[] metaLevelData;
+
+	/** the ensemble of BR classifiers of the original dataset */
+	private Classifier[] baseLevelEnsemble;
+
+	/** the ensemble of BR classifiers of the meta dataset */
+	private Classifier[] metaLevelEnsemble;
+
+	/** the ensemble of pruned BR classifiers of the meta dataset */
+	private FilteredClassifier[] metaLevelFilteredEnsemble;
+
+	/** the number of folds used in the first level */
+	private int numFolds;
+
+	/** the training instances */
+	protected Instances train;
 
 	/**
 	 * a table holding the predictions of the first level classifiers for each
 	 * class-label of every instance
 	 */
-	double[][] baseLevelPredictions;
+	private double[][] baseLevelPredictions;
 
-	protected BinaryRelevanceTransformation transformation;
+	/** whether to normalize baseLevelPredictions or not. */
+	private boolean normalize;
 
-    /**
-	 * whether to normalize baseLevelPredictions or not.
+	/**
+	 * a table holding the maximum probability of each label according to the
+	 * predictions of the base level classifiers
 	 */
-	boolean normalize;
+	private double maxProb[];
 
-	public boolean isNormalize() {
-		return normalize;
+	/**
+	 * a table holding the minimum probability of each label according to the
+	 * predictions of the base level classifiers
+	 */
+	private double minProb[];
+
+	/** whether to include the original attributes in the meta-level */
+	private boolean includeAttrs;
+
+	/** defines the percentage of labels used in the meta-level */
+	private double metaPercentage;
+
+	/**
+	 * The number of labels that will be used for training the meta-level
+	 * classifiers. The value is derived by metaPercentage and used only
+	 * internally
+	 */
+	private int topkCorrelated;
+
+	/**
+	 * A table holding the attributes of the most correlated labels for each
+	 * label.
+	 */
+	private int[][] selectedAttributes;
+
+	/**
+	 * The attribute selection evaluator used for pruning the meta-level
+	 * attributes.
+	 */
+	private ASEvaluation eval;
+
+	/**
+	 * Class implementing the brute force search algorithm for nearest neighbor
+	 * search. Used only in case of a kNN baseClassifier
+	 */
+	private LinearNNSearch lnn = null;
+
+	/*
+	 * private BRkNN brknn;
+	 */
+
+	/**
+	 * Returns a string describing classifier.
+	 * 
+	 * @return a description suitable for displaying in a future
+	 *         explorer/experimenter gui
+	 */
+	public String globalInfo() {
+
+		return "This class is an implementation of the (BR)^2 or Multi-Label stacking method."
+				+ "\n\n"
+				+ "For more information, see\n\n"
+				+ getTechnicalInformation().toString();
 	}
 
-	public void setNormalize(boolean normalize) {
-		this.normalize = normalize;
-	}
-	
-	boolean includeAttrs;
+	/**
+	 * Returns an instance of a TechnicalInformation object, containing detailed
+	 * information about the technical background of this class, e.g., paper
+	 * reference or book this class is based on.
+	 * 
+	 * @return the technical information about this class
+	 */
+	@Override
+	public TechnicalInformation getTechnicalInformation() {
+		TechnicalInformation result;
 
-	public boolean isIncludeAttrs() {
-		return includeAttrs;
-	}
+		result = new TechnicalInformation(Type.INPROCEEDINGS);
+		result
+				.setValue(
+						Field.AUTHOR,
+						"Grigorios Tsoumakas, Anastasios Dimou, Eleftherios Spyromitros, Vasileios Mezaris, Ioannis Kompatsiaris, Ioannis Vlahavas");
+		result
+				.setValue(
+						Field.TITLE,
+						"Correlation-Based Pruning of Stacked Binary Relevance Models for Multi-Label Learning");
+		result
+				.setValue(Field.BOOKTITLE,
+						"Proc. ECML/PKDD 2009 Workshop on Learning from Multi-Label Data (MLD'09)");
+		result.setValue(Field.YEAR, "2009");
+		result.setValue(Field.PAGES, "101-116");
+		result.setValue(Field.LOCATION, "Bled, Slovenia");
 
-	public void setIncludeAttrs(boolean includeAttrs) {
-		this.includeAttrs = includeAttrs;
-	}
-
-	Statistics phi;
-
-	double phival;
-	
-	double maxProb[];
-	double minProb[];
-
-	int[] numUncorrelated;
-
-    public int[] getNumUncorrelated() {
-        return numUncorrelated;
-    }
-
-	public double getPhival() {
-		return phival;
-	}
-
-	public void setPhival(double phival) {
-		this.phival = phival;
+		return result;
 	}
 
+	/**
+	 * An empty constructor
+	 */
+	public MultiLabelStacking() {
+
+	}
+
+	/**
+	 * A constructor with 2 arguments
+	 * 
+	 * @param baseClassifier the classifier used in the base-level
+	 * @param metaClassifier the classifier used in the meta-level
+	 * @throws Exception
+	 */
 	public MultiLabelStacking(Classifier baseClassifier,
-			Classifier metaClassifier, int numFolds)
-			throws Exception {
+			Classifier metaClassifier) throws Exception {
 		super(baseClassifier);
 		this.metaClassifier = metaClassifier;
-		this.numFolds = numFolds;
-		phival = 0;
-		normalize = false;
-		includeAttrs = false;
+		this.numFolds = 10; // 10 folds by default
+		metaPercentage = 1.0; // use 100% of the labels in the meta-level
+		eval = null; // no feature selection by default
+		normalize = false; // no normalization performed
+		includeAttrs = false; // original attributes are not included
 	}
 
-	public void buildBaseLevel(Instances train) throws Exception {
-		if(normalize){
+	@Override
+	protected void buildInternal(MultiLabelInstances dataSet) throws Exception {
+		if (baseClassifier instanceof IBk) {
+			buildBaseLevelKNN(dataSet);
+		} else {
+			buildBaseLevel(dataSet);
+		}
+
+		initializeMetaLevel(dataSet, metaClassifier, includeAttrs,
+				metaPercentage, eval);
+
+		buildMetaLevel();
+	}
+
+	/**
+	 * Initializes all the parameters used in the meta-level.
+	 * Calculates the correlated labels if meta-level pruning is applied.
+	 * 
+	 * @param metaClassifier
+	 * @param numFolds
+	 * @param normalize
+	 * @param includeAttrs
+	 * @param metaPercentage
+	 * @param eval
+	 * @throws Exception
+	 */
+	public void initializeMetaLevel(MultiLabelInstances dataSet,
+			Classifier metaClassifier, boolean includeAttrs,
+			double metaPercentage, ASEvaluation eval) throws Exception {
+		this.metaClassifier = metaClassifier;
+		metaLevelEnsemble = Classifier.makeCopies(metaClassifier, numLabels);
+		metaLevelData = new Instances[numLabels];
+		metaLevelFilteredEnsemble = new FilteredClassifier[numLabels];
+		this.includeAttrs = includeAttrs;
+		// calculate the number of correlated labels that corresponds to the
+		// given percentage
+		topkCorrelated = (int) Math.floor(metaPercentage * numLabels);
+		if (topkCorrelated < 1) {
+			debug("Too small percentage, selecting k=1");
+			topkCorrelated = 1;
+		}
+		if (topkCorrelated < numLabels) {// pruning should be applied
+			selectedAttributes = new int[numLabels][];
+			if (eval == null) {// calculate the PhiCoefficient
+				Statistics phi = new Statistics();
+				phi.calculatePhi(dataSet);
+				for (int i = 0; i < numLabels; i++) {
+					selectedAttributes[i] = phi.topPhiCorrelatedLabels(i,
+							topkCorrelated);
+				}
+			} else {// apply feature selection
+				AttributeSelection attsel = new AttributeSelection();
+				Ranker rankingMethod = new Ranker();
+				rankingMethod.setNumToSelect(topkCorrelated);
+				attsel.setEvaluator(eval);
+				attsel.setSearch(rankingMethod);
+				// create a dataset consisting of all the classes of each
+				// instance plus the class we want to select attributes from
+				for (int i = 0; i < numLabels; i++) {
+					FastVector attributes = new FastVector();
+
+					for (int j = 0; j < numLabels; j++) {
+						attributes.addElement(train.attribute(labelIndices[j]));
+					}
+					attributes.addElement(train.attribute(labelIndices[i]));
+
+					Instances iporesult = new Instances("Meta format",
+							attributes, 0);
+					iporesult.setClassIndex(numLabels);
+					for (int k = 0; k < train.numInstances(); k++) {
+						double[] values = new double[numLabels + 1];
+						for (int m = 0; m < numLabels; m++) {
+							values[m] = train.instance(k)
+									.value(labelIndices[m]);
+						}
+						values[numLabels] = train.instance(k).value(
+								labelIndices[i]);
+						Instance metaInstance = new Instance(1, values);
+						metaInstance.setDataset(iporesult);
+						iporesult.add(metaInstance);
+					}
+					attsel.SelectAttributes(iporesult);
+					selectedAttributes[i] = attsel.selectedAttributes();
+					iporesult.delete();
+				}
+			}
+		}
+	}
+
+	/**
+	 * Builds the base-level classifiers.
+	 * Their predictions are gathered in the {@link #baseLevelPredictions} member
+	 * 
+	 * @param dataSet
+	 * @throws Exception
+	 */
+	public void buildBaseLevel(MultiLabelInstances dataSet) throws Exception {
+		train = new Instances(dataSet.getDataSet());
+		baseLevelData = new Instances[numLabels];
+		baseLevelEnsemble = Classifier.makeCopies(baseClassifier, numLabels);
+		if (normalize) {
 			maxProb = new double[numLabels];
 			minProb = new double[numLabels];
 			Arrays.fill(minProb, 1);
@@ -148,26 +342,29 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner imp
 		// initialize the table holding the predictions of the first level
 		// classifiers for each label for every instance of the training set
 		baseLevelPredictions = new double[train.numInstances()][numLabels];
-		
+
 		for (int labelIndex = 0; labelIndex < numLabels; labelIndex++) {
 			debug("Label: " + labelIndex);
 			// transform the dataset according to the BR method
-			baseLevelData[labelIndex] = BinaryRelevanceTransformation.transformInstances(train, labelIndices, labelIndices[labelIndex]);
+			baseLevelData[labelIndex] = BinaryRelevanceTransformation
+					.transformInstances(train, labelIndices,
+							labelIndices[labelIndex]);
 			// attach indexes in order to keep track of the original positions
-			baseLevelData[labelIndex] = new Instances(attachIndexes(baseLevelData[labelIndex]));
-			// prepare the transformed dataset for stratified x-fold cv	
+			baseLevelData[labelIndex] = new Instances(
+					attachIndexes(baseLevelData[labelIndex]));
+			// prepare the transformed dataset for stratified x-fold cv
 			Random random = new Random(1);
 			baseLevelData[labelIndex].randomize(random);
 			baseLevelData[labelIndex].stratify(numFolds);
 			debug("Creating meta-data");
-            for (int j = 0; j < numFolds; j++) {
-                debug("Label=" + labelIndex + ", Fold=" + j);
+			for (int j = 0; j < numFolds; j++) {
+				debug("Label=" + labelIndex + ", Fold=" + j);
 				Instances subtrain = baseLevelData[labelIndex].trainCV(
 						numFolds, j, random);
 				// create a filtered meta classifier, used to ignore
 				// the index attribute in the build process
-				// perform stratified x-fold cv and get predictions for class l for
-				// every instance
+				// perform stratified x-fold cv and get predictions
+				// for each class for every instance
 				FilteredClassifier fil = new FilteredClassifier();
 				fil.setClassifier(baseLevelEnsemble[labelIndex]);
 				Remove remove = new Remove();
@@ -189,207 +386,292 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner imp
 							.classAttribute();
 					baseLevelPredictions[(int) subtest.instance(i).value(0)][labelIndex] = distribution[classAttribute
 							.indexOfValue("1")];
-					if(normalize){
-						if(distribution[classAttribute.indexOfValue("1")]> maxProb[labelIndex]){
-							maxProb[labelIndex] = distribution[classAttribute.indexOfValue("1")];
+					if (normalize) {
+						if (distribution[classAttribute.indexOfValue("1")] > maxProb[labelIndex]) {
+							maxProb[labelIndex] = distribution[classAttribute
+									.indexOfValue("1")];
 						}
-						if(distribution[classAttribute.indexOfValue("1")]< minProb[labelIndex]){
-							minProb[labelIndex] = distribution[classAttribute.indexOfValue("1")];
+						if (distribution[classAttribute.indexOfValue("1")] < minProb[labelIndex]) {
+							minProb[labelIndex] = distribution[classAttribute
+									.indexOfValue("1")];
 						}
-						
 					}
 				}
 			}
-    		// now we can detach the indexes from the first level datasets
+			// now we can detach the indexes from the first level datasets
 			baseLevelData[labelIndex] = detachIndexes(baseLevelData[labelIndex]);
 
-            debug("Building base classifier on full data");
-    		// build base classifier on the full training data
-			baseLevelEnsemble[labelIndex].buildClassifier(baseLevelData[labelIndex]);
+			debug("Building base classifier on full data");
+			// build base classifier on the full training data
+			baseLevelEnsemble[labelIndex]
+					.buildClassifier(baseLevelData[labelIndex]);
 			baseLevelData[labelIndex].delete();
-        }
+		}
 
-		if(normalize){
+		if (normalize) {
 			normalizePredictions();
 		}
-		
+
 	}
-	
-	private void normalizePredictions(){
-		for(int i=0;i<baseLevelPredictions.length;i++){
-			for(int j=0;j<numLabels;j++){
-				baseLevelPredictions[i][j]=baseLevelPredictions[i][j]-minProb[j]/maxProb[j]-minProb[j];
+
+	/**
+	 * Builds the ensemble of meta-level classifiers.
+	 * 
+	 * @throws Exception
+	 */
+	public void buildMetaLevel() throws Exception {
+		debug("Building the ensemle of the meta level classifiers");
+
+		for (int i = 0; i < numLabels; i++) { // creating meta-level data new
+			FastVector attributes = new FastVector();
+
+			if (includeAttrs) {// create a FastVector with numAttributes size
+				for (int j = 0; j < train.numAttributes(); j++) {
+					attributes.addElement(train.attribute(j));
+				}
+			} else {// create a FastVector with numLabels size
+				for (int j = 0; j < numLabels; j++) {
+					attributes.addElement(train.attribute(labelIndices[j]));
+				}
 			}
-		}
-	}
+			attributes.addElement(train.attribute(labelIndices[i]));
 
-    public void saveObject(String filename) {
-        try {
-            ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(filename));
-            out.writeObject(this);
-        } catch (IOException ex) {
-            Logger.getLogger(MultiLabelStacking.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
+			metaLevelData[i] = new Instances("Meta format", attributes, 0);
+			metaLevelData[i]
+					.setClassIndex(metaLevelData[i].numAttributes() - 1);
 
-	public void buildMetaLevel(Instances train,double phival) throws Exception {
-		this.phival = phival;
-
-		debug("Building the ensemle of the meta level classifers");
-		// After that we can build the metalevel ensemble of classifiers
-		// we apply a filtered classifier to prune uncorrelated labels
-		numUncorrelated = new int[numLabels];
-        for (int i = 0; i < numLabels; i++) {
-            // creating meta-level data
-        	if(includeAttrs){
-        		metaLevelData[i] = metaFormat2(baseLevelData[i]);
-        	}
-        	else{
-        		metaLevelData[i] = metaFormat(baseLevelData[i]);
-        	}
-        	
+			// add the meta instances new
 			for (int l = 0; l < train.numInstances(); l++) {
-				// add the meta instances
-				Instance metaInstance;
-				if(includeAttrs){
-					metaInstance = metaInstance2(train.instance(l),i,l);
+				double[] values = new double[metaLevelData[i].numAttributes()];
+				if (includeAttrs) {
+					// Copy the original features
+					for (int m = 0; m < featureIndices.length; m++) {
+						values[m] = train.instance(l).value(featureIndices[m]);
+					}
+					// Copy the label confidences as additional features
+					for (int m = 0; m < numLabels; m++) {
+						values[train.numAttributes() - numLabels + m] = baseLevelPredictions[l][m];
+					}
+				} else {
+					for (int m = 0; m < numLabels; m++) {
+						values[m] = baseLevelPredictions[l][m];
+					}
 				}
-				else{
-					metaInstance = metaInstance(train.instance(l),i,l);
-				}
+
+				values[values.length - 1] = train.instance(l).value(
+						labelIndices[i]);
+				Instance metaInstance = new Instance(1, values);
+				metaInstance.setDataset(metaLevelData[i]);
 				metaLevelData[i].add(metaInstance);
 			}
 
-
+			// We utilize a filtered classifier to prune uncorrelated labels
 			metaLevelFilteredEnsemble[i] = new FilteredClassifier();
 			metaLevelFilteredEnsemble[i].setClassifier(metaLevelEnsemble[i]);
+
 			Remove remove = new Remove();
-			int[] attributes = phi.uncorrelatedLabels(i, phival);
-			numUncorrelated[i] = attributes.length;
-			remove.setAttributeIndicesArray(attributes);
+
+			if (topkCorrelated < numLabels) {
+				remove.setAttributeIndicesArray(selectedAttributes[i]);
+			} else {
+				remove.setAttributeIndices("first-last");
+			}
+
+			remove.setInvertSelection(true);
 			remove.setInputFormat(metaLevelData[i]);
 			metaLevelFilteredEnsemble[i].setFilter(remove);
-            debug("Building classifier for meta training set" + i);
+
+			debug("Building classifier for meta training set" + i);
 			metaLevelFilteredEnsemble[i].buildClassifier(metaLevelData[i]);
-            metaLevelData[i].delete();
+			metaLevelData[i].delete();
 		}
 	}
-	
-    @Override
-    protected void buildInternal(MultiLabelInstances dataSet) throws Exception {
-		transformation = new BinaryRelevanceTransformation(numLabels);
-		baseLevelData = new Instances[numLabels];
-		metaLevelData = new Instances[numLabels];
-		debug("BR: making classifier copies");
-		baseLevelEnsemble = Classifier.makeCopies(baseClassifier, numLabels);
-		metaLevelEnsemble = Classifier.makeCopies(metaClassifier, numLabels);
-		metaLevelFilteredEnsemble = new FilteredClassifier[numLabels];
-    	Instances train = dataSet.getDataSet();
-    	buildBaseLevel(train);
-		//calculate the PhiCoefficient, used in the meta-level
-		phi = new Statistics();
-		phi.calculatePhi(dataSet);	
-		buildMetaLevel(train,phival);
-    }
 
 	/**
-	 * Makes the format for the meta-level data.
-	 * The predictions of the base level classifiers + the class attribute
+	 * Used only in case of a kNN base classifier.
 	 * 
-	 * @param instances the base-level format
-	 * @return the format for the meta data
+	 * @param trainingSet
 	 * @throws Exception
-	 *             if the format generation fails
 	 */
-	protected Instances metaFormat(Instances instances) throws Exception {
+	public void buildBaseLevelKNN(MultiLabelInstances trainingSet)
+			throws Exception {
+		train = new Instances(trainingSet.getDataSet());
+		EuclideanDistance dfunc = new EuclideanDistance();
+		dfunc.setDontNormalize(false);
 
-		FastVector attributes = new FastVector();
-		Instances metaFormat;
-
-		for (int k = 0; k < baseLevelEnsemble.length; k++) {
-			String name = baseLevelData[k].classAttribute().toString();
-			attributes.addElement(new Attribute(name));
+		// label attributes don't influence distance estimation
+		String labelIndicesString = "";
+		for (int i = 0; i < numLabels - 1; i++) {
+			labelIndicesString += (labelIndices[i] + 1) + ",";
 		}
-		attributes.addElement(instances.classAttribute().copy());
-		metaFormat = new Instances("Meta format", attributes, 0);
-		metaFormat.setClassIndex(metaFormat.numAttributes() - 1);
-		return metaFormat;
+		labelIndicesString += (labelIndices[numLabels - 1] + 1);
+		dfunc.setAttributeIndices(labelIndicesString);
+		dfunc.setInvertSelection(true);
+
+		lnn = new LinearNNSearch();
+		lnn.setSkipIdentical(true);
+		lnn.setDistanceFunction(dfunc);
+		lnn.setInstances(train);
+		lnn.setMeasurePerformance(false);
+		// initialize the table holding the predictions of the first level
+		// classifiers for each label for every instance of the training set
+		baseLevelPredictions = new double[train.numInstances()][numLabels];
+		int numOfNeighbors = ((IBk) baseClassifier).getKNN();
+
+		/*
+		 * /old way using brknn 
+		 * brknn = new BRkNN(numOfNeighbors);
+		 * brknn.setDebug(true); brknn.build(trainingSet); for (int i = 0; i <
+		 * train.numInstances(); i++) { MultiLabelOutput prediction =
+		 * brknn.makePrediction(train.instance(i)); baseLevelPredictions[i] =
+		 * prediction.getConfidences(); }
+		 */
+
+		// new way
+		for (int i = 0; i < train.numInstances(); i++) {
+			Instances knn = new Instances(lnn.kNearestNeighbours(train
+					.instance(i), numOfNeighbors));
+
+			// Get the label confidence vector as the additional features.
+
+			for (int j = 0; j < numLabels; j++) {
+				// compute sum of counts for each label in KNN
+				double count_for_label_j = 0;
+				for (int k = 0; k < numOfNeighbors; k++) {
+					double value = Double.parseDouble(train.attribute(
+							labelIndices[j]).value(
+							(int) knn.instance(k).value(labelIndices[j])));
+					if (Utils.eq(value, 1.0)) {
+						count_for_label_j++;
+					}
+				}
+				baseLevelPredictions[i][j] = count_for_label_j / numOfNeighbors;
+			}
+		}
+
 	}
-	
+
 	/**
-	 * Makes the format for the meta-level data.
-	 * The predictions of the base level classifiers + the original attributes + the class attribute
-	 * 
-	 * @param instances the base-level format
-	 * @return the format for the meta data
-	 * @throws Exception
-	 *             if the format generation fails
+	 * Normalizes the predictions of the base-level classifiers
 	 */
-	protected Instances metaFormat2(Instances instances) throws Exception {
-
-		FastVector attributes = new FastVector();
-		Instances metaFormat;
-
-		for (int i = 0; i < baseLevelEnsemble.length; i++) {
-			String name = baseLevelData[i].classAttribute().toString(); //.name
-			attributes.addElement(new Attribute(name)); //constructor for a numeric attribute
+	private void normalizePredictions() {
+		for (int i = 0; i < baseLevelPredictions.length; i++) {
+			for (int j = 0; j < numLabels; j++) {
+				baseLevelPredictions[i][j] = baseLevelPredictions[i][j]
+						- minProb[j] / maxProb[j] - minProb[j];
+			}
 		}
-		
-		for (int i = 0; i < instances.numAttributes()-1; i++) {
-			attributes.addElement(instances.attribute(i));
-		}
-		
-		attributes.addElement(instances.classAttribute());
-		metaFormat = new Instances("Meta format", attributes, 0);
-		metaFormat.setClassIndex(metaFormat.numAttributes() - 1);
-		return metaFormat;
 	}
-	
-	/**
-	 * 
-	 * @param instance the base-level instance
-	 * @param labelIndex
-	 * @param index
-	 * @return
-	 * @throws Exception
-	 */
-	protected Instance metaInstance(Instance instance, int labelIndex, int index) throws Exception {
 
-		double[] values = new double[metaLevelData[labelIndex].numAttributes()];
-		int k = 0;
-		for (k = 0; k < numLabels; k++) {
-			values[k] = baseLevelPredictions[index][k];
-		}
-		values[k] = instance.value(labelIndices[labelIndex]);
-		Instance metaInstance = new Instance(1, values);
-		metaInstance.setDataset(metaLevelData[labelIndex]);
-		
-		return metaInstance;
-	}
-	
-	/**
-	 * 
-	 * @param instance the base-level instance
-	 * @param labelIndex
-	 * @param index
-	 * @return
-	 * @throws Exception
-	 */
-	protected Instance metaInstance2(Instance instance, int labelIndex, int index) throws Exception {
+	@Override
+	public MultiLabelOutput makePrediction(Instance instance) throws Exception {
+		boolean[] bipartition = new boolean[numLabels];
+		// the confidences given as final output
+		double[] metaconfidences = new double[numLabels];
+		// the confidences produced by the first level ensemble of classfiers
+		double[] confidences = new double[numLabels];
 
-		double[] values = new double[metaLevelData[labelIndex].numAttributes()];
-		int k = 0;
-		for (k = 0; k < numLabels; k++) {
-			values[k] = baseLevelPredictions[index][k];
+		if (!(baseClassifier instanceof IBk)) {
+			// getting the confidences for each label
+			for (int labelIndex = 0; labelIndex < numLabels; labelIndex++) {
+				Instance newInstance = BinaryRelevanceTransformation
+						.transformInstance(instance, labelIndices,
+								labelIndices[labelIndex]);
+				newInstance.setDataset(baseLevelData[labelIndex]);
+
+				double distribution[] = new double[2];
+				distribution = baseLevelEnsemble[labelIndex]
+						.distributionForInstance(newInstance);
+
+				// Ensure correct predictions both for class values {0,1} and
+				// {1,0}
+				Attribute classAttribute = baseLevelData[labelIndex]
+						.classAttribute();
+				// The confidence of the label being equal to 1
+				confidences[labelIndex] = distribution[classAttribute
+						.indexOfValue("1")];
+			}
+		} else {
+			// old way using brknn
+			// MultiLabelOutput prediction = brknn.makePrediction(instance);
+			// confidences = prediction.getConfidences();
+			
+			// new way
+			int numOfNeighbors = ((IBk) baseClassifier).getKNN();
+			Instances knn = new Instances(lnn.kNearestNeighbours(instance,
+					numOfNeighbors));
+
+			/*
+			 * Get the label confidence vector.
+			 */
+			for (int i = 0; i < numLabels; i++) {
+				// compute sum of counts for each label in KNN
+				double count_for_label_i = 0;
+				for (int k = 0; k < numOfNeighbors; k++) {
+					double value = Double.parseDouble(train.attribute(
+							labelIndices[i]).value(
+							(int) knn.instance(k).value(labelIndices[i])));
+					if (Utils.eq(value, 1.0)) {
+						count_for_label_i++;
+					}
+				}
+
+				confidences[i] = count_for_label_i / numOfNeighbors;
+
+			}
 		}
-		for (k = numLabels ; k < instance.numAttributes(); k++){
-			values[k] = instance.value(featureIndices[k-numLabels]);
+		// System.out.println(Utils.arrayToString(confidences));
+		/* creation of the meta-instance with the appropriate values */
+		double[] values = new double[numLabels + 1];
+		;
+		if (includeAttrs) {
+			values = new double[instance.numAttributes() + 1];
+			// Copy the original features
+			for (int m = 0; m < featureIndices.length; m++) {
+				values[m] = instance.value(featureIndices[m]);
+			}
+			// Copy the label confidences as additional features
+			for (int m = 0; m < confidences.length; m++) {
+				values[instance.numAttributes() - numLabels + m] = confidences[m];
+			}
+		} else {
+			for (int m = 0; m < confidences.length; m++) {
+				values[m] = confidences[m];
+			}
 		}
-		values[k] = instance.value(labelIndices[labelIndex]);
-		Instance metaInstance = new Instance(1, values);
-		metaInstance.setDataset(metaLevelData[labelIndex]);
-		
-		return metaInstance;
+
+		/* application of the meta-level ensemble to the metaInstance */
+		for (int labelIndex = 0; labelIndex < numLabels; labelIndex++) {
+			// values[values.length - 1] =
+			// instance.value(instance.numAttributes() - numLabels +
+			// labelIndex);
+			values[values.length - 1] = 0;
+			Instance newmetaInstance = new Instance(1, values);
+
+			double distribution[] = new double[2];
+			try {
+				distribution = metaLevelFilteredEnsemble[labelIndex]
+						.distributionForInstance(newmetaInstance);
+			} catch (Exception e) {
+				System.out.println(e);
+				return null;
+			}
+			int maxIndex = (distribution[0] > distribution[1]) ? 0 : 1;
+
+			// Ensure correct predictions both for class values {0,1} and {1,0}
+			Attribute classAttribute = metaLevelData[labelIndex]
+					.classAttribute();
+			bipartition[labelIndex] = (classAttribute.value(maxIndex)
+					.equals("1")) ? true : false;
+
+			// The confidence of the label being equal to 1
+			metaconfidences[labelIndex] = distribution[classAttribute
+					.indexOfValue("1")];
+		}
+
+		MultiLabelOutput mlo = new MultiLabelOutput(bipartition,
+				metaconfidences);
+		return mlo;
 	}
 
 	/**
@@ -418,7 +700,7 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner imp
 			transformed.add(newInstance);
 		}
 
-		transformed.setClassIndex(original.classIndex()+1);
+		transformed.setClassIndex(original.classIndex() + 1);
 		return transformed;
 	}
 
@@ -434,109 +716,72 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner imp
 		Remove remove = new Remove();
 		remove.setAttributeIndices("first");
 		remove.setInputFormat(original);
-		// remove.setInvertSelection(true);
 		Instances result = Filter.useFilter(original, remove);
-		// result.setClassIndex(result.numAttributes() - 1);
+
 		return result;
 
 	}
 
-    public void setMetaAlgorithm(Classifier metaClassifier) throws Exception {
-		metaLevelEnsemble = Classifier.makeCopies(metaClassifier, numLabels);
-    }
-
-	@Override
-	public MultiLabelOutput makePrediction(Instance instance) throws Exception {
-		boolean[] bipartition = new boolean[numLabels];
-		// the confidences given as final output
-		double[] metaconfidences = new double[numLabels];
-		// the confidences produced by the first level ensemble of classfiers
-		double[] confidences = new double[numLabels];
-		// the meta instance consisting of the above confidences and the actual
-		// labelset
-		// numlabels + numlabels attributes
-		Instance metaInstance;
-
-		// getting the confidences for each label
-		for (int labelIndex = 0; labelIndex < numLabels; labelIndex++) {
-			Instance newInstance = BinaryRelevanceTransformation.transformInstance(instance, labelIndices,
-					labelIndices[labelIndex]);
-			newInstance.setDataset(baseLevelData[labelIndex]);
-
-			double distribution[] = new double[2];
-			try {
-				distribution = baseLevelEnsemble[labelIndex]
-						.distributionForInstance(newInstance);
-			} catch (Exception e) {
-				System.out.println(e);
-				return null;
-			}
-
-			// Ensure correct predictions both for class values {0,1} and {1,0}
-			Attribute classAttribute = baseLevelData[labelIndex]
-					.classAttribute();
-
-			// The confidence of the label being equal to 1
-			confidences[labelIndex] = distribution[classAttribute
-					.indexOfValue("1")];
+	/**
+	 * Saves a {@link MultiLabelStacking} object in a file
+	 * 
+	 * @param filename
+	 */
+	public void saveObject(String filename) {
+		try {
+			ObjectOutputStream out = new ObjectOutputStream(
+					new FileOutputStream(filename));
+			out.writeObject(this);
+		} catch (IOException ex) {
+			Logger.getLogger(MultiLabelStacking.class.getName()).log(
+					Level.SEVERE, null, ex);
 		}
-
-		/* creation of the meta-instance with the appropriate values */
-		double[] classes = new double[numLabels];
-		double[] values;
-		if(includeAttrs){
-			double[] attributes = new double[instance.numAttributes()-numLabels];
-			for(int i=0;i<instance.numAttributes()-numLabels;i++){
-				attributes[i] = instance.value(featureIndices[i]);
-			}
-			// Concatenation of the three tables (confidences, attributes and classes)
-			values = new double[confidences.length + attributes.length + classes.length];
-			System.arraycopy(confidences, 0, values, 0, confidences.length);
-			System.arraycopy(attributes, 0, values, confidences.length, attributes.length);
-			System
-					.arraycopy(classes, 0, values, confidences.length+ attributes.length,
-							classes.length);
-		}
-		else{
-			// Concatenation of the two tables (confidences and classes)
-			values = new double[confidences.length + classes.length];
-			System.arraycopy(confidences, 0, values, 0, confidences.length);
-			System
-				.arraycopy(classes, 0, values, confidences.length,
-						classes.length);
-		}
-		metaInstance = new Instance(1, values);
-
-		/* application of the meta-level ensemble to the metaInstance */
-		for (int labelIndex = 0; labelIndex < numLabels; labelIndex++) {
-			Instance newmetaInstance = transformation.transformInstance(
-					metaInstance, labelIndex);
-			newmetaInstance.setDataset(metaLevelData[labelIndex]);
-
-			double distribution[] = new double[2];
-			try {
-				distribution = metaLevelFilteredEnsemble[labelIndex]
-						.distributionForInstance(newmetaInstance);
-			} catch (Exception e) {
-				System.out.println(e);
-				return null;
-			}
-			int maxIndex = (distribution[0] > distribution[1]) ? 0 : 1;
-
-			// Ensure correct predictions both for class values {0,1} and {1,0}
-			Attribute classAttribute = metaLevelData[labelIndex]
-					.classAttribute();
-			bipartition[labelIndex] = (classAttribute.value(maxIndex)
-					.equals("1")) ? true : false;
-
-			// The confidence of the label being equal to 1
-			metaconfidences[labelIndex] = distribution[classAttribute
-					.indexOfValue("1")];
-		}
-
-		MultiLabelOutput mlo = new MultiLabelOutput(bipartition,
-				metaconfidences);
-		return mlo;
 	}
-	
+
+	/**
+	 * Sets the value of normalize
+	 * 
+	 * @param normalize
+	 */
+	public void setNormalize(boolean normalize) {
+		this.normalize = normalize;
+	}
+
+	/**
+	 * Sets the value of includeAttrs
+	 * 
+	 * @param includeAttrs
+	 */
+	public void setIncludeAttrs(boolean includeAttrs) {
+		this.includeAttrs = includeAttrs;
+	}
+
+	/**
+	 * Sets the value of metaPercentage
+	 * 
+	 * @param metaPercentage
+	 */
+	public void setMetaPercentage(double metaPercentage) {
+		this.metaPercentage = metaPercentage;
+	}
+
+	/**
+	 * Sets the attribute selection evaluation class
+	 * 
+	 * @param eval
+	 */
+	public void setEval(ASEvaluation eval) {
+		this.eval = eval;
+	}
+
+	/**
+	 * Sets the type of the meta classifier and initializes the ensemble
+	 * 
+	 * @param metaClassifier
+	 * @throws Exception
+	 */
+	public void setMetaAlgorithm(Classifier metaClassifier) throws Exception {
+		this.metaClassifier = metaClassifier; 
+		metaLevelEnsemble = Classifier.makeCopies(metaClassifier, numLabels);
+	}
 }

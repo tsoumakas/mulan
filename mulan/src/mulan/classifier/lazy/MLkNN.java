@@ -32,7 +32,6 @@ import weka.core.TechnicalInformation;
 import weka.core.Utils;
 import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
-import weka.core.neighboursearch.LinearNNSearch;
 
 /**
  * 
