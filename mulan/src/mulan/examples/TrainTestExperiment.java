@@ -40,7 +40,9 @@ import mulan.transformations.multiclass.Ignore;
 import mulan.transformations.multiclass.MultiClassTransformation;
 import weka.classifiers.Classifier;
 import weka.classifiers.bayes.NaiveBayes;
+import weka.classifiers.functions.Logistic;
 import weka.classifiers.functions.SMO;
+import weka.classifiers.lazy.IBk;
 import weka.classifiers.trees.J48;
 import weka.core.Utils;
 
@@ -172,13 +174,13 @@ public class TrainTestExperiment {
                 }
                 if (methodsToCompare[i].equals("MLStacking")) {
                     System.out.println(methodsToCompare[i]);
-                    J48 baseClassifier = new J48();
-                    J48 metaClassifier = new J48();
-                    baseClassifier.setUseLaplace(true);
-                    metaClassifier.setUseLaplace(true);
-                    MultiLabelStacking mls = new MultiLabelStacking(baseClassifier, metaClassifier, 10);
-                    mls.setDebug(true);
-                    mls.setPhival(0.06);
+                    int numOfNeighbors = 10;
+					Classifier baseClassifier = new IBk(numOfNeighbors);
+					Classifier metaClassifier = new Logistic();
+					MultiLabelStacking mls = new MultiLabelStacking(
+							baseClassifier, metaClassifier);
+					mls.setMetaPercentage(1.0);
+					mls.setDebug(true);
                     mls.build(train);
                     results = eval.evaluate(mls, test);
                     System.out.println(results.toString());
