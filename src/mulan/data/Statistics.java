@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.Set;
 import weka.core.Instance;
 import weka.core.Instances;
+import weka.core.Utils;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.Remove;
 
@@ -339,6 +340,35 @@ public class Statistics implements Serializable
 		}
 
 		return indices;
+	}
+	
+	/**
+	 * Returns the indices of the labels that have the strongest phi correlation
+	 * with the label which is given as a parameter. The second parameter is
+	 * the number of labels that will be returned. 
+	 * 
+	 * @param labelIndex
+	 * @param k
+	 * @return the indices of the k most correlated labels
+	 */
+	public int[] topPhiCorrelatedLabels(int labelIndex, int k) {
+		//create a new array containing the absolute values of the original array
+		double[] absCorrelations = new double[numLabels];
+		for (int i = 0; i < numLabels; i++) {
+			absCorrelations[i] = Math.abs(phi[labelIndex][i]);
+		}
+		//sort the array of correlations
+		int [] sorted = Utils.stableSort(absCorrelations);
+		
+		int[] topPhiCorrelated = new int[k+1];
+		//the k last values of the sorted array are the indices of the top k correlated labels
+		for(int i=0; i<k;i++){
+			topPhiCorrelated[i] = sorted[numLabels-1-i];
+		}
+		// one more for the class
+		topPhiCorrelated[k] = numLabels;
+
+		return topPhiCorrelated;
 	}
 	
 	/**

@@ -39,7 +39,7 @@ public interface MultiLabelLearner {
 	 * When <code>false</code> is returned, each call of the 
 	 * {@link MultiLabelLearner#build(MultiLabelInstances)} will initialize the learner from
 	 * the scratch, removing any potential knowledge built by previously entered training data.
-	 * When <code>true</code> is returned, than on the first call of the 
+	 * When <code>true</code> is returned, then on the first call of the 
 	 * {@link MultiLabelLearner#build(MultiLabelInstances)} the learner is initialized
 	 * with the passed training data. All other calls contribute to the existing learner's 
 	 * model with new data.<br></br>

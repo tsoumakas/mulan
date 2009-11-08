@@ -100,7 +100,7 @@ public class IBLR_ML extends MultiLabelKNN {
 	/**
 	 * Returns a string describing classifier.
 	 * 
-	 * @return a description suitable for displaying in the
+	 * @return a description suitable for displaying in a future
 	 *         explorer/experimenter gui
 	 */
 	public String globalInfo() {

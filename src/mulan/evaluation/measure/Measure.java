@@ -25,7 +25,7 @@ package mulan.evaluation.measure;
 import mulan.classifier.MultiLabelOutput;
 
 /**
- * Interface for a measure, used used to evaluate a performance of a multi-label learner
+ * Interface for a measure, used to evaluate the performance of a multi-label learner
  * on when performing multi-label learning task. Various measures captures different 
  * characteristics of a learning task performance. 
  * 

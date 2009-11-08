@@ -23,7 +23,7 @@
 package mulan.core;
 
 /**
- * This exception is raised a null reference is passed to the method that does not accept
+ * This exception is raised when a null reference is passed to a method that does not accept
  * a null reference for an argument. 
  * 
  * @author Jozef Vilcek
