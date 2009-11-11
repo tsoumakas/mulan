@@ -83,7 +83,7 @@
             <compilation-unit>
                 <package-root>test</package-root>
                 <unit-tests/>
-                <classpath mode="compile">src;lib/weka-3.7.0.jar;lib/junit-4.5.jar</classpath>
+                <classpath mode="compile">src;lib/weka-3.7.0.jar;lib/test/junit-4.5.jar</classpath>
                 <source-level>1.5</source-level>
             </compilation-unit>
         </java-data>
