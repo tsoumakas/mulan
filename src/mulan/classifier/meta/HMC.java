@@ -20,12 +20,12 @@
  */
 package mulan.classifier.meta;
 
-import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
+
 import mulan.classifier.MultiLabelLearner;
 import mulan.classifier.MultiLabelOutput;
-import mulan.classifier.meta.MultiLabelMetaLearner;
 import mulan.data.InvalidDataFormatException;
 import mulan.data.LabelNode;
 import mulan.data.LabelNodeImpl;
@@ -56,7 +56,7 @@ public class HMC extends MultiLabelMetaLearner {
 
     private LabelsMetaData originalMetaData;
     private HMCNode root;
-    private HashMap<String, Integer> labelsAndIndices;
+    private Map<String, Integer> labelsAndIndices;
 
     public HMC(MultiLabelLearner baseLearner) throws Exception {
         super(baseLearner);

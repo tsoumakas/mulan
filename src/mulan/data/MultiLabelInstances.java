@@ -23,22 +23,23 @@
 package mulan.data;
 
 import java.io.File;
-import java.io.FileReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
+import mulan.core.ArgumentNullException;
 import mulan.core.MulanRuntimeException;
-import mulan.core.WekaException;
 import weka.core.Attribute;
 import weka.core.Instance;
 import weka.core.Instances;
-import weka.filters.Filter;
-import weka.filters.unsupervised.attribute.Reorder;
 
 /**
  * Implements multi-label instances data set. Multi-label data are stored in Weka's 
@@ -69,14 +70,15 @@ public class MultiLabelInstances {
 	 * 
 	 * @param arffFilePath the path to ARFF file containing the data
 	 * @param numLabelAttributes the number of ARFF data set attributes which are labels.
-	 * @throws IllegalArgumentException if arrfFilePath is null or numLabelAttribures is less than 2
+	 * @throws ArgumentNullException if arrfFilePath is null 
+	 * @throws IllegalArgumentException if numLabelAttribures is less than 2
 	 * @throws InvalidDataFormatException if format of loaded multi-label data is invalid
  	 * @throws DataLoadException if ARFF data file can not be loaded  
 	 */
 	public MultiLabelInstances(String arffFilePath, int numLabelAttributes) throws InvalidDataFormatException {
 		
 		if(arffFilePath == null){
-			throw new IllegalArgumentException("The arffFilePath is null.");
+			throw new ArgumentNullException("arffFilePath");
 		}
 		if(numLabelAttributes < 2){
 			throw new IllegalArgumentException("The number of label attributes must me at least 2 or higher.");
@@ -84,18 +86,38 @@ public class MultiLabelInstances {
 				
 		File arffFile = new File(arffFilePath);
 		Instances data = loadInstances(arffFile);
+		LabelsMetaData labelsData = loadLabesMeta(data, numLabelAttributes);
 		
-		LabelsMetaDataImpl labelsData = new LabelsMetaDataImpl(); 
-		int numAttributes = data.numAttributes();
-        for (int index = numAttributes - numLabelAttributes; index < numAttributes; index++)
-        {
-        	String attrName = data.attribute(index).name(); 
-        	labelsData.addRootNode(new LabelNodeImpl(attrName));
-        }
+		validate(data, labelsData);
 		
-        if(labelsData.getNumLabels() < numLabelAttributes){
-        	throw new InvalidDataFormatException("The names of label attributes are not unique.");
-        }
+		dataSet = data;
+		labelsMetaData = labelsData;
+	}
+	
+	/**
+	 * Creates a new instance of {@link MultiLabelInstances} data from the supplied {@link InputStream} 
+	 * data source. The data in the stream are assumed to be in ARFF format. 
+	 * The label attributes in ARFF data are assumed to be the last ones. Based on those attributes 
+	 * the {@link LabelsMetaData} are created.
+	 * 
+	 * @param arffDataStream the {@link InputStream} data source to load data in ARFF format
+	 * @param numLabelAttributes the number of last ARFF data set attributes which are labels.
+	 * @throws ArgumentNullException if {@link InputStream} data source is null
+	 * @throws IllegalArgumentException if number of labels attributes is less than 2
+	 * @throws InvalidDataFormatException if format of loaded multi-label data is invalid
+ 	 * @throws DataLoadException if ARFF data can not be loaded 
+	 */
+	public MultiLabelInstances(InputStream arffDataStream, int numLabelAttributes) throws InvalidDataFormatException {
+		
+		if(arffDataStream == null){
+			throw new ArgumentNullException("arffDataStream");
+		}
+		if(numLabelAttributes < 2){
+			throw new IllegalArgumentException("The number of label attributes must me at least 2 or higher.");
+		}
+				
+		Instances data = loadInstances(arffDataStream);
+		LabelsMetaData labelsData = loadLabesMeta(data, numLabelAttributes);
 		
 		validate(data, labelsData);
 		
@@ -111,22 +133,55 @@ public class MultiLabelInstances {
 	 * 
 	 * @param arffFilePath the path to ARFF file containing the data
 	 * @param xmlLabelsDefFilePath the path to XML file containing labels meta-data 
-	 * @throws IllegalArgumentException if input parameters are null or reference non-existing files
+	 * @throws ArgumentNullException if input parameters are null 
+	 * @throws IllegalArgumentException if input parameters refers to non-existing files
 	 * @throws InvalidDataFormatException if format of loaded multi-label data is invalid
 	 * @throws DataLoadException if XML meta-data of ARFF data file can not be loaded  
 	 */
 	public MultiLabelInstances(String arffFilePath, String xmlLabelsDefFilePath) throws InvalidDataFormatException {
 		
 		if(arffFilePath == null){
-			throw new IllegalArgumentException("The arffFilePath is null.");
+			throw new ArgumentNullException("arffFilePath");
 		}
 		if(xmlLabelsDefFilePath == null){
-			throw new IllegalArgumentException("The xmlLabelsDefFilePath is null.");
+			throw new ArgumentNullException("xmlLabelsDefFilePath");
 		}
 		
 		File arffFile = new File(arffFilePath);
 		Instances data = loadInstances(arffFile);
 		LabelsMetaData labelsData = loadLabesMeta(xmlLabelsDefFilePath);
+		
+		validate(data, labelsData);
+		dataSet = data;
+		labelsMetaData = labelsData;
+	}
+	
+	/**
+	 * Creates a new instance of {@link MultiLabelInstances} data from the supplied {@link InputStream} 
+	 * data source. The data in the stream are assumed to be in ARFF format. 
+	 * The labels meta data for ARFF data are retrieved separately from the different {@link InputStream} 
+	 * data source. The meta data are assumed to be in XML format and conform to valid schema. 
+	 * Data load load failure is indicated by {@link DataLoadException}. When data are loaded, validations 
+	 * are applied to ensure consistency between ARFF data and specified labels meta-data.  
+	 * 
+	 * @param arffDataStream the {@link InputStream} data source to load data in ARFF format
+	 * @param xmlLabelsDefReader the {@link InputStream} data source to load XML labels meta data 
+	 * @throws ArgumentNullException if input parameters are null 
+	 * @throws IllegalArgumentException if input parameters refers to non-existing files
+	 * @throws InvalidDataFormatException if format of loaded multi-label data is invalid
+	 * @throws DataLoadException if XML meta-data of ARFF data can not be loaded  
+	 */
+	public MultiLabelInstances(InputStream arffDataStream, InputStream xmlLabelsDefStream) throws InvalidDataFormatException {
+		
+		if(arffDataStream == null){
+			throw new ArgumentNullException("arffDataStream");
+		}
+		if(xmlLabelsDefStream == null){
+			throw new ArgumentNullException("xmlLabelsDefStream");
+		}
+		
+		Instances data = loadInstances(arffDataStream);
+		LabelsMetaData labelsData = loadLabesMeta(xmlLabelsDefStream);
 		
 		validate(data, labelsData);
 		dataSet = data;
@@ -147,10 +202,10 @@ public class MultiLabelInstances {
 	 */
 	public MultiLabelInstances(Instances dataSet, LabelsMetaData labelsMetaData) throws InvalidDataFormatException {
 		if(dataSet == null){
-			throw new IllegalArgumentException("The dataSet is null.");
+			throw new ArgumentNullException("dataSet");
 		}
 		if(labelsMetaData == null){
-			throw new IllegalArgumentException("The labelsMetaData is null.");
+			throw new ArgumentNullException("labelsMetaData");
 		}
 		
 		validate(dataSet, labelsMetaData);
@@ -191,7 +246,7 @@ public class MultiLabelInstances {
      * @return a mapping of attribute names and their indices
      * Instances object
      */
-	public HashMap<String,Integer> getLabelsOrder() {
+	public Map<String,Integer> getLabelsOrder() {
         int numAttributes = dataSet.numAttributes();
 		Set<String> labelNames = labelsMetaData.getLabelNames();
         HashMap<String,Integer> assoc = new HashMap<String,Integer>();
@@ -344,12 +399,27 @@ public class MultiLabelInstances {
 		}
 		
 		Instances aDataSet = null;
+		FileInputStream fileStream = null;
 		try {
-			FileReader reader = new FileReader(arffFile);
-			aDataSet = new Instances(reader);
+			fileStream = new FileInputStream(arffFile);
+		} catch (FileNotFoundException exception) {
+			throw new DataLoadException(
+					String.format("The specified data file '%s' can not be found.", arffFile.getAbsolutePath()), exception);
+		}
+		
+		aDataSet = loadInstances(fileStream);
+		
+		return aDataSet;
+	}
+	
+	private Instances loadInstances(InputStream stream){
+		Instances aDataSet = null;
+		InputStreamReader streamReader = new InputStreamReader(stream);
+		try {
+			aDataSet = new Instances(streamReader);
 		} catch (IOException exception) {
 			throw new DataLoadException(
-					String.format("Error loading arff data file '%s'.", arffFile.getAbsolutePath()), exception);
+					String.format("Error creating Instances data from supplied Reader data source", exception));
 		}
 		return aDataSet;
 	}
@@ -365,52 +435,30 @@ public class MultiLabelInstances {
 		return labelsMeta;
 	}
 	
-	/**
-	 * Reorders the labels. All the label attributes are moved to the end of 
-	 * data set. This method is introduced only for algorithms which relies on 
-	 * label being at the end of data set. Such dependency on internal data structure
-	 * should be removed and this method become obsolete.
-	 */
-	public void reorderLabels() {
+	private LabelsMetaData loadLabesMeta(InputStream xmlLabelsDefStream){
+		LabelsMetaData labelsMeta = null;
+		try {
+			labelsMeta = LabelsBuilder.createLabels(xmlLabelsDefStream);
+		} catch (LabelsBuilderException exception) {
+			throw new DataLoadException(String.format("Error loading labels meta-data from input stream."), exception);
+		}
+		return labelsMeta;
+	}
+	
+	private LabelsMetaData loadLabesMeta(Instances data, int numLabels) throws InvalidDataFormatException {
+		LabelsMetaDataImpl labelsData = new LabelsMetaDataImpl(); 
+		int numAttributes = data.numAttributes();
+        for (int index = numAttributes - numLabels; index < numAttributes; index++)
+        {
+        	String attrName = data.attribute(index).name(); 
+        	labelsData.addRootNode(new LabelNodeImpl(attrName));
+        }
 		
-		// check if label attributes are the last ones in dataSet
-		int numAttributes = dataSet.numAttributes();
-		Set<String> labelNames = labelsMetaData.getLabelNames();
-		boolean mustReorder = false;
-		int indexThreshold = numAttributes - labelsMetaData.getNumLabels();
-		for(String labelName : labelNames){
-			Attribute attribute = dataSet.attribute(labelName);
-			if(attribute.index() < indexThreshold){
-				mustReorder = true;
-				break;
-			}
-		}
-		if(mustReorder){
-			LinkedList<Integer> attrOrder = new LinkedList<Integer>();
-			for(int index=0;index<numAttributes; index++){
-				Attribute attr = dataSet.attribute(index);
-				if(labelsMetaData.containsLabel(attr.name())){
-					attrOrder.addLast(index);
-				}
-				else{
-					attrOrder.addFirst(index);
-				}
-			}
-			
-			int[] orderArray = new int[numAttributes];
-			for(int index=0; index < numAttributes; index++)
-				orderArray[index] = attrOrder.get(index);
-			
-			Reorder reorderFilter = new Reorder();
-			try{
-				reorderFilter.setAttributeIndicesArray(orderArray);
-				reorderFilter.setInputFormat(dataSet);
-				dataSet = Filter.useFilter(dataSet, reorderFilter);
-			}
-			catch(Exception ex){
-				throw new WekaException("The reorder attrubutes failed when trying to move label attribute at the end of data set.");
-			}
-		}
+        if(labelsData.getNumLabels() < numLabels){
+        	throw new InvalidDataFormatException("The names of label attributes are not unique.");
+        }
+        
+        return labelsData;
 	}
 	
 	/**
@@ -420,6 +468,12 @@ public class MultiLabelInstances {
 	 */
 	private void validate(Instances dataSet, LabelsMetaData labelsMetaData) throws InvalidDataFormatException{
 		Set<String> labelNames = labelsMetaData.getLabelNames();
+		if(labelNames.size() < 2){
+			throw new InvalidDataFormatException(
+					String.format("There must be at least 2 label attributes specified, but only '%s' are defined in metadata", 
+							labelNames.size()));
+		}
+		
 		int numAttributes = dataSet.numAttributes();
 		int numMatches = 0;
 		for(int index = 0; index < numAttributes; index ++){
@@ -489,7 +543,7 @@ public class MultiLabelInstances {
 	private void checkSubtreeConsistency(LabelNode node, Instance instance, boolean canBeLabelSet) throws InvalidDataFormatException{
 		boolean isLabelSet = isLabelSet(instance, node.getName());
 		if(isLabelSet == true && canBeLabelSet == false){
-			throw new InvalidDataFormatException(String.format("Consistency of labels hierarchy is breached for:\nLabel='%s',\nInstance='%s'", node.getName(), instance.toString()));
+			throw new InvalidDataFormatException(String.format("Consistency of labels hierarchy is breached for: Label='%s', Instance='%s'", node.getName(), instance.toString()));
 		}
 		if(node.hasChildren()){
 			Set<LabelNode> childNodes = node.getChildren();
