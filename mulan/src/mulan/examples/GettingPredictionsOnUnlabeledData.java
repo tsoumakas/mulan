@@ -34,8 +34,8 @@ import weka.core.Utils;
 /**
  * This examples shows how you can retrieve the predictions of a model on
  * unlabeled data. Unlabeled multi-label datasets should have the same
- * structure as the training data. The actual values of the label could be
- * either unspecified, set to symbol ?, or randomly set to 0/1.
+ * structure as the training data. The actual values of the labels could be
+ * either unspecified (set to symbol ?), or randomly set to 0/1.
  *
  * @author Grigorios Tsoumakas
  */
@@ -47,12 +47,14 @@ public class GettingPredictionsOnUnlabeledData {
             String trainingDataFilename = Utils.getOption("training", args);
             String unlabeledDataFilename = Utils.getOption("unlabeled", args);
             String labelsFilename = Utils.getOption("labels", args);
-            System.out.println("Loading the training data set");
+            System.out.println("Loading the training data set...");
             MultiLabelInstances trainingData = new MultiLabelInstances(trainingDataFilename, labelsFilename);
-            System.out.println("Loading the unlabeled data set");
+            System.out.println("Loading the unlabeled data set...");
             MultiLabelInstances unlabeledData = new MultiLabelInstances(unlabeledDataFilename, labelsFilename);
 
             BinaryRelevance learner = new BinaryRelevance(new J48());
+
+            System.out.println("Building the model...");
             learner.build(trainingData);
             int numInstances = unlabeledData.getDataSet().numInstances();
             for (int i = 0; i < numInstances; i++) {
