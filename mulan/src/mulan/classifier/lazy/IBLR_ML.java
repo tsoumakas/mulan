@@ -120,7 +120,7 @@ public class IBLR_ML extends MultiLabelKNN {
 	}
 
 	@Override
-	public void buildInternal(MultiLabelInstances mltrain) throws Exception {
+	protected void buildInternal(MultiLabelInstances mltrain) throws Exception {
 		super.buildInternal(mltrain);
 
 		classifier = new Classifier[numLabels];
