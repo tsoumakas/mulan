@@ -44,7 +44,7 @@ import weka.core.TechnicalInformation.*;
  * Classification in Domains with Large Number of Labels", Proc. ECML/PKDD 2008
  * Workshop on Mining Multidimensional Data (MMD'08), Antwerp, Belgium, 2008.
  * </pre>
- *
+ *f
  * <!-- globalinfo-end -->
  *
  * <!-- technical-bibtex-start --> BibTeX:
@@ -108,5 +108,16 @@ public class HOMER extends MultiLabelMetaLearner
 		result.setValue(Field.YEAR, "2008");
 		return result;
     }
-
+    
+    //spark temporary edit for complexity measures   
+    public long getNoNodes() {
+        return hmc.getNoNodes();
+      }
+      public long getNoClassifierEvals() {
+      	return hmc.getNoClassifierEvals();
+      }
+      public long getTotalUsedTrainInsts() {
+      	return hmc.getTotalUsedTrainInsts(); 
+      }    
+    
 }
