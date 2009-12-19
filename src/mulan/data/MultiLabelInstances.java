@@ -146,14 +146,17 @@ public class MultiLabelInstances {
 		if(xmlLabelsDefFilePath == null){
 			throw new ArgumentNullException("xmlLabelsDefFilePath");
 		}
-		
+		System.out.println("Start loading data");
 		File arffFile = new File(arffFilePath);
 		Instances data = loadInstances(arffFile);
+		System.out.println("Finished loading arff");
 		LabelsMetaData labelsData = loadLabesMeta(xmlLabelsDefFilePath);
-		
+		System.out.println("Finished loading meta-data");
 		validate(data, labelsData);
 		dataSet = data;
 		labelsMetaData = labelsData;
+		System.out.println("Finished validation");
+		System.out.println("Loading files finished");
 	}
 	
 	/**
@@ -531,33 +534,37 @@ public class MultiLabelInstances {
 	// If child labels is 'true' for some instance, all its parent labels should be
 	// also 'true' for the instance.
 	private void checkLabelsConsistency(Instances dataSet, Set<LabelNode> rootLabelNodes) throws InvalidDataFormatException{
+		// create an index for faster access to attribute based on name
+		Map<String,Attribute> attributesIndex = new HashMap<String, Attribute>();
+		for(int index = 0; index < dataSet.numAttributes(); index++){
+			Attribute attribute = dataSet.attribute(index);
+			attributesIndex.put(attribute.name(), attribute);
+		}
+		
 		int numInstances = dataSet.numInstances();
 		for(int index = 0; index < numInstances; index++){
 			Instance instance = dataSet.instance(index);
 			for(LabelNode labelNode : rootLabelNodes){
-				checkSubtreeConsistency(labelNode, instance, true);
+				checkSubtreeConsistency(labelNode, instance, true, attributesIndex);
 			}
 		}
 	}
 	
-	private void checkSubtreeConsistency(LabelNode node, Instance instance, boolean canBeLabelSet) throws InvalidDataFormatException{
-		boolean isLabelSet = isLabelSet(instance, node.getName());
+	private void checkSubtreeConsistency(LabelNode node, Instance instance, boolean canBeLabelSet, Map<String,Attribute> attributesIndex) throws InvalidDataFormatException{
+		boolean isLabelSet = isLabelSet(instance, node.getName(), attributesIndex);
 		if(isLabelSet == true && canBeLabelSet == false){
 			throw new InvalidDataFormatException(String.format("Consistency of labels hierarchy is breached for: Label='%s', Instance='%s'", node.getName(), instance.toString()));
 		}
 		if(node.hasChildren()){
 			Set<LabelNode> childNodes = node.getChildren();
 			for(LabelNode child : childNodes){
-				checkSubtreeConsistency(child, instance, isLabelSet);
+				checkSubtreeConsistency(child, instance, isLabelSet, attributesIndex);
 			}
 		}
 	}
 
-	private boolean isLabelSet(Instance instance, String labelName){
-
-		// TODO: dataSet.attribute(labelName) is costly. 
-		//       can be improved by maintaining the index.
-		Attribute attr = instance.dataset().attribute(labelName);
+	private boolean isLabelSet(Instance instance, String labelName, Map<String,Attribute> attributesIndex){
+		Attribute attr = attributesIndex.get(labelName);
 		double value = instance.value(attr);
 		return (value == 1) ? true : false; 
 	}
