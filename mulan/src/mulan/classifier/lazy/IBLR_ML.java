@@ -24,7 +24,7 @@ package mulan.classifier.lazy;
 import mulan.classifier.MultiLabelOutput;
 import mulan.data.MultiLabelInstances;
 import weka.classifiers.Classifier;
-import weka.classifiers.functions.Logistic;
+import weka.classifiers.functions.SimpleLogistic;
 import weka.core.Attribute;
 import weka.core.FastVector;
 import weka.core.Instance;
@@ -210,7 +210,7 @@ public class IBLR_ML extends MultiLabelKNN {
 
 		// for every label create a corresponding classifier.
 		for (int i = 0; i < numLabels; i++) {
-			classifier[i] = new Logistic();
+			classifier[i] = new SimpleLogistic();
 			classifier[i].buildClassifier(trainingDataForLabel[i]);
 		}
 
