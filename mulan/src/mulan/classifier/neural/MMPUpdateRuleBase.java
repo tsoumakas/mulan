@@ -69,7 +69,7 @@ public abstract class MMPUpdateRuleBase implements ModelUpdateRule {
 		double[] dataInput = example.getInput();
 		double[] confidences = new double[numLabels];
 		
-		// compute model prediction on raking for given example
+		// update model prediction on raking for given example
 		for(int index = 0; index < numLabels; index++){
 			Neuron perceptron = perceptrons.get(index);
 			confidences[index] = perceptron.processInput(dataInput);
@@ -78,13 +78,13 @@ public abstract class MMPUpdateRuleBase implements ModelUpdateRule {
 				MultiLabelOutput.ranksFromValues(confidences));
 		
 		// get a loss measure of a model for given example
-		double loss = lossMeasure.compute(mlOut, example.getOutputBoolean());
+		double loss = lossMeasure.update(mlOut, example.getOutputBoolean());
 		if(lossMeasure.getIdealValue() != 0){
 			// if ideal loss value is not zero, then translate it ... assuming loss values are positive
 			loss = lossMeasure.getIdealValue() - loss;
 		}
 		if(loss != 0){
-			// compute update parameters for perceptrons
+			// update update parameters for perceptrons
 			double[] updateParams = computeUpdateParameters(example, confidences, loss);
 			// perform updates of perceptrons
 			for(int lIndex = 0; lIndex < numLabels; lIndex++){
