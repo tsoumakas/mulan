@@ -39,6 +39,7 @@ import mulan.classifier.transformation.MultiLabelStacking;
 import mulan.data.MultiLabelInstances;
 import mulan.evaluation.Evaluation;
 import mulan.evaluation.Evaluator;
+import mulan.evaluation.MultipleEvaluation;
 import mulan.transformations.multiclass.Copy;
 import mulan.transformations.multiclass.Ignore;
 import mulan.transformations.multiclass.MultiClassTransformation;
@@ -69,7 +70,7 @@ public class CrossValidationExperiment {
             MultiLabelInstances dataSet = new MultiLabelInstances(path + filestem + ".arff", path + filestem + ".xml");
 
             Evaluator eval = new Evaluator();
-            Evaluation results;
+            MultipleEvaluation results;
 
             int numFolds = 10;
 
@@ -81,7 +82,7 @@ public class CrossValidationExperiment {
                     BinaryRelevance br = new BinaryRelevance(brClassifier);
                     br.setDebug(true);
                     results = eval.crossValidate(br, dataSet, numFolds);
-                    System.out.println(results.toString());
+                    System.out.println(results);
                 }
 
                 if (methodsToCompare[i].equals("LP")) {
@@ -90,7 +91,7 @@ public class CrossValidationExperiment {
                     LabelPowerset lp = new LabelPowerset(lpBaseClassifier);
                     lp.setDebug(true);
                     results = eval.crossValidate(lp, dataSet, numFolds);
-                    System.out.println(results.toString());
+                    System.out.println(results);
                 }
 
                 if (methodsToCompare[i].equals("CLR")) {
@@ -100,7 +101,7 @@ public class CrossValidationExperiment {
                             clrClassifier);
                     clr.setDebug(true);
                     results = eval.crossValidate(clr, dataSet, numFolds);
-                    System.out.println(results.toString());
+                    System.out.println(results);
                 }
 
                 if (methodsToCompare[i].equals("RAkEL")) {
@@ -109,7 +110,7 @@ public class CrossValidationExperiment {
                     RAkEL rakel = new RAkEL(lp);
                     rakel.setDebug(true);
                     results = eval.crossValidate(rakel, dataSet, numFolds);
-                    System.out.println(results.toString());
+                    System.out.println(results);
                 }
 
                 if (methodsToCompare[i].equals("MC-Copy")) {
@@ -120,7 +121,7 @@ public class CrossValidationExperiment {
                             mclClassifier, mcTrans);
                     mcl.setDebug(true);
                     results = eval.crossValidate(mcl, dataSet, numFolds);
-                    System.out.println(results.toString());
+                    System.out.println(results);
                 }
 
                 if (methodsToCompare[i].equals("MC-Ignore")) {
@@ -130,7 +131,7 @@ public class CrossValidationExperiment {
                     MultiClassLearner mcl = new MultiClassLearner(
                             mclClassifier, mcTrans);
                     results = eval.crossValidate(mcl, dataSet, numFolds);
-                    System.out.println(results.toString());
+                    System.out.println(results);
                 }
 
                 if (methodsToCompare[i].equals("IncludeLabels")) {
@@ -140,7 +141,7 @@ public class CrossValidationExperiment {
                             ilClassifier);
                     il.setDebug(true);
                     results = eval.crossValidate(il, dataSet, numFolds);
-                    System.out.println(results.toString());
+                    System.out.println(results);
                 }
 
                 if (methodsToCompare[i].equals("MLkNN")) {
@@ -150,7 +151,7 @@ public class CrossValidationExperiment {
                     MLkNN mlknn = new MLkNN(numOfNeighbors, smooth);
                     mlknn.setDebug(true);
                     results = eval.crossValidate(mlknn, dataSet, numFolds);
-                    System.out.println(results.toString());
+                    System.out.println(results);
                 }
 
                 if (methodsToCompare[i].equals("HMC")) {
@@ -160,7 +161,7 @@ public class CrossValidationExperiment {
                     RAkEL rakel = new RAkEL(lp);
                     HMC hmc = new HMC(rakel);
                     results = eval.crossValidate(hmc, dataSet, numFolds);
-                    System.out.println(results.toString());
+                    System.out.println(results);
                 }
 
                 if (methodsToCompare[i].equals("HOMER")) {
@@ -172,7 +173,7 @@ public class CrossValidationExperiment {
                     HOMER homer = new HOMER(learner, 3, HierarchyBuilder.Method.Random);
                     homer.setDebug(true);
                     results = eval.crossValidate(homer, dataSet, numFolds);
-                    System.out.println(results.toString());
+                    System.out.println(results);
                 }
                 if (methodsToCompare[i].equals("MLStacking")) {
 					System.out.println(methodsToCompare[i]);
@@ -185,7 +186,7 @@ public class CrossValidationExperiment {
 					mls.setMetaPercentage(1.0);
 					mls.setDebug(true);
 					results = eval.crossValidate(mls, dataSet, numFolds);
-					System.out.println(results.toString());
+					System.out.println(results);
 				}
 
             }

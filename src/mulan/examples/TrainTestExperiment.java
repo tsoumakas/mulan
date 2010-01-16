@@ -75,7 +75,7 @@ public class TrainTestExperiment {
                     br.setDebug(true);
                     br.build(train);
                     results = eval.evaluate(br, test);
-                    System.out.println(results.toString());
+                    System.out.println(results);
                 }
 
                 if (methodsToCompare[i].equals("LP")) {
@@ -85,7 +85,7 @@ public class TrainTestExperiment {
                     lp.setDebug(true);
                     lp.build(train);
                     results = eval.evaluate(lp, test);
-                    System.out.println(results.toString());
+                    System.out.println(results);
                 }
 
                 if (methodsToCompare[i].equals("CLR")) {
@@ -95,7 +95,7 @@ public class TrainTestExperiment {
                     clr.setDebug(true);
                     clr.build(train);
                     results = eval.evaluate(clr, test);
-                    System.out.println(results.toString());
+                    System.out.println(results);
                 }
 
                 if (methodsToCompare[i].equals("RAkEL")) {
@@ -105,7 +105,7 @@ public class TrainTestExperiment {
                     rakel.setDebug(true);
                     rakel.build(train);
                     results = eval.evaluate(rakel, test);
-                    System.out.println(results.toString());
+                    System.out.println(results);
                 }
 
                 if (methodsToCompare[i].equals("MC-Copy")) {
@@ -116,7 +116,7 @@ public class TrainTestExperiment {
                     mcl.setDebug(true);
                     mcl.build(train);
                     results = eval.evaluate(mcl, test);
-                    System.out.println(results.toString());
+                    System.out.println(results);
                 }
 
                 if (methodsToCompare[i].equals("MC-Ignore")) {
@@ -126,7 +126,7 @@ public class TrainTestExperiment {
                     MultiClassLearner mcl = new MultiClassLearner(mclClassifier, mcTrans);
                     mcl.build(train);
                     results = eval.evaluate(mcl, test);
-                    System.out.println(results.toString());
+                    System.out.println(results);
                 }
 
                 if (methodsToCompare[i].equals("IncludeLabels")) {
@@ -136,7 +136,7 @@ public class TrainTestExperiment {
                     il.setDebug(true);
                     il.build(train);
                     results = eval.evaluate(il, test);
-                    System.out.println(results.toString());
+                    System.out.println(results);
                 }
 
                 if (methodsToCompare[i].equals("MLkNN")) {
@@ -147,7 +147,7 @@ public class TrainTestExperiment {
                     mlknn.setDebug(true);
                     mlknn.build(train);
                     results = eval.evaluate(mlknn, test);
-                    System.out.println(results.toString());
+                    System.out.println(results);
                 }
 
                 if (methodsToCompare[i].equals("HMC")) {
@@ -158,7 +158,7 @@ public class TrainTestExperiment {
                     HMC hmc = new HMC(rakel);
                     hmc.build(train);
                     results = eval.evaluate(hmc, test);
-                    System.out.println(results.toString());
+                    System.out.println(results);
                 }
 
                 if (methodsToCompare[i].equals("HOMER")) {
@@ -170,7 +170,7 @@ public class TrainTestExperiment {
                     homer.setDebug(true);
                     homer.build(train);
                     results = eval.evaluate(homer, test);
-                    System.out.println(results.toString());
+                    System.out.println(results);
                 }
                 if (methodsToCompare[i].equals("MLStacking")) {
                     System.out.println(methodsToCompare[i]);
@@ -183,7 +183,7 @@ public class TrainTestExperiment {
 					mls.setDebug(true);
                     mls.build(train);
                     results = eval.evaluate(mls, test);
-                    System.out.println(results.toString());
+                    System.out.println(results);
                 }
 
             }

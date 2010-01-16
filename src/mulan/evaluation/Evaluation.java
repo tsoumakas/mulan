@@ -19,137 +19,56 @@
  *    Copyright (C) 2009 Aristotle University of Thessaloniki, Thessaloniki, Greece
  *
  */
-
 package mulan.evaluation;
 
-import mulan.core.Util;
+import java.util.List;
+import mulan.evaluation.measure.Measure;
 
 /**
- * Simple aggregation class which provides all possible evaluation measure types.
- * The evaluation is providing measures for particular multi-label learner type.
- * Only measures applicable to evaluated learner will be provided. 
- * Measures which are not applicable will be null. The proper measures are set by 
- * {@link Evaluator} based on predefined rules.
+ * Simple class that includes a list of evaluation measures returned from a
+ * call to the static methods of {@link Evaluator} for evaluation purposes.
  * 
  * @see Evaluator
  * 
  * @author Jozef Vilcek
+ * @author Grigorios Tsoumakas
  */
 public class Evaluation {
-	
-	private LabelBasedMeasures labelBasedMeasures;
-	private ExampleBasedMeasures exampleBasedMeasures;
-	private RankingBasedMeasures rankingBasedMeasures;
-    private ConfidenceLabelBasedMeasures confidenceLabelBasedMeasures;
-    private HierarchicalMeasures hierarchicalMeasures;
-	
-	public LabelBasedMeasures getLabelBasedMeasures() {
-		return labelBasedMeasures;
-	}
 
-	protected void setLabelBasedMeasures(LabelBasedMeasures labelBasedMeasures) {
-		this.labelBasedMeasures = labelBasedMeasures;
-	}
-	
-	public ExampleBasedMeasures getExampleBasedMeasures() {
-		return exampleBasedMeasures;
-	}
-	
-	protected void setExampleBasedMeasures(ExampleBasedMeasures exampleBasedMeasures) {
-		this.exampleBasedMeasures = exampleBasedMeasures;
-	}
+    private List<Measure> measures;
 
-	public RankingBasedMeasures getRankingBasedMeasures() {
-		return rankingBasedMeasures;
-	}
-	
-	protected void setRankingBasedMeasures(RankingBasedMeasures rankingBasedMeasures) {
-		this.rankingBasedMeasures = rankingBasedMeasures;
-	}
-
-	public HierarchicalMeasures getHierarchicalMeasures() {
-		return hierarchicalMeasures;
-	}
-
-	protected void setHierarchicalMeasures(HierarchicalMeasures hierarchicalMeasures) {
-		this.hierarchicalMeasures = hierarchicalMeasures;
-	}
-
-	protected void setConfidenceLabelBasedMeasures(ConfidenceLabelBasedMeasures confidenceLabelBasedMeasures) {
-		this.confidenceLabelBasedMeasures = confidenceLabelBasedMeasures;
-	}
-
-	public ConfidenceLabelBasedMeasures getConfidenceLabelBasedMeasures() {
-		return confidenceLabelBasedMeasures;
-	}
+    public Evaluation(List<Measure> measures) {
+        this.measures = measures;
+    }
 
     @Override
-	public String toString() {
-    	String newLine = Util.getNewLineSeparator();
-		StringBuilder summary = new StringBuilder();
-        if (exampleBasedMeasures != null) {
-        	summary.append(exampleBasedMeasures.toSummaryString()).append(newLine);
+    public String toString() {
+        String description = "";
+        for (Measure m : measures) {
+            description += m + "\n";
         }
-        if (labelBasedMeasures != null) {
-        	summary.append(labelBasedMeasures.toSummaryString()).append(newLine);
-        }
-        if (confidenceLabelBasedMeasures != null) {
-        	summary.append(confidenceLabelBasedMeasures.toSummaryString()).append(newLine);
-        }
-        if (rankingBasedMeasures != null) {
-        	summary.append(rankingBasedMeasures.toSummaryString()).append(newLine);
-        }
-        /*
-        description += "========Per Class Measures========\n";
-		for (int i = 0; i < numLabels(); i++) {
-			description += "Label " + i + " Accuracy   :" + labelAccuracy[i] + "\n";
-			description += "Label " + i + " Precision  :" + labelPrecision[i] + "\n";
-			description += "Label " + i + " Recall     :" + labelRecall[i] + "\n";
-			description += "Label " + i + " F1         :" + labelFmeasure[i] + "\n";
-		}
-		*/
-		return summary.toString();
-	}
+        return description;
+    }
 
     public String toCSV() {
-		String description = "";
+        String description = "";
+        for (Measure m : measures) {
+            double value = Double.NaN;
+            try {
+                value = m.getValue();
+            } catch (Exception ex) {
+            }
+            description += (value + ";");
+        }
+        return description + "\n";
+    }
 
-        if (exampleBasedMeasures != null) {
-//		description += "Average predicted labels: " + this.numPredictedLabels + "\n";
-            description += exampleBasedMeasures.getHammingLoss() + ";";
-            description += exampleBasedMeasures.getAccuracy() + ";";
-            description += exampleBasedMeasures.getPrecision() + ";";
-            description += exampleBasedMeasures.getRecall() + ";";
-            description += exampleBasedMeasures.getFMeasure() + ";";
-            description += exampleBasedMeasures.getSubsetAccuracy() + ";";
-        }
-        if (labelBasedMeasures != null) {
-            description += labelBasedMeasures.getPrecision(Averaging.MICRO) + ";";
-            description += labelBasedMeasures.getRecall(Averaging.MICRO) + ";";
-            description += labelBasedMeasures.getFMeasure(Averaging.MICRO) + ";";
-            description += labelBasedMeasures.getPrecision(Averaging.MACRO) + ";";
-            description += labelBasedMeasures.getRecall(Averaging.MACRO) + ";";
-            description += labelBasedMeasures.getFMeasure(Averaging.MACRO) + ";";
-        }
-        if (confidenceLabelBasedMeasures != null) {
-            description += confidenceLabelBasedMeasures.getAUC(Averaging.MICRO) + ";";
-            description += confidenceLabelBasedMeasures.getAUC(Averaging.MACRO) + ";";
-        }
-        if (rankingBasedMeasures != null) {
-            description += rankingBasedMeasures.getOneError() + ";";
-            description += rankingBasedMeasures.getCoverage() + ";";
-            description += rankingBasedMeasures.getRankingLoss() + ";";
-            description += rankingBasedMeasures.getAvgPrecision() + ";";
-        }
-        /*
-        description += "========Per Class Measures========\n";
-		for (int i = 0; i < numLabels(); i++) {
-			description += "Label " + i + " Accuracy   :" + labelAccuracy[i] + "\n";
-			description += "Label " + i + " Precision  :" + labelPrecision[i] + "\n";
-			description += "Label " + i + " Recall     :" + labelRecall[i] + "\n";
-			description += "Label " + i + " F1         :" + labelFmeasure[i] + "\n";
-		}
-		*/
-		return description;
-	}
+    /**
+     * Returns the evaluation measures
+     *
+     * @return the evaluation measures
+     */
+    public List<Measure> getMeasures() {
+        return measures;
+    }
 }

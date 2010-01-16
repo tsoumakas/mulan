@@ -40,31 +40,31 @@ public interface Measure {
 	String getName();
 	/**
 	 * Gets the value of a measure. The measure is incrementally cumulated for learner's
-	 * output by each {@link Measure#compute(MultiLabelOutput, boolean[])} call. The value
-	 * returned by the method, returns sum of all compute calls divided by the number 
-	 * of calls (average of all measures for all output).
+	 * prediction by each {@link Measure#update(MultiLabelOutput, boolean[])} call. The value
+	 * returned by the method, returns sum of all update calls divided by the number
+	 * of calls (average of all measures for all prediction).
 	 * 
 	 * @return the average measure value computed so far
 	 */
 	double getValue();
 	/**
 	 * Gets an 'ideal' value of a measure. The 'ideal' means, that the value
-	 * represents the best achievable performance of a learner for an output of
+	 * represents the best achievable performance of a learner for an prediction of
 	 * a multi-label task and associated true labels.
 	 *   
 	 * @return the ideal value
 	 */
 	double getIdealValue();
 	/**
-	 * Computes the value of a measure for the given output and true labels. The immediate value of
+	 * Computes the value of a measure for the given prediction and true labels. The immediate value of
 	 * a measure is	returned and result is added to the cumulated measure value.
 	 * 
-	 * @param output the output for which measure has to be computed
-	 * @param trueLabels the true labels bipartition for given output
+	 * @param prediction the prediction for which measure has to be computed
+	 * @param truth the true labels bipartition for given prediction
 	 * @return the value of a measure
 	 * @see Measure#getValue()
 	 */
-	double compute(MultiLabelOutput output, boolean[] trueLabels);
+	double update(MultiLabelOutput prediction, boolean[] truth);
 	/**
 	 * Resets the cumulated measure value, so the process of computation can be started
 	 * from beginning (e.g. for a new series of outputs from learning task). 
