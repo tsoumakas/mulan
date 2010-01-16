@@ -559,6 +559,57 @@ public class MultiLabelInstances {
         double value = instance.value(attr);
         return (value == 1) ? true : false;
     }
+
+    /**
+     * Create a HashMap that contains every label, with it depth in the Hierachical tree
+     * @return
+     */
+    public HashMap<String, Integer> getLabelDepth() {
+        int numAttributes = dataSet.numAttributes();
+        Set<String> labelNames = labelsMetaData.getLabelNames();
+        HashMap<String, Integer> assoc = new HashMap<String, Integer>();
+
+        for (int index = 0; index < numAttributes; index++) {
+            Attribute attr = dataSet.attribute(index);
+            if (labelNames.contains(attr.name())) {
+                assoc.put(attr.name(), getDepth(attr.name()));
+            }
+        }
+        return assoc;
+    }
+
+    /**
+     * Calculates the depth of a label, in the Hierarchy of the tree of labels.
+     * Returns the counter of every level. We define the root node label that has the depth 1
+     * @param labelName
+     * @return
+     */
+    public int getDepth(String labelName) {
+        int counter = 0;
+
+        while (labelsMetaData.getLabelNode(labelName).hasParent()) {
+            counter++;
+            labelName = labelsMetaData.getLabelNode(labelName).getParent().getName();
+        }
+        return counter + 1;
+    }
+
+    public int[] getLabelDepthIndices() {
+        int[] labelDepthIndices = new int[labelsMetaData.getNumLabels()];
+        int numAttributes = dataSet.numAttributes();
+        Set<String> labelNames = labelsMetaData.getLabelNames();
+        int counter = 0;
+
+        for (int index = 0; index < numAttributes; index++) {
+            Attribute attr = dataSet.attribute(index);
+            if (labelNames.contains(attr.name())) {
+                labelDepthIndices[counter] = getDepth(attr.name());
+                counter++;
+            }
+        }
+
+        return labelDepthIndices;
+    }
 }
 
 

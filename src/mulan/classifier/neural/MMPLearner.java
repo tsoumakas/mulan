@@ -34,11 +34,11 @@ import mulan.core.ArgumentNullException;
 import mulan.core.MulanException;
 import mulan.core.WekaException;
 import mulan.data.MultiLabelInstances;
-import mulan.evaluation.measure.AvgPMeasure;
-import mulan.evaluation.measure.ErrorSetSizeMeasure;
-import mulan.evaluation.measure.IsErrorMeasure;
+import mulan.evaluation.measure.AveragePrecision;
+import mulan.evaluation.measure.ErrorSetSize;
+import mulan.evaluation.measure.IsError;
 import mulan.evaluation.measure.Measure;
-import mulan.evaluation.measure.OneErrorMeasure;
+import mulan.evaluation.measure.OneError;
 import weka.core.Attribute;
 import weka.core.Instance;
 import weka.core.Instances;
@@ -106,16 +106,16 @@ public class MMPLearner extends MultiLabelLearnerBase {
 		
 		switch(lossMeasure){
 			case OneError:
-				this.lossMeasure = new OneErrorMeasure();
+				this.lossMeasure = new OneError();
 				break;
 			case IsError:
-				this.lossMeasure = new IsErrorMeasure();
+				this.lossMeasure = new IsError();
 				break;
 			case ErrorSetSize:
-				this.lossMeasure = new ErrorSetSizeMeasure();
+				this.lossMeasure = new ErrorSetSize();
 				break;
 			case AveragePrecision:
-				this.lossMeasure = new AvgPMeasure();
+				this.lossMeasure = new AveragePrecision();
 				break;
 			default: 
 				throw new IllegalArgumentException(String.format("The specified loss measure '%s' " +
@@ -200,7 +200,7 @@ public class MMPLearner extends MultiLabelLearnerBase {
 		
 		double[] input = getFeatureVector(instance);
 		
-		// compute model prediction on raking for given example
+		// update model prediction on raking for given example
 		double[] labelConfidences = new double[numLabels];
 		for(int index = 0; index < numLabels; index++){
 			Neuron perceptron = perceptrons.get(index);
@@ -221,7 +221,7 @@ public class MMPLearner extends MultiLabelLearnerBase {
 	    technicalInfo.setValue(Field.TITLE, "A Family of Additive Online Algorithms for Category Ranking.");
 	    technicalInfo.setValue(Field.JOURNAL, "Journal of Machine Learning Research");
 	    technicalInfo.setValue(Field.VOLUME, "3(6)");
-	    technicalInfo.setValue(Field.PAGES, "1025–1058");
+	    technicalInfo.setValue(Field.PAGES, "1025ï¿½1058");
 	    return technicalInfo;
 	}
 	
