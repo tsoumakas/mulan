@@ -77,7 +77,7 @@ public class HMC extends MultiLabelMetaLearner {
     private void buildRec(HMCNode node, Instances data) throws InvalidDataFormatException, Exception
     {
         String metaLabel = node.getName();
-        debug(metaLabel);
+        //debug(metaLabel);
 
         //debug("Preparing node data");
         Set<String> childrenLabels = new HashSet<String>();
@@ -303,7 +303,7 @@ public class HMC extends MultiLabelMetaLearner {
             }
         }
         
-        debug("Labels: " + labelsMetaData.getLabelNames().toString());
+        //debug("Labels: " + labelsMetaData.getLabelNames().toString());
         
         //Deleting labels from instances
         for (String label : allLabels) {
