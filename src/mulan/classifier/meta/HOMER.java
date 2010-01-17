@@ -20,11 +20,12 @@
  */
 package mulan.classifier.meta;
 
+import java.util.Set;
 import mulan.classifier.MultiLabelLearner;
 import mulan.classifier.MultiLabelOutput;
-import mulan.classifier.meta.HMC;
 import mulan.data.MultiLabelInstances;
 import mulan.classifier.meta.HierarchyBuilder.Method;
+import mulan.data.LabelsMetaData;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.TechnicalInformation;
@@ -54,16 +55,17 @@ import weka.core.TechnicalInformation.*;
  * @author Grigorios Tsoumakas
  * @revisions 0.01
  */
-public class HOMER extends MultiLabelMetaLearner
-{
+public class HOMER extends MultiLabelMetaLearner {
+
     private final int numClusters;
     private HMC hmc;
     private HierarchyBuilder hb;
     private Instances header;
     private Method method;
+    private MultiLabelInstances m;
+    private int numMetaLabels;
 
-    public HOMER(MultiLabelLearner mll, int clusters, Method method)
-    {
+    public HOMER(MultiLabelLearner mll, int clusters, Method method) {
         super(mll);
         this.method = method;
         numClusters = clusters;
@@ -71,19 +73,33 @@ public class HOMER extends MultiLabelMetaLearner
 
     @Override
     protected void buildInternal(MultiLabelInstances trainingSet) throws Exception {
-        debug("Constructing the hierarchical multilabel dataset");
+        debug("Learning the hierarchy of models");
         hb = new HierarchyBuilder(numClusters, method);
-        MultiLabelInstances meta = hb.buildHierarchy(trainingSet);
+        LabelsMetaData labelHierarchy = hb.buildLabelHierarchy(trainingSet);
+
+        debug("Constructing the hierarchical multilabel dataset");
+        MultiLabelInstances meta = HierarchyBuilder.createHierarchicalDataset(trainingSet, labelHierarchy);
         header = new Instances(meta.getDataSet(), 0);
+
         debug("Training the hierarchical classifier");
         hmc = new HMC(baseLearner);
         hmc.setDebug(getDebug());
         hmc.build(meta);
-        //System.out.println(meta.getDataSet());
+
+        Set<String> leafLabels = trainingSet.getLabelsMetaData().getLabelNames();
+        Set<String> metaLabels = labelHierarchy.getLabelNames();
+        for (String string : leafLabels) {
+            metaLabels.remove(string);
+        }
+        numMetaLabels = metaLabels.size();
     }
 
     public MultiLabelOutput makePrediction(Instance instance) throws Exception {
-        Instance transformed = hb.modifyInstance(instance);
+        Instance transformed = new Instance(instance.weight(), instance.toDoubleArray());
+        for (int i = 0; i < numMetaLabels; i++) {
+            transformed.insertAttributeAt(transformed.numAttributes());
+        }
+
         transformed.setDataset(header);
         MultiLabelOutput mlo = hmc.makePrediction(transformed);
         boolean[] oldBipartition = mlo.getBipartition();
@@ -100,24 +116,25 @@ public class HOMER extends MultiLabelMetaLearner
 
     @Override
     public TechnicalInformation getTechnicalInformation() {
-		TechnicalInformation result = new TechnicalInformation(Type.INPROCEEDINGS);
-		result.setValue(Field.AUTHOR, "Grigorios Tsoumakas and Ioannis Katakis and Ioannis Vlahavas");
-		result.setValue(Field.TITLE, "Effective and Efficient Multilabel Classification in Domains with Large Number of Labels");
-		result.setValue(Field.BOOKTITLE, "Proc. ECML/PKDD 2008 Workshop on Mining Multidimensional Data (MMD'08)");
-		result.setValue(Field.LOCATION, "Antwerp, Belgium");
-		result.setValue(Field.YEAR, "2008");
-		return result;
+        TechnicalInformation result = new TechnicalInformation(Type.INPROCEEDINGS);
+        result.setValue(Field.AUTHOR, "Grigorios Tsoumakas and Ioannis Katakis and Ioannis Vlahavas");
+        result.setValue(Field.TITLE, "Effective and Efficient Multilabel Classification in Domains with Large Number of Labels");
+        result.setValue(Field.BOOKTITLE, "Proc. ECML/PKDD 2008 Workshop on Mining Multidimensional Data (MMD'08)");
+        result.setValue(Field.LOCATION, "Antwerp, Belgium");
+        result.setValue(Field.YEAR, "2008");
+        return result;
     }
-    
+
     //spark temporary edit for complexity measures   
     public long getNoNodes() {
         return hmc.getNoNodes();
-      }
-      public long getNoClassifierEvals() {
-      	return hmc.getNoClassifierEvals();
-      }
-      public long getTotalUsedTrainInsts() {
-      	return hmc.getTotalUsedTrainInsts(); 
-      }    
-    
+    }
+
+    public long getNoClassifierEvals() {
+        return hmc.getNoClassifierEvals();
+    }
+
+    public long getTotalUsedTrainInsts() {
+        return hmc.getTotalUsedTrainInsts();
+    }
 }

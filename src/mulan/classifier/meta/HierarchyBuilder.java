@@ -39,6 +39,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import mulan.data.InvalidDataFormatException;
 import mulan.data.LabelNode;
 import mulan.data.LabelNodeImpl;
 import mulan.data.LabelsMetaData;
@@ -67,15 +68,13 @@ public class HierarchyBuilder {
 
     private int numPartitions;
     private Document labelsXMLDoc;
-    private int numMetaLabels;
-    private boolean built = false;
     private Method method;
-
 
     public HierarchyBuilder(int partitions, Method method) {
         numPartitions = partitions;
         this.method = method;
     }
+
     /**
      * Builds a hierarhical multi-label dataset. Firstly a random hierarchy is
      * built on top of the labels of a flat multi-label dataset, by recursively
@@ -83,66 +82,41 @@ public class HierarchyBuilder {
      * Then the values for the new "meta-labels" are properly set, so that
      * the hierarchy is respected.
      *
-     * @param mlData the multiLabel data on with the new hierarchy will be built
+     * @param mlData the multiLabel data on which the new hierarchy will be built
      * @return the new multiLabel data
      * @throws java.lang.Exception
      */
     public MultiLabelInstances buildHierarchy(MultiLabelInstances mlData) throws Exception {
-        if (mlData.getNumLabels() <= numPartitions) {
-            throw new Exception("Labels are less than the number of clusters you asked! (or equal)");
-        }
-
-        System.out.println("Constructing the label hierarchy");
-        LabelsMetaDataImpl labelsMetaData = createLabelsMetaData(mlData);
-        Set<String> labels = labelsMetaData.getLabelNames();
-        System.out.println(Arrays.toString(labels.toArray()));
-
-        System.out.println("Creating the hierarchical data set");
-        Instances newDataSet = createHierarchicalDataset(mlData, labelsMetaData);
-
-        built = true;
-        return new MultiLabelInstances(newDataSet, labelsMetaData);
-    }
-
-    public MultiLabelInstances buildHierarchyAndSaveFiles(MultiLabelInstances mlData, String arffName, String xmlName) throws Exception {
-        MultiLabelInstances newData = buildHierarchy(mlData);
-        saveToArffFile(newData.getDataSet(), new File(arffName));
-        createXMLFile(mlData.getLabelsMetaData());
-        saveToXMLFile(xmlName);
-        return newData;
+        LabelsMetaData labelsMetaData = buildLabelHierarchy(mlData);
+        return HierarchyBuilder.createHierarchicalDataset(mlData, labelsMetaData);
     }
 
     /**
-     * Adds as many attributes as the number of metaLabels that the hierachyBuilder
-     * added to the dataSet. The new attributes are not initialized.
+     * Builds a hierarhy of labels on top of the labels of a flat multi-label
+     * dataset, by recursively partitioning the labels into a specified number
+     * of partitions.
      *
-     * @param ins the instance to modify
-     * @return the modified instance
+     * @param mlData the multiLabel data on with the new hierarchy will be built
+     * @return a hierarchy of labels
+     * @throws java.lang.Exception
      */
-    public Instance modifyInstance(Instance ins) {
-        if (built) {
-            Instance modifiedIns = new Instance(ins.weight(), ins.toDoubleArray());
-            for (int i = 0; i < numMetaLabels; i++) {
-                modifiedIns.insertAttributeAt(modifiedIns.numAttributes());
-            }
-            return modifiedIns;
+    public LabelsMetaData buildLabelHierarchy(MultiLabelInstances mlData) throws Exception {
+        if (mlData.getNumLabels() <= numPartitions) {
+            throw new Exception("Labels are less than the number of clusters you asked! (or equal)");
         }
-        return null;
-    }
-
-    private LabelsMetaDataImpl createLabelsMetaData(MultiLabelInstances mlData) {
         if (numPartitions > mlData.getNumLabels()) {
             throw new IllegalArgumentException("Number of labels is smaller than the number of partitions");
         }
 
         Set<String> setOfLabels = mlData.getLabelsMetaData().getLabelNames();
         List<String> listOfLabels = new ArrayList<String>();
-        for (String label : setOfLabels)
+        for (String label : setOfLabels) {
             listOfLabels.add(label);
+        }
 
         ArrayList<String>[] childrenLabels = null;
         switch (method) {
-            case Random: 
+            case Random:
                 childrenLabels = randomPartitioning(numPartitions, listOfLabels);
                 break;
             case Clustering:
@@ -153,25 +127,25 @@ public class HierarchyBuilder {
                 break;
         }
 
-        
-        for (int i=0; i<numPartitions; i++)
-            if (childrenLabels[i].size() == listOfLabels.size())
-            {
+        for (int i = 0; i < numPartitions; i++) {
+            if (childrenLabels[i].size() == listOfLabels.size()) {
                 // another idea is to add leaves here
                 childrenLabels = randomPartitioning(numPartitions, listOfLabels);
                 break;
             }
+        }
 
         LabelsMetaDataImpl metaData = new LabelsMetaDataImpl();
-        for (int i=0; i<numPartitions; i++) {
-            if (childrenLabels[i].size() == 0)
+        for (int i = 0; i < numPartitions; i++) {
+            if (childrenLabels[i].size() == 0) {
                 continue;
+            }
             if (childrenLabels[i].size() == 1) {
                 metaData.addRootNode(new LabelNodeImpl(childrenLabels[i].get(0)));
                 continue;
             }
             if (childrenLabels[i].size() > 1) {
-                LabelNodeImpl metaLabel = new LabelNodeImpl("MetaLabel " + (i+1));
+                LabelNodeImpl metaLabel = new LabelNodeImpl("MetaLabel " + (i + 1));
                 createLabelsMetaDataRecursive(metaLabel, childrenLabels[i], mlData);
                 metaData.addRootNode(metaLabel);
             }
@@ -180,10 +154,17 @@ public class HierarchyBuilder {
         return metaData;
     }
 
-    private void createLabelsMetaDataRecursive(LabelNodeImpl node, List<String> labels, MultiLabelInstances mlData)
-    {
+    public MultiLabelInstances buildHierarchyAndSaveFiles(MultiLabelInstances mlData, String arffName, String xmlName) throws Exception {
+        MultiLabelInstances newData = buildHierarchy(mlData);
+        saveToArffFile(newData.getDataSet(), new File(arffName));
+        createXMLFile(mlData.getLabelsMetaData());
+        saveToXMLFile(xmlName);
+        return newData;
+    }
+
+    private void createLabelsMetaDataRecursive(LabelNodeImpl node, List<String> labels, MultiLabelInstances mlData) {
         if (labels.size() <= numPartitions) {
-            for (int i=0; i<labels.size(); i++) {
+            for (int i = 0; i < labels.size(); i++) {
                 LabelNodeImpl child = new LabelNodeImpl(labels.get(i));
                 node.addChildNode(child);
             }
@@ -203,50 +184,51 @@ public class HierarchyBuilder {
                 break;
         }
 
-        for (int i=0; i<numPartitions; i++)
-            if (childrenLabels[i].size() == labels.size())
-            {
+        for (int i = 0; i < numPartitions; i++) {
+            if (childrenLabels[i].size() == labels.size()) {
                 // another idea is to add leaves here
                 childrenLabels = randomPartitioning(numPartitions, labels);
                 break;
             }
+        }
 
-        for (int i=0; i<numPartitions; i++) {
-            if (childrenLabels[i].size() == 0)
+        for (int i = 0; i < numPartitions; i++) {
+            if (childrenLabels[i].size() == 0) {
                 continue;
-            if (childrenLabels[i].size() == 1)
-            {
+            }
+            if (childrenLabels[i].size() == 1) {
                 LabelNodeImpl child = new LabelNodeImpl(childrenLabels[i].get(0));
                 node.addChildNode(child);
                 continue;
             }
             if (childrenLabels[i].size() > 1) {
-                LabelNodeImpl child = new LabelNodeImpl(node.getName() + "." + (i+1));
+                LabelNodeImpl child = new LabelNodeImpl(node.getName() + "." + (i + 1));
                 node.addChildNode(child);
                 createLabelsMetaDataRecursive(child, childrenLabels[i], mlData);
             }
         }
     }
 
-    private ArrayList<String>[] clustering(int clusters, List<String> labels, MultiLabelInstances mlData, boolean balanced)
-    {
+    private ArrayList<String>[] clustering(int clusters, List<String> labels, MultiLabelInstances mlData, boolean balanced) {
         ArrayList<String>[] childrenLabels = new ArrayList[clusters];
-        for (int i=0; i<clusters; i++)
+        for (int i = 0; i < clusters; i++) {
             childrenLabels[i] = new ArrayList<String>();
+        }
 
         // transpose data and keep only labels in the parameter list
         int numInstances = mlData.getDataSet().numInstances();
         FastVector attInfo = new FastVector(numInstances);
-        for (int i=0; i<numInstances; i++) {
-            Attribute att = new Attribute("instance"+(i+1));
+        for (int i = 0; i < numInstances; i++) {
+            Attribute att = new Attribute("instance" + (i + 1));
             attInfo.addElement(att);
         }
         System.out.println("constructing instances");
         Instances transposed = new Instances("transposed", attInfo, 0);
-        for (int i=0; i<labels.size(); i++) {
+        for (int i = 0; i < labels.size(); i++) {
             double[] values = new double[numInstances];
-            for (int j=0; j<numInstances; j++)
+            for (int j = 0; j < numInstances; j++) {
                 values[j] = mlData.getDataSet().instance(j).value(mlData.getDataSet().attribute(labels.get(i)));
+            }
             Instance newInstance = new Instance(1, values);
             transposed.add(newInstance);
         }
@@ -259,8 +241,9 @@ public class HierarchyBuilder {
                 System.out.println("clustering");
                 clusterer.buildClusterer(transposed);
                 // return the clustering
-                for (int i=0; i<labels.size(); i++)
+                for (int i = 0; i < labels.size(); i++) {
                     childrenLabels[clusterer.clusterInstance(transposed.instance(i))].add(labels.get(i));
+                }
             } catch (Exception ex) {
                 Logger.getLogger(HierarchyBuilder.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -273,8 +256,9 @@ public class HierarchyBuilder {
                 System.out.println("balanced clustering");
                 clusterer.buildClusterer(transposed);
                 // return the clustering
-                for (int i=0; i<labels.size(); i++)
+                for (int i = 0; i < labels.size(); i++) {
                     childrenLabels[clusterer.clusterInstance(transposed.instance(i))].add(labels.get(i));
+                }
             } catch (Exception ex) {
                 Logger.getLogger(HierarchyBuilder.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -284,26 +268,24 @@ public class HierarchyBuilder {
         return childrenLabels;
     }
 
-
-    private ArrayList<String>[] randomPartitioning(int partitions, List<String> labels)
-    {
+    private ArrayList<String>[] randomPartitioning(int partitions, List<String> labels) {
         ArrayList<String>[] childrenLabels = new ArrayList[partitions];
-        for (int i=0; i<partitions; i++)
+        for (int i = 0; i < partitions; i++) {
             childrenLabels[i] = new ArrayList<String>();
+        }
 
         Random rnd = new Random();
         while (!labels.isEmpty()) {
-            for (int i=0; i<partitions; i++)
-            {
-                if (labels.isEmpty())
+            for (int i = 0; i < partitions; i++) {
+                if (labels.isEmpty()) {
                     break;
+                }
                 String rndLabel = labels.remove(rnd.nextInt(labels.size()));
                 childrenLabels[i].add(rndLabel);
             }
         }
         return childrenLabels;
     }
-
 
     /**
      * Creates the hierarchical dataset according to the original multilabel
@@ -312,27 +294,29 @@ public class HierarchyBuilder {
      * @param mlData the original multilabel instances
      * @param metaData the metadata of the constructed label hierarchy
      */
-    private Instances createHierarchicalDataset(MultiLabelInstances mlData, LabelsMetaDataImpl metaData) {
+    public static MultiLabelInstances createHierarchicalDataset(MultiLabelInstances mlData, LabelsMetaData metaData) throws InvalidDataFormatException {
         Set<String> leafLabels = mlData.getLabelsMetaData().getLabelNames();
         Set<String> metaLabels = metaData.getLabelNames();
         for (String string : leafLabels) {
             metaLabels.remove(string);
         }
         Instances dataSet = mlData.getDataSet();
-        numMetaLabels = metaLabels.size();
+        int numMetaLabels = metaLabels.size();
 
         // copy existing attributes
-        FastVector atts = new FastVector(dataSet.numAttributes()+numMetaLabels);
-        for (int i=0; i<dataSet.numAttributes(); i++)
+        FastVector atts = new FastVector(dataSet.numAttributes() + numMetaLabels);
+        for (int i = 0; i < dataSet.numAttributes(); i++) {
             atts.addElement(dataSet.attribute(i));
+        }
 
         FastVector labelValues = new FastVector();
         labelValues.addElement("0");
         labelValues.addElement("1");
 
         // add metalabel attributes
-        for (String metaLabel : metaLabels)
+        for (String metaLabel : metaLabels) {
             atts.addElement(new Attribute(metaLabel, labelValues));
+        }
 
         // initialize dataset
         Instances newDataSet = new Instances("hierarchical", atts, dataSet.numInstances());
@@ -347,13 +331,11 @@ public class HierarchyBuilder {
             // copy features and labels
             double[] values = dataSet.instance(i).toDoubleArray();
             System.arraycopy(values, 0, newValues, 0, values.length);
-            
+
             // set metalabels
-            for (String label : leafLabels)
-            {
+            for (String label : leafLabels) {
                 Attribute att = dataSet.attribute(label);
-                if (att.value((int) dataSet.instance(i).value(att)).equals("1"))
-                {
+                if (att.value((int) dataSet.instance(i).value(att)).equals("1")) {
                     //System.out.println(label);
                     //System.out.println(Arrays.toString(metaData.getLabelNames().toArray()));
                     LabelNode currentNode = metaData.getLabelNode(label);
@@ -362,19 +344,20 @@ public class HierarchyBuilder {
                         currentNode = currentNode.getParent();
                         Attribute currentAtt = newDataSet.attribute(currentNode.getName());
                         // change the following to refer to the array
-                        if (newValues[atts.indexOf(currentAtt)] == 1)
-                            // no need to go more up
+                        if (newValues[atts.indexOf(currentAtt)] == 1) // no need to go more up
+                        {
                             break;
-                        else 
-                            // put 1
+                        } else // put 1
+                        {
                             newValues[atts.indexOf(currentAtt)] = 1;
+                        }
                     }
                 }
             }
-            
+
             newDataSet.add(new Instance(dataSet.instance(i).weight(), newValues));
         }
-        return newDataSet;
+        return new MultiLabelInstances(newDataSet, metaData);
     }
 
     private void saveToArffFile(Instances dataSet, File file) throws IOException {
@@ -383,7 +366,7 @@ public class HierarchyBuilder {
         saver.setFile(file);
         saver.writeBatch();
     }
-    
+
     private void createXMLFile(LabelsMetaData metaData) throws Exception {
         DocumentBuilderFactory docBF = DocumentBuilderFactory.newInstance();
         DocumentBuilder docBuilder = docBF.newDocumentBuilder();
@@ -426,6 +409,7 @@ public class HierarchyBuilder {
     }
 
     public enum Method {
+
         Random,
         Clustering,
         BalancedClustering
