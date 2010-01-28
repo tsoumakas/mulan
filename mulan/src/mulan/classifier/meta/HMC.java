@@ -64,11 +64,6 @@ public class HMC extends MultiLabelMetaLearner {
         super(baseLearner);
     }
 
-    public HMC(MultiLabelLearner baseLearner, MultiLabelInstances dataSet) throws Exception {
-        this(baseLearner);
-        build(dataSet);
-    }
-
     @Override
     public TechnicalInformation getTechnicalInformation() {
         throw new UnsupportedOperationException("Not supported yet.");
