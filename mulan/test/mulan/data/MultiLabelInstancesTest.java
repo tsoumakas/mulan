@@ -69,7 +69,6 @@ public class MultiLabelInstancesTest {
 	
 	private final int NUM_FEATURES = 2;
 	private final int NUM_LABELS = 3;
-	private final int NUM_EXAMPLES = 3;
 	private MultiLabelInstances mlData;
 	
 	@Before

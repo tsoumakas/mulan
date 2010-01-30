@@ -574,7 +574,7 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner
 	}
 
 	@Override
-	public MultiLabelOutput makePrediction(Instance instance) throws Exception {
+	protected MultiLabelOutput makePredictionInternal(Instance instance) throws Exception {
 		boolean[] bipartition = new boolean[numLabels];
 		// the confidences given as final output
 		double[] metaconfidences = new double[numLabels];
@@ -801,4 +801,10 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner
 	public void setPartialBuild(boolean partialBuild) {
 		this.partialBuild = partialBuild;
 	}
+	
+	@Override
+    protected boolean isModelInitialized(){
+    	//TODO: not implemented
+		return true;
+    }
 }

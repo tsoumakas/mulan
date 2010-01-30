@@ -300,7 +300,7 @@ public class BRkNN extends MultiLabelKNN {
      * @throws Exception if nearest neighbours search fails
      */
 
-	public MultiLabelOutput makePrediction(Instance instance) throws Exception {
+	protected MultiLabelOutput makePredictionInternal(Instance instance) throws Exception {
 		Instances knn = lnn.kNearestNeighbours(instance, numOfNeighbors);
 
 		double[] distances = lnn.getDistances();
@@ -463,5 +463,11 @@ public class BRkNN extends MultiLabelKNN {
 	public void setCvMaxK(int cvMaxK) {
 		this.cvMaxK = cvMaxK;
 	}
+	
+	@Override
+    protected boolean isModelInitialized(){
+    	//TODO: not implemented
+		return true;
+    }
 
 }

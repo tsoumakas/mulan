@@ -72,7 +72,7 @@ public class IncludeLabelsClassifier extends TransformationBasedMultiLabelLearne
         transformed.delete();
     }
 
-    public MultiLabelOutput makePrediction(Instance instance) throws Exception {
+    protected MultiLabelOutput makePredictionInternal(Instance instance) throws Exception {
         double[] confidences = new double[numLabels];
         boolean[] bipartition = new boolean[numLabels];
 
@@ -93,6 +93,12 @@ public class IncludeLabelsClassifier extends TransformationBasedMultiLabelLearne
 
         MultiLabelOutput mlo = new MultiLabelOutput(bipartition, confidences);
 		return mlo;
+    }
+    
+    @Override
+    protected boolean isModelInitialized(){
+    	//TODO: not implemented
+		return true;
     }
 }
 

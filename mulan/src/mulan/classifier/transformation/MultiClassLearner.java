@@ -61,7 +61,7 @@ public class MultiClassLearner extends TransformationBasedMultiLabelLearner
         header = new Instances(meta, 0);
     }
 
-    public MultiLabelOutput makePrediction(Instance instance) throws Exception {
+    protected MultiLabelOutput makePredictionInternal(Instance instance) throws Exception {
         //delete labels
         instance = RemoveAllLabels.transformInstance(instance, labelIndices);
         instance.setDataset(null);
@@ -74,4 +74,9 @@ public class MultiClassLearner extends TransformationBasedMultiLabelLearner
 		return mlo;
     }
 
+    @Override
+    protected boolean isModelInitialized(){
+    	//TODO: not implemented
+		return true;
+    }
 }

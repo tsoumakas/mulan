@@ -255,7 +255,7 @@ public class RAkEL extends MultiLabelMetaLearner
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public MultiLabelOutput makePrediction(Instance instance) throws Exception {
+    protected MultiLabelOutput makePredictionInternal(Instance instance) throws Exception {
         double[] sumConf = new double[numLabels];
         sumVotes = new double[numLabels];
         lengthVotes = new double[numLabels];
@@ -294,5 +294,11 @@ public class RAkEL extends MultiLabelMetaLearner
         // todo: optionally use confidence2 for ranking measures
         MultiLabelOutput mlo = new MultiLabelOutput(bipartition, confidence1);
         return mlo;
+    }
+    
+    @Override
+    protected boolean isModelInitialized(){
+    	//TODO: not implemented
+		return true;
     }
 }

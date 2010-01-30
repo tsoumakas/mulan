@@ -143,7 +143,7 @@ public class LabelPowerset extends TransformationBasedMultiLabelLearner
         }
     }
 
-    public MultiLabelOutput makePrediction(Instance instance) throws Exception {
+    protected MultiLabelOutput makePredictionInternal(Instance instance) throws Exception {
         boolean bipartition[] = null;
         double confidences[] = null;
 
@@ -224,6 +224,11 @@ public class LabelPowerset extends TransformationBasedMultiLabelLearner
  		return mlo;
     }
 
+    @Override
+    protected boolean isModelInitialized(){
+    	//TODO: not implemented
+		return true;
+    }
 
 }
 

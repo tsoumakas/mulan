@@ -30,6 +30,7 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Set;
 
+import mulan.classifier.InvalidDataException;
 import mulan.classifier.MultiLabelLearnerBase;
 import mulan.classifier.MultiLabelOutput;
 import mulan.classifier.neural.model.ActivationTANH;
@@ -107,6 +108,17 @@ public class BPMLL extends MultiLabelLearnerBase {
 	}
 	
 	/**
+	 * Gets an array defining topology of hidden layer of the underlying neural model.
+	 * The method returns a copy of the array.
+	 * @return
+	 */
+	public int[] getHiddenLayers(){
+		return hiddenLayersTopology == null ?
+				hiddenLayersTopology :
+				Arrays.copyOf(hiddenLayersTopology, hiddenLayersTopology.length);
+	}
+	
+	/**
 	 * Sets the learning rate. Must be greater than 0 and no more than 1.<br/>
 	 * Default value is 0.05.
 	 * 
@@ -119,6 +131,14 @@ public class BPMLL extends MultiLabelLearnerBase {
 					"Entered value is : " + learningRate);
 		}
 		this.learningRate = learningRate;
+	}
+	
+	/**
+	 * Gets the learning rate. The default value is 0.05.
+	 * @return learning rate
+	 */
+	public double getLearningRate(){
+		return learningRate;
 	}
 	
 	/**
@@ -139,6 +159,14 @@ public class BPMLL extends MultiLabelLearnerBase {
 	}
 	
 	/**
+	 * Gets a value of the regularization cost term for weights decay.
+	 * @return
+	 */
+	public double getWeightsDecayRegularization(){
+		return weightsDecayCost;
+	}
+	
+	/**
 	 * Sets the number of training epochs. Must be greater than 0.<br/>
 	 * Default value is 100.
 	 * 
@@ -151,6 +179,15 @@ public class BPMLL extends MultiLabelLearnerBase {
 					"Entered value is : " + epochs);
 		}
 		this.epochs = epochs;
+	}
+	
+	/**
+	 * Gets number of training epochs.
+	 * Default value is 100.
+	 * @return
+	 */
+	public int getTrainingEpochs(){
+		return epochs;
 	}
 	
 	/**
@@ -168,11 +205,16 @@ public class BPMLL extends MultiLabelLearnerBase {
 		normalizeAttributes = normalize;
 	}
 
+	/**
+	 * Gets a value if normalization of nominal attributes should take place.
+	 * Default value is true.
+	 * @return
+	 */
+	public boolean getNormalizeAttributes(){
+		return normalizeAttributes;
+	}
+	
 	protected void buildInternal(final MultiLabelInstances instances) throws Exception {
-		
-		if(instances == null){
-			throw new IllegalArgumentException("Instances must not be null.");
-		}
 		
 		// delete filter if available from previous build, a new one will be created if necessary
 		nominalToBinaryFilter = null;
@@ -271,8 +313,8 @@ public class BPMLL extends MultiLabelLearnerBase {
 		
 		Instances data = mlData.getDataSet();
 		if(!checkAttributesFormat(data, mlData.getFeatureAttributes())){
-			throw new IllegalArgumentException("Attributes are not in correct format. " +
-					"Input attributes (all but the label attributes) must be numeric.");
+			throw new InvalidDataException("Attributes are not in correct format. " +
+					"Input attributes (all but the label attributes) must be nominal or numeric.");
 		}
 		
 		if(normalizeAttributes){
@@ -329,14 +371,11 @@ public class BPMLL extends MultiLabelLearnerBase {
 		return true;
 	}
 	
-    public MultiLabelOutput makePrediction(Instance instance) throws Exception {
+    public MultiLabelOutput makePredictionInternal(Instance instance) throws InvalidDataException {
 
-		if(instance == null){
-			throw new IllegalArgumentException("Input instance for prediction is null.");
-		}
 		int numAttributes = instance.numAttributes();
 		if(numAttributes < model.getNetInputSize()){
-			throw new IllegalArgumentException("Input instance do not have enough attributes " +
+			throw new InvalidDataException("Input instance do not have enough attributes " +
 					"to be processed by the model. Instance is not consistent with the data the model was built for.");
 		}
 
@@ -390,6 +429,11 @@ public class BPMLL extends MultiLabelLearnerBase {
 
         MultiLabelOutput mlo = new MultiLabelOutput(labelPredictions, labelConfidences);
         return mlo;
+    }
+    
+    @Override
+    protected boolean isModelInitialized(){
+    	return model != null;
     }
     
     /**

@@ -62,7 +62,7 @@ public class HMCNode extends MultiLabelMetaLearner {
         baseLearner.build(trainingSet);
     }
 
-    public MultiLabelOutput makePrediction(Instance instance) throws Exception {
+    protected MultiLabelOutput makePredictionInternal(Instance instance) throws Exception {
         return baseLearner.makePrediction(instance);
     }
 
@@ -120,6 +120,12 @@ public class HMCNode extends MultiLabelMetaLearner {
     @Override
     public TechnicalInformation getTechnicalInformation() {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+    
+    @Override
+    protected boolean isModelInitialized(){
+    	//TODO: not implemented
+		return true;
     }
 
 }

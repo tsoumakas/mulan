@@ -94,7 +94,7 @@ public class HOMER extends MultiLabelMetaLearner {
         numMetaLabels = metaLabels.size();
     }
 
-    public MultiLabelOutput makePrediction(Instance instance) throws Exception {
+    protected MultiLabelOutput makePredictionInternal(Instance instance) throws Exception {
         Instance transformed = new Instance(instance.weight(), instance.toDoubleArray());
         for (int i = 0; i < numMetaLabels; i++) {
             transformed.insertAttributeAt(transformed.numAttributes());
@@ -136,5 +136,11 @@ public class HOMER extends MultiLabelMetaLearner {
 
     public long getTotalUsedTrainInsts() {
         return hmc.getTotalUsedTrainInsts();
+    }
+    
+    @Override
+    protected boolean isModelInitialized(){
+    	//TODO: not implemented
+		return true;
     }
 }

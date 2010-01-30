@@ -26,7 +26,7 @@ import java.util.Date;
 
 import mulan.core.ArgumentNullException;
 import mulan.data.MultiLabelInstances;
-
+import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.SerializedObject;
 import weka.core.TechnicalInformation;
@@ -68,7 +68,7 @@ public abstract class MultiLabelLearnerBase
      * @return technical information
      */
     public abstract TechnicalInformation getTechnicalInformation();
-
+    
     public boolean isUpdatable() {
         /** as default learners are assumed not to be updatable */
         return false;
@@ -96,6 +96,37 @@ public abstract class MultiLabelLearnerBase
      */
     protected abstract void buildInternal(MultiLabelInstances trainingSet) throws Exception;
 
+    /**
+     * Gets whether learner's model is initialized by {@link #build(MultiLabelInstances)}.
+     * This is used to check if {@link #makePrediction(weka.core.Instance)} can be processed.
+     * @return
+     */
+    protected abstract boolean isModelInitialized();
+    
+
+    public final MultiLabelOutput makePrediction(Instance instance) 
+    throws Exception, InvalidDataException, ModelInitializationException{
+    	if(instance == null){
+    		throw new ArgumentNullException("instance");
+    	}
+    	if(!isModelInitialized()){
+    		throw new ModelInitializationException("Learner is not initilaized by training data.");
+    	}
+    	
+    	return makePredictionInternal(instance);
+    }
+    
+    /**
+     * Learner specific implementation for predicting on specified data based on trained model.
+     * This method is called from {@link #makePrediction(weka.core.Instance)} which guards for model
+     * initialization and apply common handling/behavior.
+     *
+     * @param instance the data instance to predict on
+     * @throws Exception if an error occurs while making the prediction.
+     * @throws ModelInitializationException if method is called before {@link MultiLabelLearner#build(MultiLabelInstances)}
+     */
+    protected abstract MultiLabelOutput makePredictionInternal(Instance instance) throws Exception, InvalidDataException;
+    
     /**
      * Set debugging mode.
      *
