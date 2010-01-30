@@ -15,7 +15,7 @@
  */
 
 /*
- *    MulanRuntimeException.java
+ *    InvalidDataException.java
  *    Copyright (C) 2009 Aristotle University of Thessaloniki, Thessaloniki, Greece
  */
 
