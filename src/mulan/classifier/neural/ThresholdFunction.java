@@ -22,6 +22,7 @@
 
 package mulan.classifier.neural;
 
+import java.io.Serializable;
 import java.util.Arrays;
 
 import weka.core.Utils;
@@ -32,8 +33,10 @@ import weka.core.matrix.Matrix;
  *  
  * @author Jozef Vilcek
  */
-public class ThresholdFunction {
+public class ThresholdFunction implements Serializable {
 
+	/** Default serial version UID for serialization*/
+	private static final long serialVersionUID = 5347411552628371402L;
 	private double[] parameters;
 
 	/**

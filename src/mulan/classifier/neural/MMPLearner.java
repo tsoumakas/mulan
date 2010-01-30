@@ -26,12 +26,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import mulan.classifier.InvalidDataException;
 import mulan.classifier.MultiLabelLearnerBase;
 import mulan.classifier.MultiLabelOutput;
 import mulan.classifier.neural.model.ActivationLinear;
 import mulan.classifier.neural.model.Neuron;
 import mulan.core.ArgumentNullException;
-import mulan.core.MulanException;
 import mulan.core.WekaException;
 import mulan.data.MultiLabelInstances;
 import mulan.evaluation.measure.AveragePrecision;
@@ -77,8 +77,8 @@ public class MMPLearner extends MultiLabelLearnerBase {
 	private boolean convertNomToBin = true;
 	/** Filter used for conversion of nominal attributes to binary (if enabled) */
 	private NominalToBinary nomToBinFilter;
-	/** The loss measure used to judge the performance of ranking when learning the model */
-	private final Measure lossMeasure;
+	/** The loss measure type to be used to judge the performance of ranking when learning the model */
+	private final LossMeasure lossMeasure;
 	/** The name of a model update rule used to update the model when learning from training data */
 	private final MMPUpdateRuleType mmpUpdateRule;
 	/** 
@@ -103,24 +103,7 @@ public class MMPLearner extends MultiLabelLearnerBase {
 		}
 		
 		mmpUpdateRule = modelUpdateRule;
-		
-		switch(lossMeasure){
-			case OneError:
-				this.lossMeasure = new OneError();
-				break;
-			case IsError:
-				this.lossMeasure = new IsError();
-				break;
-			case ErrorSetSize:
-				this.lossMeasure = new ErrorSetSize();
-				break;
-			case AveragePrecision:
-				this.lossMeasure = new AveragePrecision();
-				break;
-			default: 
-				throw new IllegalArgumentException(String.format("The specified loss measure '%s' " +
-						"is not supported.", lossMeasure));
-		}
+		this.lossMeasure = lossMeasure;
 	}
 	
 	/**
@@ -181,7 +164,9 @@ public class MMPLearner extends MultiLabelLearnerBase {
 			perceptrons = initializeModel(numFeatures, numLabels);
 			isInitialized = true;
 		}
-		ModelUpdateRule modelUpdateRule = getModelUpdateRule();
+		
+		Measure lossMeasure = getLossMeasure();
+		ModelUpdateRule modelUpdateRule = getModelUpdateRule(lossMeasure);
 		
 		for(DataPair dataItem : trainData){
 			modelUpdateRule.process(dataItem, null);
@@ -189,14 +174,7 @@ public class MMPLearner extends MultiLabelLearnerBase {
 	}
 
 	@Override
-	public MultiLabelOutput makePrediction(Instance instance) throws Exception {
-		if(instance == null){
-			throw new ArgumentNullException("instance");
-		}
-		
-		if(!isInitialized){
-			throw new MulanException("Learner is not initialized. Call build method prior to makin prediction!");
-		}
+	public MultiLabelOutput makePredictionInternal(Instance instance) throws InvalidDataException {
 		
 		double[] input = getFeatureVector(instance);
 		
@@ -212,6 +190,11 @@ public class MMPLearner extends MultiLabelLearnerBase {
 		
 		return mlOut;
 	}
+	
+	@Override
+    protected boolean isModelInitialized(){
+    	return isInitialized;
+    }
 
 	@Override
 	public TechnicalInformation getTechnicalInformation() {
@@ -235,7 +218,23 @@ public class MMPLearner extends MultiLabelLearnerBase {
 		return perceptrons;
 	}
 	
-	private ModelUpdateRule getModelUpdateRule() {
+	private Measure getLossMeasure() {
+		switch(lossMeasure){
+			case OneError:
+				return new OneError();
+			case IsError:
+				return new IsError();
+			case ErrorSetSize:
+				return new ErrorSetSize();
+			case AveragePrecision:
+				return new AveragePrecision();
+			default: 
+				throw new IllegalArgumentException(String.format("The specified loss measure '%s' " +
+						"is not supported.", lossMeasure));
+		}
+	}
+	
+	private ModelUpdateRule getModelUpdateRule(Measure lossMeasure) {
 		switch (mmpUpdateRule) {
 			case UniformUpdate:
 				return new MMPUniformUpdateRule(perceptrons, lossMeasure);
@@ -340,7 +339,7 @@ public class MMPLearner extends MultiLabelLearnerBase {
 		int numAttributes = inputInstance.numAttributes();
 		int modelInputDim = perceptrons.get(0).getWeights().length - 1;
 		if(numAttributes < modelInputDim){
-			throw new IllegalArgumentException("Input instance do not have enough attributes " +
+			throw new InvalidDataException("Input instance do not have enough attributes " +
 					"to be processed by the model. Instance is not consistent with the data the model was built for.");
 		}
 

@@ -20,9 +20,21 @@
  */
 package mulan.data;
 
-import java.util.*;
-import java.io.*;
-import weka.core.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.StringTokenizer;
+
+import weka.core.Attribute;
+import weka.core.FastVector;
+import weka.core.Instance;
+import weka.core.Instances;
+import weka.core.SparseInstance;
+import weka.core.Utils;
 
 /**
  * Class that converts LibSVM multi-label data sets to Mulan compatible format <p>
@@ -92,15 +104,23 @@ public class ConverterLibSVM {
             System.out.println("Number of instances: " + numInstances);
             System.out.println("Number of classes: " + numLabels);
 
-            System.out.print("Constructing XML file... ");
-            aWriter = new BufferedWriter(new FileWriter(path + targetFilestem +".xml"));
-            aWriter.write("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n");
-            aWriter.write("<labels xmlns=\"http://mulan.sourceforge.net/labels\">\n");
-            for (int i=0; i<numLabels; i++)
-                aWriter.write("<label name=\"Label"+(i+1)+"\"></label>\n");
-            aWriter.write("</labels>");
-            aWriter.close();
-            System.out.println("Done!");
+            System.out.println("Constructing XML file... ");
+            LabelsMetaDataImpl meta = new LabelsMetaDataImpl();
+        	for(int label = 0; label < numLabels; label++){
+        		meta.addRootNode(new LabelNodeImpl("Label" + (label + 1)));
+        	}
+        	
+        	String labelsFilePath = path + targetFilestem +".xml";
+        	try {
+				LabelsBuilder.dumpLabels(meta, labelsFilePath);
+				System.out.println("Done!");
+			} catch (LabelsBuilderException e) {
+				File labelsFile = new File(labelsFilePath);
+				if(labelsFile.exists()){
+					labelsFile.delete();
+				}
+				System.out.println("Construction of labels XML failed!");
+			}
 
             meanParsedAttributes /= numInstances;
             boolean Sparse = false;
@@ -192,6 +212,11 @@ public class ConverterLibSVM {
         }
     }
 
+    
+    private static void createLabelsMetadataFile(String filePath, int numLabels) throws LabelsBuilderException{
+    	
+    }
+    
     /**
      * Command line interface for the converter
      *

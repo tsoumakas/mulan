@@ -216,7 +216,7 @@ public class IBLR_ML extends MultiLabelKNN {
 
 	}
 
-	public MultiLabelOutput makePrediction(Instance instance) throws Exception {
+	protected MultiLabelOutput makePredictionInternal(Instance instance) throws Exception {
 
 		double[] conf_corrected = new double[numLabels];
 		double[] confidences = new double[numLabels];
@@ -303,5 +303,11 @@ public class IBLR_ML extends MultiLabelKNN {
 
 		return result;
 	}
+	
+	@Override
+    protected boolean isModelInitialized(){
+    	//TODO: not implemented
+		return true;
+    }
 
 }

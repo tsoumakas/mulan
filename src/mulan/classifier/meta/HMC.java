@@ -179,7 +179,7 @@ public class HMC extends MultiLabelMetaLearner {
         labelsAndIndices = dataSet.getLabelsOrder();
     }
 
-    public MultiLabelOutput makePrediction(Instance instance) throws Exception {
+    protected MultiLabelOutput makePredictionInternal(Instance instance) throws Exception {
         boolean[] predictedLabels = new boolean[numLabels];
         double[] confidences = new double[numLabels];
 
@@ -348,5 +348,11 @@ public class HMC extends MultiLabelMetaLearner {
     }
     public long getTotalUsedTrainInsts() {
     	return TotalUsedTrainInsts;    
+    }
+    
+    @Override
+    protected boolean isModelInitialized(){
+    	//TODO: not implemented
+		return true;
     }
 }

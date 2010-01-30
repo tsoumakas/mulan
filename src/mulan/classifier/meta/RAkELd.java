@@ -211,7 +211,7 @@ public class RAkELd extends MultiLabelMetaLearner
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public MultiLabelOutput makePrediction(Instance instance) throws Exception
+    protected MultiLabelOutput makePredictionInternal(Instance instance) throws Exception
     {
         double[] confidences = new double[numLabels];
         boolean[] labels = new boolean[numLabels];
@@ -237,6 +237,12 @@ public class RAkELd extends MultiLabelMetaLearner
 
         MultiLabelOutput mlo = new MultiLabelOutput(labels, confidences);
         return mlo;
+    }
+    
+    @Override
+    protected boolean isModelInitialized(){
+    	//TODO: not implemented
+		return true;
     }
 }
 

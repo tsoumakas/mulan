@@ -112,7 +112,7 @@ public class BinaryRelevance extends TransformationBasedMultiLabelLearner
         }
 	}
 
-    public MultiLabelOutput makePrediction(Instance instance) throws Exception
+    protected MultiLabelOutput makePredictionInternal(Instance instance) throws Exception
     {
         boolean[] bipartition = new boolean[numLabels];
 		double[] confidences = new double[numLabels];
@@ -140,5 +140,10 @@ public class BinaryRelevance extends TransformationBasedMultiLabelLearner
 		return mlo;
     }
           
+    @Override
+    protected boolean isModelInitialized(){
+    	//TODO: not implemented
+		return true;
+    }
 }
 

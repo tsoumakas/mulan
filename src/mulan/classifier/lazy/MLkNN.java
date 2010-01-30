@@ -256,7 +256,7 @@ public class MLkNN extends MultiLabelKNN {
 		}
 	}
 
-    public MultiLabelOutput makePrediction(Instance instance) throws Exception {
+	protected MultiLabelOutput makePredictionInternal(Instance instance) throws Exception {
 		double[] confidences = new double[numLabels];
 		boolean[] predictions = new boolean[numLabels];
 
@@ -294,4 +294,9 @@ public class MLkNN extends MultiLabelKNN {
         return mlo;
     }
 
+    @Override
+    protected boolean isModelInitialized(){
+    	//TODO: not implemented
+		return true;
+    }
 }

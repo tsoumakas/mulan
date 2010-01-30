@@ -214,7 +214,7 @@ public class CalibratedLabelRanking extends TransformationBasedMultiLabelLearner
      * @return prediction
      * @throws java.lang.Exception
      */
-    public MultiLabelOutput makePrediction(Instance instance) throws Exception {
+    protected MultiLabelOutput makePredictionInternal(Instance instance) throws Exception {
     	if (useStandardVoting)
     		return makePredictionStandard(instance);
     	else
@@ -450,4 +450,10 @@ public class CalibratedLabelRanking extends TransformationBasedMultiLabelLearner
 			return temp;
 		}
 	}
+    
+    @Override
+    protected boolean isModelInitialized(){
+    	//TODO: not implemented
+		return true;
+    }
 }
