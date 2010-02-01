@@ -43,24 +43,27 @@ public class Evaluation {
 
     @Override
     public String toString() {
-        String description = "";
+        StringBuilder sb = new StringBuilder();
         for (Measure m : measures) {
-            description += m + "\n";
+            sb.append(m);
+            sb.append("\n");
         }
-        return description;
+        return sb.toString();
     }
 
     public String toCSV() {
-        String description = "";
+        StringBuilder sb = new StringBuilder();
         for (Measure m : measures) {
             double value = Double.NaN;
             try {
                 value = m.getValue();
             } catch (Exception ex) {
             }
-            description += (value + ";");
+            sb.append(value);
+            sb.append(";");
         }
-        return description + "\n";
+        sb.append("\n");
+        return sb.toString();
     }
 
     /**
