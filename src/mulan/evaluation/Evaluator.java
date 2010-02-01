@@ -56,17 +56,12 @@ public class Evaluator {
         this.seed = seed;
     }
 
-    public Evaluator(Set<Measure> measures) {
-        Set<Measure> mea = new HashSet<Measure>(measures);
-    }
-
     /**
      * Evaluates a {@link MultiLabelLearner} on given test data set using specified evaluation measures
      *
      * @param learner the learner to be evaluated via cross-validation
-     * @param dataset the data set for cross-validation
-     * @param learner
-     * @param testSet
+     * @param testSet the data set for cross-validation
+     * @param measures the evaluation measures to compute
      * @throws IllegalArgumentException if an input parameter is null
      * @throws Exception
      */
@@ -196,6 +191,21 @@ public class Evaluator {
     }
 
     /**
+     * Evaluates a {@link MultiLabelLearner} via cross-validation on given data set.
+     * The default number of folds {@link Evaluator#DEFAULTFOLDS} will be used.
+     *
+     * @param learner the learner to be evaluated via cross-validation
+     * @param mlDataSet the multi-label data set for cross-validation
+     * @param measures the evaluation measures to compute
+     * @return the evaluation result
+     * @throws IllegalArgumentException if either of input parameters is null.
+     * @throws Exception
+     */
+    public MultipleEvaluation crossValidate(MultiLabelLearner learner, MultiLabelInstances mlDataSet, List<Measure> measures) throws Exception {
+        return crossValidate(learner, mlDataSet, measures, DEFAULTFOLDS);
+    }
+
+    /**
      * Evaluates a {@link MultiLabelLearner} via cross-validation on given data set with
      * defined number of folds.
      * The specified number of folds has to be at least two.
@@ -212,6 +222,65 @@ public class Evaluator {
      */
     public MultipleEvaluation crossValidate(MultiLabelLearner learner, MultiLabelInstances mlDataSet, int numFolds)
             throws Exception {
+
+        List<Measure> measures = new ArrayList<Measure>();
+
+        MultiLabelOutput prediction = learner.makePrediction(mlDataSet.getDataSet().instance(0));
+
+        // add bipartition-based measures if applicable
+        if (prediction.hasBipartition()) {
+            // add example-based measures
+            measures.add(new HammingLoss());
+            measures.add(new SubsetAccuracy());
+            measures.add(new ExampleBasedPrecision());
+            measures.add(new ExampleBasedRecall());
+            measures.add(new ExampleBasedFMeasure());
+            measures.add(new ExampleBasedAccuracy());
+            // add label-based measures
+            int numOfLabels = mlDataSet.getNumLabels();
+            measures.add(new MicroPrecision(numOfLabels));
+            measures.add(new MicroRecall(numOfLabels));
+            measures.add(new MicroFMeasure(numOfLabels));
+            measures.add(new MacroPrecision(numOfLabels));
+            measures.add(new MacroRecall(numOfLabels));
+            measures.add(new MacroFMeasure(numOfLabels));
+        }
+        // add ranking-based measures if applicable
+        if (prediction.hasRanking()) {
+            // add ranking based measures
+            measures.add(new OneError());
+            measures.add(new AveragePrecision());
+            measures.add(new IsError());
+            measures.add(new ErrorSetSize());
+            measures.add(new Coverage());
+            measures.add(new RankingLoss());
+        }
+        // add hierarchical measures if applicable
+        if (mlDataSet.getLabelsMetaData().isHierarchy()) {
+            measures.add(new HierarchicalLoss(mlDataSet));
+        }
+
+        return crossValidate(learner, mlDataSet, measures, numFolds);
+    }
+
+    /**
+     * Evaluates a {@link MultiLabelLearner} via cross-validation on given data set with
+     * defined number of folds.
+     * The specified number of folds has to be at least two.
+     * If negative value is specified, the used number of folds is equal to number
+     * of instances in the data set.
+     *
+     * @param learner the learner to be evaluated via cross-validation
+     * @param mlDataSet the multi-label data set for cross-validation
+     * @param measures the evaluation measures to compute
+     * @param numFolds the number of folds to be used
+     * @return the evaluation result
+     * @throws IllegalArgumentException if either of learner or data set parameters is null
+     * @throws IllegalArgumentException if number of folds is invalid
+     * @throws Exception
+     */
+    public MultipleEvaluation crossValidate(MultiLabelLearner learner, MultiLabelInstances mlDataSet, List<Measure> measures, int numFolds)
+            throws Exception {
         if (learner == null) {
             throw new IllegalArgumentException("Learner to be evaluated is null.");
         }
@@ -220,6 +289,9 @@ public class Evaluator {
         }
         if (numFolds == 0 || numFolds == 1) {
             throw new IllegalArgumentException("Number of folds must be at least two or higher.");
+        }
+        if (measures == null) {
+            throw new IllegalArgumentException("List of evaluation measures to compute is null.");
         }
 
         Instances workingSet = new Instances(mlDataSet.getDataSet());
@@ -241,7 +313,7 @@ public class Evaluator {
             clone.build(mlTrain);
 
             // Create array of indexes of labels in the test set in prediction order
-            evaluation[i] = evaluate(clone, mlTest);
+            evaluation[i] = evaluate(clone, mlTest, measures);
         }
         return new MultipleEvaluation(evaluation);
     }

@@ -93,27 +93,29 @@ public class MultipleEvaluation {
 
     @Override
     public String toString() {
-        String description = "";
+        StringBuilder sb = new StringBuilder();
         for (Measure m : evaluations[0].getMeasures()) {
             String measureName = m.getName();
-            description +=
-                    (measureName + ": " +
-                    mean.get(measureName) + "\u00B1" +
-                    standardDeviation.get(measureName) + "\n");
+            sb.append(measureName);
+            sb.append(": ");
+            sb.append(mean.get(measureName));
+            sb.append("\u00B1");
+            sb.append(standardDeviation.get(measureName));
+            sb.append("\n");
         }
-
-        return description;
+        return sb.toString();
     }
 
     public String toCSV() {
-        String description = "";
+        StringBuilder sb = new StringBuilder();
         for (Measure m : evaluations[0].getMeasures()) {
             String measureName = m.getName();
-            description +=
-                    (mean.get(measureName) + ";" +
-                    standardDeviation.get(measureName) + ";");
+            sb.append(mean.get(measureName));
+            sb.append(";");
+            sb.append(standardDeviation.get(measureName));
+            sb.append(";");
         }
-
-        return description + "\n";
+        sb.append("\n");
+        return sb.toString();
     }
 }
