@@ -43,6 +43,7 @@ import weka.core.TechnicalInformationHandler;
 public abstract class MultiLabelLearnerBase
         implements TechnicalInformationHandler, MultiLabelLearner, Serializable {
 
+	private boolean isModelInitialized = false;
     /**
      * The number of labels the learner can handle.
      * The number of labels are determined form the training data when learner is build.
@@ -79,11 +80,14 @@ public abstract class MultiLabelLearnerBase
             throw new ArgumentNullException("trainingSet");
         }
 
+        isModelInitialized = false;
+        
         numLabels = trainingSet.getNumLabels();
         labelIndices = trainingSet.getLabelIndices();
         featureIndices = trainingSet.getFeatureIndices();
 
         buildInternal(trainingSet);
+        isModelInitialized = true;
     }
 
     /**
@@ -101,7 +105,9 @@ public abstract class MultiLabelLearnerBase
      * This is used to check if {@link #makePrediction(weka.core.Instance)} can be processed.
      * @return
      */
-    protected abstract boolean isModelInitialized();
+    protected boolean isModelInitialized(){
+    	return isModelInitialized;
+    }
     
 
     public final MultiLabelOutput makePrediction(Instance instance) 

@@ -295,10 +295,4 @@ public class RAkEL extends MultiLabelMetaLearner
         MultiLabelOutput mlo = new MultiLabelOutput(bipartition, confidence1);
         return mlo;
     }
-    
-    @Override
-    protected boolean isModelInitialized(){
-    	//TODO: not implemented
-		return true;
-    }
 }

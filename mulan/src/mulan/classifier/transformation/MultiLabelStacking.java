@@ -801,10 +801,4 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner
 	public void setPartialBuild(boolean partialBuild) {
 		this.partialBuild = partialBuild;
 	}
-	
-	@Override
-    protected boolean isModelInitialized(){
-    	//TODO: not implemented
-		return true;
-    }
 }

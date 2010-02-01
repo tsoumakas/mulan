@@ -349,10 +349,4 @@ public class HMC extends MultiLabelMetaLearner {
     public long getTotalUsedTrainInsts() {
     	return TotalUsedTrainInsts;    
     }
-    
-    @Override
-    protected boolean isModelInitialized(){
-    	//TODO: not implemented
-		return true;
-    }
 }

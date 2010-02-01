@@ -192,11 +192,6 @@ public class MMPLearner extends MultiLabelLearnerBase {
 	}
 	
 	@Override
-    protected boolean isModelInitialized(){
-    	return isInitialized;
-    }
-
-	@Override
 	public TechnicalInformation getTechnicalInformation() {
 		TechnicalInformation technicalInfo = new TechnicalInformation(Type.ARTICLE);
 	    technicalInfo.setValue(Field.AUTHOR, "Koby Crammer, Yoram Singer");

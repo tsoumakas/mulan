@@ -304,10 +304,4 @@ public class IBLR_ML extends MultiLabelKNN {
 		return result;
 	}
 	
-	@Override
-    protected boolean isModelInitialized(){
-    	//TODO: not implemented
-		return true;
-    }
-
 }
