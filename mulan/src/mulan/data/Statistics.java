@@ -193,8 +193,7 @@ public class Statistics implements Serializable
             double[] dblLabels = new double[numLabels];
             for (int j=0; j<numLabels; j++)
             {
-            	double value = Double.parseDouble(data.attribute(labelIndices[j]).value((int) data.instance(i).value(labelIndices[j])));
-                
+                double value = data.instance(i).value(labelIndices[j]);
                 if (data.attribute(labelIndices[j]).value((int) value).equals("1"))
                 {
                     dblLabels[j] = 1;
