@@ -139,11 +139,5 @@ public class BinaryRelevance extends TransformationBasedMultiLabelLearner
         MultiLabelOutput mlo = new MultiLabelOutput(bipartition, confidences);
 		return mlo;
     }
-          
-    @Override
-    protected boolean isModelInitialized(){
-    	//TODO: not implemented
-		return true;
-    }
 }
 

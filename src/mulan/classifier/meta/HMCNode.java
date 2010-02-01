@@ -121,11 +121,4 @@ public class HMCNode extends MultiLabelMetaLearner {
     public TechnicalInformation getTechnicalInformation() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-    
-    @Override
-    protected boolean isModelInitialized(){
-    	//TODO: not implemented
-		return true;
-    }
-
 }

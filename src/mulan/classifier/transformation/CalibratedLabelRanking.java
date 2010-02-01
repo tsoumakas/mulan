@@ -450,10 +450,4 @@ public class CalibratedLabelRanking extends TransformationBasedMultiLabelLearner
 			return temp;
 		}
 	}
-    
-    @Override
-    protected boolean isModelInitialized(){
-    	//TODO: not implemented
-		return true;
-    }
 }

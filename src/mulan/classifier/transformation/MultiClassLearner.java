@@ -73,10 +73,4 @@ public class MultiClassLearner extends TransformationBasedMultiLabelLearner
         MultiLabelOutput mlo = new MultiLabelOutput(MultiLabelOutput.ranksFromValues(distribution));
 		return mlo;
     }
-
-    @Override
-    protected boolean isModelInitialized(){
-    	//TODO: not implemented
-		return true;
-    }
 }

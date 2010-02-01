@@ -238,12 +238,6 @@ public class RAkELd extends MultiLabelMetaLearner
         MultiLabelOutput mlo = new MultiLabelOutput(labels, confidences);
         return mlo;
     }
-    
-    @Override
-    protected boolean isModelInitialized(){
-    	//TODO: not implemented
-		return true;
-    }
 }
 
 

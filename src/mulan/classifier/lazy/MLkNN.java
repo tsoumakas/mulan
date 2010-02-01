@@ -293,10 +293,4 @@ public class MLkNN extends MultiLabelKNN {
         MultiLabelOutput mlo = new MultiLabelOutput(predictions, confidences);
         return mlo;
     }
-
-    @Override
-    protected boolean isModelInitialized(){
-    	//TODO: not implemented
-		return true;
-    }
 }

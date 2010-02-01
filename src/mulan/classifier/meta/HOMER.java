@@ -137,10 +137,4 @@ public class HOMER extends MultiLabelMetaLearner {
     public long getTotalUsedTrainInsts() {
         return hmc.getTotalUsedTrainInsts();
     }
-    
-    @Override
-    protected boolean isModelInitialized(){
-    	//TODO: not implemented
-		return true;
-    }
 }

@@ -431,11 +431,6 @@ public class BPMLL extends MultiLabelLearnerBase {
         return mlo;
     }
     
-    @Override
-    protected boolean isModelInitialized(){
-    	return model != null;
-    }
-    
     /**
      * Normalizer performas a normalization of numeric attributes of the data set.
      * It is initialized based on given {@link MultiLabelInstances} data set and then can 

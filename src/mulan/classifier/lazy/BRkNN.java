@@ -464,10 +464,4 @@ public class BRkNN extends MultiLabelKNN {
 		this.cvMaxK = cvMaxK;
 	}
 	
-	@Override
-    protected boolean isModelInitialized(){
-    	//TODO: not implemented
-		return true;
-    }
-
 }
