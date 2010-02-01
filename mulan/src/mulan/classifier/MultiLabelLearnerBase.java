@@ -123,6 +123,7 @@ public abstract class MultiLabelLearnerBase
      *
      * @param instance the data instance to predict on
      * @throws Exception if an error occurs while making the prediction.
+     * @throws InvalidDataException if specified instance data is invalid and can not be processed by the learner
      */
     protected abstract MultiLabelOutput makePredictionInternal(Instance instance) throws Exception, InvalidDataException;
     
