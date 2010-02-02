@@ -404,33 +404,33 @@ public class Statistics implements Serializable
      */
     @Override
     public String toString() {
-        String description = "";
+        StringBuilder sb = new StringBuilder();
         
-        description += "Examples: " + numInstances + "\n";
-        description += "Predictors: " + numPredictors + "\n";
-        description += "--Nominal: " + numNominal + "\n";
-        description += "--Numeric: " + numNumeric + "\n";
+        sb.append("Examples: " + numInstances + "\n");
+        sb.append("Predictors: " + numPredictors + "\n");
+        sb.append("--Nominal: " + numNominal + "\n");
+        sb.append("--Numeric: " + numNumeric + "\n");
         
-        description += "Labels: " + numLabels + "\n";
+        sb.append("Labels: " + numLabels + "\n");
 
-        description += "\n";       
-        description += "Cardinality: " + labelCardinality + "\n";
-        description += "Density: " + labelDensity + "\n";
-        description += "Distinct Labelsets: " + labelsets.size() +"\n";
+        sb.append("\n");
+        sb.append("Cardinality: " + labelCardinality + "\n");
+        sb.append("Density: " + labelDensity + "\n");
+        sb.append("Distinct Labelsets: " + labelsets.size() +"\n");
         
-        description += "\n";
+        sb.append("\n");
         for (int j=0; j<numLabels; j++)
-            description += "Percentage of examples with label " + (j+1) + ": " + examplesPerLabel[j] + "\n";        
+            sb.append("Percentage of examples with label " + (j+1) + ": " + examplesPerLabel[j] + "\n");
         
-        description += "\n";
+        sb.append("\n");
         for (int j=0; j<=numLabels; j++)
-            description += "Examples of cardinality " + j + ": " + cardinalityDistribution[j] + "\n";            	
+            sb.append("Examples of cardinality " + j + ": " + cardinalityDistribution[j] + "\n");
 
-        description += "\n";
+        sb.append("\n");
         for(LabelSet set : labelsets.keySet())
-            description += "Examples of combination " + set + ": " +	labelsets.get(set) + "\n";
+            sb.append("Examples of combination " + set + ": " +	labelsets.get(set) + "\n");
 
-        return description;
+        return sb.toString();
     }
            
     /** 
