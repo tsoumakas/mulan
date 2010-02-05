@@ -222,45 +222,36 @@ public class Evaluator {
      */
     public MultipleEvaluation crossValidate(MultiLabelLearner learner, MultiLabelInstances mlDataSet, int numFolds)
             throws Exception {
-
-        List<Measure> measures = new ArrayList<Measure>();
-
-        MultiLabelOutput prediction = learner.makePrediction(mlDataSet.getDataSet().instance(0));
-
-        // add bipartition-based measures if applicable
-        if (prediction.hasBipartition()) {
-            // add example-based measures
-            measures.add(new HammingLoss());
-            measures.add(new SubsetAccuracy());
-            measures.add(new ExampleBasedPrecision());
-            measures.add(new ExampleBasedRecall());
-            measures.add(new ExampleBasedFMeasure());
-            measures.add(new ExampleBasedAccuracy());
-            // add label-based measures
-            int numOfLabels = mlDataSet.getNumLabels();
-            measures.add(new MicroPrecision(numOfLabels));
-            measures.add(new MicroRecall(numOfLabels));
-            measures.add(new MicroFMeasure(numOfLabels));
-            measures.add(new MacroPrecision(numOfLabels));
-            measures.add(new MacroRecall(numOfLabels));
-            measures.add(new MacroFMeasure(numOfLabels));
+        if (learner == null) {
+            throw new IllegalArgumentException("Learner to be evaluated is null.");
         }
-        // add ranking-based measures if applicable
-        if (prediction.hasRanking()) {
-            // add ranking based measures
-            measures.add(new OneError());
-            measures.add(new AveragePrecision());
-            measures.add(new IsError());
-            measures.add(new ErrorSetSize());
-            measures.add(new Coverage());
-            measures.add(new RankingLoss());
+        if (mlDataSet == null) {
+            throw new IllegalArgumentException("MutliLabelDataset for the evaluation is null.");
         }
-        // add hierarchical measures if applicable
-        if (mlDataSet.getLabelsMetaData().isHierarchy()) {
-            measures.add(new HierarchicalLoss(mlDataSet));
+        if (numFolds == 0 || numFolds == 1) {
+            throw new IllegalArgumentException("Number of folds must be at least two or higher.");
         }
 
-        return crossValidate(learner, mlDataSet, measures, numFolds);
+        Instances workingSet = new Instances(mlDataSet.getDataSet());
+
+        if (numFolds < 0) {
+            numFolds = workingSet.numInstances();
+        }
+
+        Evaluation[] evaluation = new Evaluation[numFolds];
+
+        Random random = new Random(seed);
+        workingSet.randomize(random);
+        for (int i = 0; i < numFolds; i++) {
+            Instances train = workingSet.trainCV(numFolds, i, random);
+            Instances test = workingSet.testCV(numFolds, i);
+            MultiLabelInstances mlTrain = new MultiLabelInstances(train, mlDataSet.getLabelsMetaData());
+            MultiLabelInstances mlTest = new MultiLabelInstances(test, mlDataSet.getLabelsMetaData());
+            MultiLabelLearner clone = learner.makeCopy();
+            clone.build(mlTrain);
+            evaluation[i] = evaluate(clone, mlTest);
+        }
+        return new MultipleEvaluation(evaluation);
     }
 
     /**
@@ -311,8 +302,6 @@ public class Evaluator {
             MultiLabelInstances mlTest = new MultiLabelInstances(test, mlDataSet.getLabelsMetaData());
             MultiLabelLearner clone = learner.makeCopy();
             clone.build(mlTrain);
-
-            // Create array of indexes of labels in the test set in prediction order
             evaluation[i] = evaluate(clone, mlTest, measures);
         }
         return new MultipleEvaluation(evaluation);
