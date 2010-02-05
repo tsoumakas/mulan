@@ -16,9 +16,8 @@
 
 /*
  *    MultiClassLearner.java
- *    Copyright (C) 2009 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
  */
-
 package mulan.classifier.transformation;
 
 import mulan.classifier.MultiLabelOutput;
@@ -34,8 +33,8 @@ import weka.core.Instances;
  * @author Grigorios Tsoumakas
  * @version $Revision: 0.05$
  */
-public class MultiClassLearner extends TransformationBasedMultiLabelLearner
-{
+public class MultiClassLearner extends TransformationBasedMultiLabelLearner {
+
     private Instances header;
     private MultiClassTransformation transformation;
 
@@ -45,18 +44,14 @@ public class MultiClassLearner extends TransformationBasedMultiLabelLearner
      * @param baseClassifier the base single-label classification algorithm
      * @param dt the {@link MultiClassTransformation} to use
      */
-    public MultiClassLearner(Classifier baseClassifier, MultiClassTransformation dt)
-	{
-		super(baseClassifier);
+    public MultiClassLearner(Classifier baseClassifier, MultiClassTransformation dt) {
+        super(baseClassifier);
         transformation = dt;
     }
 
     protected void buildInternal(MultiLabelInstances train) throws Exception {
-        debug(train.getDataSet().instance(0).toString());
         debug("Transforming the training set");
         Instances meta = transformation.transformInstances(train);
-        for (int i=0;i <numLabels; i++)
-            debug(meta.instance(i).toString());
         baseClassifier.buildClassifier(meta);
         header = new Instances(meta, 0);
     }
@@ -71,6 +66,6 @@ public class MultiClassLearner extends TransformationBasedMultiLabelLearner
         double[] distribution = baseClassifier.distributionForInstance(instance);
 
         MultiLabelOutput mlo = new MultiLabelOutput(MultiLabelOutput.ranksFromValues(distribution));
-		return mlo;
+        return mlo;
     }
 }
