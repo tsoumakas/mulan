@@ -16,8 +16,7 @@
 
 /*
  *    MultiLabelLearnerBase.java
- *    Copyright (C) 2009 Aristotle University of Thessaloniki, Thessaloniki, Greece
- *
+ *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
  */
 package mulan.classifier;
 
@@ -43,7 +42,7 @@ import weka.core.TechnicalInformationHandler;
 public abstract class MultiLabelLearnerBase
         implements TechnicalInformationHandler, MultiLabelLearner, Serializable {
 
-	private boolean isModelInitialized = false;
+    private boolean isModelInitialized = false;
     /**
      * The number of labels the learner can handle.
      * The number of labels are determined form the training data when learner is build.
@@ -69,7 +68,7 @@ public abstract class MultiLabelLearnerBase
      * @return technical information
      */
     public abstract TechnicalInformation getTechnicalInformation();
-    
+
     public boolean isUpdatable() {
         /** as default learners are assumed not to be updatable */
         return false;
@@ -81,7 +80,7 @@ public abstract class MultiLabelLearnerBase
         }
 
         isModelInitialized = false;
-        
+
         numLabels = trainingSet.getNumLabels();
         labelIndices = trainingSet.getLabelIndices();
         featureIndices = trainingSet.getFeatureIndices();
@@ -105,23 +104,22 @@ public abstract class MultiLabelLearnerBase
      * This is used to check if {@link #makePrediction(weka.core.Instance)} can be processed.
      * @return
      */
-    protected boolean isModelInitialized(){
-    	return isModelInitialized;
+    protected boolean isModelInitialized() {
+        return isModelInitialized;
     }
-    
 
-    public final MultiLabelOutput makePrediction(Instance instance) 
-    throws Exception, InvalidDataException, ModelInitializationException{
-    	if(instance == null){
-    		throw new ArgumentNullException("instance");
-    	}
-    	if(!isModelInitialized()){
-    		throw new ModelInitializationException("Learner is not initilaized by training data.");
-    	}
-    	
-    	return makePredictionInternal(instance);
+    public final MultiLabelOutput makePrediction(Instance instance)
+            throws Exception, InvalidDataException, ModelInitializationException {
+        if (instance == null) {
+            throw new ArgumentNullException("instance");
+        }
+        if (!isModelInitialized()) {
+            throw new ModelInitializationException("The model has not been trained.");
+        }
+
+        return makePredictionInternal(instance);
     }
-    
+
     /**
      * Learner specific implementation for predicting on specified data based on trained model.
      * This method is called from {@link #makePrediction(weka.core.Instance)} which guards for model
@@ -132,7 +130,7 @@ public abstract class MultiLabelLearnerBase
      * @throws InvalidDataException if specified instance data is invalid and can not be processed by the learner
      */
     protected abstract MultiLabelOutput makePredictionInternal(Instance instance) throws Exception, InvalidDataException;
-    
+
     /**
      * Set debugging mode.
      *
