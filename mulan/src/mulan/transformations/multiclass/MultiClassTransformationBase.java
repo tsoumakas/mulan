@@ -16,11 +16,12 @@
 
 /*
  *    MultiClassTransformationBase.java
- *    Copyright (C) 2009 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
  */
 
 package mulan.transformations.multiclass;
 
+import java.io.Serializable;
 import java.util.List;
 import mulan.data.MultiLabelInstances;
 import mulan.transformations.*;
@@ -36,7 +37,7 @@ import weka.core.Instances;
  *  
  * @author Stavros
  */
-public abstract class MultiClassTransformationBase implements MultiClassTransformation {
+public abstract class MultiClassTransformationBase implements Serializable, MultiClassTransformation {
 
     /** the number of labels */
     protected int numOfLabels;
