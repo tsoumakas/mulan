@@ -16,9 +16,8 @@
 
 /*
  *    ActivationTANH.java
- *    Copyright (C) 2009 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
  */
-
 package mulan.classifier.neural.model;
 
 /**
@@ -29,28 +28,25 @@ package mulan.classifier.neural.model;
  */
 public class ActivationTANH extends ActivationFunction {
 
-	private static final long serialVersionUID = -8707244320811304601L;
-    
+    private static final long serialVersionUID = -8707244320811304601L;
     /** Maximum value of function */
     public final static double MAX = +1.0;
-    
     /** Minimum value of function */
     public final static double MIN = -1.0;
-	
-	public double activate(final double input) {
-        return 2.0 / (1.0 + Math.exp(-2.0 * input)) - 1.0; 
-	}
 
-	public double derivative(final double input) {
-		return 1.0 - Math.pow(activate(input), 2.0);
-	}
+    public double activate(final double input) {
+        return 2.0 / (1.0 + Math.exp(-2.0 * input)) - 1.0;
+    }
 
-	public double getMax() {
-		return MAX;
-	}
+    public double derivative(final double input) {
+        return 1.0 - Math.pow(activate(input), 2.0);
+    }
 
-	public double getMin() {
-		return MIN;
-	}
-	
+    public double getMax() {
+        return MAX;
+    }
+
+    public double getMin() {
+        return MIN;
+    }
 }
