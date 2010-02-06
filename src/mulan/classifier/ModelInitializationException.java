@@ -16,11 +16,9 @@
 
 /*
  *    ModelInitializationException.java
- *    Copyright (C) 2009 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
  */
-
 package mulan.classifier;
-
 
 /**
  * Exception thrown by the {@link MultiLabelLearner} when learner is queried for prediction on data
@@ -30,27 +28,26 @@ package mulan.classifier;
  */
 public class ModelInitializationException extends LearnerException {
 
-	private static final long serialVersionUID = 4610550344517098930L;
+    private static final long serialVersionUID = 4610550344517098930L;
 
-	/**
-	 * Creates a new instance of {@link ModelInitializationException} with the specified
-	 * detail message. 
-	 * 
-	 * @param message the detail message
-	 */
-	public ModelInitializationException(String message){
-		super(message);
-	}
-	
-	/**
-	 * Creates a new instance of {@link ModelInitializationException} with the specified
-	 * detail message and nested exception.
-	 * 
-	 * @param message the detail message
-	 * @param cause the nested exception
-	 */
-	public ModelInitializationException(String message, Throwable cause){
-		super(message, cause);
-	}
+    /**
+     * Creates a new instance of {@link ModelInitializationException} with the specified
+     * detail message.
+     *
+     * @param message the detail message
+     */
+    public ModelInitializationException(String message) {
+        super(message);
+    }
 
+    /**
+     * Creates a new instance of {@link ModelInitializationException} with the specified
+     * detail message and nested exception.
+     *
+     * @param message the detail message
+     * @param cause the nested exception
+     */
+    public ModelInitializationException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }

@@ -16,9 +16,8 @@
 
 /*
  *    LearnerException.java
- *    Copyright (C) 2009 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
  */
-
 package mulan.classifier;
 
 import mulan.core.MulanRuntimeException;
@@ -30,27 +29,26 @@ import mulan.core.MulanRuntimeException;
  */
 public class LearnerException extends MulanRuntimeException {
 
-	private static final long serialVersionUID = -1893618833783062666L;
+    private static final long serialVersionUID = -1893618833783062666L;
 
-	/**
-	 * Creates a new instance of {@link LearnerException} with the specified
-	 * detail message. 
-	 * 
-	 * @param message the detail message
-	 */
-	public LearnerException(String message){
-		super(message);
-	}
-	
-	/**
-	 * Creates a new instance of {@link LearnerException} with the specified
-	 * detail message and nested exception.
-	 * 
-	 * @param message the detail message
-	 * @param cause the nested exception
-	 */
-	public LearnerException(String message, Throwable cause){
-		super(message, cause);
-	}
+    /**
+     * Creates a new instance of {@link LearnerException} with the specified
+     * detail message.
+     *
+     * @param message the detail message
+     */
+    public LearnerException(String message) {
+        super(message);
+    }
 
+    /**
+     * Creates a new instance of {@link LearnerException} with the specified
+     * detail message and nested exception.
+     *
+     * @param message the detail message
+     * @param cause the nested exception
+     */
+    public LearnerException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }
