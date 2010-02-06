@@ -16,7 +16,7 @@
 
 /*
  *    CrossValidationExperiment.java
- *    Copyright (C) 2009 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
  */
 package mulan.examples;
 
@@ -176,18 +176,18 @@ public class CrossValidationExperiment {
                     System.out.println(results);
                 }
                 if (methodsToCompare[i].equals("MLStacking")) {
-					System.out.println(methodsToCompare[i]);
-					int numOfNeighbors = 10;
-					Classifier baseClassifier = new IBk(numOfNeighbors);
-					Classifier metaClassifier = new Logistic();
+                    System.out.println(methodsToCompare[i]);
+                    int numOfNeighbors = 10;
+                    Classifier baseClassifier = new IBk(numOfNeighbors);
+                    Classifier metaClassifier = new Logistic();
 
-					MultiLabelStacking mls = new MultiLabelStacking(
-							baseClassifier, metaClassifier);
-					mls.setMetaPercentage(1.0);
-					mls.setDebug(true);
-					results = eval.crossValidate(mls, dataSet, numFolds);
-					System.out.println(results);
-				}
+                    MultiLabelStacking mls = new MultiLabelStacking(
+                            baseClassifier, metaClassifier);
+                    mls.setMetaPercentage(1.0);
+                    mls.setDebug(true);
+                    results = eval.crossValidate(mls, dataSet, numFolds);
+                    System.out.println(results);
+                }
 
             }
         } catch (Exception e) {
