@@ -16,7 +16,7 @@
 
 /*
  *    ConverterLibSVM.java
- *    Copyright (C) 2009 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
  */
 package mulan.data;
 
@@ -83,8 +83,9 @@ public class ConverterLibSVM {
                         while (labelTok.hasMoreTokens()) {
                             String strLabel = labelTok.nextToken();
                             int intLabel = Integer.parseInt(strLabel);
-                            if (intLabel > numLabels)
+                            if (intLabel > numLabels) {
                                 numLabels = intLabel;
+                            }
                         }
                     } else {
                         // parse attribute info
@@ -92,8 +93,9 @@ public class ConverterLibSVM {
                         StringTokenizer attrTok = new StringTokenizer(token, ":");
                         String strAttrIndex = attrTok.nextToken();
                         int intAttrIndex = Integer.parseInt(strAttrIndex);
-                        if (intAttrIndex > numAttributes)
+                        if (intAttrIndex > numAttributes) {
                             numAttributes = intAttrIndex;
+                        }
                     }
                 }
             }
@@ -106,117 +108,114 @@ public class ConverterLibSVM {
 
             System.out.println("Constructing XML file... ");
             LabelsMetaDataImpl meta = new LabelsMetaDataImpl();
-        	for(int label = 0; label < numLabels; label++){
-        		meta.addRootNode(new LabelNodeImpl("Label" + (label + 1)));
-        	}
-        	
-        	String labelsFilePath = path + targetFilestem +".xml";
-        	try {
-				LabelsBuilder.dumpLabels(meta, labelsFilePath);
-				System.out.println("Done!");
-			} catch (LabelsBuilderException e) {
-				File labelsFile = new File(labelsFilePath);
-				if(labelsFile.exists()){
-					labelsFile.delete();
-				}
-				System.out.println("Construction of labels XML failed!");
-			}
+            for (int label = 0; label < numLabels; label++) {
+                meta.addRootNode(new LabelNodeImpl("Label" + (label + 1)));
+            }
+
+            String labelsFilePath = path + targetFilestem + ".xml";
+            try {
+                LabelsBuilder.dumpLabels(meta, labelsFilePath);
+                System.out.println("Done!");
+            } catch (LabelsBuilderException e) {
+                File labelsFile = new File(labelsFilePath);
+                if (labelsFile.exists()) {
+                    labelsFile.delete();
+                }
+                System.out.println("Construction of labels XML failed!");
+            }
 
             meanParsedAttributes /= numInstances;
             boolean Sparse = false;
-            if (meanParsedAttributes < numAttributes)
-            {
-              Sparse = true;
-              System.out.println("Dataset is sparse.");
+            if (meanParsedAttributes < numAttributes) {
+                Sparse = true;
+                System.out.println("Dataset is sparse.");
             }
 
             // Define Instances class to hold data
-            FastVector attInfo = new FastVector(numAttributes+numLabels);
-            Attribute[] att = new Attribute[numAttributes+numLabels];
+            FastVector attInfo = new FastVector(numAttributes + numLabels);
+            Attribute[] att = new Attribute[numAttributes + numLabels];
 
-            for (int i=0; i<numAttributes; i++) {
-              att[i] = new Attribute("Att"+(i+1));
-              attInfo.addElement(att[i]);
+            for (int i = 0; i < numAttributes; i++) {
+                att[i] = new Attribute("Att" + (i + 1));
+                attInfo.addElement(att[i]);
             }
             FastVector ClassValues = new FastVector(2);
             ClassValues.addElement("0");
             ClassValues.addElement("1");
-            for (int i=0; i<numLabels; i++) {
-              att[numAttributes+i] = new Attribute("Label"+(i+1), ClassValues);
-              attInfo.addElement(att[numAttributes+i]);
+            for (int i = 0; i < numLabels; i++) {
+                att[numAttributes + i] = new Attribute("Label" + (i + 1), ClassValues);
+                attInfo.addElement(att[numAttributes + i]);
             }
 
             // Re-read file and convert into multi-label arff
             int countInstances = 0;
 
-            aWriter = new BufferedWriter(new FileWriter(path + targetFilestem +".arff"));
+            aWriter = new BufferedWriter(new FileWriter(path + targetFilestem + ".arff"));
             Instances data = new Instances(relationName, attInfo, 0);
             aWriter.write(data.toString());
 
             aReader = new BufferedReader(new FileReader(path + sourceFilename));
 
             while ((Line = aReader.readLine()) != null) {
-              countInstances++;
+                countInstances++;
 
-              // set all  values to 0
-              double[] attValues = new double[numAttributes+numLabels];
-              Arrays.fill(attValues, 0);
-              Instance tempInstance = new Instance(1, attValues);
-              tempInstance.setDataset(data);
+                // set all  values to 0
+                double[] attValues = new double[numAttributes + numLabels];
+                Arrays.fill(attValues, 0);
+                Instance tempInstance = new Instance(1, attValues);
+                tempInstance.setDataset(data);
 
-              // separate class info from attribute info
-              // ensure class info exists
-              StringTokenizer strTok = new StringTokenizer(Line, " ");
+                // separate class info from attribute info
+                // ensure class info exists
+                StringTokenizer strTok = new StringTokenizer(Line, " ");
 
-              while (strTok.hasMoreTokens()) {
-                  String token = strTok.nextToken();
+                while (strTok.hasMoreTokens()) {
+                    String token = strTok.nextToken();
 
-                  if (token.indexOf(":") == -1) {
-                      // parse label info
-                      StringTokenizer labelTok = new StringTokenizer(token, ",");
-                      while (labelTok.hasMoreTokens()) {
-                          String strLabel = labelTok.nextToken();
-                          int intLabel = Integer.parseInt(strLabel);
-                          tempInstance.setValue(numAttributes+intLabel,1);
-                      }
-                  } else {
-                      // parse attribute info
-                      StringTokenizer AttrTok = new StringTokenizer(token, ":");
-                      String strAttrIndex = AttrTok.nextToken();
-                      String strAttrValue = AttrTok.nextToken();
-                      tempInstance.setValue(Integer.parseInt(strAttrIndex)-1,Double.parseDouble(strAttrValue));
-                  }
-              }
+                    if (token.indexOf(":") == -1) {
+                        // parse label info
+                        StringTokenizer labelTok = new StringTokenizer(token, ",");
+                        while (labelTok.hasMoreTokens()) {
+                            String strLabel = labelTok.nextToken();
+                            int intLabel = Integer.parseInt(strLabel);
+                            tempInstance.setValue(numAttributes + intLabel, 1);
+                        }
+                    } else {
+                        // parse attribute info
+                        StringTokenizer AttrTok = new StringTokenizer(token, ":");
+                        String strAttrIndex = AttrTok.nextToken();
+                        String strAttrValue = AttrTok.nextToken();
+                        tempInstance.setValue(Integer.parseInt(strAttrIndex) - 1, Double.parseDouble(strAttrValue));
+                    }
+                }
 
-              if (Sparse) {
-                  SparseInstance tempSparseInstance = new SparseInstance(tempInstance);
-                  aWriter.write(tempSparseInstance.toString() + "\n");
-              } else {
-                  aWriter.write(tempInstance.toString() + "\n");
-              }
+                if (Sparse) {
+                    SparseInstance tempSparseInstance = new SparseInstance(tempInstance);
+                    aWriter.write(tempSparseInstance.toString() + "\n");
+                } else {
+                    aWriter.write(tempInstance.toString() + "\n");
+                }
 
             }
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
-        }
-        finally {
+        } finally {
             try {
-                if (aReader != null)
+                if (aReader != null) {
                     aReader.close();
-                if (aWriter != null)
+                }
+                if (aWriter != null) {
                     aWriter.close();
+                }
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
         }
     }
 
-    
-    private static void createLabelsMetadataFile(String filePath, int numLabels) throws LabelsBuilderException{
-    	
+    private static void createLabelsMetadataFile(String filePath, int numLabels) throws LabelsBuilderException {
     }
-    
+
     /**
      * Command line interface for the converter
      *
@@ -233,8 +232,7 @@ public class ConverterLibSVM {
             target = Utils.getOption("target", args);
             relationName = Utils.getOption("name", args);
             ConverterLibSVM.convertFromLibSVM(path, source, target, relationName);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

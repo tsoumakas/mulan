@@ -16,9 +16,8 @@
 
 /*
  *    LabelSet.java
- *    Copyright (C) 2009 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
  */
-
 package mulan.data;
 
 import java.io.Serializable;
@@ -32,10 +31,9 @@ import weka.core.Utils;
  * @author Robert Friberg
  * @version $Revision: 0.03 $ 
  */
-public class LabelSet implements Serializable, Comparable<LabelSet>
-{
-    private static final long serialVersionUID = 7658871740607834759L;
+public class LabelSet implements Serializable, Comparable<LabelSet> {
 
+    private static final long serialVersionUID = 7658871740607834759L;
     /**
      * The set is represented internally as an array of integers.
      * Weka uses doubles but we choose integers for fast comparisons.
@@ -44,61 +42,56 @@ public class LabelSet implements Serializable, Comparable<LabelSet>
      */
     protected int[] labelSet;
 
-	
     /**
      * Initializes an object based on an array of doubles containing 0/1
      * 
      * @param set
      */
-    public LabelSet(double[] set)
-    {
+    public LabelSet(double[] set) {
         labelSet = new int[set.length];
-        for(int i = 0; i < set.length; i++) labelSet[i] = (int) set[i];
+        for (int i = 0; i < set.length; i++) {
+            labelSet[i] = (int) set[i];
+        }
     }
 
     /**
      * A comma-separated list of label names enclosed in curlies.
      */
     @Override
-    public String toString()
-    {
+    public String toString() {
         return toBitString();
-    }	
+    }
 
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         return toString().hashCode();
     }
 
     @Override
-    public boolean equals(Object obj)
-    {
-        if (obj instanceof LabelSet)
-        {
+    public boolean equals(Object obj) {
+        if (obj instanceof LabelSet) {
             LabelSet other = (LabelSet) obj;
-            return other.labelSet.length == this.labelSet.length
-                    && hammingDifference(other) == 0;
+            return other.labelSet.length == this.labelSet.length && hammingDifference(other) == 0;
+        } else {
+            return false; //could perhaps allow comparison with double array
         }
-        else return false; //could perhaps allow comparison with double array 
-    }	
-	
+    }
     /**
      * A cached count of the set size. Observe that the set
      * size is not the same as the size of the double array.
      */
     private int size = -1;
-	
+
     /**
      * The number of set members. Calculated on first call and
      * cached for subsequent calls.
      * @return
      */
-    public int size()
-    {
-        if (size == -1) 
+    public int size() {
+        if (size == -1) {
             size = Utils.sum(labelSet);
-        
+        }
+
         return size;
     }
 
@@ -106,11 +99,11 @@ public class LabelSet implements Serializable, Comparable<LabelSet>
      * Get an array representation of this set.
      * @return a copy of the underlying array.
      */
-    public double[] toDoubleArray()
-    {
+    public double[] toDoubleArray() {
         double[] arr = new double[labelSet.length];
-        for(int i = 0; i < labelSet.length; i++) 
+        for (int i = 0; i < labelSet.length; i++) {
             arr[i] = labelSet[i];
+        }
         return arr;
     }
 
@@ -118,11 +111,11 @@ public class LabelSet implements Serializable, Comparable<LabelSet>
      * Get an array representation of this set.
      * @return a copy of the underlying array.
      */
-    public boolean[] toBooleanArray()
-    {
+    public boolean[] toBooleanArray() {
         boolean[] arr = new boolean[labelSet.length];
-        for(int i = 0; i < labelSet.length; i++)
+        for (int i = 0; i < labelSet.length; i++) {
             arr[i] = (labelSet[i] == 1) ? true : false;
+        }
         return arr;
     }
 
@@ -131,87 +124,89 @@ public class LabelSet implements Serializable, Comparable<LabelSet>
      * 
      * @param other the other LabelSet object.
      * @return the Hamming Distance.
-     */    
-    public int hammingDifference(LabelSet other) 
-    {
+     */
+    public int hammingDifference(LabelSet other) {
         int diff = 0;
-        for(int i = 0; i < labelSet.length; i++)
-                if (labelSet[i] != other.labelSet[i]) diff++;
+        for (int i = 0; i < labelSet.length; i++) {
+            if (labelSet[i] != other.labelSet[i]) {
+                diff++;
+            }
+        }
         return diff;
     }
 
     /**
      * Constructs a bitstring from the current labelset.
      * @return the bitstring.
-     */    
-    public String toBitString()
-    {
+     */
+    public String toBitString() {
         StringBuilder sb = new StringBuilder(labelSet.length);
-        for(int i = 0; i < labelSet.length; i++) 
+        for (int i = 0; i < labelSet.length; i++) {
             sb.append(Integer.toString(labelSet[i]));
+        }
         return sb.toString();
     }
-	        
+
     /**
      * Constructs a LabelSet object from a bitstring.
      *
      * @param bits the bitstring
      * @return the labelset.
      * @throws Exception
-     */    
-    public static LabelSet fromBitString(String bits) throws Exception
-    {
+     */
+    public static LabelSet fromBitString(String bits) throws Exception {
         LabelSet result = new LabelSet(new double[bits.length()]);
-        for(int i = 0; i < bits.length(); i++)
-        {
-            switch (bits.charAt(i))
-            {
-                case '1' : result.labelSet[i] = 1;  break;
-                case '0' : result.labelSet[i] = 0;  break;
-                default  : throw new Exception("Bad bitstring: " + bits);
+        for (int i = 0; i < bits.length(); i++) {
+            switch (bits.charAt(i)) {
+                case '1':
+                    result.labelSet[i] = 1;
+                    break;
+                case '0':
+                    result.labelSet[i] = 0;
+                    break;
+                default:
+                    throw new Exception("Bad bitstring: " + bits);
             }
         }
         return result;
     }
-    
+
     /**
      * Constructs all subsets of a labelset (apart from the empty one).
      * 
      * @return an ArrayList of LabelSet objects with the subsets.
      * @throws Exception
-     */    
-    public ArrayList<LabelSet> getSubsets() throws Exception 
-    {
-       ArrayList<LabelSet> subsets = new ArrayList<LabelSet>();
-        
-       //the number of members of a power set is 2^n
-       int powerElements = (int) Math.pow(2,size());
-       
-       for (int i=1; i<powerElements-1; i++)
-       {
-           String temp = Integer.toBinaryString(i);
-           int foundDigits = temp.length();
-           for (int j = foundDigits; j < size(); j++) 
-               temp = "0" + temp;           
-           LabelSet tempSet = LabelSet.fromBitString(temp);
-           double[] tempDouble = tempSet.toDoubleArray();           
-           
-           double[] subset = new double[labelSet.length];
-           int counter=0;
-           for (int j=0; j<labelSet.length; j++)
-           {
-               if (labelSet[j] == 0)
-                   subset[j] = 0;
-               else {
-                   subset[j] = tempDouble[counter];
-                   counter++;
-               }
-           }
-           
-           LabelSet finalLabelSet = new LabelSet(subset);
-           subsets.add(finalLabelSet);
-       }
-       return subsets;
+     */
+    public ArrayList<LabelSet> getSubsets() throws Exception {
+        ArrayList<LabelSet> subsets = new ArrayList<LabelSet>();
+
+        //the number of members of a power set is 2^n
+        int powerElements = (int) Math.pow(2, size());
+
+        for (int i = 1; i < powerElements - 1; i++) {
+            String temp = Integer.toBinaryString(i);
+            int foundDigits = temp.length();
+            for (int j = foundDigits; j < size(); j++) {
+                temp = "0" + temp;
+            }
+            LabelSet tempSet = LabelSet.fromBitString(temp);
+            double[] tempDouble = tempSet.toDoubleArray();
+
+            double[] subset = new double[labelSet.length];
+            int counter = 0;
+            for (int j = 0; j < labelSet.length; j++) {
+                if (labelSet[j] == 0) {
+                    subset[j] = 0;
+                } else {
+                    subset[j] = tempDouble[counter];
+                    counter++;
+                }
+            }
+
+            LabelSet finalLabelSet = new LabelSet(subset);
+            subsets.add(finalLabelSet);
+        }
+        return subsets;
     }
 
     /**
@@ -224,30 +219,32 @@ public class LabelSet implements Serializable, Comparable<LabelSet>
         double[] arrayL1 = l1.toDoubleArray();
         double[] arrayL2 = l2.toDoubleArray();
 
-        if (arrayL1.length != arrayL2.length)
+        if (arrayL1.length != arrayL2.length) {
             return null;
-        
+        }
+
         double[] intersection = new double[arrayL2.length];
-        for (int i=0; i<arrayL2.length; i++)
-            if (arrayL1[i] == 1 && arrayL2[i] == 1)
+        for (int i = 0; i < arrayL2.length; i++) {
+            if (arrayL1[i] == 1 && arrayL2[i] == 1) {
                 intersection[i] = 1;
-            else
+            } else {
                 intersection[i] = 0;
+            }
+        }
 
         return new LabelSet(intersection);
     }
-    
-    
+
     /** 
      * Used for sorting collections of labelsets according to size
      */
     public int compareTo(LabelSet o) {
-        if (o.size() < size()) 
+        if (o.size() < size()) {
             return -1;
-        else 
-            if (o.size() > size())
-                return 1;
-            else
-                return 0;
+        } else if (o.size() > size()) {
+            return 1;
+        } else {
+            return 0;
+        }
     }
 }

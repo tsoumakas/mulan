@@ -16,9 +16,8 @@
 
 /*
  *    MulanException.java
- *    Copyright (C) 2009 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
  */
-
 package mulan.core;
 
 /**
@@ -28,27 +27,26 @@ package mulan.core;
  */
 public class MulanException extends Exception {
 
-	private static final long serialVersionUID = 2271544759439172440L;
+    private static final long serialVersionUID = 2271544759439172440L;
 
-	/**
-	 * Creates a new instance of {@link MulanException} with the specified
-	 * detail message. 
-	 * 
-	 * @param message the detail message
-	 */
-	public MulanException(String message){
-		super(message);
-	}
-	
-	/**
-	 * Creates a new instance of {@link MulanException} with the specified
-	 * detail message and nested exception.
-	 * 
-	 * @param message the detail message
-	 * @param cause the nested exception
-	 */
-	public MulanException(String message, Throwable cause){
-		super(message, cause);
-	}
+    /**
+     * Creates a new instance of {@link MulanException} with the specified
+     * detail message.
+     *
+     * @param message the detail message
+     */
+    public MulanException(String message) {
+        super(message);
+    }
 
+    /**
+     * Creates a new instance of {@link MulanException} with the specified
+     * detail message and nested exception.
+     *
+     * @param message the detail message
+     * @param cause the nested exception
+     */
+    public MulanException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }

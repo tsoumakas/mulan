@@ -16,11 +16,9 @@
 
 /*
  *    WekaException.java
- *    Copyright (C) 2009 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
  */
-
 package mulan.core;
-
 
 /**
  * The convenience exception, which can be used to wrap up checked general {@link Exception}
@@ -33,24 +31,24 @@ package mulan.core;
  */
 public class WekaException extends MulanRuntimeException {
 
-	private static final long serialVersionUID = -8041689691825060987L;
+    private static final long serialVersionUID = -8041689691825060987L;
 
-	/**
-	 * Creates a new instance of {@link WekaException} with detail mesage.
-	 * @param message the detail message
-	 */
-	public WekaException(String message){
-		super(message);
-	}
-	
-	/**
-	 * Creates a new instance of {@link WekaException} with detail message 
-	 * and nested exception.
-	 * 
-	 * @param message the detail message
-	 * @param cause the nested exception
-	 */
-	public WekaException(String message, Throwable cause){
-		super(message, cause);
-	}
+    /**
+     * Creates a new instance of {@link WekaException} with detail mesage.
+     * @param message the detail message
+     */
+    public WekaException(String message) {
+        super(message);
+    }
+
+    /**
+     * Creates a new instance of {@link WekaException} with detail message
+     * and nested exception.
+     *
+     * @param message the detail message
+     * @param cause the nested exception
+     */
+    public WekaException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }
