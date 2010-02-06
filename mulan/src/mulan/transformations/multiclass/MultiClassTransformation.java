@@ -16,9 +16,8 @@
 
 /*
  *    MultiClassTransformation.java
- *    Copyright (C) 2009 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
  */
-
 package mulan.transformations.multiclass;
 
 import mulan.data.MultiLabelInstances;
@@ -39,5 +38,4 @@ public interface MultiClassTransformation {
      * @throws java.lang.Exception
      */
     public Instances transformInstances(MultiLabelInstances dataSet) throws Exception;
-     
 }

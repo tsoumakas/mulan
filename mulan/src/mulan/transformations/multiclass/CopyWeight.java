@@ -16,9 +16,8 @@
 
 /*
  *    CopyWeight.java
- *    Copyright (C) 2009 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
  */
-
 package mulan.transformations.multiclass;
 
 import java.util.List;
@@ -41,8 +40,9 @@ public class CopyWeight extends Copy {
     @Override
     List<Instance> transformInstance(Instance instance) {
         List<Instance> copy = super.transformInstance(instance);
-        for (Instance anInstance : copy)
-            anInstance.setWeight(1.0/copy.size());
+        for (Instance anInstance : copy) {
+            anInstance.setWeight(1.0 / copy.size());
+        }
         return copy;
     }
 }

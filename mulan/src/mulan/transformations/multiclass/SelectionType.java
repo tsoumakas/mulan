@@ -16,9 +16,8 @@
 
 /*
  *    SelectionType.java
- *    Copyright (C) 2009 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
  */
-
 package mulan.transformations.multiclass;
 
 /**

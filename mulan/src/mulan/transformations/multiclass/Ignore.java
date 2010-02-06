@@ -16,7 +16,7 @@
 
 /*
  *    Ignore.java
- *    Copyright (C) 2009 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
  */
 package mulan.transformations.multiclass;
 
@@ -46,30 +46,30 @@ public class Ignore extends MultiClassTransformationBase {
         List<Instance> result = new ArrayList<Instance>();
         int indexOfSingleLabel = -1;
         int counter = 0;
-        for (int labelCounter=0; labelCounter<numOfLabels; labelCounter++) {
+        for (int labelCounter = 0; labelCounter < numOfLabels; labelCounter++) {
             int index = labelIndices[labelCounter];
-            if (instance.attribute(index).value((int) instance.value(index)).equals("1"))
-            {
+            if (instance.attribute(index).value((int) instance.value(index)).equals("1")) {
                 counter++;
                 indexOfSingleLabel = labelCounter;
             }
-            if (counter > 1)
+            if (counter > 1) {
                 break;
+            }
         }
-        if (counter > 1 || counter == 0)
+        if (counter > 1 || counter == 0) {
             return result;
+        }
 
         Instance transformedInstance;
         try {
             transformedInstance = RemoveAllLabels.transformInstance(instance, labelIndices);
             transformedInstance.setDataset(null);
             transformedInstance.insertAttributeAt(transformedInstance.numAttributes());
-            transformedInstance.setValue(transformedInstance.numAttributes()-1, indexOfSingleLabel);
+            transformedInstance.setValue(transformedInstance.numAttributes() - 1, indexOfSingleLabel);
             result.add(transformedInstance);
         } catch (Exception ex) {
             Logger.getLogger(Ignore.class.getName()).log(Level.SEVERE, null, ex);
         }
         return result;
     }
-
 }
