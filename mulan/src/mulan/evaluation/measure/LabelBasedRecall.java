@@ -15,9 +15,8 @@
  */
 
 /*
- *    ExampleBasedPrecision.java
- *    Copyright (C) 2009 Aristotle University of Thessaloniki, Thessaloniki, Greece
- *
+ *    LabelBasedRecall.java
+ *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
  */
 package mulan.evaluation.measure;
 
@@ -29,7 +28,7 @@ import mulan.core.ArgumentNullException;
  * 
  * @author Grigorios Tsoumakas
  * 
- */ 
+ */
 public abstract class LabelBasedRecall extends MeasureBase {
 
     protected int numOfLabels;
@@ -63,18 +62,18 @@ public abstract class LabelBasedRecall extends MeasureBase {
                     "bipartition and the ground truth array do not match");
         }
 
-        for (int labelIndex = 0; labelIndex < numOfLabels; labelIndex++)
-        {
+        for (int labelIndex = 0; labelIndex < numOfLabels; labelIndex++) {
             boolean actual = truth[labelIndex];
             boolean predicted = bipartition[labelIndex];
 
-            if (actual && predicted)
+            if (actual && predicted) {
                 truePositives[labelIndex]++;
-            if (actual && !predicted)
+            }
+            if (actual && !predicted) {
                 falseNegatives[labelIndex]++;
+            }
         }
 
         return 0;
     }
-
 }

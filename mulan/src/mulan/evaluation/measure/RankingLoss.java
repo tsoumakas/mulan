@@ -16,8 +16,7 @@
 
 /*
  *    RankingLoss.java
- *    Copyright (C) 2009 Aristotle University of Thessaloniki, Thessaloniki, Greece
- *
+ *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
  */
 package mulan.evaluation.measure;
 
@@ -57,20 +56,20 @@ public class RankingLoss extends ExampleBasedMeasure {
             for (int k : trueIndexes) {
                 for (int l : falseIndexes) {
                     //	if (output[instanceIndex].getConfidences()[trueIndexes.get(k)] <= output[instanceIndex].getConfidences()[falseIndexes.get(l)])
-                    if (ranks[k] > ranks[l])
-                    {
+                    if (ranks[k] > ranks[l]) {
                         rolp++;
                     }
                 }
             }
             double rloss = (double) rolp / (trueIndexes.size() * falseIndexes.size());
-            
+
             sum += rloss;
             count++;
 
             return rloss;
-        } else
+        } else {
             return Double.NaN;
+        }
     }
 
     @Override

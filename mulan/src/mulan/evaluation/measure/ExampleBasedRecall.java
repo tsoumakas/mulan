@@ -16,8 +16,7 @@
 
 /*
  *    ExampleBasedRecall.java
- *    Copyright (C) 2009 Aristotle University of Thessaloniki, Thessaloniki, Greece
- *
+ *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
  */
 package mulan.evaluation.measure;
 
@@ -60,14 +59,14 @@ public class ExampleBasedRecall extends ExampleBasedMeasure {
                 }
             }
         }
-        if (actual == 0)
+        if (actual == 0) {
             throw new MulanRuntimeException("No relevant label");
-        double value = intersection/actual;
-        
+        }
+        double value = intersection / actual;
+
         sum += value;
         count++;
 
         return value;
     }
-
 }

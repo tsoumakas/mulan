@@ -15,9 +15,8 @@
  */
 
 /*
- *    ExampleBasedPrecision.java
- *    Copyright (C) 2009 Aristotle University of Thessaloniki, Thessaloniki, Greece
- *
+ *    LabelBasedFMeasure.java
+ *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
  */
 package mulan.evaluation.measure;
 
@@ -30,7 +29,7 @@ import mulan.core.MulanRuntimeException;
  * 
  * @author Grigorios Tso
  * 
- */ 
+ */
 public abstract class LabelBasedFMeasure extends MeasureBase {
 
     protected double beta = 1;
@@ -45,7 +44,7 @@ public abstract class LabelBasedFMeasure extends MeasureBase {
         truePositives = new double[numOfLabels];
         falseNegatives = new double[numOfLabels];
     }
-    
+
     public void reset() {
         for (int labelIndex = 0; labelIndex < numOfLabels; labelIndex++) {
             falsePositives[labelIndex] = 0;
@@ -59,7 +58,7 @@ public abstract class LabelBasedFMeasure extends MeasureBase {
     }
 
     protected double calculateFMeasure(double precision, double recall) {
-        if ((beta*beta*precision + recall) == 0) {
+        if ((beta * beta * precision + recall) == 0) {
             reset();
             throw new MulanRuntimeException("F Measure is undefined");
         }
@@ -76,20 +75,21 @@ public abstract class LabelBasedFMeasure extends MeasureBase {
                     "bipartition and the ground truth array do not match");
         }
 
-        for (int labelIndex = 0; labelIndex < numOfLabels; labelIndex++)
-        {
+        for (int labelIndex = 0; labelIndex < numOfLabels; labelIndex++) {
             boolean actual = truth[labelIndex];
             boolean predicted = bipartition[labelIndex];
 
-            if (actual && predicted)
+            if (actual && predicted) {
                 truePositives[labelIndex]++;
-            if (!actual && predicted)
+            }
+            if (!actual && predicted) {
                 falsePositives[labelIndex]++;
-            if (actual && !predicted)
+            }
+            if (actual && !predicted) {
                 falseNegatives[labelIndex]++;
+            }
         }
 
         return 0;
     }
-
 }

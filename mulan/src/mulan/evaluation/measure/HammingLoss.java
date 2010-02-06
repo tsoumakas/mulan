@@ -16,8 +16,7 @@
 
 /*
  *    HammingLoss.java
- *    Copyright (C) 2009 Aristotle University of Thessaloniki, Thessaloniki, Greece
- *
+ *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
  */
 package mulan.evaluation.measure;
 
@@ -55,7 +54,7 @@ public class HammingLoss extends ExampleBasedMeasure {
                 symmetricDifference++;
             }
         }
-        double value = symmetricDifference/truth.length;
+        double value = symmetricDifference / truth.length;
 
         sum += value;
         count++;
