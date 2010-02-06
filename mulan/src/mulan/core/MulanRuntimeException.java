@@ -16,9 +16,8 @@
 
 /*
  *    MulanRuntimeException.java
- *    Copyright (C) 2009 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
  */
-
 package mulan.core;
 
 /**
@@ -28,27 +27,26 @@ package mulan.core;
  */
 public class MulanRuntimeException extends RuntimeException {
 
-	private static final long serialVersionUID = -1043393739740022098L;
+    private static final long serialVersionUID = -1043393739740022098L;
 
-	/**
-	 * Creates a new instance of {@link MulanRuntimeException} with the specified
-	 * detail message. 
-	 * 
-	 * @param message the detail message
-	 */
-	public MulanRuntimeException(String message){
-		super(message);
-	}
-	
-	/**
-	 * Creates a new instance of {@link MulanRuntimeException} with the specified
-	 * detail message and nested exception.
-	 * 
-	 * @param message the detail message
-	 * @param cause the nested exception
-	 */
-	public MulanRuntimeException(String message, Throwable cause){
-		super(message, cause);
-	}
+    /**
+     * Creates a new instance of {@link MulanRuntimeException} with the specified
+     * detail message.
+     *
+     * @param message the detail message
+     */
+    public MulanRuntimeException(String message) {
+        super(message);
+    }
 
+    /**
+     * Creates a new instance of {@link MulanRuntimeException} with the specified
+     * detail message and nested exception.
+     *
+     * @param message the detail message
+     * @param cause the nested exception
+     */
+    public MulanRuntimeException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }

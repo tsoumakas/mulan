@@ -16,9 +16,8 @@
 
 /*
  *    MulanJavadoc.java
- *    Copyright (C) 2009 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
  */
-
 package mulan.core;
 
 import java.io.BufferedWriter;
@@ -52,19 +51,19 @@ import weka.core.Utils;
  */
 public class MulanJavadoc implements OptionHandler {
 
-	static File originalDir;
-	static String dir;
+    static File originalDir;
+    static String dir;
 
-	/**
-	 * Sets the direcrory
-	 * 
-	 * @param dir
-	 */
+    /**
+     * Sets the direcrory
+     *
+     * @param dir
+     */
     public static void setDir(String dir) {
-		MulanJavadoc.dir = dir;
-	}
+        MulanJavadoc.dir = dir;
+    }
 
-	/**
+    /**
      * Command line interface
      *
      * @param args
@@ -72,11 +71,11 @@ public class MulanJavadoc implements OptionHandler {
      */
     public static void main(String[] args) throws Exception {
 
-		dir = Utils.getOption("dir", args);
-		originalDir = new File(dir);
-		traverse();
+        dir = Utils.getOption("dir", args);
+        originalDir = new File(dir);
+        traverse();
 
-	}
+    }
 
     /**
      * Updates comments
@@ -86,47 +85,43 @@ public class MulanJavadoc implements OptionHandler {
      */
     public static void updateJavadoc(String classname) throws Exception {
 
-		AllJavadoc jdoc = new AllJavadoc();
-		jdoc.setClassname(classname);
-		jdoc.setDir(dir);
-		jdoc.setUseStars(false);
+        AllJavadoc jdoc = new AllJavadoc();
+        jdoc.setClassname(classname);
+        jdoc.setDir(dir);
+        jdoc.setUseStars(false);
 
-		String result = "";
+        String result = "";
 
-		try {
-			result = jdoc.updateJavadoc();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		//System.out.println(result + "\n");
-		
-		File file;
-		BufferedWriter writer;
+        try {
+            result = jdoc.updateJavadoc();
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        //System.out.println(result + "\n");
 
-		if (!result.isEmpty()) {
-			file = new File(jdoc.getDir() + "/"
-					+ jdoc.getClassname().replaceAll("\\.", "/") + ".java");
-			if (!file.exists()) {
-				System.out.println("File '" + file.getAbsolutePath()
-						+ "' doesn't exist!");
-				return;
-			}
+        File file;
+        BufferedWriter writer;
 
-			writer = new BufferedWriter(new FileWriter(file));
-			writer.write(result);
-			writer.close();
+        if (!result.isEmpty()) {
+            file = new File(jdoc.getDir() + "/" + jdoc.getClassname().replaceAll("\\.", "/") + ".java");
+            if (!file.exists()) {
+                System.out.println("File '" + file.getAbsolutePath() + "' doesn't exist!");
+                return;
+            }
 
-			System.out.println(jdoc.getClassname()
-					+ "'s Javadoc successfully updated.");
+            writer = new BufferedWriter(new FileWriter(file));
+            writer.write(result);
+            writer.close();
 
-			return;
-		} else {
-			System.out.println(jdoc.getClassname()
-					+ "'s Javadoc update failed. Skipping file..");
-		}
-		
-	}
+            System.out.println(jdoc.getClassname() + "'s Javadoc successfully updated.");
+
+            return;
+        } else {
+            System.out.println(jdoc.getClassname() + "'s Javadoc update failed. Skipping file..");
+        }
+
+    }
 
     /**
      * Recursively visit all files
@@ -134,8 +129,8 @@ public class MulanJavadoc implements OptionHandler {
      * @throws java.lang.Exception
      */
     public static void traverse() throws Exception {
-		recursiveTraversal(originalDir);
-	}
+        recursiveTraversal(originalDir);
+    }
 
     /**
      * Recursively visit all files
@@ -144,23 +139,23 @@ public class MulanJavadoc implements OptionHandler {
      * @throws java.lang.Exception
      */
     public static void recursiveTraversal(File fileObject) throws Exception {
-		if (fileObject.isDirectory()) {
-			//System.out.println(fileObject.getName());
-			File allFiles[] = fileObject.listFiles();
-			for (File aFile : allFiles) {
-				recursiveTraversal(aFile);
-			}
-		} else if (fileObject.isFile()) {
-			String classname = fileObject.getPath();
-			if (classname.endsWith(".java")) {
-				classname = classname.replace(".java", "");
-				classname = classname.replace(dir, "");
-				classname = classname.replaceAll("\\\\", "\\.");
-				System.out.println(classname);
-				updateJavadoc(classname);
-			}
-		}
-	}
+        if (fileObject.isDirectory()) {
+            //System.out.println(fileObject.getName());
+            File allFiles[] = fileObject.listFiles();
+            for (File aFile : allFiles) {
+                recursiveTraversal(aFile);
+            }
+        } else if (fileObject.isFile()) {
+            String classname = fileObject.getPath();
+            if (classname.endsWith(".java")) {
+                classname = classname.replace(".java", "");
+                classname = classname.replace(dir, "");
+                classname = classname.replaceAll("\\\\", "\\.");
+                System.out.println(classname);
+                updateJavadoc(classname);
+            }
+        }
+    }
 
     /**
      * Returns global information about the class
@@ -168,9 +163,8 @@ public class MulanJavadoc implements OptionHandler {
      * @return global information
      */
     public String globalInfo() {
-		return "This class uses weka's Javadoc auto-generation classes to generate Javadoc\n"
-				+ "comments and replaces the content between certain comment tags.";
-	}
+        return "This class uses weka's Javadoc auto-generation classes to generate Javadoc\n" + "comments and replaces the content between certain comment tags.";
+    }
 
     /**
      * Gets options
@@ -178,10 +172,10 @@ public class MulanJavadoc implements OptionHandler {
      * @return
      */
     @Override
-	public String[] getOptions() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    public String[] getOptions() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
     /**
      * Returns an enumeration describing the available options.
@@ -189,16 +183,16 @@ public class MulanJavadoc implements OptionHandler {
      * @return an enumeration of all the available options.
      */
     @Override
-	public Enumeration listOptions() {
+    public Enumeration listOptions() {
 
-		Vector result = new Vector(1);
+        Vector result = new Vector(1);
 
-		result.addElement(new Option(
-				"\tThe directory where the mulan package resides.",
-				"dir", 1, "-dir <dir>"));
+        result.addElement(new Option(
+                "\tThe directory where the mulan package resides.",
+                "dir", 1, "-dir <dir>"));
 
-		return result.elements();
-	}
+        return result.elements();
+    }
 
     /**
      * Sets options
@@ -207,8 +201,7 @@ public class MulanJavadoc implements OptionHandler {
      * @throws java.lang.Exception
      */
     @Override
-	public void setOptions(String[] options) throws Exception {
-		// TODO Auto-generated method stub
-
-	}
+    public void setOptions(String[] options) throws Exception {
+        // TODO Auto-generated method stub
+    }
 }
