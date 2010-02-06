@@ -16,7 +16,7 @@
 
 /*
  *    TrainTestExperiment.java
- *    Copyright (C) 2009 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
  */
 package mulan.examples;
 
@@ -175,12 +175,12 @@ public class TrainTestExperiment {
                 if (methodsToCompare[i].equals("MLStacking")) {
                     System.out.println(methodsToCompare[i]);
                     int numOfNeighbors = 10;
-					Classifier baseClassifier = new IBk(numOfNeighbors);
-					Classifier metaClassifier = new Logistic();
-					MultiLabelStacking mls = new MultiLabelStacking(
-							baseClassifier, metaClassifier);
-					mls.setMetaPercentage(1.0);
-					mls.setDebug(true);
+                    Classifier baseClassifier = new IBk(numOfNeighbors);
+                    Classifier metaClassifier = new Logistic();
+                    MultiLabelStacking mls = new MultiLabelStacking(
+                            baseClassifier, metaClassifier);
+                    mls.setMetaPercentage(1.0);
+                    mls.setDebug(true);
                     mls.build(train);
                     results = eval.evaluate(mls, test);
                     System.out.println(results);
