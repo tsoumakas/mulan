@@ -16,7 +16,7 @@
 
 /*
  *    HMC.java
- *    Copyright (C) 2009 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
  */
 package mulan.classifier.meta;
 
@@ -53,7 +53,7 @@ import weka.filters.unsupervised.attribute.Remove;
  */
 public class HMC extends MultiLabelMetaLearner {
 
-    private LabelsMetaData originalMetaData;    
+    private LabelsMetaData originalMetaData;
     private HMCNode root;
     private Map<String, Integer> labelsAndIndices;
     private long NoNodes = 0;
@@ -69,8 +69,7 @@ public class HMC extends MultiLabelMetaLearner {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    private void buildRec(HMCNode node, Instances data) throws InvalidDataFormatException, Exception
-    {
+    private void buildRec(HMCNode node, Instances data) throws InvalidDataFormatException, Exception {
         String metaLabel = node.getName();
         //debug(metaLabel);
 
@@ -78,13 +77,15 @@ public class HMC extends MultiLabelMetaLearner {
         Set<String> childrenLabels = new HashSet<String>();
         Set<String> currentlyAvailableLabels = new HashSet<String>();
         if (metaLabel.equals("root")) {
-            for (LabelNode child : originalMetaData.getRootLabels())
+            for (LabelNode child : originalMetaData.getRootLabels()) {
                 childrenLabels.add(child.getName());
+            }
             currentlyAvailableLabels = originalMetaData.getLabelNames();
         } else {
             LabelNode labelNode = originalMetaData.getLabelNode(metaLabel);
-            for (LabelNode child : labelNode.getChildren())
+            for (LabelNode child : labelNode.getChildren()) {
                 childrenLabels.add(child.getName());
+            }
             currentlyAvailableLabels = labelNode.getDescendantLabels();
         }
 
@@ -109,34 +110,37 @@ public class HMC extends MultiLabelMetaLearner {
 
         // create meta data
         LabelsMetaDataImpl nodeMetaData = new LabelsMetaDataImpl();
-        for (String label : childrenLabels)
+        for (String label : childrenLabels) {
             nodeMetaData.addRootNode(new LabelNodeImpl(label));
+        }
 
         // create multi-label instance
         MultiLabelInstances nodeData = new MultiLabelInstances(nodeInstances, nodeMetaData);
-        
+
         //debug("Building model");
         node.build(nodeData);
         //debug("spark #instances:"+nodeInstances.numInstances());
         TotalUsedTrainInsts += nodeInstances.numInstances();
         NoNodes++;
         //debug("spark:#nodes: "+ HMCNoNodes);
-        
+
         for (String childLabel : childrenLabels) {
             LabelNode childNode = originalMetaData.getLabelNode(childLabel);
-            if (!childNode.hasChildren())
+            if (!childNode.hasChildren()) {
                 continue;
+            }
             //debug("Preparing child data");
 
             // remove instances where child is 0
             int childMetaLabelIndex = data.attribute(childLabel).index();
             Instances childData = new Instances(data);
-            for (int i=0; i<childData.numInstances(); i++)
+            for (int i = 0; i < childData.numInstances(); i++) {
                 if (childData.instance(i).stringValue(childMetaLabelIndex).equals("0")) {
                     childData.delete(i);
                     // While deleting an instance from the trainSet, i must reduced too
                     i--;
                 }
+            }
 
             // delete non-descendant labels
             Set<String> descendantLabels = childNode.getDescendantLabels();
@@ -159,8 +163,8 @@ public class HMC extends MultiLabelMetaLearner {
             HMCNode child = new HMCNode(childLabel, mll);
             node.addChild(child);
 
-            buildRec(child, childData);            
-        }      
+            buildRec(child, childData);
+        }
 
     }
 
@@ -168,8 +172,9 @@ public class HMC extends MultiLabelMetaLearner {
     protected void buildInternal(MultiLabelInstances dataSet) throws Exception {
         originalMetaData = dataSet.getLabelsMetaData();
         Set<String> rootLabels = new HashSet<String>();
-        for (LabelNode node : originalMetaData.getRootLabels())
+        for (LabelNode node : originalMetaData.getRootLabels()) {
             rootLabels.add(node.getName());
+        }
 
 
 
@@ -200,12 +205,14 @@ public class HMC extends MultiLabelMetaLearner {
         transformed.setDataset(null);
 
         int numChildren;
-        if (metaLabel.equals("root"))
+        if (metaLabel.equals("root")) {
             numChildren = originalMetaData.getRootLabels().size();
-        else
+        } else {
             numChildren = originalMetaData.getLabelNode(metaLabel).getChildren().size();
-        for (int j=0; j<numChildren; j++)
+        }
+        for (int j = 0; j < numChildren; j++) {
             transformed.insertAttributeAt(transformed.numAttributes());
+        }
         transformed.setDataset(currentNode.getHeader());
         // add as many attributes as the children    
 //        System.out.println("header:" + currentNode.getHeader());
@@ -213,32 +220,35 @@ public class HMC extends MultiLabelMetaLearner {
 
         //debug("working at node " + currentNode.getName());
         //debug(Arrays.toString(predictedLabels));        
-        NoClassifierEvals++;        
+        NoClassifierEvals++;
         MultiLabelOutput pred = currentNode.makePrediction(transformed);
         int[] indices = currentNode.getLabelIndices();
         boolean[] temp = pred.getBipartition();
 
-        for (int i=0; i<temp.length; i++)
-        {
+        for (int i = 0; i < temp.length; i++) {
             String childName = currentNode.getHeader().attribute(indices[i]).name();
             //System.out.println("childName:" + childName);
             int idx = labelsAndIndices.get(childName);
             if (pred.getBipartition()[i] == true) {
                 predictedLabels[idx] = true;
                 confidences[idx] = pred.getConfidences()[i];
-                if (currentNode.hasChildren())
-                    for (HMCNode child : currentNode.getChildren())
-                        if (child.getName().equals(childName))
+                if (currentNode.hasChildren()) {
+                    for (HMCNode child : currentNode.getChildren()) {
+                        if (child.getName().equals(childName)) {
                             makePrediction(child, instance, predictedLabels, confidences);
+                        }
+                    }
+                }
             } else {
                 predictedLabels[idx] = false;
                 Set<String> descendantLabels = originalMetaData.getLabelNode(childName).getDescendantLabels();
-                if (descendantLabels != null)
+                if (descendantLabels != null) {
                     for (String label : descendantLabels) {
                         int idx2 = labelsAndIndices.get(label);
                         predictedLabels[idx2] = false;
                         confidences[idx2] = pred.getConfidences()[i];
                     }
+                }
             }
         }
     }
@@ -260,8 +270,6 @@ public class HMC extends MultiLabelMetaLearner {
         }
     }
 
-
-
     /**
      * Deletes the unnecessary attributes. Actually keeps only the children
      * names of the node that is going to be trained as attributes and deletes
@@ -281,25 +289,25 @@ public class HMC extends MultiLabelMetaLearner {
         LabelsMetaDataImpl labelsMetaData = new LabelsMetaDataImpl();
 
         //Prepare the appropriate labelsMetaData
-        if(keepSubTree){
+        if (keepSubTree) {
             labelsToKeep = currentLabelNode.getDescendantLabels();
             for (String rootLabel : currentLabelNode.getChildrenLabels()) {
                 LabelNodeImpl rootNode = new LabelNodeImpl(rootLabel);
-                if(mlData.getLabelsMetaData().getLabelNode(rootLabel).hasChildren()){
-                    append(rootNode,mlData.getLabelsMetaData());
+                if (mlData.getLabelsMetaData().getLabelNode(rootLabel).hasChildren()) {
+                    append(rootNode, mlData.getLabelsMetaData());
                 }
                 labelsMetaData.addRootNode(rootNode);
             }
-        }else{
+        } else {
             labelsToKeep = currentLabelNode.getChildrenLabels();
-            for(String rootLabel : labelsToKeep){
+            for (String rootLabel : labelsToKeep) {
                 LabelNodeImpl rootNode = new LabelNodeImpl(rootLabel);
                 labelsMetaData.addRootNode(rootNode);
             }
         }
-        
+
         //debug("Labels: " + labelsMetaData.getLabelNames().toString());
-        
+
         //Deleting labels from instances
         for (String label : allLabels) {
             if (!labelsToKeep.contains(label)) {
@@ -308,20 +316,19 @@ public class HMC extends MultiLabelMetaLearner {
             }
         }
 
-        return new MultiLabelInstances(mlData.getDataSet(),labelsMetaData);
+        return new MultiLabelInstances(mlData.getDataSet(), labelsMetaData);
     }
 
-
-    private void append(LabelNodeImpl labelNode,LabelsMetaData labelsMetaData){
+    private void append(LabelNodeImpl labelNode, LabelsMetaData labelsMetaData) {
         LabelNode father = labelsMetaData.getLabelNode(labelNode.getName());
-        for(LabelNode child : father.getChildren()){
+        for (LabelNode child : father.getChildren()) {
             LabelNodeImpl newLabelNode = new LabelNodeImpl(child.getName());
-            if (child.hasChildren())
-                append(newLabelNode,labelsMetaData);
+            if (child.hasChildren()) {
+                append(newLabelNode, labelsMetaData);
+            }
             labelNode.addChildNode(newLabelNode);
         }
     }
-
 
     /**
      * Deletes the unnecessary instances, the instances that have value 0 on
@@ -340,13 +347,16 @@ public class HMC extends MultiLabelMetaLearner {
         }
     }
     //spark temporary edit
+
     public long getNoNodes() {
-      return NoNodes;
+        return NoNodes;
     }
+
     public long getNoClassifierEvals() {
-    	return NoClassifierEvals;
+        return NoClassifierEvals;
     }
+
     public long getTotalUsedTrainInsts() {
-    	return TotalUsedTrainInsts;    
+        return TotalUsedTrainInsts;
     }
 }

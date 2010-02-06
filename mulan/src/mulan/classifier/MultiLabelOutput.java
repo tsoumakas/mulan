@@ -16,9 +16,8 @@
 
 /*
  *    MultiLabelOutput.java
- *    Copyright (C) 2009 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
  */
-
 package mulan.classifier;
 
 import java.util.Arrays;
@@ -36,10 +35,8 @@ public class MultiLabelOutput {
 
     /** a bipartition of the labels into relevant and irrelevant */
     private boolean[] bipartition;
-
     /** the rank of each label, ranging from 1 to array length */
     private int[] ranking;
-
     /** the probability of each label being positive */
     private double[] confidences;
 
@@ -49,9 +46,9 @@ public class MultiLabelOutput {
      * @throws ArgumentNullException if bipartitions is null.
      */
     public MultiLabelOutput(boolean[] bipartition) {
-    	if(bipartition == null){
-    		throw new ArgumentNullException("bipartitions");
-    	}
+        if (bipartition == null) {
+            throw new ArgumentNullException("bipartitions");
+        }
         this.bipartition = Arrays.copyOf(bipartition, bipartition.length);
     }
 
@@ -62,8 +59,8 @@ public class MultiLabelOutput {
      */
     public MultiLabelOutput(int[] ranking) {
         if (ranking == null) {
-    		throw new ArgumentNullException("ranking");
-    	}
+            throw new ArgumentNullException("ranking");
+        }
         this.ranking = Arrays.copyOf(ranking, ranking.length);
     }
 
@@ -76,15 +73,17 @@ public class MultiLabelOutput {
      * @throws ArgumentNullException if probabilities is null
      */
     public MultiLabelOutput(double[] probabilities, double threshold) {
-        if(probabilities == null){
-    		throw new ArgumentNullException("probabilities");
-    	}
+        if (probabilities == null) {
+            throw new ArgumentNullException("probabilities");
+        }
         confidences = probabilities;
         ranking = ranksFromValues(probabilities);
         bipartition = new boolean[probabilities.length];
-        for (int i=0; i<probabilities.length; i++)
-            if (probabilities[i] >= threshold)
+        for (int i = 0; i < probabilities.length; i++) {
+            if (probabilities[i] >= threshold) {
                 bipartition[i] = true;
+            }
+        }
     }
 
     /**
@@ -96,12 +95,12 @@ public class MultiLabelOutput {
      */
     public MultiLabelOutput(boolean[] bipartition, double[] someConfidences) {
         this(bipartition);
-        if(someConfidences == null){
-    		throw new ArgumentNullException("someConfidences");
-    	}
-        if(bipartition.length != someConfidences.length){
-        	this.bipartition = null;
-        	throw new IllegalArgumentException("The dimensions of the bipartition " +
+        if (someConfidences == null) {
+            throw new ArgumentNullException("someConfidences");
+        }
+        if (bipartition.length != someConfidences.length) {
+            this.bipartition = null;
+            throw new IllegalArgumentException("The dimensions of the bipartition " +
                     " and confidences arrays do not match.");
         }
         confidences = Arrays.copyOf(someConfidences, someConfidences.length);
@@ -165,9 +164,9 @@ public class MultiLabelOutput {
     public static int[] ranksFromValues(double[] values) {
         int[] temp = weka.core.Utils.stableSort(values);
         int[] ranks = new int[values.length];
-        for (int i=0; i<values.length; i++)
-            ranks[temp[i]] = values.length-i;
+        for (int i = 0; i < values.length; i++) {
+            ranks[temp[i]] = values.length - i;
+        }
         return ranks;
     }
-
 }

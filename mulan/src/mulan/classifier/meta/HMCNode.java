@@ -16,7 +16,7 @@
 
 /*
  *    HMCNode.java
- *    Copyright (C) 2009 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
  */
 package mulan.classifier.meta;
 
@@ -51,8 +51,7 @@ public class HMCNode extends MultiLabelMetaLearner {
         nodeName = name;
     }
 
-    public Instances getHeader()
-    {
+    public Instances getHeader() {
         return header;
     }
 

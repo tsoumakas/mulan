@@ -16,9 +16,8 @@
 
 /*
  *    LabelPowersetAttributeEvaluator.java
- *    Copyright (C) 2009 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
  */
-
 package mulan.attributeSelection;
 
 import java.util.logging.Level;
@@ -52,14 +51,13 @@ import weka.core.Instances;
  *
  * @author Grigorios Tsoumakas
  */
-public class LabelPowersetAttributeEvaluator extends ASEvaluation implements AttributeEvaluator
-{
-   /** The single-label attribute evaluator to use underneath */
+public class LabelPowersetAttributeEvaluator extends ASEvaluation implements AttributeEvaluator {
+
+    /** The single-label attribute evaluator to use underneath */
     private ASEvaluation baseAttributeEvaluator;
 
     /** Constructor that uses an evaluator on a multi-label dataset */
-    public LabelPowersetAttributeEvaluator(ASEvaluation x, MultiLabelInstances mlData)
-    {
+    public LabelPowersetAttributeEvaluator(ASEvaluation x, MultiLabelInstances mlData) {
         baseAttributeEvaluator = x;
         LabelPowersetTransformation lpt = new LabelPowersetTransformation();
         Instances data;
@@ -80,6 +78,4 @@ public class LabelPowersetAttributeEvaluator extends ASEvaluation implements Att
     public void buildEvaluator(Instances arg0) throws Exception {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-
-
 }
