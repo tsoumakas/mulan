@@ -16,7 +16,7 @@
 
 /*
  *    PPT.java
- *    Copyright (C) 2009 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
  */
 package mulan.classifier.transformation;
 
@@ -42,15 +42,15 @@ import weka.core.TechnicalInformation.Type;
  * @version $Revision: 0.4 $
  */
 public class PPT extends LabelPowerset {
-    
+
     /** parameter for the threshold of number of occurences of a labelset */
     protected int x;
-    
     /** parameter for the threshold of number of occurences of a labelset */
-    protected boolean informationLoss=true;
-            
+    protected boolean informationLoss = true;
     /** labelsets and their frequency of all label*/
-    private HashMap<LabelSet,Integer> labelsets = new HashMap<LabelSet,Integer>();;          
+    private HashMap<LabelSet, Integer> labelsets = new HashMap<LabelSet, Integer>();
+
+    ;
 
     /**
      * Constructor that initializes learner with base algorithm and main parameter
@@ -58,8 +58,7 @@ public class PPT extends LabelPowerset {
      * @param classifier base single-label classification algorithm
      * @param x number of instances required for a labelset to be included.
      */
-    public PPT(Classifier classifier, int x)
-    {
+    public PPT(Classifier classifier, int x) {
         super(classifier);
         this.x = x; // x should be larger than 0
         setConfidenceCalculationMethod(2);
@@ -70,18 +69,17 @@ public class PPT extends LabelPowerset {
     /**
      * @param b true/false value for information loss
      */
-    public void setInformationLoss(boolean b)
-    {
+    public void setInformationLoss(boolean b) {
         informationLoss = b;
     }
 
     /**
-    * Returns an instance of a TechnicalInformation object, containing 
-    * detailed information about the technical background of this class,
-    * e.g., paper reference or book this class is based on.
-    * 
-    * @return the technical information about this class
-    */
+     * Returns an instance of a TechnicalInformation object, containing
+     * detailed information about the technical background of this class,
+     * e.g., paper reference or book this class is based on.
+     *
+     * @return the technical information about this class
+     */
     @Override
     public TechnicalInformation getTechnicalInformation() {
         TechnicalInformation result = new TechnicalInformation(Type.INPROCEEDINGS);
@@ -92,106 +90,102 @@ public class PPT extends LabelPowerset {
         result.setValue(Field.YEAR, "2008");
 
         return result;
-    }    
-    
+    }
+
     @Override
-    protected void buildInternal(MultiLabelInstances mlDataSet) throws Exception
-    {   
-    	Instances data = mlDataSet.getDataSet();
+    protected void buildInternal(MultiLabelInstances mlDataSet) throws Exception {
+        Instances data = mlDataSet.getDataSet();
         int numInstances = data.numInstances();
-        
+
         // create a data structure that holds for each labelset a list with the 
         // corresponding instances
-        HashMap<LabelSet,ArrayList<Instance>> ListInstancePerLabel = new HashMap<LabelSet,ArrayList<Instance>>();
-        for (int i=0; i<numInstances; i++)
-        {
+        HashMap<LabelSet, ArrayList<Instance>> ListInstancePerLabel = new HashMap<LabelSet, ArrayList<Instance>>();
+        for (int i = 0; i < numInstances; i++) {
             double[] dblLabels = new double[numLabels];
-            for (int j=0; j<numLabels; j++)
-            {
+            for (int j = 0; j < numLabels; j++) {
                 int index = labelIndices[j];
-            	double value = Double.parseDouble(data.attribute(index).value((int) data.instance(i).value(index)));
-                dblLabels[j] = value;                 
+                double value = Double.parseDouble(data.attribute(index).value((int) data.instance(i).value(index)));
+                dblLabels[j] = value;
             }
-            
+
             LabelSet labelSet = new LabelSet(dblLabels);
-            if (labelsets.containsKey(labelSet))
+            if (labelsets.containsKey(labelSet)) {
                 labelsets.put(labelSet, labelsets.get(labelSet) + 1);
-            else 
+            } else {
                 labelsets.put(labelSet, 1);
-            
-            if (ListInstancePerLabel.containsKey(labelSet))
+            }
+
+            if (ListInstancePerLabel.containsKey(labelSet)) {
                 ListInstancePerLabel.get(labelSet).add(data.instance(i));
-            else {
-               ArrayList<Instance> li = new ArrayList<Instance>();
-               li.add(data.instance(i));
-               ListInstancePerLabel.put(labelSet, li);
-            }                
+            } else {
+                ArrayList<Instance> li = new ArrayList<Instance>();
+                li.add(data.instance(i));
+                ListInstancePerLabel.put(labelSet, li);
+            }
         }
-        
+
         // iterate the structure and a) if occurences of a labelset are higher 
         // than paramater then add them to the training set, b) if occurences
         // are less, then depending on the parameter either discard or create
         // new instances
         Instances newData = new Instances(data, 0);
-        Iterator<LabelSet> it = ListInstancePerLabel.keySet().iterator(); 
-        while(it.hasNext()) { 
-            LabelSet ls = it.next(); 
-            ArrayList<Instance> instances = ListInstancePerLabel.get(ls); 
-            if (instances.size() > x)
-                for (int i=0; i<instances.size(); i++)
+        Iterator<LabelSet> it = ListInstancePerLabel.keySet().iterator();
+        while (it.hasNext()) {
+            LabelSet ls = it.next();
+            ArrayList<Instance> instances = ListInstancePerLabel.get(ls);
+            if (instances.size() > x) {
+                for (int i = 0; i < instances.size(); i++) {
                     newData.add(instances.get(i));
-            else 
-                if (!informationLoss) {
-                    // split LabelSet into smaller ones
-                    //System.out.println("original:" + ls.toString());
-                    ArrayList<LabelSet> subsets = ls.getSubsets();
-                    // sort subsets based on size
-                    Collections.sort(subsets);
-                    //for (LabelSet l: subsets) System.out.println(l.toString());
-                    ArrayList<LabelSet> subsetsForInsertion = new ArrayList<LabelSet>();
-                    for (LabelSet l: subsets)
-                    {
-                        //check if it exists in the training set
-                        if (!ListInstancePerLabel.containsKey(l))
-                            continue;
-                        else 
-                            // check if it has more than p elements
-                            if (ListInstancePerLabel.get(l).size() <= x)
-                                continue;
-                            else {
-                                // check that it has no common elements with 
-                                // previously selected subsets
-                                boolean foundCommon = false;
-                                for (LabelSet l2: subsetsForInsertion)
-                                {
-                                    LabelSet temp = LabelSet.intersection(l, l2);
-                                    if (temp.size() != 0) {
-                                        foundCommon = true;
-                                        break;
-                                    }
-                                }
-                                if (foundCommon)
-                                    continue;
-                                else 
-                                    subsetsForInsertion.add(l);
+                }
+            } else if (!informationLoss) {
+                // split LabelSet into smaller ones
+                //System.out.println("original:" + ls.toString());
+                ArrayList<LabelSet> subsets = ls.getSubsets();
+                // sort subsets based on size
+                Collections.sort(subsets);
+                //for (LabelSet l: subsets) System.out.println(l.toString());
+                ArrayList<LabelSet> subsetsForInsertion = new ArrayList<LabelSet>();
+                for (LabelSet l : subsets) {
+                    //check if it exists in the training set
+                    if (!ListInstancePerLabel.containsKey(l)) {
+                        continue;
+                    } else // check if it has more than p elements
+                    if (ListInstancePerLabel.get(l).size() <= x) {
+                        continue;
+                    } else {
+                        // check that it has no common elements with
+                        // previously selected subsets
+                        boolean foundCommon = false;
+                        for (LabelSet l2 : subsetsForInsertion) {
+                            LabelSet temp = LabelSet.intersection(l, l2);
+                            if (temp.size() != 0) {
+                                foundCommon = true;
+                                break;
                             }
-                    }
-                    // insert subsetsForInsertion with corresponding instances
-                    // from the original labelset
-                    for (Instance tempInstance: instances) {
-                        double[] temp = tempInstance.toDoubleArray();
-                        for (LabelSet l: subsetsForInsertion) {
-                            double[] tempLabels = l.toDoubleArray();                            
-                            for (int i=0; i<numLabels; i++)
-                                temp[labelIndices[i]] = tempLabels[i];
-                            Instance newInstance = new Instance(1, temp);
-                            newData.add(newInstance);
+                        }
+                        if (foundCommon) {
+                            continue;
+                        } else {
+                            subsetsForInsertion.add(l);
                         }
                     }
-                }            
+                }
+                // insert subsetsForInsertion with corresponding instances
+                // from the original labelset
+                for (Instance tempInstance : instances) {
+                    double[] temp = tempInstance.toDoubleArray();
+                    for (LabelSet l : subsetsForInsertion) {
+                        double[] tempLabels = l.toDoubleArray();
+                        for (int i = 0; i < numLabels; i++) {
+                            temp[labelIndices[i]] = tempLabels[i];
+                        }
+                        Instance newInstance = new Instance(1, temp);
+                        newData.add(newInstance);
+                    }
+                }
+            }
         }
-                       
+
         super.build(new MultiLabelInstances(newData, mlDataSet.getLabelsMetaData()));
-    }      
-        
+    }
 }

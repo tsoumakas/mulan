@@ -16,7 +16,7 @@
 
 /*
  *    LabelPowerset.java
- *    Copyright (C) 2009 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
  */
 package mulan.classifier.transformation;
 
@@ -41,8 +41,8 @@ import weka.core.Instances;
  * @author Robert Friberg
  * @version $Revision: 0.05 $ 
  */
-public class LabelPowerset extends TransformationBasedMultiLabelLearner 
-{
+public class LabelPowerset extends TransformationBasedMultiLabelLearner {
+
     /**
      * The confidence values for each label are calculated in the following ways
      * 0: Confidence 0 1/0 for all labels, (1 if label true, 0 if label is false)
@@ -51,24 +51,20 @@ public class LabelPowerset extends TransformationBasedMultiLabelLearner
      *    obtained from the base classifier, as introduced by the PPT algorithm
      */
     private int confidenceCalculationMethod = 1;
-
     /**
      * Whether the method introduced by the PPT algorithm will be used to
      * actually get the 1/0 output bipartition based on the confidences
      * (requires a threshold)
      */
-    protected boolean makePredictionsBasedOnConfidences=false;
-
+    protected boolean makePredictionsBasedOnConfidences = false;
     /**
      * Threshold used for deciding the 1/0 output value of each label based on
      * the corresponding confidences as calculated by the method introduced in
      * the PPT algorithm
      */
-    protected double threshold=0.5;
-
+    protected double threshold = 0.5;
     /** The object that performs the data transformation */
     private LabelPowersetTransformation transformation;
-        
     /**
      * Random number generator for randomly solving tied predictions
      */
@@ -79,19 +75,17 @@ public class LabelPowerset extends TransformationBasedMultiLabelLearner
      * 
      * @param classifier the base single-label classification algorithm
      */
-    public LabelPowerset(Classifier classifier)
-    {
+    public LabelPowerset(Classifier classifier) {
         super(classifier);
         Rand = new Random(1);
     }
-   
+
     /**
      * Sets a threshold for obtaining the bipartition
      *
      * @param value the threshold's value
      */
-    public void setMakePredictionsBasedOnConfidences(boolean value)
-    {
+    public void setMakePredictionsBasedOnConfidences(boolean value) {
         makePredictionsBasedOnConfidences = value;
     }
 
@@ -100,19 +94,16 @@ public class LabelPowerset extends TransformationBasedMultiLabelLearner
      * 
      * @param s the seed
      */
-    public void setSeed(int s) 
-    {
+    public void setSeed(int s) {
         Rand = new Random(s);
     }
-    
 
     /**
      * The threshold for obtaining the bipartition from probabilities
      * 
      * @param t
      */
-    public void setThreshold(double t)
-    {
+    public void setThreshold(double t) {
         threshold = t;
     }
 
@@ -121,14 +112,13 @@ public class LabelPowerset extends TransformationBasedMultiLabelLearner
      * 
      * @param method
      */
-    public void setConfidenceCalculationMethod(int method)
-    {
-        if (method == 0 || method == 1 || method == 2)
+    public void setConfidenceCalculationMethod(int method) {
+        if (method == 0 || method == 1 || method == 2) {
             confidenceCalculationMethod = method;
-    }    
-    
-    protected void buildInternal(MultiLabelInstances mlData) throws Exception
-    {
+        }
+    }
+
+    protected void buildInternal(MultiLabelInstances mlData) throws Exception {
         Instances transformedData;
         transformation = new LabelPowersetTransformation();
         debug("Transforming the training set.");
@@ -138,7 +128,7 @@ public class LabelPowerset extends TransformationBasedMultiLabelLearner
 
         // check for unary class
         debug("Building single-label classifier.");
-        if (transformedData.attribute(transformedData.numAttributes()-1).numValues() > 1) {
+        if (transformedData.attribute(transformedData.numAttributes() - 1).numValues() > 1) {
             baseClassifier.buildClassifier(transformedData);
         }
     }
@@ -148,8 +138,7 @@ public class LabelPowerset extends TransformationBasedMultiLabelLearner
         double confidences[] = null;
 
         // check for unary class
-        if (transformation.getTransformedFormat().classAttribute().numValues() == 1)
-        {
+        if (transformation.getTransformedFormat().classAttribute().numValues() == 1) {
             String strClass = transformation.getTransformedFormat().classAttribute().value(0);
             LabelSet labelSet = null;
             try {
@@ -170,7 +159,7 @@ public class LabelPowerset extends TransformationBasedMultiLabelLearner
             } catch (Exception ex) {
                 Logger.getLogger(LabelPowerset.class.getName()).log(Level.SEVERE, null, ex);
             }
-            int classIndex = Util.RandomIndexOfMax(distribution,Rand);
+            int classIndex = Util.RandomIndexOfMax(distribution, Rand);
             //debug("" + classIndex);
             String strClass = (transformation.getTransformedFormat().classAttribute()).value(classIndex);
             LabelSet labelSet = null;
@@ -183,45 +172,50 @@ public class LabelPowerset extends TransformationBasedMultiLabelLearner
             bipartition = labelSet.toBooleanArray();
             //debug(Arrays.toString(bipartition));
 
-            switch (confidenceCalculationMethod)
-            {
-                case 0: confidences = Arrays.copyOf(labelSet.toDoubleArray(), labelSet.size());
-                        break;
-                case 1: confidences = new double[numLabels];
-                        double prob = distribution[classIndex];
-                        for (int i=0; i<numLabels; i++)
-                           confidences[i] = bipartition[i] ? prob : 1-prob;
-                        break;
-                case 2: confidences = new double[numLabels];
-                        for (int i=0; i<distribution.length; i++)
-                        {
-                            strClass = (transformation.getTransformedFormat().classAttribute()).value(i);
-                            try {
-                                labelSet = LabelSet.fromBitString(strClass);
-                            } catch (Exception ex) {
-                                Logger.getLogger(LabelPowerset.class.getName()).log(Level.SEVERE, null, ex);
-                            }
-                            double[] predictionsTemp = labelSet.toDoubleArray();
-                            double confidence = distribution[i];
-                            for (int j=0; j<numLabels;j++)
-                                if (predictionsTemp[j] == 1)
-                                    confidences[j] += confidence;
+            switch (confidenceCalculationMethod) {
+                case 0:
+                    confidences = Arrays.copyOf(labelSet.toDoubleArray(), labelSet.size());
+                    break;
+                case 1:
+                    confidences = new double[numLabels];
+                    double prob = distribution[classIndex];
+                    for (int i = 0; i < numLabels; i++) {
+                        confidences[i] = bipartition[i] ? prob : 1 - prob;
+                    }
+                    break;
+                case 2:
+                    confidences = new double[numLabels];
+                    for (int i = 0; i < distribution.length; i++) {
+                        strClass = (transformation.getTransformedFormat().classAttribute()).value(i);
+                        try {
+                            labelSet = LabelSet.fromBitString(strClass);
+                        } catch (Exception ex) {
+                            Logger.getLogger(LabelPowerset.class.getName()).log(Level.SEVERE, null, ex);
                         }
+                        double[] predictionsTemp = labelSet.toDoubleArray();
+                        double confidence = distribution[i];
+                        for (int j = 0; j < numLabels; j++) {
+                            if (predictionsTemp[j] == 1) {
+                                confidences[j] += confidence;
+                            }
+                        }
+                    }
             }
 
-            if (makePredictionsBasedOnConfidences)
-            {
-                for (int i=0; i<confidences.length; i++)
-                    if (confidences[i] > threshold)
+            if (makePredictionsBasedOnConfidences) {
+                for (int i = 0; i < confidences.length; i++) {
+                    if (confidences[i] > threshold) {
                         bipartition[i] = true;
-                    else
+                    } else {
                         bipartition[i] = false;
+                    }
+                }
             }
-            
+
         }
 
         MultiLabelOutput mlo = new MultiLabelOutput(bipartition, confidences);
- 		return mlo;
+        return mlo;
     }
 }
 
