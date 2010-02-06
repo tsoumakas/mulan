@@ -16,9 +16,8 @@
 
 /*
  *    SelectRandom.java
- *    Copyright (C) 2009 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
  */
-
 package mulan.transformations.multiclass;
 
 import java.util.List;
@@ -32,9 +31,7 @@ import mulan.transformations.RemoveAllLabels;
  * Class that implement the Select-Random transformation method
  * @author Stavros
  */
-
 public class SelectRandom extends MultiClassTransformationBase {
-
 
     /**
      * Transforms a multi-label example to a list containing a single-label
@@ -45,18 +42,20 @@ public class SelectRandom extends MultiClassTransformationBase {
      */
     List<Instance> transformInstance(Instance instance) {
         ArrayList<Integer> labels = new ArrayList<Integer>();
-        for (int counter=0; counter<numOfLabels; counter++)
-            if (instance.attribute(labelIndices[counter]).value((int) instance.value(labelIndices[counter])).equals("1"))
+        for (int counter = 0; counter < numOfLabels; counter++) {
+            if (instance.attribute(labelIndices[counter]).value((int) instance.value(labelIndices[counter])).equals("1")) {
                 labels.add(counter);
+            }
+        }
 
-        int randomLabel = labels.get((int)(Math.random()*labels.size()));
+        int randomLabel = labels.get((int) (Math.random() * labels.size()));
 
         Instance transformed = null;
         try {
             transformed = RemoveAllLabels.transformInstance(instance, labelIndices);
             transformed.setDataset(null);
             transformed.insertAttributeAt(transformed.numAttributes());
-            transformed.setValue(transformed.numAttributes()-1, randomLabel);
+            transformed.setValue(transformed.numAttributes() - 1, randomLabel);
         } catch (Exception ex) {
             Logger.getLogger(Copy.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -65,5 +64,4 @@ public class SelectRandom extends MultiClassTransformationBase {
         result.add(transformed);
         return result;
     }
-
 }

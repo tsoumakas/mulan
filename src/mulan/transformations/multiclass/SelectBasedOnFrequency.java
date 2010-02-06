@@ -16,9 +16,8 @@
 
 /*
  *    SelectBasedOnFrequency.java
- *    Copyright (C) 2009 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
  */
-
 package mulan.transformations.multiclass;
 
 import java.util.ArrayList;
@@ -40,7 +39,6 @@ public class SelectBasedOnFrequency extends MultiClassTransformationBase {
 
     /** type of frequency */
     private SelectionType type;
-
     /** occurences of each label */
     private int[] labelOccurance;
 
@@ -49,8 +47,7 @@ public class SelectBasedOnFrequency extends MultiClassTransformationBase {
      *
      * @param type type of frequency-based selection (MIN/MAX)
      */
-    public SelectBasedOnFrequency(SelectionType type)
-    {
+    public SelectBasedOnFrequency(SelectionType type) {
         this.type = type;
     }
 
@@ -62,13 +59,15 @@ public class SelectBasedOnFrequency extends MultiClassTransformationBase {
         labelOccurance = new int[numOfLabels];
         labelIndices = mlData.getLabelIndices();
         int numInstances = data.numInstances();
-        for (int i=0; i<numInstances; i++)
-            for (int j=0; j<numOfLabels; j++)
-            	if (data.instance(i).attribute(labelIndices[j]).value((int) data.instance(i).value(labelIndices[j])).equals("1"))
-            		labelOccurance[j]++;
+        for (int i = 0; i < numInstances; i++) {
+            for (int j = 0; j < numOfLabels; j++) {
+                if (data.instance(i).attribute(labelIndices[j]).value((int) data.instance(i).value(labelIndices[j])).equals("1")) {
+                    labelOccurance[j]++;
+                }
+            }
+        }
         return super.transformInstances(mlData);
     }
-
 
     /**
      * Transforms a multi-label example to a list containing a single-label
@@ -81,30 +80,31 @@ public class SelectBasedOnFrequency extends MultiClassTransformationBase {
     List<Instance> transformInstance(Instance instance) {
         int value = labelOccurance[0];
         int labelSelected = 0;
-        for (int counter=1; counter<numOfLabels; counter++)
-            if (instance.attribute(labelIndices[counter]).value((int) instance.value(labelIndices[counter])).equals("1"))
-            {
+        for (int counter = 1; counter < numOfLabels; counter++) {
+            if (instance.attribute(labelIndices[counter]).value((int) instance.value(labelIndices[counter])).equals("1")) {
                 boolean test = false;
                 switch (type) {
-                    case MIN : test = labelOccurance[counter] < value ? true : false;
-                               break;
-                    case MAX : test = labelOccurance[counter] > value ? true : false;
-                               break;
+                    case MIN:
+                        test = labelOccurance[counter] < value ? true : false;
+                        break;
+                    case MAX:
+                        test = labelOccurance[counter] > value ? true : false;
+                        break;
                 }
 
-                if (test)
-                {
+                if (test) {
                     value = labelOccurance[counter];
                     labelSelected = counter;
                 }
             }
+        }
 
         Instance transformed = null;
         try {
             transformed = RemoveAllLabels.transformInstance(instance, labelIndices);
             transformed.setDataset(null);
             transformed.insertAttributeAt(transformed.numAttributes());
-            transformed.setValue(transformed.numAttributes()-1, labelSelected);
+            transformed.setValue(transformed.numAttributes() - 1, labelSelected);
         } catch (Exception ex) {
             Logger.getLogger(Copy.class.getName()).log(Level.SEVERE, null, ex);
         }

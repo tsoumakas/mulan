@@ -18,7 +18,6 @@
  *    MultiClassTransformationBase.java
  *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
  */
-
 package mulan.transformations.multiclass;
 
 import java.io.Serializable;
@@ -41,7 +40,6 @@ public abstract class MultiClassTransformationBase implements Serializable, Mult
 
     /** the number of labels */
     protected int numOfLabels;
-
     /** the array with the label indices */
     protected int[] labelIndices;
 
@@ -51,23 +49,23 @@ public abstract class MultiClassTransformationBase implements Serializable, Mult
         Instances data = mlData.getDataSet();
 
         Instances transformed = new Instances(mlData.getDataSet(), 0);
-        
+
         // delete all labels
         transformed = RemoveAllLabels.transformInstances(transformed, labelIndices);
 
         // add single label attribute
         FastVector classValues = new FastVector(numOfLabels);
-        for(int x=0; x<numOfLabels; x++)
-            classValues.addElement("Class"+(x+1));
+        for (int x = 0; x < numOfLabels; x++) {
+            classValues.addElement("Class" + (x + 1));
+        }
         Attribute newClass = new Attribute("Class", classValues);
         transformed.insertAttributeAt(newClass, transformed.numAttributes());
-        transformed.setClassIndex(transformed.numAttributes()-1);
+        transformed.setClassIndex(transformed.numAttributes() - 1);
 
-        for (int instanceIndex=0; instanceIndex<data.numInstances(); instanceIndex++) {
+        for (int instanceIndex = 0; instanceIndex < data.numInstances(); instanceIndex++) {
             //System.out.println(data.instance(instanceIndex).toString());
             List<Instance> result = transformInstance(data.instance(instanceIndex));
-            for (Instance instance : result)
-            {
+            for (Instance instance : result) {
                 //System.out.println(instance.toString());
                 transformed.add(instance);
                 //System.out.println(transformed.instance(transformed.numInstances()-1));

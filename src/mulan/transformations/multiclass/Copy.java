@@ -16,9 +16,8 @@
 
 /*
  *    Copy.java
- *    Copyright (C) 2009 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
  */
-
 package mulan.transformations.multiclass;
 
 import java.util.ArrayList;
@@ -36,7 +35,6 @@ import weka.core.Instance;
  */
 public class Copy extends MultiClassTransformationBase {
 
-
     /**
      * Transforms a multi-label instance to a list of single-label instances,
      * one for each of the labels that annotate the instance, by copying the
@@ -47,15 +45,14 @@ public class Copy extends MultiClassTransformationBase {
      */
     List<Instance> transformInstance(Instance instance) {
         List<Instance> result = new ArrayList<Instance>();
-        for (int counter=0; counter<numOfLabels; counter++) {
-            if (instance.attribute(labelIndices[counter]).value((int) instance.value(labelIndices[counter])).equals("1"))
-            {
+        for (int counter = 0; counter < numOfLabels; counter++) {
+            if (instance.attribute(labelIndices[counter]).value((int) instance.value(labelIndices[counter])).equals("1")) {
                 Instance transformed = null;
                 try {
                     transformed = RemoveAllLabels.transformInstance(instance, labelIndices);
                     transformed.setDataset(null);
                     transformed.insertAttributeAt(transformed.numAttributes());
-                    transformed.setValue(transformed.numAttributes()-1, counter);
+                    transformed.setValue(transformed.numAttributes() - 1, counter);
                 } catch (Exception ex) {
                     Logger.getLogger(Copy.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -64,5 +61,4 @@ public class Copy extends MultiClassTransformationBase {
         }
         return result;
     }
-
 }
