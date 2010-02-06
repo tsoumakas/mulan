@@ -16,9 +16,8 @@
 
 /*
  *    CalibratedLabelRanking.java
- *    Copyright (C) 2009 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
  */
-
 package mulan.classifier.transformation;
 
 import java.util.Arrays;
@@ -73,23 +72,18 @@ import weka.filters.unsupervised.attribute.Reorder;
  * @author Sang-Hyeun Park
  * @version $Revision: 1.0 $
  */
-public class CalibratedLabelRanking extends TransformationBasedMultiLabelLearner
-{
+public class CalibratedLabelRanking extends TransformationBasedMultiLabelLearner {
+
     /** array holding the one vs one models */
     protected Classifier[] oneVsOneModels;
-
     /** number of one vs one models */
     protected int numModels;
-
     /** temporary training data for each one vs one model */
     protected Instances trainingdata;
-
     /** headers of the training sets of the one vs one models */
     protected Instances[] metaDataTest;
-    
     /** binary relevance models for the virtual label */
     protected BinaryRelevance virtualLabelModels;
-
     /** whether to use standard voting or the fast qweighted algorithm */
     private boolean useStandardVoting = true;
 
@@ -98,35 +92,30 @@ public class CalibratedLabelRanking extends TransformationBasedMultiLabelLearner
      *
      * @param classifier the binary classification algorithm to use
      */
-    public CalibratedLabelRanking(Classifier classifier)
-    {
+    public CalibratedLabelRanking(Classifier classifier) {
         super(classifier);
     }
 
-	/**
-	 * Set Prediction to standard voting mode.
-	 *
-	 * @param standardVoting <code>true</code> if standard voting should be used
-	 */
-	public void setStandardVoting(boolean standardVoting)
-    {
-		useStandardVoting = standardVoting;
-	}
+    /**
+     * Set Prediction to standard voting mode.
+     *
+     * @param standardVoting <code>true</code> if standard voting should be used
+     */
+    public void setStandardVoting(boolean standardVoting) {
+        useStandardVoting = standardVoting;
+    }
 
-	/**
-	 * Get whether standard voting is turned on.
-	 *
-	 * @return <code>true</code> if standard voting is on
-	 */
-	public boolean getStandardVoting()
-    {
-		return useStandardVoting;
-	}
-
+    /**
+     * Get whether standard voting is turned on.
+     *
+     * @return <code>true</code> if standard voting is on
+     */
+    public boolean getStandardVoting() {
+        return useStandardVoting;
+    }
 
     @Override
-    protected void buildInternal(MultiLabelInstances trainingSet) throws Exception
-    {
+    protected void buildInternal(MultiLabelInstances trainingSet) throws Exception {
         // Virtual label models
         debug("Building calibration label models");
         virtualLabelModels = new BinaryRelevance(getBaseClassifier());
@@ -134,34 +123,32 @@ public class CalibratedLabelRanking extends TransformationBasedMultiLabelLearner
         virtualLabelModels.build(trainingSet);
 
         // One-vs-one models
-        numModels = ((numLabels)*(numLabels-1))/2;
+        numModels = ((numLabels) * (numLabels - 1)) / 2;
         oneVsOneModels = Classifier.makeCopies(getBaseClassifier(), numModels);
         metaDataTest = new Instances[numModels];
 
         Instances trainingData = trainingSet.getDataSet();
 
-        int counter=0;
+        int counter = 0;
         // Creation of one-vs-one models
-        for (int label1=0; label1<numLabels-1; label1++)
-        {
+        for (int label1 = 0; label1 < numLabels - 1; label1++) {
             // Attribute of label 1
             Attribute attrLabel1 = trainingData.attribute(labelIndices[label1]);
-            for (int label2=label1+1; label2<numLabels; label2++)
-            {
-                debug("Building one-vs-one model " + (counter+1) + "/" + numModels);
+            for (int label2 = label1 + 1; label2 < numLabels; label2++) {
+                debug("Building one-vs-one model " + (counter + 1) + "/" + numModels);
                 // Attribute of label 2
                 Attribute attrLabel2 = trainingData.attribute(labelIndices[label2]);
 
                 // initialize training set
                 Instances dataOneVsOne = new Instances(trainingData, 0);
                 // filter out examples with no preference
-                for (int i=0; i<trainingData.numInstances(); i++)
-                {
+                for (int i = 0; i < trainingData.numInstances(); i++) {
                     Instance tempInstance;
-                    if (trainingData.instance(i) instanceof SparseInstance)
+                    if (trainingData.instance(i) instanceof SparseInstance) {
                         tempInstance = new SparseInstance(trainingData.instance(i));
-                    else
+                    } else {
                         tempInstance = new Instance(trainingData.instance(i));
+                    }
 
                     int nominalValueIndex;
                     nominalValueIndex = (int) tempInstance.value(labelIndices[label1]);
@@ -177,14 +164,12 @@ public class CalibratedLabelRanking extends TransformationBasedMultiLabelLearner
 
                 // remove all labels apart from label 1 and place it at the end
                 Reorder filter = new Reorder();
-                int numPredictors = trainingData.numAttributes()-numLabels;
-                int[] reorderedIndices = new int[numPredictors+1];
-                int labelIndicesCounter=0;
-                int reorderedIndicesCounter=0;
-                for (int i=0; i<numPredictors+numLabels; i++)
-                {
-                    if (labelIndices[labelIndicesCounter] == i)
-                    {
+                int numPredictors = trainingData.numAttributes() - numLabels;
+                int[] reorderedIndices = new int[numPredictors + 1];
+                int labelIndicesCounter = 0;
+                int reorderedIndicesCounter = 0;
+                for (int i = 0; i < numPredictors + numLabels; i++) {
+                    if (labelIndices[labelIndicesCounter] == i) {
                         labelIndicesCounter++;
                         continue;
                     }
@@ -194,7 +179,7 @@ public class CalibratedLabelRanking extends TransformationBasedMultiLabelLearner
                 reorderedIndices[reorderedIndicesCounter] = labelIndices[label1];
                 filter.setAttributeIndicesArray(reorderedIndices);
                 filter.setInputFormat(dataOneVsOne);
-        		dataOneVsOne = Filter.useFilter(dataOneVsOne, filter);
+                dataOneVsOne = Filter.useFilter(dataOneVsOne, filter);
                 //System.out.println(dataOneVsOne.toString());
                 dataOneVsOne.setClassIndex(numPredictors);
 
@@ -215,10 +200,11 @@ public class CalibratedLabelRanking extends TransformationBasedMultiLabelLearner
      * @throws java.lang.Exception
      */
     protected MultiLabelOutput makePredictionInternal(Instance instance) throws Exception {
-    	if (useStandardVoting)
-    		return makePredictionStandard(instance);
-    	else
-    		return makePredictionQW(instance);
+        if (useStandardVoting) {
+            return makePredictionStandard(instance);
+        } else {
+            return makePredictionQW(instance);
+        }
     }
 
     /**
@@ -229,8 +215,8 @@ public class CalibratedLabelRanking extends TransformationBasedMultiLabelLearner
      */
     public MultiLabelOutput makePredictionStandard(Instance instance) throws Exception {
         boolean[] bipartition = new boolean[numLabels];
-		double[] confidences = new double[numLabels];
-        int[] voteLabel = new int[numLabels+1];
+        double[] confidences = new double[numLabels];
+        int[] voteLabel = new int[numLabels + 1];
 
         //System.out.println("Instance:" + instance.toString());
 
@@ -241,11 +227,9 @@ public class CalibratedLabelRanking extends TransformationBasedMultiLabelLearner
         //initialize the array voteLabel
         Arrays.fill(voteLabel, 0);
 
-        int counter=0;
-        for (int label1=0; label1<numLabels-1; label1++)
-        {
-            for (int label2=label1+1; label2<numLabels; label2++)
-            {
+        int counter = 0;
+        for (int label1 = 0; label1 < numLabels - 1; label1++) {
+            for (int label2 = label1 + 1; label2 < numLabels; label2++) {
                 double distribution[] = new double[2];
                 try {
                     newInstance.setDataset(metaDataTest[counter]);
@@ -259,34 +243,35 @@ public class CalibratedLabelRanking extends TransformationBasedMultiLabelLearner
                 // Ensure correct predictions both for class values {0,1} and {1,0}
                 Attribute classAttribute = metaDataTest[counter].classAttribute();
 
-                if (classAttribute.value(maxIndex).equals("1"))
+                if (classAttribute.value(maxIndex).equals("1")) {
                     voteLabel[label1]++;
-                else
+                } else {
                     voteLabel[label2]++;
+                }
 
                 counter++;
             }
 
         }
 
-        int voteVirtual=0;
+        int voteVirtual = 0;
         MultiLabelOutput virtualMLO = virtualLabelModels.makePrediction(instance);
         boolean[] virtualBipartition = virtualMLO.getBipartition();
-        for (int i=0; i<numLabels; i++)
-        {
-            if (virtualBipartition[i])
+        for (int i = 0; i < numLabels; i++) {
+            if (virtualBipartition[i]) {
                 voteLabel[i]++;
-            else
+            } else {
                 voteVirtual++;
+            }
         }
 
-        for(int i = 0; i<numLabels; i++)
-        {
-            if (voteLabel[i] >= voteVirtual)
+        for (int i = 0; i < numLabels; i++) {
+            if (voteLabel[i] >= voteVirtual) {
                 bipartition[i] = true;
-            else
+            } else {
                 bipartition[i] = false;
-            confidences[i]=1.0*voteLabel[i]/numLabels;
+            }
+            confidences[i] = 1.0 * voteLabel[i] / numLabels;
         }
         MultiLabelOutput mlo = new MultiLabelOutput(bipartition, confidences);
         return mlo;
@@ -310,16 +295,16 @@ public class CalibratedLabelRanking extends TransformationBasedMultiLabelLearner
      */
     public MultiLabelOutput makePredictionQW(Instance instance) throws Exception {
 
-		int[] voteLabel = new int[numLabels];
-		int[] played = new int[numLabels+1];
-		int[][] playedMatrix = new int[numLabels+1][numLabels+1];
-		int[] sortarr = new int[numLabels+1];
-		double[] limits = new double[numLabels];
+        int[] voteLabel = new int[numLabels];
+        int[] played = new int[numLabels + 1];
+        int[][] playedMatrix = new int[numLabels + 1][numLabels + 1];
+        int[] sortarr = new int[numLabels + 1];
+        double[] limits = new double[numLabels];
         boolean[] bipartition = new boolean[numLabels];
-		double[] confidences = new double[numLabels];
-		int voteVirtual = 0;
-		double limitVirtual = 0.0;
-		boolean allEqualClassesFound = false;
+        double[] confidences = new double[numLabels];
+        int voteVirtual = 0;
+        double limitVirtual = 0.0;
+        boolean allEqualClassesFound = false;
 
         // delete all labels and add a new atribute at the end
         Instance newInstance = RemoveAllLabels.transformInstance(instance, labelIndices);
@@ -328,15 +313,15 @@ public class CalibratedLabelRanking extends TransformationBasedMultiLabelLearner
         //initialize the array voteLabel
         Arrays.fill(voteLabel, 0);
 
-		// evaluate all classifiers of the calibrated label beforehand, #numLabels 1 vs. A evaluations
+        // evaluate all classifiers of the calibrated label beforehand, #numLabels 1 vs. A evaluations
         MultiLabelOutput virtualMLO = virtualLabelModels.makePrediction(instance);
         boolean[] virtualBipartition = virtualMLO.getBipartition();
-        for (int i=0; i<numLabels; i++)
-        {
-            if (virtualBipartition[i])
+        for (int i = 0; i < numLabels; i++) {
+            if (virtualBipartition[i]) {
                 voteLabel[i]++;
-            else
+            } else {
                 voteVirtual++;
+            }
 
             played[i]++;
             playedMatrix[i][numLabels] = 1;
@@ -346,108 +331,109 @@ public class CalibratedLabelRanking extends TransformationBasedMultiLabelLearner
         limitVirtual = numLabels - voteVirtual;
         played[numLabels] = numLabels;
 
-		// apply QWeighted iteratively to estimate all relevant labels until the
+        // apply QWeighted iteratively to estimate all relevant labels until the
         // calibrated label is found
-		boolean found = false;
+        boolean found = false;
         int pos = 0;
-		int player1 = -1;
-		int player2 = -1;
-		while(!allEqualClassesFound && pos < numLabels) {
-			while (!found) {
+        int player1 = -1;
+        int player2 = -1;
+        while (!allEqualClassesFound && pos < numLabels) {
+            while (!found) {
 
-				// opponent selection process: pair best against second best w.r.t. to number of "lost games"
-				// player1 = pick player with min(limits[player]) && player isn't ranked
-				sortarr = Utils.sort(limits);
-				player1 = sortarr[0];
-				player2 = -1;
-				int i = 1;
+                // opponent selection process: pair best against second best w.r.t. to number of "lost games"
+                // player1 = pick player with min(limits[player]) && player isn't ranked
+                sortarr = Utils.sort(limits);
+                player1 = sortarr[0];
+                player2 = -1;
+                int i = 1;
 
-				// can we found unplayed matches of player1 ?
-				if (played[player1] < numLabels) {
-					// search for best opponent
-					while (player2 == -1 && i < sortarr.length) {
-						// already played ??
-						if (playedMatrix[player1][sortarr[i]] == 0)
-							player2 = sortarr[i];
-						i++;
-					}
+                // can we found unplayed matches of player1 ?
+                if (played[player1] < numLabels) {
+                    // search for best opponent
+                    while (player2 == -1 && i < sortarr.length) {
+                        // already played ??
+                        if (playedMatrix[player1][sortarr[i]] == 0) {
+                            player2 = sortarr[i];
+                        }
+                        i++;
+                    }
 
-					// play found Pairing and update stats
-					int modelIndex = getRRClassifierIndex(player1,player2);
-	                newInstance.setDataset(metaDataTest[modelIndex]);
-					double[] distribution = oneVsOneModels[modelIndex].distributionForInstance(newInstance);
-	                int maxIndex = (distribution[0] > distribution[1]) ? 0 : 1;
+                    // play found Pairing and update stats
+                    int modelIndex = getRRClassifierIndex(player1, player2);
+                    newInstance.setDataset(metaDataTest[modelIndex]);
+                    double[] distribution = oneVsOneModels[modelIndex].distributionForInstance(newInstance);
+                    int maxIndex = (distribution[0] > distribution[1]) ? 0 : 1;
 
-	                // Ensure correct predictions both for class values {0,1} and {1,0}
-	                Attribute classAttribute = metaDataTest[modelIndex].classAttribute();
+                    // Ensure correct predictions both for class values {0,1} and {1,0}
+                    Attribute classAttribute = metaDataTest[modelIndex].classAttribute();
 
-	                if (classAttribute.value(maxIndex).equals("1"))
-	                    voteLabel[player1 > player2 ? player2 : player1]++;
-	                else
-	                    voteLabel[player1 > player2 ? player1 : player2]++;
+                    if (classAttribute.value(maxIndex).equals("1")) {
+                        voteLabel[player1 > player2 ? player2 : player1]++;
+                    } else {
+                        voteLabel[player1 > player2 ? player1 : player2]++;
+                    }
 
-					// update stats
-					played[player1]++;
-					played[player2]++;
-					playedMatrix[player1][player2] = 1;
-					playedMatrix[player2][player1] = 1;
-					limits[player1] = played[player1] - voteLabel[player1];
-					limits[player2] = played[player2] - voteLabel[player2];
-				}
-				// full played, there are no opponents left
-				else {
-					found = true;
-				}
-			}
+                    // update stats
+                    played[player1]++;
+                    played[player2]++;
+                    playedMatrix[player1][player2] = 1;
+                    playedMatrix[player2][player1] = 1;
+                    limits[player1] = played[player1] - voteLabel[player1];
+                    limits[player2] = played[player2] - voteLabel[player2];
+                } // full played, there are no opponents left
+                else {
+                    found = true;
+                }
+            }
 
-		    //arrange already as relevant validated labels at the end of possible opponents
-			limits[player1] = Double.MAX_VALUE;
+            //arrange already as relevant validated labels at the end of possible opponents
+            limits[player1] = Double.MAX_VALUE;
 
-			//check for possible labels, which can still gain greater or equal votes as the calibrated label
-			allEqualClassesFound = true;
-			for(int i=0; i< numLabels; i++) {
-				if (limits[i] <= limitVirtual) {
-					allEqualClassesFound = false;
-				}
-			}
+            //check for possible labels, which can still gain greater or equal votes as the calibrated label
+            allEqualClassesFound = true;
+            for (int i = 0; i < numLabels; i++) {
+                if (limits[i] <= limitVirtual) {
+                    allEqualClassesFound = false;
+                }
+            }
 
-			// search for next relevant label
-			found = false;
-			pos++;
-		}
+            // search for next relevant label
+            found = false;
+            pos++;
+        }
 
-		//Generate Multilabel Output
-        for(int i = 0; i<numLabels; i++)
-        {
-            if (voteLabel[i] >= voteVirtual)
+        //Generate Multilabel Output
+        for (int i = 0; i < numLabels; i++) {
+            if (voteLabel[i] >= voteVirtual) {
                 bipartition[i] = true;
-            else
+            } else {
                 bipartition[i] = false;
-            confidences[i]=1.0*voteLabel[i]/numLabels;
+            }
+            confidences[i] = 1.0 * voteLabel[i] / numLabels;
         }
         MultiLabelOutput mlo = new MultiLabelOutput(bipartition, confidences);
         return mlo;
     }
 
-	/**
-	 * a function to get the classifier index for label1 vs label2 (single Round-Robin)
-	 * in the array of classifiers, oneVsOneModels
-	 * @param int label1, label2
-	 * @return index of classifier (label1 vs label2)
-	 */
-
+    /**
+     * a function to get the classifier index for label1 vs label2 (single Round-Robin)
+     * in the array of classifiers, oneVsOneModels
+     * @param int label1, label2
+     * @return index of classifier (label1 vs label2)
+     */
     private int getRRClassifierIndex(int label1, int label2) {
-		int l1 = label1 > label2 ? label2 : label1;
-		int l2 = label1 > label2 ? label1 : label2;
+        int l1 = label1 > label2 ? label2 : label1;
+        int l2 = label1 > label2 ? label1 : label2;
 
-		if (l1 == 0)
-			return (l2 - 1);
-		else {
-			int temp = 0;
-			for(int i=l1;i>0;i--)
-				temp += (numLabels-i);
-			temp += l2 - (l1 + 1);
-			return temp;
-		}
-	}
+        if (l1 == 0) {
+            return (l2 - 1);
+        } else {
+            int temp = 0;
+            for (int i = l1; i > 0; i--) {
+                temp += (numLabels - i);
+            }
+            temp += l2 - (l1 + 1);
+            return temp;
+        }
+    }
 }

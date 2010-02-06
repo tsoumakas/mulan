@@ -16,7 +16,7 @@
 
 /*
  *    IncludeLabelsClassifier.java
- *    Copyright (C) 2009 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
  */
 package mulan.classifier.transformation;
 
@@ -37,31 +37,28 @@ import weka.core.Instances;
  * @author Grigorios Tsoumakas
  * @version $Revision: 0.04 $
  */
-public class IncludeLabelsClassifier extends TransformationBasedMultiLabelLearner
-{
-    PT6Transformation pt6Trans;
+public class IncludeLabelsClassifier extends TransformationBasedMultiLabelLearner {
 
-	/**
-	 * A dataset with the format needed by the base classifier.
-	 * It is potentially expensive copying datasets with many attributes,
-	 * so it is used for building the classifier and then it's mlData
-	 * are discarded and it is reused during prediction.
-	 */
-	protected Instances transformed;
+    PT6Transformation pt6Trans;
+    /**
+     * A dataset with the format needed by the base classifier.
+     * It is potentially expensive copying datasets with many attributes,
+     * so it is used for building the classifier and then it's mlData
+     * are discarded and it is reused during prediction.
+     */
+    protected Instances transformed;
 
     /**
      * Constructor that initializes a new learner with the given base classifier
      *
      * @param classifier
      */
-    public IncludeLabelsClassifier(Classifier classifier)
-	{
-		super(classifier);
-	}
+    public IncludeLabelsClassifier(Classifier classifier) {
+        super(classifier);
+    }
 
     @Override
-    public void buildInternal(MultiLabelInstances mlData) throws Exception
-    {
+    public void buildInternal(MultiLabelInstances mlData) throws Exception {
         //Do the transformation
         //and generate the classifier
         pt6Trans = new PT6Transformation();
@@ -78,13 +75,13 @@ public class IncludeLabelsClassifier extends TransformationBasedMultiLabelLearne
 
         Instance newInstance = pt6Trans.transformInstance(instance);
         //calculate confidences
-    	//debug(instance.toString());
-		for (int i=0; i<numLabels; i++) {
+        //debug(instance.toString());
+        for (int i = 0; i < numLabels; i++) {
             newInstance.setDataset(transformed);
-            newInstance.setValue(newInstance.numAttributes()-2, instance.dataset().attribute(labelIndices[i]).name());
-			//debug(newInstance.toString());
+            newInstance.setValue(newInstance.numAttributes() - 2, instance.dataset().attribute(labelIndices[i]).name());
+            //debug(newInstance.toString());
             double[] temp = baseClassifier.distributionForInstance(newInstance);
-			//debug(temp.toString());
+            //debug(temp.toString());
             confidences[i] = temp[transformed.classAttribute().indexOfValue("1")];
             //debug("" + confidences[i]);
             bipartition[i] = temp[transformed.classAttribute().indexOfValue("1")] >= temp[transformed.classAttribute().indexOfValue("0")] ? true : false;
@@ -92,7 +89,7 @@ public class IncludeLabelsClassifier extends TransformationBasedMultiLabelLearne
         }
 
         MultiLabelOutput mlo = new MultiLabelOutput(bipartition, confidences);
-		return mlo;
+        return mlo;
     }
 }
 

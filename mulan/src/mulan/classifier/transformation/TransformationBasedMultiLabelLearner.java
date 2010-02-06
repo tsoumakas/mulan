@@ -15,10 +15,9 @@
  */
 
 /*
- *    TranformationBasedMultiLabelLearner.java
- *    Copyright (C) 2009 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    TransformationBasedMultiLabelLearner.java
+ *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
  */
-
 package mulan.classifier.transformation;
 
 import mulan.classifier.*;
@@ -28,7 +27,6 @@ import weka.core.TechnicalInformation;
 import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
 
-
 /**
  * Base class for multi-label learners, which use problem 
  * transformation to handle multi-label data.
@@ -36,55 +34,51 @@ import weka.core.TechnicalInformation.Type;
  * @author Robert Friberg
  * @author Jozef Vilcek
  * @version $Revision: 0.02 $ 
-*/
+ */
 public abstract class TransformationBasedMultiLabelLearner extends MultiLabelLearnerBase {
-	
-	/**
-	 * The encapsulated classifier used for making clones in the 
-	 * case of ensemble classifiers. 
-	 */
-	protected final Classifier baseClassifier;
-	
-	/**
-	 * Creates a new instance of {@link TransformationBasedMultiLabelLearner} with default
-	 * {@link J48} base classifier.
-	 */
-	public TransformationBasedMultiLabelLearner()
-	{
-		this(new J48());
-	}
-	
-	/**
-	 * Creates a new instance.
-	 * 
-	 * @param baseClassifier the base classifier which will be used internally to handle the data.
-	 * @see Classifier
-	 */
-	public TransformationBasedMultiLabelLearner(Classifier baseClassifier)
-	{
-        // todo: check if it is not a regressor
-		this.baseClassifier = baseClassifier;
-	}
-	
-	/**
-	 * Returns the {@link Classifier} which is used internally by the learner.
-	 *  
-	 * @return
-	 */
-	public Classifier getBaseClassifier()
-	{
-		return baseClassifier;
-	}
 
-	public TechnicalInformation getTechnicalInformation()
-	{
-	    TechnicalInformation result = new TechnicalInformation(Type.ARTICLE);
-	    result.setValue(Field.AUTHOR, "Grigorios Tsoumakas, Ioannis Katakis");
+    /**
+     * The encapsulated classifier used for making clones in the
+     * case of ensemble classifiers.
+     */
+    protected final Classifier baseClassifier;
+
+    /**
+     * Creates a new instance of {@link TransformationBasedMultiLabelLearner} with default
+     * {@link J48} base classifier.
+     */
+    public TransformationBasedMultiLabelLearner() {
+        this(new J48());
+    }
+
+    /**
+     * Creates a new instance.
+     *
+     * @param baseClassifier the base classifier which will be used internally to handle the data.
+     * @see Classifier
+     */
+    public TransformationBasedMultiLabelLearner(Classifier baseClassifier) {
+        // todo: check if it is not a regressor
+        this.baseClassifier = baseClassifier;
+    }
+
+    /**
+     * Returns the {@link Classifier} which is used internally by the learner.
+     *
+     * @return
+     */
+    public Classifier getBaseClassifier() {
+        return baseClassifier;
+    }
+
+    public TechnicalInformation getTechnicalInformation() {
+        TechnicalInformation result = new TechnicalInformation(Type.ARTICLE);
+        result.setValue(Field.AUTHOR, "Grigorios Tsoumakas, Ioannis Katakis");
         result.setValue(Field.YEAR, "2007");
         result.setValue(Field.TITLE, "Multi-Label Classification: An Overview");
         result.setValue(Field.JOURNAL, "International Journal of Data Warehousing and Mining");
         result.setValue(Field.VOLUME, "3(3)");
         result.setValue(Field.PAGES, "1-13");
-	    return result;
-	}
+        return result;
+    }
 }
