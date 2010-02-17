@@ -68,17 +68,20 @@
 		</javac>
 	</target>
 
-	<target name="package" depends="test" description="Creates all distribution packages, such as jar archives." >
+	<target name="package" depends="test,javadoc" description="Creates all distribution packages, such as jar archives." >
 		<mkdir dir="${dist.dir}" />
 		<jar jarfile="${dist.dir}/mulan-${mulan.version}.jar">
-			<fileset dir="${target.classes.dir}" includes="mulan/**/**"/>
 			<metainf file="license.txt"/>
 			<manifest>
 				<attribute name="Implementation-Title" value="${mulan.title}"/>
 				<attribute name="Implementation-Version" value="${mulan.version}"/>
 			</manifest>
+			
+			<fileset dir="${target.classes.dir}" includes="mulan/**/**"/>
+			<fileset dir="${src.dir}" includes="mulan/**/**"/>
+			<zipfileset src="lib/weka-${weka.version}.jar" excludes="META-INF/*,weka/gui/*" />
+			<fileset dir="${javadoc.dir}" /> 
 		</jar>
-		<jar jarfile="${dist.dir}/mulan-src-${mulan.version}.jar" basedir="${src.dir}" />
 	</target>
 
 	<!--
@@ -137,10 +140,9 @@
 	
 	<target name="javadoc" description="Generates JavaDocs API documentation.">
 		<mkdir dir="${javadoc.dir}" />
-		<javadoc packagenames="mulan.*" sourcepath="${src.dir}" destdir="${javadoc.dir}" doctitle="Mulan ${mulan.version} API" failonerror="yes">
+		<javadoc packagenames="mulan.*" sourcepath="${src.dir}" destdir="${javadoc.dir}\mulan-api" doctitle="Mulan ${mulan.version} API" failonerror="yes">
 			<classpath refid="dependency.libs.path" />
 		</javadoc>
 	</target>
-
 
 </project>
