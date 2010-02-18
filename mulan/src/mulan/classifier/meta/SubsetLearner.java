@@ -20,6 +20,7 @@
  */
 package mulan.classifier.meta;
 
+import java.util.ArrayList;
 import mulan.classifier.*;
 import mulan.core.ArgumentNullException;
 import mulan.core.MulanRuntimeException;
@@ -50,15 +51,21 @@ import weka.core.Attribute;
  */
 public class SubsetLearner extends MultiLabelLearnerBase {
 
-    private MultiLabelLearner[] multiLabelLearners;
-    private FilteredClassifier[] singleLabelLearners;
+    /**Arraylist containing the MultiLabelLearners that we will train and use to make the predictions*/
+    private ArrayList<MultiLabelLearner> multiLabelLearners;
+    /**Arraylist containing the FilteredClassifiers that we will train and use to make the predictions*/
+    private ArrayList<FilteredClassifier> singleLabelLearners;
 
     /** Array containing the way the labels will be split */
     private int[][] splitOrder;
-
+    /**Array containing the indices of the labels we are going to remove*/
     private int[][] absoluteIndicesToRemove;
+    /**Array containing the Remove objects used to remove the labels for each split*/
     private Remove[] remove;
+
+    /**Base MultiLabelLearner that will be used for training and predictions*/
     protected final MultiLabelLearner baseMultiLabelLearner;
+    /**Base Classifier that will be used for training and predictions*/
     protected final Classifier baseClassifier;
 
     public SubsetLearner(MultiLabelLearner aBaseMultiLabelLearner, Classifier aBaseClassifier, int[][] aSplitOrder) {
@@ -108,8 +115,8 @@ public class SubsetLearner extends MultiLabelLearnerBase {
 
     /**
      * We get the initial dataset through trainingSet. Then for each split as specified by splitOrder
-     * we remove the unneeded labels and train the classifiers using updateMultiClassifier for multi-label splits
-     * and updateSingleClassifier for single label splits.
+     * we remove the unneeded labels and train the classifiers using a different method for multi-label splits
+     * and single label splits.
      * @param trainingSet The initial {@link MultiLabelInstances} dataset
      * @throws Exception
      */
@@ -119,88 +126,76 @@ public class SubsetLearner extends MultiLabelLearnerBase {
         int countSingle = 0, countMulti = 0;
         remove = new Remove[splitOrder.length];
 
-        getLabelsToRemove(trainingSet);//Get values into absoluteIndicesToRemove
+        //Get values into absoluteIndicesToRemove
+        int numofSplits = splitOrder.length;//Number of sets the main is going to be split into
 
-        //Find the number of single and multi label splits
-        for (int i = 0; i < splitOrder.length; i++) {
-            if (splitOrder[i].length > 1) {
-                countMulti++;
-            } else {
-                countSingle++;
+        for (int r = 0; r < splitOrder.length; r++) {//Initialization required to avoid NullPointer exception
+            absoluteIndicesToRemove[r] = new int[numLabels - splitOrder[r].length];
+        }
+
+        //Initialize an array containing which labels we want
+        boolean[][] Selected = new boolean[splitOrder.length][numLabels];
+        for (int i = 0; i < numofSplits; i++) {//Set true for the labels we need to keep
+            for (int j = 0; j < splitOrder[i].length; j++) {
+                Selected[i][splitOrder[i][j]] = true;
             }
         }
-        //Create the arrays which will contain the learners
-        multiLabelLearners = new MultiLabelLearner[countMulti];
-        singleLabelLearners = new FilteredClassifier[countSingle];
-        countSingle = 0;
+
+        for (int i = 0; i < numofSplits; i++) {//Get the labels you need to KEEP
+            int k = 0;
+            for (int j = 0; j < numLabels; j++) {
+                if (Selected[i][j] != true) {
+                    absoluteIndicesToRemove[i][k] = labelIndices[j];
+                    k++;
+                }
+            }
+        }
+
+        //Create the lists which will contain the learners
+        multiLabelLearners = new ArrayList<MultiLabelLearner>();
+        singleLabelLearners = new ArrayList<FilteredClassifier>();
+        countSingle = 0;//Reset the values to zero and reuse the variables
         countMulti = 0;
-        //Call updateMultiClassifier if the split will have more than one labels, otherwise use updateSingleClassifier
+        //TODO: Add more comments for the procedure
         for (int totalSplitNo = 0; totalSplitNo < splitOrder.length; totalSplitNo++) {
             debug("Building set " + (totalSplitNo + 1) + "/" + splitOrder.length);
             if (splitOrder[totalSplitNo].length > 1) {
-                updateMultiClassifier(trainingSet, totalSplitNo, countMulti);
+                //Remove the unneeded labels
+                Instances trainSubset = trainingSet.getDataSet();
+                remove[totalSplitNo] = new Remove();
+                remove[totalSplitNo].setAttributeIndicesArray(absoluteIndicesToRemove[totalSplitNo]);
+                remove[totalSplitNo].setInputFormat(trainSubset);
+                remove[totalSplitNo].setInvertSelection(false);
+                trainSubset = Filter.useFilter(trainSubset, remove[totalSplitNo]);
+
+                //Reintegrate dataset and train learner
+                multiLabelLearners.add(baseMultiLabelLearner.makeCopy());
+                multiLabelLearners.get(countMulti).build(trainingSet.reintegrateModifiedDataSet(trainSubset));
                 countMulti++;
             } else {
-                updateSingleClassifier(trainingSet, totalSplitNo, countSingle);
+                debug("Single Label model.");
+                //Initialize the FilteredClassifiers
+                singleLabelLearners.add(new FilteredClassifier());
+                singleLabelLearners.get(countSingle).setClassifier(Classifier.makeCopy(baseClassifier));
+
+                Instances trainSubset = trainingSet.getDataSet();
+                //Set the remove filter for the FilteredClassifiers
+                remove[totalSplitNo] = new Remove();
+                remove[totalSplitNo].setAttributeIndicesArray(absoluteIndicesToRemove[totalSplitNo]);
+                remove[totalSplitNo].setInputFormat(trainSubset);
+                remove[totalSplitNo].setInvertSelection(false);
+                singleLabelLearners.get(countSingle).setFilter(remove[totalSplitNo]);
+                //Set the remaining label as the class index
+                trainSubset.setClassIndex(labelIndices[splitOrder[totalSplitNo][0]]);
+
+                //Train
+                singleLabelLearners.get(countSingle).buildClassifier(trainSubset);
                 countSingle++;
             }
         }
     }
 
-    /**
-     * For each split specified by splitOrder we remove the unneeded labels and train the classifiers
-     * in multiLabelLearners[]
-     * @param initialSet The initial {@link MultiLabelInstances} dataset
-     * @param SplitNo The number(index) of the split we are currently performing
-     * @param MultiSplitNo The number of multilabel splits we have performed
-     * @throws Exception
-     */
-    public void updateMultiClassifier(MultiLabelInstances initialSet, int totalSplitNo, int MultiSplitNo) throws Exception {
-
-
-        //Remove the unneeded labels
-        Instances trainSubset = initialSet.getDataSet();
-        remove[totalSplitNo] = new Remove();
-        remove[totalSplitNo].setAttributeIndicesArray(absoluteIndicesToRemove[totalSplitNo]);
-        remove[totalSplitNo].setInputFormat(trainSubset);
-        remove[totalSplitNo].setInvertSelection(false);
-        trainSubset = Filter.useFilter(trainSubset, remove[totalSplitNo]);
-
-        //Reintegrate dataset and train learner
-        multiLabelLearners[MultiSplitNo] = baseMultiLabelLearner.makeCopy();
-        multiLabelLearners[MultiSplitNo].build(initialSet.reintegrateModifiedDataSet(trainSubset));
-
-    }
-
-    /**
-     * Here we use FilteredClassifier objects to remove unneeded labels and train the
-     * classifiers at singleLabelClassifiers[]
-     * @param initialSet The initial {@link MultiLabelInstances} dataset
-     * @param totalSplitNo The absolute split number we are performing, including single and multi splits
-     * @param SingleSplitNo We need two indexes when we have both single and multi label splits, because the size of singleLabelLearners<totalSplitsNo (same for multiLabelLearners)
-     * @throws Exception
-     */
-    public void updateSingleClassifier(MultiLabelInstances initialSet, int totalSplitNo, int SingleSplitNo) throws Exception {
-
-        debug("Single Label model.");
-        //Initialize the FilteredClassifiers
-        singleLabelLearners[SingleSplitNo] = new FilteredClassifier();
-        singleLabelLearners[SingleSplitNo].setClassifier(Classifier.makeCopy(baseClassifier));
-
-        Instances trainSubset = initialSet.getDataSet();
-        //Set the remove filter for the FilteredClassifiers
-        remove[totalSplitNo] = new Remove();
-        remove[totalSplitNo].setAttributeIndicesArray(absoluteIndicesToRemove[totalSplitNo]);
-        remove[totalSplitNo].setInputFormat(trainSubset);
-        remove[totalSplitNo].setInvertSelection(false);
-        singleLabelLearners[SingleSplitNo].setFilter(remove[totalSplitNo]);
-        //Set the remaining label as the class index
-        trainSubset.setClassIndex(labelIndices[splitOrder[totalSplitNo][0]]);
-
-        //Train
-        singleLabelLearners[SingleSplitNo].buildClassifier(trainSubset);
-    }
-
+ 
     /**
      * We make a prediction using a different method depending on whether the split has one or more labels
      * @param instance
@@ -226,7 +221,7 @@ public class SubsetLearner extends MultiLabelLearnerBase {
             if (splitOrder[i].length == 1) {//Prediction for single label splits
                 double distribution[] = new double[2];
                 try {
-                    distribution = singleLabelLearners[singleSplitNo].distributionForInstance(instance);
+                    distribution = singleLabelLearners.get(singleSplitNo).distributionForInstance(instance);
                 } catch (Exception e) {
                     System.out.println(e);
                     return null;
@@ -234,7 +229,7 @@ public class SubsetLearner extends MultiLabelLearnerBase {
                 int maxIndex = (distribution[0] > distribution[1]) ? 0 : 1;
 
                 // Ensure correct predictions both for class values {0,1} and {1,0}
-                Attribute classAttribute = singleLabelLearners[singleSplitNo].getFilter().getOutputFormat().classAttribute();
+                Attribute classAttribute = singleLabelLearners.get(singleSplitNo).getFilter().getOutputFormat().classAttribute();
                 BooleanSubsets[i][0] = (classAttribute.value(maxIndex).equals("1")) ? true : false;
 
                 // The confidence of the label being equal to 1
@@ -244,7 +239,7 @@ public class SubsetLearner extends MultiLabelLearnerBase {
                 remove[i].input(instance);
                 remove[i].batchFinished();
                 Instance newInstance = remove[i].output();
-                MLO[multiSplitNo] = multiLabelLearners[multiSplitNo].makePrediction(newInstance);
+                MLO[multiSplitNo] = multiLabelLearners.get(multiSplitNo).makePrediction(newInstance);
                 BooleanSubsets[i] = MLO[multiSplitNo].getBipartition();//Get each array of Bipartitions, confidences  from each learner
                 ConfidenceSubsets[i] = MLO[multiSplitNo].getConfidences();
                 multiSplitNo++;
@@ -264,34 +259,4 @@ public class SubsetLearner extends MultiLabelLearnerBase {
 
     }
 
-    /**
-     * Initializes absoluteIndicesToRemove with the indices of the labels we will be removing
-     * @param trainingSet The initial {@link MultiLabelInstances} dataset
-     */
-    protected void getLabelsToRemove(MultiLabelInstances trainingSet) {
-        int numofSplits = splitOrder.length;//Number of sets the main is going to be split into
-
-        for (int r = 0; r < splitOrder.length; r++) {//Initilization required to avoid NullPointer exception
-            absoluteIndicesToRemove[r] = new int[numLabels - splitOrder[r].length];
-        }
-
-        //Initialize an array containing which labels we want
-        boolean[][] Selected = new boolean[splitOrder.length][numLabels];
-        for (int i = 0; i < numofSplits; i++) {//Set true for the labels we need to keep
-            for (int j = 0; j < splitOrder[i].length; j++) {
-                Selected[i][splitOrder[i][j]] = true;
-            }
-        }
-
-        for (int i = 0; i < numofSplits; i++) {//Get the labels you need to KEEP
-            int k = 0;
-            for (int j = 0; j < numLabels; j++) {
-                if (Selected[i][j] != true) {
-                    absoluteIndicesToRemove[i][k] = labelIndices[j];
-                    k++;
-                }
-            }
-        }
-
-    }
 }
