@@ -21,7 +21,6 @@
 package mulan.evaluation.measure;
 
 import mulan.classifier.MultiLabelOutput;
-import mulan.core.ArgumentNullException;
 import mulan.core.MulanRuntimeException;
 
 /**
@@ -29,7 +28,7 @@ import mulan.core.MulanRuntimeException;
  * 
  * @author Grigorios Tsoumakas
  */
-public class ExampleBasedFMeasure extends ExampleBasedMeasure {
+public class ExampleBasedFMeasure extends ExampleBasedBipartitionMeasure {
 
     private final double beta;
 
@@ -49,16 +48,7 @@ public class ExampleBasedFMeasure extends ExampleBasedMeasure {
         return 1;
     }
 
-    public double updateInternal(MultiLabelOutput prediction, boolean[] truth) {
-        boolean[] bipartition = prediction.getBipartition();
-        if (bipartition == null) {
-            throw new ArgumentNullException("Bipartition is null");
-        }
-        if (bipartition.length != truth.length) {
-            throw new IllegalArgumentException("The dimensions of the " +
-                    "bipartition and the ground truth array do not match");
-        }
-
+    public double updateInternal2(MultiLabelOutput prediction, boolean[] truth) {
         double intersection = 0;
         double predicted = 0;
         double actual = 0;

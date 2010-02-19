@@ -24,7 +24,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import mulan.classifier.MultiLabelOutput;
-import mulan.core.ArgumentNullException;
 import mulan.data.LabelNode;
 import mulan.data.LabelsMetaData;
 import mulan.data.MultiLabelInstances;
@@ -35,7 +34,7 @@ import mulan.data.MultiLabelInstances;
  * @author George Saridis
  * @author Grigorios Tsoumakas
  */
-public class HierarchicalLoss extends ExampleBasedMeasure {
+public class HierarchicalLoss extends ExampleBasedBipartitionMeasure {
 
     private LabelsMetaData metaData;
     private Map<String, Integer> labelPosition;
@@ -60,16 +59,7 @@ public class HierarchicalLoss extends ExampleBasedMeasure {
     }
 
     @Override
-    protected double updateInternal(MultiLabelOutput prediction, boolean[] truth) {
-        boolean[] bipartition = prediction.getBipartition();
-        if (bipartition == null) {
-            throw new ArgumentNullException("Bipartition is null");
-        }
-        if (bipartition.length != truth.length) {
-            throw new IllegalArgumentException("The dimensions of the " +
-                    "bipartition and the ground truth array do not match");
-        }
-
+    protected double updateInternal2(MultiLabelOutput prediction, boolean[] truth) {
         loss = 0;
         calculateHLoss(bipartition, truth, metaData.getRootLabels());
 

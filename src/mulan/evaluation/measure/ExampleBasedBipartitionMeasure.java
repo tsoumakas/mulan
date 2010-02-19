@@ -15,48 +15,29 @@
  */
 
 /*
- *    ExampleBasedRecall.java
+ *    ExampleBasedBipartitionMeasure.java
  *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
  */
 package mulan.evaluation.measure;
 
 import mulan.classifier.MultiLabelOutput;
-import mulan.core.MulanRuntimeException;
+import mulan.core.ArgumentNullException;
 
-/**
- * Implementation of the example-based recall measure.
- * 
- * @author Grigorios Tsoumakas
- */
-public class ExampleBasedRecall extends ExampleBasedBipartitionMeasure {
+public abstract class ExampleBasedBipartitionMeasure extends ExampleBasedMeasure {
+    
+    protected boolean[] bipartition;
 
-    public String getName() {
-        return "Example-Based Recall";
-    }
-
-    public double getIdealValue() {
-        return 1;
-    }
-
-    public double updateInternal2(MultiLabelOutput prediction, boolean[] truth) {
-        double intersection = 0;
-        double actual = 0;
-        for (int i = 0; i < truth.length; i++) {
-            if (truth[i]) {
-                actual++;
-                if (bipartition[i]) {
-                    intersection++;
-                }
-            }
+    public double updateInternal(MultiLabelOutput prediction, boolean[] truth) {
+        bipartition = prediction.getBipartition();
+        if (bipartition == null) {
+            throw new ArgumentNullException("Bipartition is null");
         }
-        if (actual == 0) {
-            throw new MulanRuntimeException("No relevant label");
+        if (bipartition.length != truth.length) {
+            throw new IllegalArgumentException("The dimensions of the " +
+                    "bipartition and the ground truth array do not match");
         }
-        double value = intersection / actual;
-
-        sum += value;
-        count++;
-
-        return value;
+        return updateInternal2(prediction, truth);
     }
+
+    abstract double updateInternal2(MultiLabelOutput prediction, boolean[] truth);
 }
