@@ -216,6 +216,31 @@ public class MultiLabelInstances {
     }
 
     /**
+     * Gets the cardinality of the dataset
+     * 
+     * @return dataset cardinality
+     */
+    public double getCardinality() {
+        double labelCardinality = 0;
+
+        int numInstances = dataSet.numInstances();
+        int numLabels = labelsMetaData.getNumLabels();
+        int[] labelIndices = getLabelIndices();
+
+        for (int i = 0; i < numInstances; i++) {
+            for (int j = 0; j < numLabels; j++) {
+                double value = dataSet.instance(i).value(labelIndices[j]);
+                if (dataSet.attribute(labelIndices[j]).value((int) value).equals("1")) {
+                    labelCardinality++;
+                }
+            }
+        }
+
+        labelCardinality /= numInstances;
+        return labelCardinality;
+    }
+
+    /**
      * @return an array with the indices of the label attributes inside the
      * Instances object
      */
