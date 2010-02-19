@@ -20,8 +20,9 @@
  */
 package mulan.evaluation.measure;
 
-public abstract class ExampleBasedMeasure extends MeasureBase {
+import java.io.Serializable;
 
+public abstract class ExampleBasedMeasure extends MeasureBase implements Serializable {
     protected double sum;
     protected int count;
 

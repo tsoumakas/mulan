@@ -21,7 +21,6 @@
 package mulan.evaluation.measure;
 
 import mulan.classifier.MultiLabelOutput;
-import mulan.core.ArgumentNullException;
 import mulan.core.MulanRuntimeException;
 
 /**
@@ -29,7 +28,7 @@ import mulan.core.MulanRuntimeException;
  * 
  * @author Grigorios Tsoumakas
  */
-public class ExampleBasedAccuracy extends ExampleBasedMeasure {
+public class ExampleBasedAccuracy extends ExampleBasedBipartitionMeasure {
 
     private final double forgivenessRate;
 
@@ -49,16 +48,7 @@ public class ExampleBasedAccuracy extends ExampleBasedMeasure {
         return 1;
     }
 
-    public double updateInternal(MultiLabelOutput prediction, boolean[] truth) {
-        boolean[] bipartition = prediction.getBipartition();
-        if (bipartition == null) {
-            throw new ArgumentNullException("Bipartition is null");
-        }
-        if (bipartition.length != truth.length) {
-            throw new IllegalArgumentException("The dimensions of the " +
-                    "bipartition and the ground truth array do not match");
-        }
-
+    public double updateInternal2(MultiLabelOutput prediction, boolean[] truth) {
         double intersection = 0;
         double union = 0;
         for (int i = 0; i < truth.length; i++) {

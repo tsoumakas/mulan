@@ -21,14 +21,13 @@
 package mulan.evaluation.measure;
 
 import mulan.classifier.MultiLabelOutput;
-import mulan.core.ArgumentNullException;
 
 /**
  * Implementation of the Hamming loss function.
  * 
  * @author Grigorios Tsoumakas
  */
-public class HammingLoss extends ExampleBasedMeasure {
+public class HammingLoss extends ExampleBasedBipartitionMeasure {
 
     public String getName() {
         return "Hamming Loss";
@@ -38,16 +37,7 @@ public class HammingLoss extends ExampleBasedMeasure {
         return 0;
     }
 
-    public double updateInternal(MultiLabelOutput prediction, boolean[] truth) {
-        boolean[] bipartition = prediction.getBipartition();
-        if (bipartition == null) {
-            throw new ArgumentNullException("Bipartition is null");
-        }
-        if (bipartition.length != truth.length) {
-            throw new IllegalArgumentException("The dimensions of the " +
-                    "bipartition and the ground truth array do not match");
-        }
-
+    public double updateInternal2(MultiLabelOutput prediction, boolean[] truth) {
         double symmetricDifference = 0;
         for (int i = 0; i < truth.length; i++) {
             if (bipartition[i] != truth[i]) {
@@ -62,7 +52,4 @@ public class HammingLoss extends ExampleBasedMeasure {
         return value;
     }
 
-    public double getValue() {
-        return sum / count;
-    }
 }

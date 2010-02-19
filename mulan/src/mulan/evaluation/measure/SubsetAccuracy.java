@@ -21,7 +21,6 @@
 package mulan.evaluation.measure;
 
 import mulan.classifier.MultiLabelOutput;
-import mulan.core.ArgumentNullException;
 
 /**
  * Implementation of the subset accuracy measure. This measure is the opposite
@@ -29,7 +28,7 @@ import mulan.core.ArgumentNullException;
  * 
  * @author Grigorios Tsoumakas
  */
-public class SubsetAccuracy extends ExampleBasedMeasure {
+public class SubsetAccuracy extends ExampleBasedBipartitionMeasure {
 
     public String getName() {
         return "Subset Accuracy";
@@ -39,16 +38,7 @@ public class SubsetAccuracy extends ExampleBasedMeasure {
         return 1;
     }
 
-    public double updateInternal(MultiLabelOutput prediction, boolean[] truth) {
-        boolean[] bipartition = prediction.getBipartition();
-        if (bipartition == null) {
-            throw new ArgumentNullException("Bipartition is null");
-        }
-        if (bipartition.length != truth.length) {
-            throw new IllegalArgumentException("The dimensions of the " +
-                    "bipartition and the ground truth array do not match");
-        }
-
+    public double updateInternal2(MultiLabelOutput prediction, boolean[] truth) {
         double value = 1;
         for (int i = 0; i < truth.length; i++) {
             if (bipartition[i] != truth[i]) {
@@ -63,7 +53,4 @@ public class SubsetAccuracy extends ExampleBasedMeasure {
         return value;
     }
 
-    public double getValue() {
-        return sum / count;
-    }
 }
