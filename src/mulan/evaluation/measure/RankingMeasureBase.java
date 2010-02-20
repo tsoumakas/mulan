@@ -15,7 +15,7 @@
  */
 
 /*
- *    MeasureBase.java
+ *    RankingMeasureBase.java
  *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
  */
 package mulan.evaluation.measure;
@@ -24,31 +24,34 @@ import mulan.classifier.MultiLabelOutput;
 import mulan.core.ArgumentNullException;
 
 /**
- * 
+ * Base class for measures that are calculated based on rankings
+ *
  * @author Grigorios Tsoumakas
  */
-public abstract class MeasureBase implements Measure {
+public abstract class RankingMeasureBase extends MeasureBase {
 
-    public final double update(MultiLabelOutput prediction, boolean[] truth) {
-        if (prediction == null) {
-            throw new ArgumentNullException("Prediction is null");
-        }
-        if (truth == null) {
-            throw new ArgumentNullException("Ground truth is null");
-        }
+    protected double sum, count;
 
-        return updateInternal(prediction, truth);
+    public double updateInternal(MultiLabelOutput prediction, boolean[] truth) {
+        int[] ranking = prediction.getRanking();
+        if (ranking == null) {
+            throw new ArgumentNullException("Ranking is null");
+        }
+        if (ranking.length != truth.length) {
+            throw new IllegalArgumentException("The dimensions of the " +
+                    "ranking and the ground truth array do not match");
+        }
+        return updateInternal2(ranking, truth);
     }
 
-    @Override
-    public String toString() {
-        double value = Double.NaN;
-        try {
-            value = getValue();
-        } catch (Exception ex) {
-        }
-        return getName() + ": " + value;
+    public void reset() {
+        sum = 0;
+        count = 0;
     }
 
-    protected abstract double updateInternal(MultiLabelOutput prediction, boolean[] truth);
+    public double getValue() {
+        return sum / count;
+    }
+
+    abstract public double updateInternal2(int[] ranking, boolean[] truth);
 }

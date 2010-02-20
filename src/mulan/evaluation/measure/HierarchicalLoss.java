@@ -23,7 +23,6 @@ package mulan.evaluation.measure;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import mulan.classifier.MultiLabelOutput;
 import mulan.data.LabelNode;
 import mulan.data.LabelsMetaData;
 import mulan.data.MultiLabelInstances;
@@ -34,7 +33,7 @@ import mulan.data.MultiLabelInstances;
  * @author George Saridis
  * @author Grigorios Tsoumakas
  */
-public class HierarchicalLoss extends ExampleBasedBipartitionMeasure {
+public class HierarchicalLoss extends ExampleBasedBipartitionMeasureBase {
 
     private LabelsMetaData metaData;
     private Map<String, Integer> labelPosition;
@@ -58,8 +57,7 @@ public class HierarchicalLoss extends ExampleBasedBipartitionMeasure {
         }
     }
 
-    @Override
-    protected double updateInternal2(MultiLabelOutput prediction, boolean[] truth) {
+    public double updateInternal2(boolean[] bipartition, boolean[] truth) {
         loss = 0;
         calculateHLoss(bipartition, truth, metaData.getRootLabels());
 

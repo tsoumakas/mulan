@@ -21,20 +21,19 @@
 package mulan.evaluation.measure;
 
 import java.util.ArrayList;
-import mulan.classifier.MultiLabelOutput;
 
 /**
  * Implementation of the ranking loss measure.
  * 
  * @author Grigorios Tsoumakas
  */
-public class RankingLoss extends ExampleBasedMeasure {
+public class RankingLoss extends RankingMeasureBase {
 
     public String getName() {
         return "Ranking Loss";
     }
 
-    public double updateInternal(MultiLabelOutput output, boolean[] trueLabels) {
+    public double updateInternal2(int[] ranking, boolean[] trueLabels) {
 
         // gather indexes of true and false labels
         // indexes of true and false labels
@@ -51,12 +50,11 @@ public class RankingLoss extends ExampleBasedMeasure {
 
         //======ranking loss related=============
         if (trueIndexes.size() != 0 && falseIndexes.size() != 0) {
-            int[] ranks = output.getRanking();
             int rolp = 0; // reversed ordered label pairs
             for (int k : trueIndexes) {
                 for (int l : falseIndexes) {
                     //	if (output[instanceIndex].getConfidences()[trueIndexes.get(k)] <= output[instanceIndex].getConfidences()[falseIndexes.get(l)])
-                    if (ranks[k] > ranks[l]) {
+                    if (ranking[k] > ranking[l]) {
                         rolp++;
                     }
                 }

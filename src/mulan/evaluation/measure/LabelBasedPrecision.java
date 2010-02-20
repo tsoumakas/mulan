@@ -20,16 +20,13 @@
  */
 package mulan.evaluation.measure;
 
-import mulan.classifier.MultiLabelOutput;
-import mulan.core.ArgumentNullException;
-
 /**
  * Base implementation of the label-based macro/micro precision measures.
  * 
  * @author Grigorios Tsoumakas
  * 
  */
-public abstract class LabelBasedPrecision extends MeasureBase {
+public abstract class LabelBasedPrecision extends BipartitionMeasureBase {
 
     protected int numOfLabels;
     protected double[] falsePositives;
@@ -52,16 +49,7 @@ public abstract class LabelBasedPrecision extends MeasureBase {
         return 1;
     }
 
-    public double updateInternal(MultiLabelOutput prediction, boolean[] truth) {
-        boolean[] bipartition = prediction.getBipartition();
-        if (bipartition == null) {
-            throw new ArgumentNullException("Bipartition is null");
-        }
-        if (bipartition.length != truth.length) {
-            throw new IllegalArgumentException("The dimensions of the " +
-                    "bipartition and the ground truth array do not match");
-        }
-
+    public double updateInternal2(boolean[] bipartition, boolean[] truth) {
         for (int labelIndex = 0; labelIndex < numOfLabels; labelIndex++) {
             boolean actual = truth[labelIndex];
             boolean predicted = bipartition[labelIndex];

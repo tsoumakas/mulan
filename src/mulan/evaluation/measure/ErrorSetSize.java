@@ -23,8 +23,6 @@ package mulan.evaluation.measure;
 import java.util.ArrayList;
 import java.util.List;
 
-import mulan.classifier.MultiLabelOutput;
-
 /**
  * Implementation of error set size measure or also named a ranking loss measure. 
  * Measures the size of error set to induce ranking. The measure gives the 
@@ -35,16 +33,15 @@ import mulan.classifier.MultiLabelOutput;
  * @author Jozef Vilcek
  * @author Grigorios Tsoumakas
  */
-public class ErrorSetSize extends ExampleBasedMeasure {
+public class ErrorSetSize extends RankingMeasureBase {
 
     public String getName() {
         return "Error Set Size";
     }
 
-    public double updateInternal(MultiLabelOutput output, boolean[] trueLabels) {
+    public double updateInternal2(int[] ranking, boolean[] trueLabels) {
 
         double ess = 0; // error set size
-        int[] ranks = output.getRanking();
         int numLabels = trueLabels.length;
         List<Integer> relevant = new ArrayList<Integer>();
         List<Integer> irrelevant = new ArrayList<Integer>();
@@ -58,7 +55,7 @@ public class ErrorSetSize extends ExampleBasedMeasure {
 
         for (int rLabel : relevant) {
             for (int irLabel : irrelevant) {
-                if (ranks[rLabel] > ranks[irLabel]) {
+                if (ranking[rLabel] > ranking[irLabel]) {
                     ess++;
                 }
             }

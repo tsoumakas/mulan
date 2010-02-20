@@ -20,7 +20,6 @@
  */
 package mulan.evaluation.measure;
 
-import mulan.classifier.MultiLabelOutput;
 import mulan.core.MulanRuntimeException;
 
 /**
@@ -28,7 +27,7 @@ import mulan.core.MulanRuntimeException;
  * 
  * @author Grigorios Tsoumakas
  */
-public class ExampleBasedFMeasure extends ExampleBasedBipartitionMeasure {
+public class ExampleBasedFMeasure extends ExampleBasedBipartitionMeasureBase {
 
     private final double beta;
 
@@ -48,7 +47,7 @@ public class ExampleBasedFMeasure extends ExampleBasedBipartitionMeasure {
         return 1;
     }
 
-    public double updateInternal2(MultiLabelOutput prediction, boolean[] truth) {
+    public double updateInternal2(boolean[] bipartition, boolean[] truth) {
         double intersection = 0;
         double predicted = 0;
         double actual = 0;

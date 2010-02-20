@@ -20,7 +20,6 @@
  */
 package mulan.evaluation.measure;
 
-import mulan.classifier.MultiLabelOutput;
 import mulan.core.MulanRuntimeException;
 
 /**
@@ -28,7 +27,7 @@ import mulan.core.MulanRuntimeException;
  * 
  * @author Grigorios Tsoumakas
  */
-public class ExampleBasedAccuracy extends ExampleBasedBipartitionMeasure {
+public class ExampleBasedAccuracy extends ExampleBasedBipartitionMeasureBase {
 
     private final double forgivenessRate;
 
@@ -48,7 +47,7 @@ public class ExampleBasedAccuracy extends ExampleBasedBipartitionMeasure {
         return 1;
     }
 
-    public double updateInternal2(MultiLabelOutput prediction, boolean[] truth) {
+    public double updateInternal2(boolean[] bipartition, boolean[] truth) {
         double intersection = 0;
         double union = 0;
         for (int i = 0; i < truth.length; i++) {
@@ -71,4 +70,5 @@ public class ExampleBasedAccuracy extends ExampleBasedBipartitionMeasure {
 
         return value;
     }
+
 }

@@ -15,40 +15,31 @@
  */
 
 /*
- *    SubsetAccuracy.java
+ *    BipartitionMeasureBase.java
  *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
  */
 package mulan.evaluation.measure;
 
+import mulan.classifier.MultiLabelOutput;
+import mulan.core.ArgumentNullException;
+
 /**
- * Implementation of the subset accuracy measure. This measure is the opposite
- * of the zero-one loss for multi-label classification.
  * 
  * @author Grigorios Tsoumakas
  */
-public class SubsetAccuracy extends ExampleBasedBipartitionMeasureBase {
+public abstract class BipartitionMeasureBase extends MeasureBase {
 
-    public String getName() {
-        return "Subset Accuracy";
-    }
-
-    public double getIdealValue() {
-        return 1;
-    }
-
-    public double updateInternal2(boolean[] bipartition, boolean[] truth) {
-        double value = 1;
-        for (int i = 0; i < truth.length; i++) {
-            if (bipartition[i] != truth[i]) {
-                value = 0;
-                break;
-            }
+    public double updateInternal(MultiLabelOutput prediction, boolean[] truth) {
+        boolean[] bipartition = prediction.getBipartition();
+        if (bipartition == null) {
+            throw new ArgumentNullException("Bipartition is null");
         }
-
-        sum += value;
-        count++;
-
-        return value;
+        if (bipartition.length != truth.length) {
+            throw new IllegalArgumentException("The dimensions of the " +
+                    "bipartition and the ground truth array do not match");
+        }
+        return updateInternal2(bipartition, truth);
     }
 
+    abstract public double updateInternal2(boolean[] bipartition, boolean[] truth);
 }

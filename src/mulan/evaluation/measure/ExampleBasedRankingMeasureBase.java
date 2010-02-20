@@ -15,16 +15,13 @@
  */
 
 /*
- *    ExampleBasedMeasure.java
+ *    ExampleBasedRankingMeasureBase.java
  *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
  */
 package mulan.evaluation.measure;
 
-import java.io.Serializable;
-
-public abstract class ExampleBasedMeasure extends MeasureBase implements Serializable {
-    protected double sum;
-    protected int count;
+public abstract class ExampleBasedRankingMeasureBase extends BipartitionMeasureBase {
+    double sum, count;
 
     public void reset() {
         sum = 0;
