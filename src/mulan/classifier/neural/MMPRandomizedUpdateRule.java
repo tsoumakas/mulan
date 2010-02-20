@@ -28,7 +28,7 @@ import java.util.Random;
 import java.util.Set;
 
 import mulan.classifier.neural.model.Neuron;
-import mulan.evaluation.measure.Measure;
+import mulan.evaluation.measure.RankingMeasureBase;
 
 /**
  * Implementation of randomized update rule for {@link MMPLearner}. It is a randomized variation 
@@ -49,7 +49,7 @@ public class MMPRandomizedUpdateRule extends MMPUpdateRuleBase {
      * @param perceptrons the list of perceptrons, representing the model, which will receive updates.
      * @param lossMeasure the loss measure used to decide when the model should be updated by the rule
      */
-    public MMPRandomizedUpdateRule(List<Neuron> perceptrons, Measure lossMeasure) {
+    public MMPRandomizedUpdateRule(List<Neuron> perceptrons, RankingMeasureBase lossMeasure) {
         super(perceptrons, lossMeasure);
     }
 

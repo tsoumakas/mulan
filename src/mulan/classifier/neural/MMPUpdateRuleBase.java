@@ -26,7 +26,7 @@ import java.util.Map;
 import mulan.classifier.MultiLabelOutput;
 import mulan.classifier.neural.model.Neuron;
 import mulan.core.ArgumentNullException;
-import mulan.evaluation.measure.Measure;
+import mulan.evaluation.measure.RankingMeasureBase;
 
 /**
  * The base class of update rules for {@link MMPLearner}. The base class implements the
@@ -42,7 +42,7 @@ public abstract class MMPUpdateRuleBase implements ModelUpdateRule {
     /** The list of Neurons representing the model to be updated by the rule in learning process */
     private final List<Neuron> perceptrons;
     /** The loss measure used to decide when the model should be updated by the rule */
-    private final Measure lossMeasure;
+    private final RankingMeasureBase lossMeasure;
 
     /**
      * Creates a new instance of {@link MMPUpdateRuleBase}.
@@ -50,7 +50,7 @@ public abstract class MMPUpdateRuleBase implements ModelUpdateRule {
      * @param perceptrons the list of perceptrons, representing the model, which will receive updates.
      * @param lossMeasure the loss measure used to decide when the model should be updated by the rule
      */
-    public MMPUpdateRuleBase(List<Neuron> perceptrons, Measure lossMeasure) {
+    public MMPUpdateRuleBase(List<Neuron> perceptrons, RankingMeasureBase lossMeasure) {
         if (perceptrons == null) {
             throw new ArgumentNullException("perceptrons");
         }
@@ -72,8 +72,7 @@ public abstract class MMPUpdateRuleBase implements ModelUpdateRule {
             Neuron perceptron = perceptrons.get(index);
             confidences[index] = perceptron.processInput(dataInput);
         }
-        MultiLabelOutput mlOut = new MultiLabelOutput(
-                MultiLabelOutput.ranksFromValues(confidences));
+        MultiLabelOutput mlOut = new MultiLabelOutput(confidences);
 
         // get a loss measure of a model for given example
         double loss = lossMeasure.update(mlOut, example.getOutputBoolean());
