@@ -33,11 +33,7 @@ import mulan.classifier.neural.model.Neuron;
 import mulan.core.ArgumentNullException;
 import mulan.core.WekaException;
 import mulan.data.MultiLabelInstances;
-import mulan.evaluation.measure.AveragePrecision;
-import mulan.evaluation.measure.ErrorSetSize;
-import mulan.evaluation.measure.IsError;
-import mulan.evaluation.measure.Measure;
-import mulan.evaluation.measure.OneError;
+import mulan.evaluation.measure.RankingMeasureBase;
 import weka.core.Attribute;
 import weka.core.Instance;
 import weka.core.Instances;
@@ -75,8 +71,8 @@ public class MMPLearner extends MultiLabelLearnerBase {
     private boolean convertNomToBin = true;
     /** Filter used for conversion of nominal attributes to binary (if enabled) */
     private NominalToBinary nomToBinFilter;
-    /** The loss measure type to be used to judge the performance of ranking when learning the model */
-    private final LossMeasure lossMeasure;
+    /** The measure to be used to judge the performance of ranking when learning the model */
+    private final RankingMeasureBase lossMeasure;
     /** The name of a model update rule used to update the model when learning from training data */
     private final MMPUpdateRuleType mmpUpdateRule;
     /**
@@ -91,7 +87,7 @@ public class MMPLearner extends MultiLabelLearnerBase {
      * @param lossMeasure the loss measure to be used when judging
      * 	ranking performance in learning process
      */
-    public MMPLearner(LossMeasure lossMeasure, MMPUpdateRuleType modelUpdateRule) {
+    public MMPLearner(RankingMeasureBase lossMeasure, MMPUpdateRuleType modelUpdateRule) {
         if (lossMeasure == null) {
             throw new ArgumentNullException("lossMeasure");
         }
@@ -162,7 +158,6 @@ public class MMPLearner extends MultiLabelLearnerBase {
             isInitialized = true;
         }
 
-        Measure lossMeasure = getLossMeasure();
         ModelUpdateRule modelUpdateRule = getModelUpdateRule(lossMeasure);
 
         for (DataPair dataItem : trainData) {
@@ -210,23 +205,7 @@ public class MMPLearner extends MultiLabelLearnerBase {
         return perceptrons;
     }
 
-    private Measure getLossMeasure() {
-        switch (lossMeasure) {
-            case OneError:
-                return new OneError();
-            case IsError:
-                return new IsError();
-            case ErrorSetSize:
-                return new ErrorSetSize();
-            case AveragePrecision:
-                return new AveragePrecision();
-            default:
-                throw new IllegalArgumentException(String.format("The specified loss measure '%s' " +
-                        "is not supported.", lossMeasure));
-        }
-    }
-
-    private ModelUpdateRule getModelUpdateRule(Measure lossMeasure) {
+    private ModelUpdateRule getModelUpdateRule(RankingMeasureBase lossMeasure) {
         switch (mmpUpdateRule) {
             case UniformUpdate:
                 return new MMPUniformUpdateRule(perceptrons, lossMeasure);

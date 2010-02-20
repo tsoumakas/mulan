@@ -23,7 +23,7 @@ package mulan.classifier.neural;
 import java.util.List;
 
 import mulan.classifier.neural.model.Neuron;
-import mulan.evaluation.measure.Measure;
+import mulan.evaluation.measure.RankingMeasureBase;
 
 /**
  * Implementation of max update rule for {@link MMPLearner}. Only two perceptrons will
@@ -44,7 +44,7 @@ public class MMPMaxUpdateRule extends MMPUpdateRuleBase {
      * @param perceptrons the list of perceptrons, representing the model, which will receive updates.
      * @param lossMeasure the loss measure used to decide when the model should be updated by the rule
      */
-    public MMPMaxUpdateRule(List<Neuron> perceptrons, Measure lossMeasure) {
+    public MMPMaxUpdateRule(List<Neuron> perceptrons, RankingMeasureBase lossMeasure) {
         super(perceptrons, lossMeasure);
     }
 
