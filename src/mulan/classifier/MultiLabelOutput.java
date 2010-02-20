@@ -87,6 +87,21 @@ public class MultiLabelOutput {
     }
 
     /**
+     * Creates a new instance of {@link MultiLabelOutput}. It creates a ranking
+     * based on the probabilities.
+     *
+     * @param probabilities score of each label
+     * @throws ArgumentNullException if probabilities is null
+     */
+    public MultiLabelOutput(double[] probabilities) {
+        if (probabilities == null) {
+            throw new ArgumentNullException("probabilities");
+        }
+        confidences = probabilities;
+        ranking = ranksFromValues(probabilities);
+    }
+
+    /**
      * Creates a new instance of {@link MultiLabelOutput}.
      * @param bipartition bipartition of labels
      * @param someConfidences values of labels
