@@ -216,6 +216,14 @@ public class MultiLabelInstances {
     }
 
     /**
+     * Gets the number of instances
+     * @return number of instances
+     */
+    public int getNumInstances() {
+        return dataSet.numInstances();
+    }
+
+    /**
      * Gets the cardinality of the dataset
      * 
      * @return dataset cardinality
