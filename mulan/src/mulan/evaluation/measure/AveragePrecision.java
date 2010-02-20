@@ -23,8 +23,6 @@ package mulan.evaluation.measure;
 import java.util.ArrayList;
 import java.util.List;
 
-import mulan.classifier.MultiLabelOutput;
-
 /**
  * Implementation of the average precision measure. It evaluates the average
  * fraction of labels ranked above a particular relevant label, that are
@@ -33,16 +31,15 @@ import mulan.classifier.MultiLabelOutput;
  * @author Jozef Vilcek
  * @author Grigorios Tsoumakas
  */
-public class AveragePrecision extends ExampleBasedMeasure {
+public class AveragePrecision extends RankingMeasureBase {
 
     public String getName() {
         return "Average Precision";
     }
 
-    public double updateInternal(MultiLabelOutput output, boolean[] trueLabels) {
+    public double updateInternal2(int[] ranking, boolean[] trueLabels) {
 
         double avgP = 0;
-        int[] ranks = output.getRanking();
         int numLabels = trueLabels.length;
         List<Integer> relevant = new ArrayList<Integer>();
         for (int index = 0; index < numLabels; index++) {
@@ -55,11 +52,11 @@ public class AveragePrecision extends ExampleBasedMeasure {
             for (int r : relevant) {
                 double rankedAbove = 0;
                 for (int rr : relevant) {
-                    if (ranks[rr] <= ranks[r]) {
+                    if (ranking[rr] <= ranking[r]) {
                         rankedAbove++;
                     }
                 }
-                avgP += (rankedAbove / ranks[r]);
+                avgP += (rankedAbove / ranking[r]);
             }
             avgP /= relevant.size();
             sum += avgP;

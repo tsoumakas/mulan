@@ -20,8 +20,6 @@
  */
 package mulan.evaluation.measure;
 
-import mulan.classifier.MultiLabelOutput;
-
 /**
  * Implementation of the one-error measure. For a given example and prediction, 
  * one-error is 1 if the top ranked label is a relevant and 0 otherwise.
@@ -29,7 +27,7 @@ import mulan.classifier.MultiLabelOutput;
  * @author Jozef Vilcek
  * @author Grigorios Tsoumakas
  */
-public class OneError extends ExampleBasedMeasure {
+public class OneError extends RankingMeasureBase {
 
     public String getName() {
         return "One-Error";
@@ -40,13 +38,12 @@ public class OneError extends ExampleBasedMeasure {
      * The computed value of one-error is from {0,1} set. The one-error is '1'
      * if the top ranked label is relevant.
      */
-    public double updateInternal(MultiLabelOutput output, boolean[] trueLabels) {
+    public double updateInternal2(int[] ranking, boolean[] trueLabels) {
 
         double oneError = 0;
-        int[] ranks = output.getRanking();
         int numLabels = trueLabels.length;
         for (int topRated = 0; topRated < numLabels; topRated++) {
-            if (ranks[topRated] == 1) {
+            if (ranking[topRated] == 1) {
                 if (!trueLabels[topRated]) {
                     oneError++;
                     sum += oneError;

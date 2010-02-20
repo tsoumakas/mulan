@@ -23,8 +23,6 @@ package mulan.evaluation.measure;
 import java.util.ArrayList;
 import java.util.List;
 
-import mulan.classifier.MultiLabelOutput;
-
 /**
  * Implementation of is-error measure. The measure just indicates if the ranking is perfect 
  * or not. Speaking in terms of error set, the measure returns zero if cardinality of the
@@ -35,16 +33,15 @@ import mulan.classifier.MultiLabelOutput;
  * 
  * @author Jozef Vilcek
  */
-public class IsError extends ExampleBasedMeasure {
+public class IsError extends RankingMeasureBase {
 
     public String getName() {
         return "Is-Error";
     }
 
-    public double updateInternal(MultiLabelOutput output, boolean[] trueLabels) {
+    public double updateInternal2(int[] ranking, boolean[] trueLabels) {
 
         double isError = 0;
-        int[] ranks = output.getRanking();
         int numLabels = trueLabels.length;
         List<Integer> relevant = new ArrayList<Integer>();
         List<Integer> irrelevant = new ArrayList<Integer>();
@@ -59,7 +56,7 @@ public class IsError extends ExampleBasedMeasure {
         boolean terminate = false;
         for (int rLabel : relevant) {
             for (int irLabel : irrelevant) {
-                if (ranks[rLabel] > ranks[irLabel]) {
+                if (ranking[rLabel] > ranking[irLabel]) {
                     isError = 1;
                     terminate = true;
                     break;

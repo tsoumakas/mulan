@@ -20,14 +20,12 @@
  */
 package mulan.evaluation.measure;
 
-import mulan.classifier.MultiLabelOutput;
-
 /**
  * Implementation of the Hamming loss function.
  * 
  * @author Grigorios Tsoumakas
  */
-public class HammingLoss extends ExampleBasedBipartitionMeasure {
+public class HammingLoss extends ExampleBasedBipartitionMeasureBase {
 
     public String getName() {
         return "Hamming Loss";
@@ -37,7 +35,7 @@ public class HammingLoss extends ExampleBasedBipartitionMeasure {
         return 0;
     }
 
-    public double updateInternal2(MultiLabelOutput prediction, boolean[] truth) {
+    public double updateInternal2(boolean[] bipartition, boolean[] truth) {
         double symmetricDifference = 0;
         for (int i = 0; i < truth.length; i++) {
             if (bipartition[i] != truth[i]) {
@@ -51,5 +49,4 @@ public class HammingLoss extends ExampleBasedBipartitionMeasure {
 
         return value;
     }
-
 }

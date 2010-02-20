@@ -15,29 +15,20 @@
  */
 
 /*
- *    ExampleBasedBipartitionMeasure.java
+ *    ExampleBasedBipartitionMeasureBase.java
  *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
  */
 package mulan.evaluation.measure;
 
-import mulan.classifier.MultiLabelOutput;
-import mulan.core.ArgumentNullException;
+public abstract class ExampleBasedBipartitionMeasureBase extends BipartitionMeasureBase {
+    double sum, count;
 
-public abstract class ExampleBasedBipartitionMeasure extends ExampleBasedMeasure {
-    
-    protected boolean[] bipartition;
-
-    public double updateInternal(MultiLabelOutput prediction, boolean[] truth) {
-        bipartition = prediction.getBipartition();
-        if (bipartition == null) {
-            throw new ArgumentNullException("Bipartition is null");
-        }
-        if (bipartition.length != truth.length) {
-            throw new IllegalArgumentException("The dimensions of the " +
-                    "bipartition and the ground truth array do not match");
-        }
-        return updateInternal2(prediction, truth);
+    public void reset() {
+        sum = 0;
+        count = 0;
     }
 
-    abstract double updateInternal2(MultiLabelOutput prediction, boolean[] truth);
+    public double getValue() {
+        return sum / count;
+    }
 }

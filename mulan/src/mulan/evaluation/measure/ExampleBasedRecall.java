@@ -20,7 +20,6 @@
  */
 package mulan.evaluation.measure;
 
-import mulan.classifier.MultiLabelOutput;
 import mulan.core.MulanRuntimeException;
 
 /**
@@ -28,7 +27,7 @@ import mulan.core.MulanRuntimeException;
  * 
  * @author Grigorios Tsoumakas
  */
-public class ExampleBasedRecall extends ExampleBasedBipartitionMeasure {
+public class ExampleBasedRecall extends ExampleBasedBipartitionMeasureBase {
 
     public String getName() {
         return "Example-Based Recall";
@@ -38,7 +37,7 @@ public class ExampleBasedRecall extends ExampleBasedBipartitionMeasure {
         return 1;
     }
 
-    public double updateInternal2(MultiLabelOutput prediction, boolean[] truth) {
+    public double updateInternal2(boolean[] bipartition, boolean[] truth) {
         double intersection = 0;
         double actual = 0;
         for (int i = 0; i < truth.length; i++) {

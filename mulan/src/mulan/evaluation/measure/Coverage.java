@@ -20,28 +20,25 @@
  */
 package mulan.evaluation.measure;
 
-import mulan.classifier.MultiLabelOutput;
-
 /**
  * Implementation of the coverage measure.
  * 
  * @author Grigorios Tsoumakas
  */
-public class Coverage extends ExampleBasedMeasure {
+public class Coverage extends RankingMeasureBase {
 
     public String getName() {
         return "Coverage";
     }
 
-    public double updateInternal(MultiLabelOutput output, boolean[] trueLabels) {
+    public double updateInternal2(int[] ranking, boolean[] trueLabels) {
 
         int howDeep = 0;
         int numLabels = trueLabels.length;
-        int[] ranks = output.getRanking();
         for (int rank = numLabels; rank >= 1; rank--) {
             int indexOfRank;
             for (indexOfRank = 0; indexOfRank < numLabels; indexOfRank++) {
-                if (ranks[indexOfRank] == rank) {
+                if (ranking[indexOfRank] == rank) {
                     break;
                 }
             }

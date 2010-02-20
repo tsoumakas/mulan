@@ -20,8 +20,6 @@
  */
 package mulan.evaluation.measure;
 
-import mulan.classifier.MultiLabelOutput;
-import mulan.core.ArgumentNullException;
 import mulan.core.MulanRuntimeException;
 
 /**
@@ -30,7 +28,7 @@ import mulan.core.MulanRuntimeException;
  * @author Grigorios Tso
  * 
  */
-public abstract class LabelBasedFMeasure extends MeasureBase {
+public abstract class LabelBasedFMeasure extends BipartitionMeasureBase {
 
     protected double beta = 1;
     protected int numOfLabels;
@@ -65,16 +63,7 @@ public abstract class LabelBasedFMeasure extends MeasureBase {
         return ((1 + beta * beta) * precision * recall) / (beta * beta * precision + recall);
     }
 
-    public double updateInternal(MultiLabelOutput prediction, boolean[] truth) {
-        boolean[] bipartition = prediction.getBipartition();
-        if (bipartition == null) {
-            throw new ArgumentNullException("Bipartition is null");
-        }
-        if (bipartition.length != truth.length) {
-            throw new IllegalArgumentException("The dimensions of the " +
-                    "bipartition and the ground truth array do not match");
-        }
-
+    public double updateInternal2(boolean[] bipartition, boolean[] truth) {
         for (int labelIndex = 0; labelIndex < numOfLabels; labelIndex++) {
             boolean actual = truth[labelIndex];
             boolean predicted = bipartition[labelIndex];
