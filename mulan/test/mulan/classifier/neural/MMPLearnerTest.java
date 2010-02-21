@@ -29,114 +29,116 @@ import mulan.core.ArgumentNullException;
 import mulan.data.MultiLabelInstances;
 import mulan.data.generation.DataSetBuilder;
 
+import mulan.evaluation.measure.AveragePrecision;
+import mulan.evaluation.measure.ErrorSetSize;
+import mulan.evaluation.measure.IsError;
+import mulan.evaluation.measure.OneError;
 import org.junit.Before;
 import org.junit.Test;
 
 import weka.core.Instance;
 
-
 public class MMPLearnerTest extends MultiLabelLearnerTestBase {
 
-	private MMPLearner learner;
-	
-	@Override
-	protected MultiLabelLearnerBase getLearner() {
-		return learner;
-	}
-	
-	@Before
-	public void setUp(){
-		learner = new MMPLearner(LossMeasure.AveragePrecision, MMPUpdateRuleType.UniformUpdate);
-	}
+    private MMPLearner learner;
 
-	@Test
-	public void testTestDefaults(){
-		Assert.assertEquals(true, learner.getConvertNominalToBinary());
-		Assert.assertEquals(true, learner.getNormalizeAttributes());
-		Assert.assertTrue(learner.isUpdatable());
-	}
-	
-	@Test(expected=ArgumentNullException.class)
-	public void testConstructorWithNullLoss(){
-		new MMPLearner(null, MMPUpdateRuleType.UniformUpdate);
-	}
-	
-	@Test(expected=ArgumentNullException.class)
-	public void testConstructorWithNullUpdateRule(){
-		new MMPLearner(LossMeasure.AveragePrecision, null);
-	}
-	
-	@Test()
-	public void testSetConvertNominalToBinary(){
-		learner.setConvertNominalToBinary(false);
-		Assert.assertFalse(learner.getConvertNominalToBinary());
-	}
-	
-	@Test()
-	public void testSetNormalizeAttributes(){
-		learner.setNormalizeAttributes(false);
-		Assert.assertFalse(learner.getNormalizeAttributes());
-	}
-			
-	@Test(expected=InvalidDataException.class)
-	public void testMakePrediction_WithInvalidData() throws Exception{
-		MultiLabelInstances mlDataSet = DataSetBuilder.CreateDataSet(DATA_SET);
-		learner.build(mlDataSet);
-		
-		Instance instance = new Instance(1);
-		learner.makePrediction(instance);
-	}
-	
-	@Test
-	public void testMakePrediction() throws Exception{
-		MultiLabelInstances mlDataSet = DataSetBuilder.CreateDataSet(DATA_SET);
-		
-		learner.build(mlDataSet);
-		
-		MultiLabelOutput prediction = learner.makePrediction(mlDataSet.getDataSet().instance(0));
-		
-		Assert.assertNotNull(prediction);
-		Assert.assertNull(prediction.getBipartition());
-		Assert.assertNull(prediction.getConfidences());
-		Assert.assertNotNull(prediction.getRanking());
-	}
-	
-	@Test
-	public void testDifferentLossAndUpdateRules() throws Exception{
-		MultiLabelInstances mlDataSet = DataSetBuilder.CreateDataSet(DATA_SET);
-		
-		MMPLearner learner;
-		MultiLabelOutput prediction;
-		
-		learner = new MMPLearner(LossMeasure.AveragePrecision, MMPUpdateRuleType.UniformUpdate);
-		learner.build(mlDataSet);
-		prediction = learner.makePrediction(mlDataSet.getDataSet().instance(0));
-		Assert.assertNotNull(prediction);
-		
-		learner = new MMPLearner(LossMeasure.ErrorSetSize, MMPUpdateRuleType.UniformUpdate);
-		learner.build(mlDataSet);
-		prediction = learner.makePrediction(mlDataSet.getDataSet().instance(0));
-		Assert.assertNotNull(prediction);
+    @Override
+    protected MultiLabelLearnerBase getLearner() {
+        return learner;
+    }
 
-		learner = new MMPLearner(LossMeasure.IsError, MMPUpdateRuleType.UniformUpdate);
-		learner.build(mlDataSet);
-		prediction = learner.makePrediction(mlDataSet.getDataSet().instance(0));
-		Assert.assertNotNull(prediction);
+    @Before
+    public void setUp() {
+        learner = new MMPLearner(new AveragePrecision(), MMPUpdateRuleType.UniformUpdate);
+    }
 
-		learner = new MMPLearner(LossMeasure.OneError, MMPUpdateRuleType.UniformUpdate);
-		learner.build(mlDataSet);
-		prediction = learner.makePrediction(mlDataSet.getDataSet().instance(0));
-		Assert.assertNotNull(prediction);
-		
-		learner = new MMPLearner(LossMeasure.ErrorSetSize, MMPUpdateRuleType.RandomizedUpdate);
-		learner.build(mlDataSet);
-		prediction = learner.makePrediction(mlDataSet.getDataSet().instance(0));
-		Assert.assertNotNull(prediction);
+    @Test
+    public void testTestDefaults() {
+        Assert.assertEquals(true, learner.getConvertNominalToBinary());
+        Assert.assertEquals(true, learner.getNormalizeAttributes());
+        Assert.assertTrue(learner.isUpdatable());
+    }
 
-		learner = new MMPLearner(LossMeasure.IsError, MMPUpdateRuleType.MaxUpdate);
-		learner.build(mlDataSet);
-		prediction = learner.makePrediction(mlDataSet.getDataSet().instance(0));
-		Assert.assertNotNull(prediction);
+    @Test(expected = ArgumentNullException.class)
+    public void testConstructorWithNullLoss() {
+        new MMPLearner(null, MMPUpdateRuleType.UniformUpdate);
+    }
 
-	}
+    @Test(expected = ArgumentNullException.class)
+    public void testConstructorWithNullUpdateRule() {
+        new MMPLearner(new AveragePrecision(), null);
+    }
+
+    @Test()
+    public void testSetConvertNominalToBinary() {
+        learner.setConvertNominalToBinary(false);
+        Assert.assertFalse(learner.getConvertNominalToBinary());
+    }
+
+    @Test()
+    public void testSetNormalizeAttributes() {
+        learner.setNormalizeAttributes(false);
+        Assert.assertFalse(learner.getNormalizeAttributes());
+    }
+
+    @Test(expected = InvalidDataException.class)
+    public void testMakePrediction_WithInvalidData() throws Exception {
+        MultiLabelInstances mlDataSet = DataSetBuilder.CreateDataSet(DATA_SET);
+        learner.build(mlDataSet);
+
+        Instance instance = new Instance(1);
+        learner.makePrediction(instance);
+    }
+
+    @Test
+    public void testMakePrediction() throws Exception {
+        MultiLabelInstances mlDataSet = DataSetBuilder.CreateDataSet(DATA_SET);
+
+        learner.build(mlDataSet);
+
+        MultiLabelOutput prediction = learner.makePrediction(mlDataSet.getDataSet().instance(0));
+
+        Assert.assertNotNull(prediction);
+        Assert.assertNull(prediction.getBipartition());
+        Assert.assertNull(prediction.getConfidences());
+        Assert.assertNotNull(prediction.getRanking());
+    }
+
+    @Test
+    public void testDifferentLossAndUpdateRules() throws Exception {
+        MultiLabelInstances mlDataSet = DataSetBuilder.CreateDataSet(DATA_SET);
+
+        MMPLearner learner;
+        MultiLabelOutput prediction;
+
+        learner = new MMPLearner(new AveragePrecision(), MMPUpdateRuleType.UniformUpdate);
+        learner.build(mlDataSet);
+        prediction = learner.makePrediction(mlDataSet.getDataSet().instance(0));
+        Assert.assertNotNull(prediction);
+
+        learner = new MMPLearner(new ErrorSetSize(), MMPUpdateRuleType.UniformUpdate);
+        learner.build(mlDataSet);
+        prediction = learner.makePrediction(mlDataSet.getDataSet().instance(0));
+        Assert.assertNotNull(prediction);
+
+        learner = new MMPLearner(new IsError(), MMPUpdateRuleType.UniformUpdate);
+        learner.build(mlDataSet);
+        prediction = learner.makePrediction(mlDataSet.getDataSet().instance(0));
+        Assert.assertNotNull(prediction);
+
+        learner = new MMPLearner(new OneError(), MMPUpdateRuleType.UniformUpdate);
+        learner.build(mlDataSet);
+        prediction = learner.makePrediction(mlDataSet.getDataSet().instance(0));
+        Assert.assertNotNull(prediction);
+
+        learner = new MMPLearner(new ErrorSetSize(), MMPUpdateRuleType.RandomizedUpdate);
+        learner.build(mlDataSet);
+        prediction = learner.makePrediction(mlDataSet.getDataSet().instance(0));
+        Assert.assertNotNull(prediction);
+
+        learner = new MMPLearner(new IsError(), MMPUpdateRuleType.MaxUpdate);
+        learner.build(mlDataSet);
+        prediction = learner.makePrediction(mlDataSet.getDataSet().instance(0));
+        Assert.assertNotNull(prediction);
+    }
 }
