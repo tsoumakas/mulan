@@ -66,7 +66,6 @@ public class Evaluator {
      * @throws Exception
      */
     public Evaluation evaluate(MultiLabelLearner learner, MultiLabelInstances testSet, List<Measure> measures) throws IllegalArgumentException, Exception {
-
         if (measures == null) {
             throw new IllegalArgumentException("List of evaluation measures to compute is null.");
         }
@@ -76,22 +75,26 @@ public class Evaluator {
             m.reset();
         }
 
-        // collect output
+        int numLabels = testSet.getNumLabels();
+        int[] labelIndices = testSet.getLabelIndices();
+        boolean[] trueLabels = new boolean[numLabels];
+        Set<Measure> failed = new HashSet<Measure>();
         Instances testData = testSet.getDataSet();
         int numInstances = testData.numInstances();
-        int numLabels = testSet.getNumLabels();
-
-        MultiLabelOutput output = null;
-        boolean trueLabels[] = new boolean[numLabels];
-
-        Set<Measure> failed = new HashSet<Measure>();
-
-        // Create array of indexes of labels in the test set in prediction order
-        int[] indices = testSet.getLabelIndices();
         for (int instanceIndex = 0; instanceIndex < numInstances; instanceIndex++) {
             Instance instance = testData.instance(instanceIndex);
-            output = learner.makePrediction(instance);
-            trueLabels = getTrueLabels(instance, numLabels, indices);
+            boolean missing = false;
+            for (int j = 0; j < numLabels; j++) {
+                if (instance.isMissing(labelIndices[j])) {
+                    missing = true;
+                    break;
+                }
+            }
+            if (missing) {
+                continue;
+            }
+            MultiLabelOutput output = learner.makePrediction(instance);
+            trueLabels = getTrueLabels(instance, numLabels, labelIndices);
             Iterator<Measure> it = measures.iterator();
             while (it.hasNext()) {
                 Measure m = it.next();
