@@ -20,6 +20,7 @@
  */
 package mulan.evaluation.measure;
 
+import java.io.Serializable;
 import mulan.classifier.MultiLabelOutput;
 import mulan.core.ArgumentNullException;
 
@@ -27,7 +28,7 @@ import mulan.core.ArgumentNullException;
  * 
  * @author Grigorios Tsoumakas
  */
-public abstract class MeasureBase implements Measure {
+public abstract class MeasureBase implements Measure, Serializable {
 
     public final double update(MultiLabelOutput prediction, boolean[] truth) {
         if (prediction == null) {
