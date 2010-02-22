@@ -3,7 +3,7 @@
 	<property name="lib.dir" value="${basedir}/lib" description="Directory containing all 3rd party jars." />
 	<property name="src.dir" value="src" description="Source code directory." />
 	<property name="test.dir" value="test" description="Directory containing tests." />
-	<property name="javadoc.dir" value="${basedir}/docs" description="Directory for generated API documentation." />
+	<property name="javadoc.dir" value="doc" description="Directory for generated API documentation." />
 	<property name="dist.dir" value="${basedir}/dist" description="Directory for distribution artifacts, e.g. jars." />
 
 	<property name="target.dir" value="${basedir}/target" description="All artifacts produced by the build, except 'docs/api' and 'dist', goes here." />
@@ -23,7 +23,7 @@
 
 	<path id="dependency.libs.path">
 		<fileset dir="${lib.dir}">
-			<include name="weka-${weka.version}.jar" />
+			<include name="weka.jar" />
 		</fileset>
 	</path>
 	
@@ -70,18 +70,28 @@
 
 	<target name="package" depends="test,javadoc" description="Creates all distribution packages, such as jar archives." >
 		<mkdir dir="${dist.dir}" />
-		<jar jarfile="${dist.dir}/mulan-${mulan.version}.jar">
+		<jar jarfile="${dist.dir}/mulan-src.jar" basedir="${src.dir}">
 			<metainf file="license.txt"/>
 			<manifest>
 				<attribute name="Implementation-Title" value="${mulan.title}"/>
 				<attribute name="Implementation-Version" value="${mulan.version}"/>
 			</manifest>
-			
-			<fileset dir="${target.classes.dir}" includes="mulan/**/**"/>
-			<fileset dir="${src.dir}" includes="mulan/**/**"/>
-			<zipfileset src="lib/weka-${weka.version}.jar" excludes="META-INF/*,weka/gui/*" />
-			<fileset dir="${javadoc.dir}" /> 
 		</jar>
+		<jar jarfile="${dist.dir}/mulan.jar">
+			<metainf file="license.txt"/>
+			<manifest>
+				<attribute name="Implementation-Title" value="${mulan.title}"/>
+				<attribute name="Implementation-Version" value="${mulan.version}"/>
+			</manifest>
+			<fileset dir="${target.classes.dir}" includes="mulan/**/**"/>
+		</jar>
+		
+		<zip destfile="${dist.dir}/mulan-${mulan.version}.zip" >
+			<fileset dir="${basedir}" includes="${javadoc.dir}/**, data/**" />
+			<fileset dir="${dist.dir}" includes="*.jar" />
+			<fileset file="${lib.dir}/weka.jar" />
+			<fileset file="license.txt"/>
+		</zip> 
 	</target>
 
 	<!--
@@ -140,8 +150,12 @@
 	
 	<target name="javadoc" description="Generates JavaDocs API documentation.">
 		<mkdir dir="${javadoc.dir}" />
-		<javadoc packagenames="mulan.*" sourcepath="${src.dir}" destdir="${javadoc.dir}\mulan-api" doctitle="Mulan ${mulan.version} API" failonerror="yes">
+		<javadoc packagenames="mulan.*" sourcepath="${src.dir}" destdir="${javadoc.dir}" 
+			doctitle="Mulan ${mulan.version}" windowtitle="Mulan" failonerror="yes">
 			<classpath refid="dependency.libs.path" />
+			<excludepackage name="mulan.examples"/>
+			<link href="http://java.sun.com/j2se/1.5.0/docs/api/" />
+			<link href="http://weka.sourceforge.net/doc.dev/" />
 		</javadoc>
 	</target>
 
