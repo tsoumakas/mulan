@@ -41,24 +41,24 @@ public abstract class MMPUpdateRuleBase implements ModelUpdateRule {
 
     /** The list of Neurons representing the model to be updated by the rule in learning process */
     private final List<Neuron> perceptrons;
-    /** The loss measure used to decide when the model should be updated by the rule */
-    private final RankingMeasureBase lossMeasure;
+    /** The masure used to decide when (and to what extend) the model should be updated by the rule */
+    private final RankingMeasureBase measure;
 
     /**
      * Creates a new instance of {@link MMPUpdateRuleBase}.
      *
      * @param perceptrons the list of perceptrons, representing the model, which will receive updates.
-     * @param lossMeasure the loss measure used to decide when the model should be updated by the rule
+     * @param measure the loss measure used to decide when the model should be updated by the rule
      */
-    public MMPUpdateRuleBase(List<Neuron> perceptrons, RankingMeasureBase lossMeasure) {
+    public MMPUpdateRuleBase(List<Neuron> perceptrons, RankingMeasureBase measure) {
         if (perceptrons == null) {
             throw new ArgumentNullException("perceptrons");
         }
-        if (lossMeasure == null) {
+        if (measure == null) {
             throw new ArgumentNullException("lossMeasure");
         }
         this.perceptrons = perceptrons;
-        this.lossMeasure = lossMeasure;
+        this.measure = measure;
     }
 
     public final double process(DataPair example, Map<String, Object> params) {
@@ -75,11 +75,7 @@ public abstract class MMPUpdateRuleBase implements ModelUpdateRule {
         MultiLabelOutput mlOut = new MultiLabelOutput(confidences);
 
         // get a loss measure of a model for given example
-        double loss = lossMeasure.update(mlOut, example.getOutputBoolean());
-        if (lossMeasure.getIdealValue() != 0) {
-            // if ideal loss value is not zero, then translate it ... assuming loss values are positive
-            loss = lossMeasure.getIdealValue() - loss;
-        }
+        double loss = Math.abs(measure.getIdealValue() - measure.update(mlOut, example.getOutputBoolean()));
         if (loss != 0) {
             // update update parameters for perceptrons
             double[] updateParams = computeUpdateParameters(example, confidences, loss);
