@@ -21,8 +21,6 @@
 package mulan.examples;
 
 import java.util.Arrays;
-import mulan.attributeSelection.BinaryRelevanceAttributeEvaluator;
-import mulan.attributeSelection.LabelPowersetAttributeEvaluator;
 import mulan.attributeSelection.Ranker;
 import mulan.attributeSelection.MultiClassAttributeEvaluator;
 import mulan.data.MultiLabelInstances;

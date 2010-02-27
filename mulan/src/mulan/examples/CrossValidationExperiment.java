@@ -37,7 +37,6 @@ import mulan.classifier.transformation.LabelPowerset;
 import mulan.classifier.transformation.MultiClassLearner;
 import mulan.classifier.transformation.MultiLabelStacking;
 import mulan.data.MultiLabelInstances;
-import mulan.evaluation.Evaluation;
 import mulan.evaluation.Evaluator;
 import mulan.evaluation.MultipleEvaluation;
 import mulan.transformations.multiclass.Copy;
