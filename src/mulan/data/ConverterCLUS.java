@@ -25,7 +25,6 @@ import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
 import weka.core.Attribute;
 import weka.core.FastVector;
 import weka.core.Instance;
