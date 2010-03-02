@@ -642,6 +642,26 @@ public class MultiLabelInstances {
 
         return labelDepthIndices;
     }
+
+    /**
+     * Method that checks whether an instance has missing labels
+     *
+     * @param instance one instance of this dataset
+     * @return true if the instance has missing labels
+     */
+    public boolean hasMissingLabels(Instance instance) {
+        int numLabels = getNumLabels();
+        int[] labelIndices = getLabelIndices();
+
+        boolean missing = false;
+        for (int j = 0; j < numLabels; j++) {
+            if (instance.isMissing(labelIndices[j])) {
+                missing = true;
+                break;
+            }
+        }
+        return missing;
+    }
 }
 
 

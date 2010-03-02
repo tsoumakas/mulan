@@ -83,16 +83,8 @@ public class Evaluator {
         int numInstances = testData.numInstances();
         for (int instanceIndex = 0; instanceIndex < numInstances; instanceIndex++) {
             Instance instance = testData.instance(instanceIndex);
-            boolean missing = false;
-            for (int j = 0; j < numLabels; j++) {
-                if (instance.isMissing(labelIndices[j])) {
-                    missing = true;
-                    break;
-                }
-            }
-            if (missing) {
+            if (testSet.hasMissingLabels(instance))
                 continue;
-            }
             MultiLabelOutput output = learner.makePrediction(instance);
             trueLabels = getTrueLabels(instance, numLabels, labelIndices);
             Iterator<Measure> it = measures.iterator();
