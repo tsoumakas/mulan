@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Implementation of a neuron unit. 
@@ -46,6 +47,8 @@ public class Neuron implements Serializable {
     // the dimension of input pattern vector without bias term
     private final int inputDim;
 
+    private  Random random;
+    
     /**
      * Creates a new {@link Neuron} instance.
      *
@@ -69,6 +72,7 @@ public class Neuron implements Serializable {
         inputWeights = new double[inputDim + 1];
         deltaValues = new double[inputDim + 1];
         nextNeurons = new ArrayList<Neuron>();
+        random = new Random(1);
         reset();
     }
 
@@ -280,7 +284,7 @@ public class Neuron implements Serializable {
         neuronOutput = 0;
         Arrays.fill(deltaValues, 0);
         for (int i = 0; i < inputsCount; i++) {
-            inputWeights[i] = Math.random() * (max - min) + min;
+            inputWeights[i] = random.nextDouble() * (max - min) + min;
         }
     }
 

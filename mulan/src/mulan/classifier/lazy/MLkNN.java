@@ -82,7 +82,7 @@ public class MLkNN extends MultiLabelKNN {
      * Smoothing parameter controlling the strength of uniform prior <br>
      * (Default value is set to 1 which yields the Laplace smoothing).
      */
-    private double smooth;
+    protected double smooth;
     /**
      * A table holding the prior probability for an instance to belong in each
      * class
@@ -115,6 +115,15 @@ public class MLkNN extends MultiLabelKNN {
         super(numOfNeighbors);
         this.smooth = smooth;
         dontNormalize = true;
+    }
+    
+    /**
+     * The default constructor 
+     */
+    public MLkNN() {
+    	super();
+    	this.smooth = 1.0;
+    	dontNormalize = true;
     }
 
     /**
