@@ -65,6 +65,13 @@ public abstract class MultiLabelKNN extends MultiLabelLearnerBase {
      * The training instances
      */
     protected Instances train;
+    
+    /**
+     * The default constructor
+     */
+    public MultiLabelKNN() {
+        this.numOfNeighbors = 10;
+    }
 
     /**
      * Initializes the number of neighbors
@@ -94,6 +101,11 @@ public abstract class MultiLabelKNN extends MultiLabelLearnerBase {
         lnn.setDistanceFunction(dfunc);
         lnn.setInstances(train);
         lnn.setMeasurePerformance(false);
+    }
+    
+    @Override
+    public boolean isUpdatable() {
+        return true;
     }
 
     /**

@@ -26,6 +26,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 
 import mulan.classifier.InvalidDataException;
@@ -222,7 +223,7 @@ public class BPMLL extends MultiLabelLearnerBase {
         double prevError = Double.MAX_VALUE;
         double error = 0;
         for (int epoch = 0; epoch < epochs; epoch++) {
-            Collections.shuffle(trainData);
+            Collections.shuffle(trainData,new Random(1));
             for (int index = 0; index < numInstances; index++) {
                 DataPair trainPair = trainData.get(index);
                 double result = learnAlg.learn(trainPair.getInput(), trainPair.getOutput(), learningRate);
