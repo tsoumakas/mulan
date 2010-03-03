@@ -20,7 +20,9 @@
  */
 package mulan.transformations;
 
+import java.io.Serializable;
 import java.util.HashSet;
+
 import mulan.data.LabelSet;
 import mulan.data.MultiLabelInstances;
 import weka.core.Attribute;
@@ -34,7 +36,7 @@ import weka.core.Instances;
  * @author Stavros Mpakirtzoglou
  * @author Grigorios Tsoumakas
  */
-public class LabelPowersetTransformation {
+public class LabelPowersetTransformation implements Serializable {
 
     private Instances transformedFormat;
 
