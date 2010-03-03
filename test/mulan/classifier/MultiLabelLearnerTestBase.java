@@ -28,9 +28,15 @@ import mulan.data.MultiLabelInstances;
 import mulan.data.generation.Attribute;
 import mulan.data.generation.DataSetBuilder;
 import mulan.data.generation.DataSetDefinition;
+import mulan.evaluation.Evaluator;
+import mulan.evaluation.MultipleEvaluation;
 
 import org.junit.Ignore;
 import org.junit.Test;
+
+import weka.core.Instances;
+import weka.filters.Filter;
+import weka.filters.unsupervised.attribute.Reorder;
 
 @Ignore
 public abstract class MultiLabelLearnerTestBase {
@@ -98,6 +104,59 @@ public abstract class MultiLabelLearnerTestBase {
         MultiLabelInstances mlDataSet = DataSetBuilder.CreateDataSet(definition);
         getLearner().build(mlDataSet);
     }
+    
+    @Test
+	public void testSubsequentBuilds() throws Exception {
+		String path = "./data/emotions";
+		String arffDatasetPath = path + ".arff";
+		String xmlLabelsDefFilePath = path + ".xml";
+		MultiLabelInstances dataSet = new MultiLabelInstances(arffDatasetPath,
+				xmlLabelsDefFilePath);
+
+		Evaluator eval = new Evaluator();
+		MultipleEvaluation results;
+		int numFolds = 2;
+
+		MultiLabelLearnerBase learner = getLearner();
+		results = eval.crossValidate(learner, dataSet, numFolds);
+		String firstRunResults = results.toString();
+		results = eval.crossValidate(learner, dataSet, numFolds);
+		String secondRunResults = results.toString();
+
+		Assert.assertTrue(firstRunResults.equals(secondRunResults));
+
+	}
+
+	@Test
+	public void testBuild_WithDifferentOrder() throws Exception {
+		String path = "./data/emotions";
+		String arffDatasetPath = path + ".arff";
+		String xmlLabelsDefFilePath = path + ".xml";
+		MultiLabelInstances dataSet = new MultiLabelInstances(arffDatasetPath,
+				xmlLabelsDefFilePath);
+		Instances originalData = new Instances(dataSet.getDataSet());
+		// tranform the dataset
+		Reorder reorder = new Reorder();
+		reorder.setAttributeIndices("1-10,73,11-20,74,21-30,75,31-40,76,41-50,77,51-72,78");
+		reorder.setInputFormat(originalData);// inform filter about dataset **AFTER** setting options
+		Instances trandformedData = Filter.useFilter(originalData, reorder);// apply filter
+
+		MultiLabelInstances transformedDataSet = new MultiLabelInstances(
+				trandformedData, xmlLabelsDefFilePath);
+
+		Evaluator eval = new Evaluator();
+		MultipleEvaluation results;
+		int numFolds = 2;
+
+		MultiLabelLearnerBase learner = getLearner();
+		results = eval.crossValidate(learner, dataSet, numFolds);
+		String OriginalResults = results.toString();
+		results = eval.crossValidate(learner, transformedDataSet, numFolds);
+		String resultsAfterTransformation = results.toString();
+
+		Assert.assertTrue(OriginalResults.equals(resultsAfterTransformation));
+
+	}
 
     @Test
     public void testBuild() throws Exception {
