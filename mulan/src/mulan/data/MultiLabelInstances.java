@@ -124,6 +124,28 @@ public class MultiLabelInstances {
 
     /**
      * Creates a new instance of {@link MultiLabelInstances} data.
+     * The Instances object and labels meta-data are loaded separately. The load failure is
+     * indicated by {@link DataLoadException}. When data are loaded, validations are applied
+     * to ensure consistency between ARFF data and specified labels meta-data.
+     *
+     * @param data the Instances object containing the data
+     * @param xmlLabelsDefFilePath the path to XML file containing labels meta-data
+     * @throws IllegalArgumentException if input parameters refers to non-existing files
+     * @throws InvalidDataFormatException if format of loaded multi-label data is invalid
+     * @throws DataLoadException if XML meta-data of ARFF data file can not be loaded
+     */
+    public MultiLabelInstances(Instances data, String xmlLabelsDefFilePath) throws InvalidDataFormatException {
+        if (xmlLabelsDefFilePath == null) {
+            throw new ArgumentNullException("xmlLabelsDefFilePath");
+        }
+        LabelsMetaData labelsData = loadLabesMeta(xmlLabelsDefFilePath);
+        validate(data, labelsData);
+        dataSet = data;
+        labelsMetaData = labelsData;
+    }
+    
+    /**
+     * Creates a new instance of {@link MultiLabelInstances} data.
      * The ARFF data file and labels meta-data are loaded separately. The load failure is
      * indicated by {@link DataLoadException}. When data are loaded, validations are applied
      * to ensure consistency between ARFF data and specified labels meta-data.
