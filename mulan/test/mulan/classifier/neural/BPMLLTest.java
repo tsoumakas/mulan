@@ -55,12 +55,13 @@ public class BPMLLTest extends MultiLabelLearnerTestBase {
 	@Before
 	public void setUp(){
 		learner = new BPMLL();
-		
+		learner.setTrainingEpochs(10);
 		learner.setHiddenLayers(new int[] {});
 	}
 
 	@Test
 	public void testTestDefaultParameters(){
+		learner = new BPMLL();
 		Assert.assertEquals(DEFAULT_LEARNING_RATE, learner.getLearningRate());
 		Assert.assertEquals(DEFAULT_NORMALIZATION, learner.getNormalizeAttributes());
 		Assert.assertEquals(DEFAULT_TRAIN_EPOCHS, learner.getTrainingEpochs());
