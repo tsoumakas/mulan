@@ -22,6 +22,7 @@ package mulan.classifier.meta;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -64,7 +65,7 @@ import weka.core.converters.ArffSaver;
  * @author Grigorios Tsoumakas
  * @version 0.1
  */
-public class HierarchyBuilder {
+public class HierarchyBuilder implements Serializable {
 
     private int numPartitions;
     private Document labelsXMLDoc;
