@@ -1,8 +1,6 @@
 package mulan.classifier.meta;
 
 import mulan.classifier.lazy.BRkNN;
-import mulan.classifier.meta.HOMER;
-import mulan.classifier.meta.HierarchyBuilder;
 
 public class HOMERTest extends MultiLabelMetaLearnerTest {
 

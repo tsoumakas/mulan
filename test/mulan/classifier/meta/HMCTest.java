@@ -1,7 +1,6 @@
 package mulan.classifier.meta;
 
 import mulan.classifier.lazy.BRkNN;
-import mulan.classifier.meta.HMC;
 
 public class HMCTest extends MultiLabelMetaLearnerTest {
 
