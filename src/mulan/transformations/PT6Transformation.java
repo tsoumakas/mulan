@@ -20,6 +20,7 @@
  */
 package mulan.transformations;
 
+import java.io.Serializable;
 import mulan.data.MultiLabelInstances;
 import weka.core.Attribute;
 import weka.core.FastVector;
@@ -31,7 +32,7 @@ import weka.core.Instances;
  * @author Stavros Mpakirtzoglou
  * @author Grigorios Tsoumakas
  */
-public class PT6Transformation {
+public class PT6Transformation implements Serializable {
 
     private int[] labelIndices;
 
