@@ -39,7 +39,11 @@ import weka.core.Instances;
  */
 public class IncludeLabelsClassifier extends TransformationBasedMultiLabelLearner {
 
-    PT6Transformation pt6Trans;
+    /**
+     * The transformation used by the classifier
+     */
+    private PT6Transformation pt6Trans;
+
     /**
      * A dataset with the format needed by the base classifier.
      * It is potentially expensive copying datasets with many attributes,
