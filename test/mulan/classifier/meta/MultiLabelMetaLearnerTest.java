@@ -1,4 +1,4 @@
-package meta;
+package mulan.classifier.meta;
 
 import org.junit.Before;
 
