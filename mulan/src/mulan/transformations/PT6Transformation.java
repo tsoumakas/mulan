@@ -21,9 +21,9 @@
 package mulan.transformations;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import mulan.data.MultiLabelInstances;
 import weka.core.Attribute;
-import weka.core.FastVector;
 import weka.core.Instance;
 import weka.core.Instances;
 
@@ -44,17 +44,17 @@ public class PT6Transformation implements Serializable {
         Instances transformed = RemoveAllLabels.transformInstances(mlData);
 
         // add at the end an attribute with values the label names
-        FastVector labelNames = new FastVector(numLabels);
+        ArrayList<String> labelNames = new ArrayList<String>(numLabels);
         for (int counter = 0; counter < numLabels; counter++) {
-            labelNames.addElement(mlData.getDataSet().attribute(labelIndices[counter]).name());
+            labelNames.add(mlData.getDataSet().attribute(labelIndices[counter]).name());
         }
         Attribute attrLabel = new Attribute("Label", labelNames);
         transformed.insertAttributeAt(attrLabel, transformed.numAttributes());
 
         // and at the end a binary attribute
-        FastVector binaryValues = new FastVector(2);
-        binaryValues.addElement("0");
-        binaryValues.addElement("1");
+        ArrayList<String> binaryValues = new ArrayList<String>(2);
+        binaryValues.add("0");
+        binaryValues.add("1");
         Attribute classAttr = new Attribute("Class", binaryValues);
         transformed.insertAttributeAt(classAttr, transformed.numAttributes());
 
@@ -64,17 +64,13 @@ public class PT6Transformation implements Serializable {
         Instances data = mlData.getDataSet();
         for (int instanceIndex = 0; instanceIndex < data.numInstances(); instanceIndex++) {
             for (int labelCounter = 0; labelCounter < numLabels; labelCounter++) {
-                // MIGRATION: I have ported the code which essentially does a shallow copy ... 
-            	//            passed instance data will get modified
-            	//Instance temp = new Instance(data.instance(instanceIndex));
-            	Instance temp = (Instance)data.instance(instanceIndex).copy();
-                temp.setDataset(data);
-                temp = RemoveAllLabels.transformInstance(temp, labelIndices);
+                Instance temp;
+                temp = RemoveAllLabels.transformInstance(data.instance(instanceIndex), labelIndices);
                 temp.setDataset(null);
                 temp.insertAttributeAt(temp.numAttributes());
                 temp.insertAttributeAt(temp.numAttributes());
                 temp.setDataset(transformed);
-                temp.setValue(temp.numAttributes() - 2, (String) labelNames.elementAt(labelCounter));
+                temp.setValue(temp.numAttributes() - 2, (String) labelNames.get(labelCounter));
                 if (data.attribute(labelIndices[labelCounter]).value((int) data.instance(instanceIndex).value(labelIndices[labelCounter])).equals("1")) {
                     temp.setValue(temp.numAttributes() - 1, "1");
                 } else {

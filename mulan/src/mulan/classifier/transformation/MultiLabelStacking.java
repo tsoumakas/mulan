@@ -24,6 +24,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 import java.util.logging.Level;
@@ -43,7 +44,6 @@ import weka.classifiers.lazy.IBk;
 import weka.classifiers.meta.FilteredClassifier;
 import weka.core.Attribute;
 import weka.core.EuclideanDistance;
-import weka.core.FastVector;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.TechnicalInformation;
@@ -278,12 +278,12 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner
                 // create a dataset consisting of all the classes of each
                 // instance plus the class we want to select attributes from
                 for (int i = 0; i < numLabels; i++) {
-                    FastVector attributes = new FastVector();
+                    ArrayList<Attribute> attributes = new ArrayList<Attribute>();
 
                     for (int j = 0; j < numLabels; j++) {
-                        attributes.addElement(train.attribute(labelIndices[j]));
+                        attributes.add(train.attribute(labelIndices[j]));
                     }
-                    attributes.addElement(train.attribute(labelIndices[i]));
+                    attributes.add(train.attribute(labelIndices[i]));
 
                     Instances iporesult = new Instances("Meta format",
                             attributes, 0);
@@ -400,18 +400,18 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner
         debug("Building the ensemle of the meta level classifiers");
 
         for (int i = 0; i < numLabels; i++) { // creating meta-level data new
-            FastVector attributes = new FastVector();
+            ArrayList<Attribute> attributes = new ArrayList<Attribute>();
 
-            if (includeAttrs) {// create a FastVector with numAttributes size
+            if (includeAttrs) {// create an ArrayList with numAttributes size
                 for (int j = 0; j < train.numAttributes(); j++) {
-                    attributes.addElement(train.attribute(j));
+                    attributes.add(train.attribute(j));
                 }
             } else {// create a FastVector with numLabels size
                 for (int j = 0; j < numLabels; j++) {
-                    attributes.addElement(train.attribute(labelIndices[j]));
+                    attributes.add(train.attribute(labelIndices[j]));
                 }
             }
-            attributes.addElement(train.attribute(labelIndices[i]));
+            attributes.add(train.attribute(labelIndices[i]));
 
             metaLevelData[i] = new Instances("Meta format", attributes, 0);
             metaLevelData[i].setClassIndex(metaLevelData[i].numAttributes() - 1);
@@ -648,13 +648,13 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner
      */
     protected Instances attachIndexes(Instances original) {
 
-        FastVector attributes = new FastVector(original.numAttributes() + 1);
+        ArrayList<Attribute> attributes = new ArrayList<Attribute>(original.numAttributes() + 1);
 
         for (int i = 0; i < original.numAttributes(); i++) {
-            attributes.addElement(original.attribute(i));
+            attributes.add(original.attribute(i));
         }
         // Add attribute for holding the index at the beginning.
-        attributes.insertElementAt(new Attribute("Index"), 0);
+        attributes.add(0, new Attribute("Index"));
         Instances transformed = new Instances("Meta format", attributes, 0);
         for (int i = 0; i < original.numInstances(); i++) {
             Instance newInstance;
