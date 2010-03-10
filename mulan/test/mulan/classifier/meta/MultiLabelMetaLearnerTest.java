@@ -1,10 +1,9 @@
 package mulan.classifier.meta;
 
-import org.junit.Before;
-
 import mulan.classifier.MultiLabelLearnerBase;
 import mulan.classifier.MultiLabelLearnerTestBase;
-import mulan.classifier.meta.MultiLabelMetaLearner;
+
+import org.junit.Before;
 
 public abstract class MultiLabelMetaLearnerTest extends MultiLabelLearnerTestBase {
 	
