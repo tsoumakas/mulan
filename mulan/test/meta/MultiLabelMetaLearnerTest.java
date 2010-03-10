@@ -1,15 +1,15 @@
-package mulan.classifier.transformation;
+package meta;
 
 import org.junit.Before;
 
 import mulan.classifier.MultiLabelLearnerBase;
 import mulan.classifier.MultiLabelLearnerTestBase;
+import mulan.classifier.meta.MultiLabelMetaLearner;
 
-public abstract class TransformationBasedMultiLabelLearnerTest extends
-		MultiLabelLearnerTestBase {
-
-	protected TransformationBasedMultiLabelLearner learner;
+public abstract class MultiLabelMetaLearnerTest extends MultiLabelLearnerTestBase {
 	
+	protected MultiLabelMetaLearner learner;
+
 	@Override
 	protected MultiLabelLearnerBase getLearner() {
 		return learner;
@@ -17,4 +17,5 @@ public abstract class TransformationBasedMultiLabelLearnerTest extends
 	
 	@Before
 	abstract public void setUp () throws Exception;
+
 }
