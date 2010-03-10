@@ -27,6 +27,7 @@ import java.util.Iterator;
 
 import mulan.data.LabelSet;
 import mulan.data.MultiLabelInstances;
+import mulan.data.DataUtils;
 import weka.classifiers.Classifier;
 import weka.core.Instance;
 import weka.core.Instances;
@@ -179,7 +180,7 @@ public class PPT extends LabelPowerset {
                         for (int i = 0; i < numLabels; i++) {
                             temp[labelIndices[i]] = tempLabels[i];
                         }
-                        Instance newInstance = new Instance(1, temp);
+                        Instance newInstance = DataUtils.createInstance(tempInstance, 1, temp);
                         newData.add(newInstance);
                     }
                 }

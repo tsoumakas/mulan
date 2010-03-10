@@ -36,6 +36,7 @@ import mulan.classifier.neural.model.ActivationTANH;
 import mulan.classifier.neural.model.BasicNeuralNet;
 import mulan.classifier.neural.model.NeuralNet;
 import mulan.core.WekaException;
+import mulan.data.DataUtils;
 import mulan.data.MultiLabelInstances;
 import weka.core.Attribute;
 import weka.core.Instance;
@@ -370,8 +371,8 @@ public class BPMLL extends MultiLabelLearnerBase {
                     "to be processed by the model. Instance is not consistent with the data the model was built for.");
         }
 
-        Instance inputInstance = (instance instanceof SparseInstance) ? new SparseInstance(instance) : new Instance(instance);
-
+        Instance inputInstance = DataUtils.createInstance(instance, instance.weight(), instance.toDoubleArray());
+        
         if (nominalToBinaryFilter != null) {
             nominalToBinaryFilter.input(inputInstance);
             inputInstance = nominalToBinaryFilter.output();

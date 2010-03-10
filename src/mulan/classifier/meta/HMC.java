@@ -20,9 +20,10 @@
  */
 package mulan.classifier.meta;
 
-import java.util.Map;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
+
 import mulan.classifier.MultiLabelLearner;
 import mulan.classifier.MultiLabelOutput;
 import mulan.data.InvalidDataFormatException;
@@ -31,6 +32,7 @@ import mulan.data.LabelNodeImpl;
 import mulan.data.LabelsMetaData;
 import mulan.data.LabelsMetaDataImpl;
 import mulan.data.MultiLabelInstances;
+import mulan.data.DataUtils;
 import mulan.transformations.RemoveAllLabels;
 import weka.core.Instance;
 import weka.core.Instances;
@@ -199,7 +201,7 @@ public class HMC extends MultiLabelMetaLearner {
 
         double[] values = instance.toDoubleArray();
 
-        Instance transformed = new Instance(1, values);
+        Instance transformed = DataUtils.createInstance(instance, 1, values);
         // delete all attributes (other way of transformation)
         transformed = RemoveAllLabels.transformInstance(transformed, labelIndices);
         transformed.setDataset(null);

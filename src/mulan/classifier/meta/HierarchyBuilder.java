@@ -46,6 +46,7 @@ import mulan.data.LabelNodeImpl;
 import mulan.data.LabelsMetaData;
 import mulan.data.LabelsMetaDataImpl;
 import mulan.data.MultiLabelInstances;
+import mulan.data.DataUtils;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -230,7 +231,8 @@ public class HierarchyBuilder implements Serializable {
             for (int j = 0; j < numInstances; j++) {
                 values[j] = mlData.getDataSet().instance(j).value(mlData.getDataSet().attribute(labels.get(i)));
             }
-            Instance newInstance = new Instance(1, values);
+            // MIGRATION: can type of an instance be extracted from first instance in data set?
+            Instance newInstance = DataUtils.createInstance(mlData.getDataSet().instance(0), 1, values);
             transposed.add(newInstance);
         }
 
@@ -355,8 +357,8 @@ public class HierarchyBuilder implements Serializable {
                     }
                 }
             }
-
-            newDataSet.add(new Instance(dataSet.instance(i).weight(), newValues));
+            Instance instance = dataSet.instance(i);
+            newDataSet.add(DataUtils.createInstance(instance, instance.weight(), newValues));
         }
         return new MultiLabelInstances(newDataSet, metaData);
     }

@@ -64,7 +64,10 @@ public class PT6Transformation implements Serializable {
         Instances data = mlData.getDataSet();
         for (int instanceIndex = 0; instanceIndex < data.numInstances(); instanceIndex++) {
             for (int labelCounter = 0; labelCounter < numLabels; labelCounter++) {
-                Instance temp = new Instance(data.instance(instanceIndex));
+                // MIGRATION: I have ported the code which essentially does a shallow copy ... 
+            	//            passed instance data will get modified
+            	//Instance temp = new Instance(data.instance(instanceIndex));
+            	Instance temp = (Instance)data.instance(instanceIndex).copy();
                 temp.setDataset(data);
                 temp = RemoveAllLabels.transformInstance(temp, labelIndices);
                 temp.setDataset(null);

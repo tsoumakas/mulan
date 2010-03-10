@@ -22,6 +22,7 @@ package mulan.classifier.transformation;
 
 import mulan.classifier.MultiLabelOutput;
 import mulan.data.MultiLabelInstances;
+import weka.classifiers.AbstractClassifier;
 import weka.classifiers.Classifier;
 import weka.classifiers.meta.FilteredClassifier;
 import weka.core.Attribute;
@@ -86,7 +87,7 @@ public class BinaryRelevance extends TransformationBasedMultiLabelLearner {
         Instances trainingData = train.getDataSet();
         for (int i = 0; i < numLabels; i++) {
             ensemble[i] = new FilteredClassifier();
-            ensemble[i].setClassifier(Classifier.makeCopy(baseClassifier));
+            ensemble[i].setClassifier(AbstractClassifier.makeCopy(baseClassifier));
 
             // Indices of attributes to remove
             int[] indicesToRemove = new int[numLabels - 1];

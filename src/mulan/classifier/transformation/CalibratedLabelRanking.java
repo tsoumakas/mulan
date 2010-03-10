@@ -21,11 +21,14 @@
 package mulan.classifier.transformation;
 
 import java.util.Arrays;
+
 import mulan.classifier.MultiLabelOutput;
 import mulan.data.MultiLabelInstances;
 import mulan.transformations.RemoveAllLabels;
+import weka.classifiers.AbstractClassifier;
 import weka.classifiers.Classifier;
 import weka.core.Attribute;
+import weka.core.DenseInstance;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.SparseInstance;
@@ -124,7 +127,7 @@ public class CalibratedLabelRanking extends TransformationBasedMultiLabelLearner
 
         // One-vs-one models
         numModels = ((numLabels) * (numLabels - 1)) / 2;
-        oneVsOneModels = Classifier.makeCopies(getBaseClassifier(), numModels);
+        oneVsOneModels = AbstractClassifier.makeCopies(getBaseClassifier(), numModels);
         metaDataTest = new Instances[numModels];
 
         Instances trainingData = trainingSet.getDataSet();
@@ -147,7 +150,7 @@ public class CalibratedLabelRanking extends TransformationBasedMultiLabelLearner
                     if (trainingData.instance(i) instanceof SparseInstance) {
                         tempInstance = new SparseInstance(trainingData.instance(i));
                     } else {
-                        tempInstance = new Instance(trainingData.instance(i));
+                        tempInstance = new DenseInstance(trainingData.instance(i));
                     }
 
                     int nominalValueIndex;

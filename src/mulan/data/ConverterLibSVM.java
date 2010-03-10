@@ -30,6 +30,7 @@ import java.util.Arrays;
 import java.util.StringTokenizer;
 
 import weka.core.Attribute;
+import weka.core.DenseInstance;
 import weka.core.FastVector;
 import weka.core.Instance;
 import weka.core.Instances;
@@ -162,7 +163,8 @@ public class ConverterLibSVM {
                 // set all  values to 0
                 double[] attValues = new double[numAttributes + numLabels];
                 Arrays.fill(attValues, 0);
-                Instance tempInstance = new Instance(1, attValues);
+                
+                Instance tempInstance = new DenseInstance(1, attValues);
                 tempInstance.setDataset(data);
 
                 // separate class info from attribute info

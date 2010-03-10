@@ -35,6 +35,7 @@ import weka.core.TechnicalInformation.Type;
  * @author Jozef Vilcek
  * @version $Revision: 0.02 $ 
  */
+@SuppressWarnings("serial")
 public abstract class TransformationBasedMultiLabelLearner extends MultiLabelLearnerBase {
 
     /**

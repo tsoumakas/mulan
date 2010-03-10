@@ -25,7 +25,9 @@ import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+
 import weka.core.Attribute;
+import weka.core.DenseInstance;
 import weka.core.FastVector;
 import weka.core.Instance;
 import weka.core.Instances;
@@ -122,7 +124,7 @@ public class ConverterCLUS {
                                 values[attInfo.indexOf(att)] = 1;
                             }
                         }
-                        Instance instance = new Instance(1, values);
+                        Instance instance = new DenseInstance(1, values);
                         data.add(instance);
                     }
                 }

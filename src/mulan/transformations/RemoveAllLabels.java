@@ -21,6 +21,7 @@
 package mulan.transformations;
 
 import mulan.data.MultiLabelInstances;
+import mulan.data.DataUtils;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.filters.Filter;
@@ -60,7 +61,7 @@ public class RemoveAllLabels {
             newValues[counter2] = oldValues[i];
             counter2++;
         }
-        return new Instance(instance.weight(), newValues);
+        return DataUtils.createInstance(instance, instance.weight(), newValues);
     }
     /*
     public static Instance transformInstance(Instance instance, int[] labelIndices) throws Exception
