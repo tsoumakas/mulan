@@ -138,9 +138,12 @@ public class DataPair {
                 }
             }
 
+            if (mlDataSet.hasMissingLabels(instance))
+                continue;
+
             double[] output = new double[numLabels];
             for (int i = 0; i < numLabels; i++) {
-                output[i] = instance.value(labelIndices[i]);
+                output[i] = Double.parseDouble(data.attribute(labelIndices[i]).value((int) instance.value(labelIndices[i])));
                 if (bipolarOutput && output[i] == 0) {
                     output[i] = -1;
                 }
