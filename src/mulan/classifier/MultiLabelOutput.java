@@ -184,4 +184,61 @@ public class MultiLabelOutput {
         }
         return ranks;
     }
+    
+    /**
+     * Tests if two MultiLabelOutput objects are equal
+     * 
+     * @param mlo a MultiLabelOutput object
+     * @return 
+     */
+    public boolean equals (Object mlo){
+    	//check bipartitions
+    	if(bipartition == null){
+    		if( ((MultiLabelOutput) mlo).bipartition != null)
+    			return false;
+    	}
+    	if(bipartition != null){
+    		if( ((MultiLabelOutput) mlo).bipartition == null)
+    			return false;
+    		else{
+    			for(int i=0; i < bipartition.length ; i++){
+    				if(bipartition[i]!= ((MultiLabelOutput) mlo).bipartition[i])
+    					return false;
+    			}
+    		}
+    	}
+    	//check rankings
+    	if(ranking == null){
+    		if( ((MultiLabelOutput) mlo).ranking != null)
+    			return false;
+    	}
+    	if(ranking != null){
+    		if( ((MultiLabelOutput) mlo).ranking == null)
+    			return false;
+    		else{
+    			for(int i=0; i < ranking.length ; i++){
+    				if(ranking[i]!= ((MultiLabelOutput) mlo).ranking[i])
+    					return false;
+    			}
+    		}
+    	}
+    	
+    	//check confidences
+    	if(confidences == null){
+    		if( ((MultiLabelOutput) mlo).confidences != null)
+    			return false;
+    	}
+    	if(confidences != null){
+    		if( ((MultiLabelOutput) mlo).confidences == null)
+    			return false;
+    		else{
+    			for(int i=0; i < confidences.length ; i++){
+    				if(confidences[i]!=((MultiLabelOutput) mlo).confidences[i])
+    					return false;
+    			}
+    		}
+    	}
+    	
+		return true;
+    }
 }
