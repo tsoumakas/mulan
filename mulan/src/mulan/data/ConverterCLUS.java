@@ -26,9 +26,9 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import java.util.ArrayList;
 import weka.core.Attribute;
 import weka.core.DenseInstance;
-import weka.core.FastVector;
 import weka.core.Instance;
 import weka.core.Instances;
 
@@ -59,7 +59,7 @@ public class ConverterCLUS {
             BufferedReader brInput = new BufferedReader(new FileReader(sourceFilename));
 
             String relationName = null;
-            FastVector attInfo = new FastVector();
+            ArrayList<Attribute> attInfo = new ArrayList<Attribute>();
             Instances data = null;
             int numAttributes = 0;
             String[] labelNames = null;
@@ -74,26 +74,26 @@ public class ConverterCLUS {
                     if (line.startsWith("@ATTRIBUTE class")) {
                         labelNames = tokens[3].split(",");
                         for (int i = 0; i < labelNames.length; i++) {
-                            FastVector labelValues = new FastVector();
-                            labelValues.addElement("0");
-                            labelValues.addElement("1");
+                            ArrayList<String> labelValues = new ArrayList<String>();
+                            labelValues.add("0");
+                            labelValues.add("1");
                             att = new Attribute(labelNames[i], labelValues);
-                            attInfo.addElement(att);
+                            attInfo.add(att);
                         }
                     } else {
                         numAttributes++;
                         if (tokens[2].equals("numeric")) {
                             att = new Attribute(tokens[1]);
                         } else {
-                            FastVector nominalValues = new FastVector();
+                            ArrayList<String> nominalValues = new ArrayList<String>();
                             tokens[2].substring(1, tokens[2].length() - 1);
                             String[] nominalTokens = tokens[2].substring(1, tokens[2].length() - 1).split(",");
                             for (int i = 0; i < nominalTokens.length; i++) {
-                                nominalValues.addElement(nominalTokens[i]);
+                                nominalValues.add(nominalTokens[i]);
                             }
                             att = new Attribute(tokens[1], nominalValues);
                         }
-                        attInfo.addElement(att);
+                        attInfo.add(att);
                     }
                     continue;
                 }
@@ -104,7 +104,7 @@ public class ConverterCLUS {
                         String[] tokens = line.split(",");
                         double[] values = new double[attInfo.size()];
                         for (int i = 0; i < numAttributes; i++) {
-                            Attribute att = (Attribute) attInfo.elementAt(i);
+                            Attribute att = (Attribute) attInfo.get(i);
                             if (att.isNumeric()) {
                                 values[i] = Double.parseDouble(tokens[i]);
                             } else {

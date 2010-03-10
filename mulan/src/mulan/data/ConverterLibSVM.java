@@ -26,12 +26,12 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.StringTokenizer;
 
 import weka.core.Attribute;
 import weka.core.DenseInstance;
-import weka.core.FastVector;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.SparseInstance;
@@ -133,19 +133,19 @@ public class ConverterLibSVM {
             }
 
             // Define Instances class to hold data
-            FastVector attInfo = new FastVector(numAttributes + numLabels);
+            ArrayList<Attribute> attInfo = new ArrayList<Attribute>(numAttributes + numLabels);
             Attribute[] att = new Attribute[numAttributes + numLabels];
 
             for (int i = 0; i < numAttributes; i++) {
                 att[i] = new Attribute("Att" + (i + 1));
-                attInfo.addElement(att[i]);
+                attInfo.add(att[i]);
             }
-            FastVector ClassValues = new FastVector(2);
-            ClassValues.addElement("0");
-            ClassValues.addElement("1");
+            ArrayList<String> ClassValues = new ArrayList<String>(2);
+            ClassValues.add("0");
+            ClassValues.add("1");
             for (int i = 0; i < numLabels; i++) {
                 att[numAttributes + i] = new Attribute("Label" + (i + 1), ClassValues);
-                attInfo.addElement(att[numAttributes + i]);
+                attInfo.add(att[numAttributes + i]);
             }
 
             // Re-read file and convert into multi-label arff
@@ -163,7 +163,7 @@ public class ConverterLibSVM {
                 // set all  values to 0
                 double[] attValues = new double[numAttributes + numLabels];
                 Arrays.fill(attValues, 0);
-                
+
                 Instance tempInstance = new DenseInstance(1, attValues);
                 tempInstance.setDataset(data);
 
