@@ -32,10 +32,12 @@ import java.util.logging.Logger;
 import mulan.classifier.MultiLabelOutput;
 import mulan.data.MultiLabelInstances;
 import mulan.data.Statistics;
+import mulan.data.DataUtils;
 import mulan.transformations.BinaryRelevanceTransformation;
 import weka.attributeSelection.ASEvaluation;
 import weka.attributeSelection.AttributeSelection;
 import weka.attributeSelection.Ranker;
+import weka.classifiers.AbstractClassifier;
 import weka.classifiers.Classifier;
 import weka.classifiers.lazy.IBk;
 import weka.classifiers.meta.FilteredClassifier;
@@ -247,7 +249,7 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner
             Classifier metaClassifier, boolean includeAttrs,
             double metaPercentage, ASEvaluation eval) throws Exception {
         this.metaClassifier = metaClassifier;
-        metaLevelEnsemble = Classifier.makeCopies(metaClassifier, numLabels);
+        metaLevelEnsemble = AbstractClassifier.makeCopies(metaClassifier, numLabels);
         metaLevelData = new Instances[numLabels];
         metaLevelFilteredEnsemble = new FilteredClassifier[numLabels];
         this.includeAttrs = includeAttrs;
@@ -293,7 +295,7 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner
                         }
                         values[numLabels] = train.instance(k).value(
                                 labelIndices[i]);
-                        Instance metaInstance = new Instance(1, values);
+                        Instance metaInstance = DataUtils.createInstance(train.instance(k), 1, values);
                         metaInstance.setDataset(iporesult);
                         iporesult.add(metaInstance);
                     }
@@ -315,7 +317,7 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner
     public void buildBaseLevel(MultiLabelInstances trainingSet) throws Exception {
         train = new Instances(trainingSet.getDataSet());
         baseLevelData = new Instances[numLabels];
-        baseLevelEnsemble = Classifier.makeCopies(baseClassifier, numLabels);
+        baseLevelEnsemble = AbstractClassifier.makeCopies(baseClassifier, numLabels);
         if (normalize) {
             maxProb = new double[numLabels];
             minProb = new double[numLabels];
@@ -434,7 +436,7 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner
 
                 values[values.length - 1] = train.instance(l).value(
                         labelIndices[i]);
-                Instance metaInstance = new Instance(1, values);
+                Instance metaInstance = DataUtils.createInstance(train.instance(l), 1, values);
                 metaInstance.setDataset(metaLevelData[i]);
                 metaLevelData[i].add(metaInstance);
             }
@@ -614,7 +616,7 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner
             // instance.value(instance.numAttributes() - numLabels +
             // labelIndex);
             values[values.length - 1] = 0;
-            Instance newmetaInstance = new Instance(1, values);
+            Instance newmetaInstance = DataUtils.createInstance(instance, 1, values);
 
             double distribution[] = new double[2];
             try {
@@ -746,7 +748,7 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner
      */
     public void setMetaAlgorithm(Classifier metaClassifier) throws Exception {
         this.metaClassifier = metaClassifier;
-        metaLevelEnsemble = Classifier.makeCopies(metaClassifier, numLabels);
+        metaLevelEnsemble = AbstractClassifier.makeCopies(metaClassifier, numLabels);
     }
 
     /**

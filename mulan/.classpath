@@ -3,7 +3,7 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" output="target/test-classes" path="test"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="lib/weka.jar"/>
+	<classpathentry kind="lib" path="lib/weka.jar" />
 	<classpathentry kind="lib" path="lib/test/junit-4.5.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

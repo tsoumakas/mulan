@@ -28,14 +28,15 @@ import mulan.classifier.MultiLabelOutput;
 import mulan.core.ArgumentNullException;
 import mulan.data.MultiLabelInstances;
 import mulan.data.generation.DataSetBuilder;
-
 import mulan.evaluation.measure.AveragePrecision;
 import mulan.evaluation.measure.ErrorSetSize;
 import mulan.evaluation.measure.IsError;
 import mulan.evaluation.measure.OneError;
+
 import org.junit.Before;
 import org.junit.Test;
 
+import weka.core.DenseInstance;
 import weka.core.Instance;
 
 public class MMPLearnerTest extends MultiLabelLearnerTestBase {
@@ -86,7 +87,7 @@ public class MMPLearnerTest extends MultiLabelLearnerTestBase {
         MultiLabelInstances mlDataSet = DataSetBuilder.CreateDataSet(DATA_SET);
         learner.build(mlDataSet);
 
-        Instance instance = new Instance(1);
+        Instance instance = new DenseInstance(1);
         learner.makePrediction(instance);
     }
 

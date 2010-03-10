@@ -35,6 +35,7 @@ import mulan.data.generation.DataSetDefinition;
 import org.junit.Before;
 import org.junit.Test;
 
+import weka.core.DenseInstance;
 import weka.core.Instance;
 
 
@@ -161,7 +162,7 @@ public class BPMLLTest extends MultiLabelLearnerTestBase {
 		MultiLabelInstances mlDataSet = DataSetBuilder.CreateDataSet(DATA_SET);
 		learner.build(mlDataSet);
 		
-		Instance instance = new Instance(1);
+		Instance instance = new DenseInstance(1);
 		learner.makePrediction(instance);
 	}
 	

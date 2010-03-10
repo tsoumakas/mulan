@@ -22,6 +22,7 @@ package mulan.classifier.lazy;
 
 import mulan.classifier.MultiLabelOutput;
 import mulan.data.MultiLabelInstances;
+import mulan.data.DataUtils;
 import weka.classifiers.Classifier;
 import weka.classifiers.functions.SimpleLogistic;
 import weka.core.Attribute;
@@ -188,7 +189,7 @@ public class IBLR_ML extends MultiLabelKNN {
             for (int j = 0; j < numLabels; j++) {
             	attvalue[attvalue.length - 1] = Double.parseDouble(train.attribute(labelIndices[j]).value(
                         (int) train.instance(i).value(labelIndices[j])));
-                Instance newInst = new Instance(1, attvalue);
+                Instance newInst = DataUtils.createInstance(train.instance(i), 1, attvalue);
                 newInst.setDataset(trainingDataForLabel[j]);
                 if (attvalue[attvalue.length - 1] > 0.5) {
                     newInst.setClassValue("1");
@@ -258,7 +259,7 @@ public class IBLR_ML extends MultiLabelKNN {
         // Add the class labels and finish the new training data
         for (int j = 0; j < numLabels; j++) {
             attvalue[attvalue.length - 1] = instance.value(train.numAttributes() - numLabels + j);
-            Instance newInst = new Instance(1, attvalue);
+            Instance newInst = DataUtils.createInstance(instance, 1, attvalue);
             conf_corrected[j] = classifier[j].distributionForInstance(newInst)[1];
         }
 

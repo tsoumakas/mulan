@@ -21,19 +21,22 @@
 package mulan.classifier.meta;
 
 import java.util.ArrayList;
-import mulan.classifier.*;
+
+import mulan.classifier.MultiLabelLearner;
+import mulan.classifier.MultiLabelLearnerBase;
+import mulan.classifier.MultiLabelOutput;
 import mulan.core.ArgumentNullException;
 import mulan.core.MulanRuntimeException;
 import mulan.data.MultiLabelInstances;
-
+import weka.classifiers.AbstractClassifier;
+import weka.classifiers.Classifier;
+import weka.classifiers.meta.FilteredClassifier;
+import weka.core.Attribute;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.TechnicalInformation;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.Remove;
-import weka.classifiers.Classifier;
-import weka.classifiers.meta.FilteredClassifier;
-import weka.core.Attribute;
 
 /**
  *
@@ -176,7 +179,7 @@ public class SubsetLearner extends MultiLabelLearnerBase {
                 debug("Single Label model.");
                 //Initialize the FilteredClassifiers
                 singleLabelLearners.add(new FilteredClassifier());
-                singleLabelLearners.get(countSingle).setClassifier(Classifier.makeCopy(baseClassifier));
+                singleLabelLearners.get(countSingle).setClassifier(AbstractClassifier.makeCopy(baseClassifier));
 
                 Instances trainSubset = trainingSet.getDataSet();
                 //Set the remove filter for the FilteredClassifiers

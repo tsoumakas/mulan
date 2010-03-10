@@ -21,9 +21,18 @@
 package mulan.classifier.meta;
 
 import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Random;
+import java.util.Vector;
+
 import weka.classifiers.rules.DecisionTableHashKey;
+import weka.clusterers.NumberOfClustersRequestable;
+import weka.clusterers.RandomizableClusterer;
+import weka.clusterers.SimpleKMeans;
 import weka.core.Attribute;
 import weka.core.Capabilities;
+import weka.core.DenseInstance;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.Option;
@@ -32,12 +41,6 @@ import weka.core.WeightedInstancesHandler;
 import weka.core.Capabilities.Capability;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.ReplaceMissingValues;
-import weka.clusterers.*;
-
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Random;
-import java.util.Vector;
 
 /**
 <!-- globalinfo-start -->
@@ -298,7 +301,7 @@ public class ConstrainedKMeans extends RandomizableClusterer implements NumberOf
                         m_ClusterNominalCounts[i][j] =
                                 tempI[i].attributeStats(j).nominalCounts;
                     }
-                    m_ClusterCentroids.add(new Instance(1.0, vals));
+                    m_ClusterCentroids.add(new DenseInstance(1.0, vals));
                 }
                 //System.out.println("centroid: " + i + " " + m_ClusterCentroids.instance(i).toString());
             }
@@ -324,10 +327,10 @@ public class ConstrainedKMeans extends RandomizableClusterer implements NumberOf
                 if (instances.attribute(j).isNumeric()) {
                     vals2[j] = Math.sqrt(tempI[i].variance(j));
                 } else {
-                    vals2[j] = Instance.missingValue();
+                    vals2[j] = Utils.missingValue();
                 }
             }
-            m_ClusterStdDevs.add(new Instance(1.0, vals2));
+            m_ClusterStdDevs.add(new DenseInstance(1.0, vals2));
             m_ClusterSizes[i] = tempI[i].numInstances();
         }
     }
@@ -466,8 +469,8 @@ public class ConstrainedKMeans extends RandomizableClusterer implements NumberOf
         switch (m_ClusterCentroids.attribute(index).type()) {
             case Attribute.NOMINAL:
                 // If attribute is nominal
-                if (Instance.isMissingValue(val1) ||
-                        Instance.isMissingValue(val2) ||
+                if (Utils.isMissingValue(val1) ||
+                		Utils.isMissingValue(val2) ||
                         ((int) val1 != (int) val2)) {
                     return 1;
                 } else {
@@ -476,14 +479,14 @@ public class ConstrainedKMeans extends RandomizableClusterer implements NumberOf
             case Attribute.NUMERIC:
 
                 // If attribute is numeric
-                if (Instance.isMissingValue(val1) ||
-                        Instance.isMissingValue(val2)) {
-                    if (Instance.isMissingValue(val1) &&
-                            Instance.isMissingValue(val2)) {
+                if (Utils.isMissingValue(val1) ||
+                		Utils.isMissingValue(val2)) {
+                    if (Utils.isMissingValue(val1) &&
+                    		Utils.isMissingValue(val2)) {
                         return 1;
                     } else {
                         double diff;
-                        if (Instance.isMissingValue(val2)) {
+                        if (Utils.isMissingValue(val2)) {
                             diff = norm(val1, index);
                         } else {
                             diff = norm(val2, index);

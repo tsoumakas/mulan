@@ -32,6 +32,7 @@ import mulan.classifier.neural.model.ActivationLinear;
 import mulan.classifier.neural.model.Neuron;
 import mulan.core.ArgumentNullException;
 import mulan.core.WekaException;
+import mulan.data.DataUtils;
 import mulan.data.MultiLabelInstances;
 import mulan.evaluation.measure.RankingMeasureBase;
 import weka.core.Attribute;
@@ -313,9 +314,6 @@ public class MMPLearner extends MultiLabelLearnerBase {
             throw new InvalidDataException("Input instance do not have enough attributes " +
                     "to be processed by the model. Instance is not consistent with the data the model was built for.");
         }
-
-        // copy the instance before modify (we are not touching mutable input data)
-        inputInstance = (inputInstance instanceof SparseInstance) ? new SparseInstance(inputInstance) : new Instance(inputInstance);
 
         // perform normalization if necessary
         if (convertNomToBin && nomToBinFilter != null) {

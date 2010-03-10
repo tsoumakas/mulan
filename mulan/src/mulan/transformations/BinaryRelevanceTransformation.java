@@ -21,6 +21,8 @@
 package mulan.transformations;
 
 import java.io.Serializable;
+
+import mulan.data.DataUtils;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.filters.Filter;
@@ -42,8 +44,7 @@ public class BinaryRelevanceTransformation implements Serializable {
      * Remove all label attributes except labelToKeep
      */
     public Instance transformInstance(Instance instance, int labelToKeep) {
-        Instance newInstance = new Instance(instance.numAttributes());
-        newInstance = (Instance) instance.copy();
+        Instance newInstance = DataUtils.createInstance(instance, instance.numAttributes());
         newInstance.setDataset(null);
         int numPredictors = instance.numAttributes() - numOfLabels;
         int skipLabel = 0;
@@ -136,7 +137,7 @@ public class BinaryRelevanceTransformation implements Serializable {
             isLabel = false;
         }
 
-        Instance transformedInstance = new Instance(1, transformedValues);
+        Instance transformedInstance = DataUtils.createInstance(instance, 1,	transformedValues);
         return transformedInstance;
     }
 }

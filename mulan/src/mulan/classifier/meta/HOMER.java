@@ -24,6 +24,7 @@ import java.util.Set;
 import mulan.classifier.MultiLabelLearner;
 import mulan.classifier.MultiLabelOutput;
 import mulan.data.MultiLabelInstances;
+import mulan.data.DataUtils;
 import mulan.classifier.meta.HierarchyBuilder.Method;
 import mulan.data.LabelsMetaData;
 import weka.core.Instance;
@@ -95,7 +96,7 @@ public class HOMER extends MultiLabelMetaLearner {
     }
 
     protected MultiLabelOutput makePredictionInternal(Instance instance) throws Exception {
-        Instance transformed = new Instance(instance.weight(), instance.toDoubleArray());
+        Instance transformed = DataUtils.createInstance(instance, instance.weight(), instance.toDoubleArray());
         for (int i = 0; i < numMetaLabels; i++) {
             transformed.insertAttributeAt(transformed.numAttributes());
         }
