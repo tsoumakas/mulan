@@ -186,6 +186,6 @@ public class PPT extends LabelPowerset {
             }
         }
 
-        super.build(new MultiLabelInstances(newData, mlDataSet.getLabelsMetaData()));
+        super.buildInternal(new MultiLabelInstances(newData, mlDataSet.getLabelsMetaData()));
     }
 }
