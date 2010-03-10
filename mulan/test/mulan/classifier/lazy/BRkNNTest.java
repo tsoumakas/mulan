@@ -5,22 +5,12 @@ import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import mulan.classifier.MultiLabelLearnerBase;
-import mulan.classifier.MultiLabelLearnerTestBase;
-
-public class BRkNNTest extends MultiLabelLearnerTestBase {
+public class BRkNNTest extends MultiLabelKNNTest {
 
 	private static final int DEFAULT_numOfNeighbors = 10; 
 	private static boolean DEFAULT_dontNormalize = false;
 	
-	private BRkNN learner;
-	
 	@Override
-	protected MultiLabelLearnerBase getLearner() {
-		return learner;
-	}
-	
-	@Before
 	public void setUp(){
 		learner = new BRkNN(DEFAULT_numOfNeighbors);
 	}

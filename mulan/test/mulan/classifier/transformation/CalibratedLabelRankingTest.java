@@ -3,12 +3,13 @@ package mulan.classifier.transformation;
 import weka.classifiers.Classifier;
 import weka.classifiers.bayes.NaiveBayes;
 
-public class LabelPowerSetTest extends TransformationBasedMultiLabelLearnerTest {
-	
+public class CalibratedLabelRankingTest extends
+		TransformationBasedMultiLabelLearnerTest {
+
 	@Override
-	public void setUp(){
+	public void setUp() {
 		Classifier baseClassifier = new NaiveBayes();
-		learner = new  LabelPowerset(baseClassifier);
+		learner = new  CalibratedLabelRanking(baseClassifier);
 	}
 
 }
