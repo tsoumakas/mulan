@@ -186,8 +186,8 @@ public class IBLR_ML extends MultiLabelKNN {
 
             // Add the class labels and finish the new training data
             for (int j = 0; j < numLabels; j++) {
-                attvalue[attvalue.length - 1] = train.instance(i).value(
-                        labelIndices[j]);
+            	attvalue[attvalue.length - 1] = Double.parseDouble(train.attribute(labelIndices[j]).value(
+                        (int) train.instance(i).value(labelIndices[j])));
                 Instance newInst = new Instance(1, attvalue);
                 newInst.setDataset(trainingDataForLabel[j]);
                 if (attvalue[attvalue.length - 1] > 0.5) {
