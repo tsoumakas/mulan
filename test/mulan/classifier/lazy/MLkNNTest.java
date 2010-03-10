@@ -2,11 +2,7 @@ package mulan.classifier.lazy;
 
 import junit.framework.Assert;
 
-import org.junit.Before;
 import org.junit.Test;
-
-import mulan.classifier.MultiLabelLearnerBase;
-import mulan.classifier.MultiLabelLearnerTestBase;
 
 public class MLkNNTest extends MultiLabelKNNTest {
 	

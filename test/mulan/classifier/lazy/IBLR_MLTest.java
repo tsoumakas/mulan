@@ -1,6 +1,5 @@
 package mulan.classifier.lazy;
 
-import org.junit.Before;
 
 public class IBLR_MLTest extends MultiLabelKNNTest {
 	
