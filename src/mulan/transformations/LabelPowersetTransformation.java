@@ -21,12 +21,12 @@
 package mulan.transformations;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashSet;
 
 import mulan.data.LabelSet;
 import mulan.data.MultiLabelInstances;
 import weka.core.Attribute;
-import weka.core.FastVector;
 import weka.core.Instance;
 import weka.core.Instances;
 
@@ -68,9 +68,9 @@ public class LabelPowersetTransformation implements Serializable {
         }
 
         // create class attribute
-        FastVector classValues = new FastVector(labelSets.size());
+        ArrayList<String> classValues = new ArrayList<String>(labelSets.size());
         for (LabelSet subset : labelSets) {
-            classValues.addElement(subset.toBitString());
+            classValues.add(subset.toBitString());
         }
         Attribute newClass = new Attribute("class", classValues);
 
