@@ -20,13 +20,13 @@
  */
 package mulan.classifier.lazy;
 
+import java.util.ArrayList;
 import mulan.classifier.MultiLabelOutput;
 import mulan.data.MultiLabelInstances;
 import mulan.data.DataUtils;
 import weka.classifiers.Classifier;
 import weka.classifiers.functions.SimpleLogistic;
 import weka.core.Attribute;
-import weka.core.FastVector;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.TechnicalInformation;
@@ -124,20 +124,20 @@ public class IBLR_ML extends MultiLabelKNN {
          * Create the new training data with label info as features.
          */
         Instances[] trainingDataForLabel = new Instances[numLabels];
-        FastVector attributes = new FastVector();
-        if (addFeatures == true) {// create a FastVector with numAttributes size
+        ArrayList<Attribute> attributes = new ArrayList<Attribute>();
+        if (addFeatures == true) {// create an ArrayList with numAttributes size
             for (int i = 1; i <= train.numAttributes(); i++) {
-                attributes.addElement(new Attribute("Attr." + i));
+                attributes.add(new Attribute("Attr." + i));
             }
         } else {// create a FastVector with numLabels size
             for (int i = 1; i <= numLabels; i++) {
-                attributes.addElement(new Attribute("Attr." + i));
+                attributes.add(new Attribute("Attr." + i));
             }
         }
-        FastVector classlabel = new FastVector();
-        classlabel.addElement("0");
-        classlabel.addElement("1");
-        attributes.addElement(new Attribute("Class", classlabel));
+        ArrayList<String> classlabel = new ArrayList<String>();
+        classlabel.add("0");
+        classlabel.add("1");
+        attributes.add(new Attribute("Class", classlabel));
         for (int i = 0; i < trainingDataForLabel.length; i++) {
             trainingDataForLabel[i] = new Instances("DataForLabel" + (i + 1),
                     attributes, train.numInstances());
@@ -187,7 +187,7 @@ public class IBLR_ML extends MultiLabelKNN {
 
             // Add the class labels and finish the new training data
             for (int j = 0; j < numLabels; j++) {
-            	attvalue[attvalue.length - 1] = Double.parseDouble(train.attribute(labelIndices[j]).value(
+                attvalue[attvalue.length - 1] = Double.parseDouble(train.attribute(labelIndices[j]).value(
                         (int) train.instance(i).value(labelIndices[j])));
                 Instance newInst = DataUtils.createInstance(train.instance(i), 1, attvalue);
                 newInst.setDataset(trainingDataForLabel[j]);
