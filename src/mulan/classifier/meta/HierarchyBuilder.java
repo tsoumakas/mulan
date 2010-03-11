@@ -53,7 +53,6 @@ import org.w3c.dom.Element;
 
 import weka.clusterers.EM;
 import weka.core.Attribute;
-import weka.core.FastVector;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.converters.ArffSaver;
@@ -219,10 +218,10 @@ public class HierarchyBuilder implements Serializable {
 
         // transpose data and keep only labels in the parameter list
         int numInstances = mlData.getDataSet().numInstances();
-        FastVector attInfo = new FastVector(numInstances);
+        ArrayList<Attribute> attInfo = new ArrayList<Attribute>(numInstances);
         for (int i = 0; i < numInstances; i++) {
             Attribute att = new Attribute("instance" + (i + 1));
-            attInfo.addElement(att);
+            attInfo.add(att);
         }
         System.out.println("constructing instances");
         Instances transposed = new Instances("transposed", attInfo, 0);
@@ -306,18 +305,18 @@ public class HierarchyBuilder implements Serializable {
         int numMetaLabels = metaLabels.size();
 
         // copy existing attributes
-        FastVector atts = new FastVector(dataSet.numAttributes() + numMetaLabels);
+        ArrayList<Attribute> atts = new ArrayList<Attribute>(dataSet.numAttributes() + numMetaLabels);
         for (int i = 0; i < dataSet.numAttributes(); i++) {
-            atts.addElement(dataSet.attribute(i));
+            atts.add(dataSet.attribute(i));
         }
 
-        FastVector labelValues = new FastVector();
-        labelValues.addElement("0");
-        labelValues.addElement("1");
+        ArrayList<String>  labelValues = new ArrayList<String> ();
+        labelValues.add("0");
+        labelValues.add("1");
 
         // add metalabel attributes
         for (String metaLabel : metaLabels) {
-            atts.addElement(new Attribute(metaLabel, labelValues));
+            atts.add(new Attribute(metaLabel, labelValues));
         }
 
         // initialize dataset
