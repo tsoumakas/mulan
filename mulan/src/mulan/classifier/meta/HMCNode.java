@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import mulan.classifier.MultiLabelLearner;
 import mulan.classifier.MultiLabelOutput;
-import mulan.classifier.meta.MultiLabelMetaLearner;
 import mulan.data.MultiLabelInstances;
 import weka.core.Instance;
 import weka.core.Instances;
