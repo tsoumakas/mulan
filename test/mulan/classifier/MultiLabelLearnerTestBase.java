@@ -35,6 +35,7 @@ import org.junit.Test;
 import weka.core.Instances;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.Reorder;
+import weka.filters.unsupervised.instance.NonSparseToSparse;
 import weka.filters.unsupervised.instance.SparseToNonSparse;
 
 @Ignore
@@ -256,7 +257,7 @@ public abstract class MultiLabelLearnerTestBase {
         Instances originalTestData = new Instances(testDataSet.getDataSet());
 
         // tranform the datasets
-        SparseToNonSparse nsp = new SparseToNonSparse();
+        NonSparseToSparse nsp = new NonSparseToSparse();
         nsp.setInputFormat(originalTrainData);// inform filter about dataset
         // **AFTER** setting options
         Instances transformedTrainData = Filter.useFilter(originalTrainData,
