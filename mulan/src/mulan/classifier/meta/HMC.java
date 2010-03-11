@@ -37,6 +37,8 @@ import mulan.transformations.RemoveAllLabels;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.TechnicalInformation;
+import weka.core.TechnicalInformation.Field;
+import weka.core.TechnicalInformation.Type;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.Remove;
 
@@ -68,12 +70,17 @@ public class HMC extends MultiLabelMetaLearner {
 
     @Override
     public TechnicalInformation getTechnicalInformation() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        TechnicalInformation result = new TechnicalInformation(Type.INPROCEEDINGS);
+        result.setValue(Field.AUTHOR, "Grigorios Tsoumakas and Ioannis Katakis and Ioannis Vlahavas");
+        result.setValue(Field.TITLE, "Effective and Efficient Multilabel Classification in Domains with Large Number of Labels");
+        result.setValue(Field.BOOKTITLE, "Proc. ECML/PKDD 2008 Workshop on Mining Multidimensional Data (MMD'08)");
+        result.setValue(Field.LOCATION, "Antwerp, Belgium");
+        result.setValue(Field.YEAR, "2008");
+        return result;
     }
 
     private void buildRec(HMCNode node, Instances data) throws InvalidDataFormatException, Exception {
         String metaLabel = node.getName();
-        //debug(metaLabel);
 
         //debug("Preparing node data");
         Set<String> childrenLabels = new HashSet<String>();
@@ -118,7 +125,6 @@ public class HMC extends MultiLabelMetaLearner {
 
         // create multi-label instance
         MultiLabelInstances nodeData = new MultiLabelInstances(nodeInstances, nodeMetaData);
-
         //debug("Building model");
         node.build(nodeData);
         //debug("spark #instances:"+nodeInstances.numInstances());
@@ -196,25 +202,34 @@ public class HMC extends MultiLabelMetaLearner {
     }
 
     private void makePrediction(HMCNode currentNode, Instance instance, boolean[] predictedLabels, double[] confidences) throws Exception {
-        String metaLabel = currentNode.getName();
-        //System.out.println("Node: " + metaLabel);
+        //System.out.println("Node: " + currentNode.getName());
 
         double[] values = instance.toDoubleArray();
 
         Instance transformed = DataUtils.createInstance(instance, 1, values);
-        // delete all attributes (other way of transformation)
-        transformed = RemoveAllLabels.transformInstance(transformed, labelIndices);
-        transformed.setDataset(null);
 
-        int numChildren;
-        if (metaLabel.equals("root")) {
-            numChildren = originalMetaData.getRootLabels().size();
-        } else {
-            numChildren = originalMetaData.getLabelNode(metaLabel).getChildren().size();
+        // delete all labels apart from those of current node
+        int[] currentNodeLabelIndices = currentNode.getLabelIndices();
+        Set<Integer> indicesToKeep = new HashSet<Integer>();
+        for (int i = 0; i < currentNodeLabelIndices.length; i++) {
+            String labelToKeep = currentNode.getHeader().attribute(currentNodeLabelIndices[i]).name();
+            indicesToKeep.add(labelsAndIndices.get(labelToKeep));
         }
-        for (int j = 0; j < numChildren; j++) {
-            transformed.insertAttributeAt(transformed.numAttributes());
+
+        if (labelIndices.length - indicesToKeep.size() != 0) {
+            int[] indicesToDelete = new int[labelIndices.length - indicesToKeep.size()];
+            int counter = 0;
+            for (int i = 0; i < labelIndices.length; i++) {
+                if (indicesToKeep.contains(labelIndices[i])) {
+                    continue;
+                }
+                indicesToDelete[counter] = labelIndices[i];
+                counter++;
+            }
+            transformed = RemoveAllLabels.transformInstance(transformed, indicesToDelete);
         }
+
+
         transformed.setDataset(currentNode.getHeader());
         // add as many attributes as the children    
 //        System.out.println("header:" + currentNode.getHeader());
@@ -252,23 +267,6 @@ public class HMC extends MultiLabelMetaLearner {
                     }
                 }
             }
-        }
-    }
-
-    /**
-     * Learns the Labels hierarchy and builds the appropriate tree for the
-     * hierarchical multilabel classifier. The method is recursive.
-     *
-     * @param labels the set of labels that will be added to the HMC_node
-     * @param currentNode the node to which the labels are added
-     */
-    private void learnHierarchy(Set<LabelNode> labels, HMCNode currentNode) throws Exception {
-        for (LabelNode labelNode : labels) {
-            HMCNode newHMCNode = new HMCNode(labelNode.getName(), baseLearner);
-            if (labelNode.hasChildren()) {
-                learnHierarchy(labelNode.getChildren(), newHMCNode);
-            }
-            currentNode.addChild(newHMCNode);
         }
     }
 
