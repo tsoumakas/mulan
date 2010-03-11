@@ -36,7 +36,6 @@ import weka.core.Instances;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.Reorder;
 import weka.filters.unsupervised.instance.NonSparseToSparse;
-import weka.filters.unsupervised.instance.SparseToNonSparse;
 
 @Ignore
 public abstract class MultiLabelLearnerTestBase {
@@ -199,7 +198,7 @@ public abstract class MultiLabelLearnerTestBase {
         which are assembled in the order of label appearance in the arff dataset.
         Alternatively we could compare the overall results, but see the
         following note for a problem in this case.
-        */
+         */
         reorder.setAttributeIndices("1-10,73,11-20,74,21-30,75,31-40,76,41-50,77,51-72,78");
         reorder.setInputFormat(originalTrainData);// inform filter about dataset
         // **AFTER** setting options
