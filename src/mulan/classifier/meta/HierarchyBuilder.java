@@ -231,7 +231,6 @@ public class HierarchyBuilder implements Serializable {
             for (int j = 0; j < numInstances; j++) {
                 values[j] = mlData.getDataSet().instance(j).value(mlData.getDataSet().attribute(labels.get(i)));
             }
-            // MIGRATION: can type of an instance be extracted from first instance in data set?
             Instance newInstance = DataUtils.createInstance(mlData.getDataSet().instance(0), 1, values);
             transposed.add(newInstance);
         }
