@@ -48,9 +48,9 @@ public class ConverterCLUS {
     /**
      * Converts the original dataset to mulan compatible dataset.
      *
-     * @param sourceFileName the source file name
-     * @param arffName the converted arff name
-     * @param xmlName the xml name
+     * @param sourceFilename the source file name
+     * @param arffFilename the converted arff name
+     * @param xmlFilename the xml name
      * @throws java.lang.Exception
      */
     public static void convert(String sourceFilename, String arffFilename, String xmlFilename) throws Exception {

@@ -36,7 +36,7 @@ public abstract class ActivationFunction implements Serializable {
      * Computes an output value of the function for given input.
      *
      * @param input the input value to the function
-     * @return
+     * @return the output value
      */
     public abstract double activate(final double input);
 
@@ -44,7 +44,7 @@ public abstract class ActivationFunction implements Serializable {
      * Computes an output value of function derivation for given input.
      *
      * @param input the input value to the function
-     * @return
+     * @return the output value
      */
     public abstract double derivative(final double input);
 

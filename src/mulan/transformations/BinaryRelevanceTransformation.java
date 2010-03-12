@@ -42,6 +42,9 @@ public class BinaryRelevanceTransformation implements Serializable {
 
     /**
      * Remove all label attributes except labelToKeep
+     * @param instance 
+     * @param labelToKeep 
+     * @return transformed Instance
      */
     public Instance transformInstance(Instance instance, int labelToKeep) {
         Instance newInstance = DataUtils.createInstance(instance, instance.numAttributes());
@@ -60,6 +63,10 @@ public class BinaryRelevanceTransformation implements Serializable {
 
     /**
      * Remove all label attributes except labelToKeep
+     * @param train 
+     * @param labelToKeep 
+     * @return transformed Instances object
+     * @throws Exception 
      */
     public Instances transformInstances(Instances train, int labelToKeep) throws Exception {
         // Indices of attributes to remove
@@ -84,6 +91,11 @@ public class BinaryRelevanceTransformation implements Serializable {
 
     /**
      * Remove all label attributes except that at indexOfLabelToKeep
+     * @param train 
+     * @param labelIndices 
+     * @param indexToKeep 
+     * @return transformed Instances object
+     * @throws Exception 
      */
     public static Instances transformInstances(Instances train, int[] labelIndices, int indexToKeep) throws Exception {
         int numLabels = labelIndices.length;
@@ -111,6 +123,10 @@ public class BinaryRelevanceTransformation implements Serializable {
 
     /**
      * Remove all label attributes except label at position indexToKeep
+     * @param instance 
+     * @param labelIndices 
+     * @param indexToKeep 
+     * @return transformed Instance
      */
     public static Instance transformInstance(Instance instance, int[] labelIndices, int indexToKeep) {
         double[] values = instance.toDoubleArray();

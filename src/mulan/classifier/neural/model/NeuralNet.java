@@ -70,7 +70,6 @@ public interface NeuralNet {
      * @param layerIndex
      * @return returns an unmodifiable list of units of the particular layer
      * @throws IndexOutOfBoundsException if the index is out of range
-     * @see NeuralLayer
      * @see Collections#unmodifiableList(List)
      */
     List<Neuron> getLayerUnits(int layerIndex);

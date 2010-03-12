@@ -111,7 +111,7 @@ public abstract class MultiLabelKNN extends MultiLabelLearnerBase {
     /**
      * Sets normalization off or on
      *
-     * @param dontNormalize the value of {@link dontNormalize}
+     * @param dontNormalize the value of {@link #dontNormalize}
      */
     public void setDontNormalize(boolean dontNormalize) {
         this.dontNormalize = dontNormalize;

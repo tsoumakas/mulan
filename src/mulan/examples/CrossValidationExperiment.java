@@ -65,6 +65,8 @@ public class CrossValidationExperiment {
         try {
             String path = Utils.getOption("path", args);
             String filestem = Utils.getOption("filestem", args);
+            path = "data/";
+            filestem = "emotions";
             System.out.println("Loading the data set");
             MultiLabelInstances dataSet = new MultiLabelInstances(path + filestem + ".arff", path + filestem + ".xml");
 

@@ -202,7 +202,7 @@ public class SubsetLearner extends MultiLabelLearnerBase {
     /**
      * We make a prediction using a different method depending on whether the split has one or more labels
      * @param instance
-     * @return
+     * @return the MultiLabelOutput
      * @throws Exception
      */
     public MultiLabelOutput makePredictionInternal(Instance instance) throws Exception {

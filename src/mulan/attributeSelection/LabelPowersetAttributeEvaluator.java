@@ -56,7 +56,9 @@ public class LabelPowersetAttributeEvaluator extends ASEvaluation implements Att
     /** The single-label attribute evaluator to use underneath */
     private ASEvaluation baseAttributeEvaluator;
 
-    /** Constructor that uses an evaluator on a multi-label dataset */
+    /** Constructor that uses an evaluator on a multi-label dataset 
+     * @param x 
+     * @param mlData */
     public LabelPowersetAttributeEvaluator(ASEvaluation x, MultiLabelInstances mlData) {
         baseAttributeEvaluator = x;
         LabelPowersetTransformation lpt = new LabelPowersetTransformation();

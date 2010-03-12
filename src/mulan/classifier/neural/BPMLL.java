@@ -41,7 +41,6 @@ import mulan.data.MultiLabelInstances;
 import weka.core.Attribute;
 import weka.core.Instance;
 import weka.core.Instances;
-import weka.core.SparseInstance;
 import weka.core.TechnicalInformation;
 import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
@@ -105,8 +104,8 @@ public class BPMLL extends MultiLabelLearnerBase {
 
     /**
      * Gets an array defining topology of hidden layer of the underlying neural model.
-     * The method returns a copy of the array.
-     * @return
+     * 
+     * @return The method returns a copy of the array.
      */
     public int[] getHiddenLayers() {
         return hiddenLayersTopology == null ? hiddenLayersTopology : Arrays.copyOf(hiddenLayersTopology, hiddenLayersTopology.length);
@@ -154,7 +153,7 @@ public class BPMLL extends MultiLabelLearnerBase {
 
     /**
      * Gets a value of the regularization cost term for weights decay.
-     * @return
+     * @return regularization cost
      */
     public double getWeightsDecayRegularization() {
         return weightsDecayCost;
@@ -178,7 +177,7 @@ public class BPMLL extends MultiLabelLearnerBase {
     /**
      * Gets number of training epochs.
      * Default value is 100.
-     * @return
+     * @return training epochs
      */
     public int getTrainingEpochs() {
         return epochs;
@@ -202,7 +201,7 @@ public class BPMLL extends MultiLabelLearnerBase {
     /**
      * Gets a value if normalization of nominal attributes should take place.
      * Default value is true.
-     * @return
+     * @return a value if normalization of nominal attributes should take place
      */
     public boolean getNormalizeAttributes() {
         return normalizeAttributes;
