@@ -203,7 +203,7 @@ public class Neuron implements Serializable {
     /**
      * Returns a bias input value.
      *
-     * @return
+     * @return the input bias
      */
     public double getBiasInput() {
         return biasInput;

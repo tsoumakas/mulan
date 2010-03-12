@@ -85,7 +85,7 @@ public class LabelSet implements Serializable, Comparable<LabelSet> {
     /**
      * The number of set members. Calculated on first call and
      * cached for subsequent calls.
-     * @return
+     * @return The number of set members
      */
     public int size() {
         if (size == -1) {

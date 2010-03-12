@@ -63,18 +63,10 @@ public class BinaryRelevanceAttributeEvaluator extends ASEvaluation implements A
             this.index = index;
         }
 
-        /**
-         *
-         * @return
-         */
         public double getScore() {
             return score;
         }
 
-        /**
-         *
-         * @return
-         */
         public int getIndex() {
             return index;
         }
@@ -91,6 +83,8 @@ public class BinaryRelevanceAttributeEvaluator extends ASEvaluation implements A
     }
 
     /**
+     * @param ase 
+     * @param mlData 
      * @param combapp combination approach mode ("max", "avg", "min")
      * @param norm normalization mode ("dl", "dm", "none")
      * @param mode scoring mode ("eval", "rank")
@@ -172,7 +166,7 @@ public class BinaryRelevanceAttributeEvaluator extends ASEvaluation implements A
     /**
      * orders the ranking scores according to their attributes' original indices
      * @param ranking a rank table
-     * @return
+     * @return the order of the ranking scores
      */
     public int[] order(int ranking[]) {
         int order[] = new int[ranking.length];

@@ -421,7 +421,8 @@ public class CalibratedLabelRanking extends TransformationBasedMultiLabelLearner
     /**
      * a function to get the classifier index for label1 vs label2 (single Round-Robin)
      * in the array of classifiers, oneVsOneModels
-     * @param int label1, label2
+     * @param label1
+     * @param label2
      * @return index of classifier (label1 vs label2)
      */
     private int getRRClassifierIndex(int label1, int label2) {

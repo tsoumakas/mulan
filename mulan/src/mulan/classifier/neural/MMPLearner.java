@@ -32,13 +32,11 @@ import mulan.classifier.neural.model.ActivationLinear;
 import mulan.classifier.neural.model.Neuron;
 import mulan.core.ArgumentNullException;
 import mulan.core.WekaException;
-import mulan.data.DataUtils;
 import mulan.data.MultiLabelInstances;
 import mulan.evaluation.measure.RankingMeasureBase;
 import weka.core.Attribute;
 import weka.core.Instance;
 import weka.core.Instances;
-import weka.core.SparseInstance;
 import weka.core.TechnicalInformation;
 import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
@@ -87,6 +85,7 @@ public class MMPLearner extends MultiLabelLearnerBase {
      *
      * @param lossMeasure the loss measure to be used when judging
      * 	ranking performance in learning process
+     * @param modelUpdateRule 
      */
     public MMPLearner(RankingMeasureBase lossMeasure, MMPUpdateRuleType modelUpdateRule) {
         if (lossMeasure == null) {
@@ -135,7 +134,7 @@ public class MMPLearner extends MultiLabelLearnerBase {
 
     /**
      * Gets whether normalization of feature attributes takes place prior to learning.
-     * @return
+     * @return whether normalization of feature attributes takes place prior to learning
      */
     public boolean getNormalizeAttributes() {
         return normalizeAttributes;

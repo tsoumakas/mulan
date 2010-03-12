@@ -56,7 +56,10 @@ public class MultiClassAttributeEvaluator extends ASEvaluation implements Attrib
     /** The single-label attribute evaluator to use underneath */
     private ASEvaluation baseAttributeEvaluator;
 
-    /** Constructor that uses an evaluator on a multi-label dataset using a transformation */
+    /** Constructor that uses an evaluator on a multi-label dataset using a transformation 
+     * @param x 
+     * @param dt 
+     * @param mlData */
     public MultiClassAttributeEvaluator(ASEvaluation x, MultiClassTransformation dt, MultiLabelInstances mlData) {
         baseAttributeEvaluator = x;
         Instances data;

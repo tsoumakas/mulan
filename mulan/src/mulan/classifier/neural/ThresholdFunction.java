@@ -54,7 +54,7 @@ public class ThresholdFunction implements Serializable {
      * Computes a threshold value, based on learned parameters, for given labels confidences.
      *
      * @param labelsConfidences the labels confidences
-     * @return
+     * @return the threshold value
      * @throws IllegalArgumentException if the dimension of labels confidences does not match
      * 		   							the dimension of learned parameters of threshold function.
      */

@@ -66,7 +66,7 @@ public abstract class TransformationBasedMultiLabelLearner extends MultiLabelLea
     /**
      * Returns the {@link Classifier} which is used internally by the learner.
      *
-     * @return
+     * @return the internally used classifier
      */
     public Classifier getBaseClassifier() {
         return baseClassifier;

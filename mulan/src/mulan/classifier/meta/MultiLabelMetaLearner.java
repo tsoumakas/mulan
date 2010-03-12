@@ -42,6 +42,7 @@ public abstract class MultiLabelMetaLearner extends MultiLabelLearnerBase {
      * Creates a new instance of {@link MultiLabelMetaLearner} with default
      * {@link LabelPowerset} multi-label classifier using J48 as the base
      * classifier.
+     * @throws Exception 
      */
     public MultiLabelMetaLearner() throws Exception {
         this(new LabelPowerset(new J48()));
@@ -60,7 +61,7 @@ public abstract class MultiLabelMetaLearner extends MultiLabelLearnerBase {
     /**
      * Returns the {@link MultiLabelLearner} which is used internally by the learner.
      *
-     * @return
+     * @return the {@link #baseLearner}
      */
     public MultiLabelLearner getBaseLearner() {
         return baseLearner;

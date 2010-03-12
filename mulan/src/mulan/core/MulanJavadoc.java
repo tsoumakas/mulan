@@ -169,7 +169,7 @@ public class MulanJavadoc implements OptionHandler {
     /**
      * Gets options
      *
-     * @return
+     * @return a string array of the options
      */
     @Override
     public String[] getOptions() {

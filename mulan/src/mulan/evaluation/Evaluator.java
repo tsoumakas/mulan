@@ -62,6 +62,7 @@ public class Evaluator {
      * @param learner the learner to be evaluated via cross-validation
      * @param testSet the data set for cross-validation
      * @param measures the evaluation measures to compute
+     * @return an Evaluation object
      * @throws IllegalArgumentException if an input parameter is null
      * @throws Exception
      */
@@ -107,7 +108,7 @@ public class Evaluator {
      * Evaluates a {@link MultiLabelLearner} on given test data set.
      *
      * @param learner the learner to be evaluated
-     * @param dataset the data set for evaluation
+     * @param testSet the data set for evaluation
      * @return the evaluation result
      * @throws IllegalArgumentException if either of input parameters is null.
      * @throws Exception

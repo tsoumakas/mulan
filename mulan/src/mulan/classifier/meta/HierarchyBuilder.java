@@ -294,6 +294,8 @@ public class HierarchyBuilder implements Serializable {
      *
      * @param mlData the original multilabel instances
      * @param metaData the metadata of the constructed label hierarchy
+     * @return the produced dataset
+     * @throws InvalidDataFormatException 
      */
     public static MultiLabelInstances createHierarchicalDataset(MultiLabelInstances mlData, LabelsMetaData metaData) throws InvalidDataFormatException {
         Set<String> leafLabels = mlData.getLabelsMetaData().getLabelNames();

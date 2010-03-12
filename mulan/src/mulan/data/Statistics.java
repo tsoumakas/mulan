@@ -317,7 +317,7 @@ public class Statistics implements Serializable {
      *
      * @param labelIndex
      * @param bound
-     * @return
+     * @return the indices of the labels whose phi coefficient values lie between -bound <= phi <= bound
      */
     public int[] uncorrelatedLabels(int labelIndex, double bound) {
         ArrayList<Integer> indiceslist = new ArrayList<Integer>();

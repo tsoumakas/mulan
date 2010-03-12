@@ -124,7 +124,7 @@ public class MultiLabelOutput {
 
     /**
      * Gets bipartition of labels. 
-     * @return
+     * @return the bipartition
      */
     public boolean[] getBipartition() {
         return bipartition;
@@ -140,7 +140,7 @@ public class MultiLabelOutput {
 
     /**
      * Gets ranking of labels.
-     * @return
+     * @return the ranking
      */
     public int[] getRanking() {
         return ranking;
@@ -156,7 +156,7 @@ public class MultiLabelOutput {
 
     /**
      * Gets confidences of labels.
-     * @return
+     * @return the confidences
      */
     public double[] getConfidences() {
         return confidences;
@@ -189,7 +189,7 @@ public class MultiLabelOutput {
      * Tests if two MultiLabelOutput objects are equal
      * 
      * @param mlo a MultiLabelOutput object
-     * @return 
+     * @return true if the given object represents a MultiLabelOutput equivalent to this MultiLabelOutput, false otherwise
      */
     @Override
     public boolean equals(Object mlo) {

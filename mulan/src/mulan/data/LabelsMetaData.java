@@ -79,13 +79,13 @@ public interface LabelsMetaData {
 
     /**
      * Gets the total number of {@link LabelNode} nodes.
-     * @return
+     * @return total number of {@link LabelNode} nodes
      */
     int getNumLabels();
 
     /**
      * Returns a deep copy of the {@link LabelsMetaDataImpl} instance.
-     * @return
+     * @return a deep copy of the {@link LabelsMetaDataImpl} instance
      */
     LabelsMetaData clone();
 }

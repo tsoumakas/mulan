@@ -181,7 +181,7 @@ public class MultiLabelInstances {
      * are applied to ensure consistency between ARFF data and specified labels meta-data.
      *
      * @param arffDataStream the {@link InputStream} data source to load data in ARFF format
-     * @param xmlLabelsDefReader the {@link InputStream} data source to load XML labels meta data
+     * @param xmlLabelsDefStream the {@link InputStream} data source to load XML labels meta data
      * @throws ArgumentNullException if input parameters are null
      * @throws IllegalArgumentException if input parameters refers to non-existing files
      * @throws InvalidDataFormatException if format of loaded multi-label data is invalid
@@ -315,7 +315,7 @@ public class MultiLabelInstances {
     /**
      * Gets the {@link Set} of label {@link Attribute} instances of
      * this {@link MultiLabelInstances} instance.
-     * @return
+     * @return the Set of label Attribute instances
      */
     public Set<Attribute> getLabelAttributes() {
         Set<String> labelNames = labelsMetaData.getLabelNames();
@@ -356,7 +356,7 @@ public class MultiLabelInstances {
     /**
      * Gets the {@link Set} of feature {@link Attribute} instances of
      * this {@link MultiLabelInstances} instance.
-     * @return
+     * @return the {@link Set} of feature {@link Attribute} instances
      */
     public Set<Attribute> getFeatureAttributes() {
         Set<String> labelNames = labelsMetaData.getLabelNames();
@@ -375,7 +375,7 @@ public class MultiLabelInstances {
      * Gets the {@link LabelsMetaData} instance, which contains descriptive meta-data about
      * label attributes stored in underlying {@link Instances} data set.
      *
-     * @return
+     * @return descriptive meta-data about label attributes
      */
     public LabelsMetaData getLabelsMetaData() {
         return labelsMetaData;
@@ -384,7 +384,7 @@ public class MultiLabelInstances {
     /**
      * Gets underlying {@link Instances}, which contains all data.
      *
-     * @return
+     * @return underlying Instances object which contains all data
      */
     public Instances getDataSet() {
         return dataSet;
@@ -403,7 +403,7 @@ public class MultiLabelInstances {
      * - add/remove of feature/predictor {@link Attribute} to the existing {@link Instances}<br></br>
      *
      * @param modifiedDataSet the modified data set
-     * @return
+     * @return the modified data set
      * @throws IllegalArgumentException if specified modified data set is null
      * @throws InvalidDataFormatException if multi-label data format with specified modifications is not valid
      */
@@ -615,8 +615,8 @@ public class MultiLabelInstances {
     }
 
     /**
-     * Create a HashMap that contains every label, with it depth in the Hierachical tree
-     * @return
+     * Create a HashMap that contains every label, with its depth in the Hierarchical tree
+     * @return a HashMap that contains every label  with its depth in the Hierarchical tree
      */
     public HashMap<String, Integer> getLabelDepth() {
         int numAttributes = dataSet.numAttributes();
@@ -636,7 +636,7 @@ public class MultiLabelInstances {
      * Calculates the depth of a label, in the Hierarchy of the tree of labels.
      * Returns the counter of every level. We define the root node label that has the depth 1
      * @param labelName
-     * @return
+     * @return the depth of a label
      */
     public int getDepth(String labelName) {
         int counter = 0;
