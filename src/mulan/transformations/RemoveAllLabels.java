@@ -56,7 +56,10 @@ public class RemoveAllLabels {
         for (int i = 0; i < oldValues.length; i++) {
             if (i == labelIndices[counter1]) {
                 counter1++;
-                continue;
+                if (counter1 == labelIndices.length)
+                    break;
+                else
+                    continue;
             }
             newValues[counter2] = oldValues[i];
             counter2++;
