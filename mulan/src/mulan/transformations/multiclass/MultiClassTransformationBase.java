@@ -21,11 +21,11 @@
 package mulan.transformations.multiclass;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import mulan.data.MultiLabelInstances;
 import mulan.transformations.*;
 import weka.core.Attribute;
-import weka.core.FastVector;
 import weka.core.Instance;
 import weka.core.Instances;
 
@@ -54,9 +54,9 @@ public abstract class MultiClassTransformationBase implements Serializable, Mult
         transformed = RemoveAllLabels.transformInstances(transformed, labelIndices);
 
         // add single label attribute
-        FastVector classValues = new FastVector(numOfLabels);
+        ArrayList<String> classValues = new ArrayList<String>(numOfLabels);
         for (int x = 0; x < numOfLabels; x++) {
-            classValues.addElement("Class" + (x + 1));
+            classValues.add("Class" + (x + 1));
         }
         Attribute newClass = new Attribute("Class", classValues);
         transformed.insertAttributeAt(newClass, transformed.numAttributes());
