@@ -20,8 +20,6 @@
  */
 package mulan.classifier;
 
-import java.util.Arrays;
-
 import junit.framework.Assert;
 import mulan.core.ArgumentNullException;
 import mulan.data.MultiLabelInstances;
@@ -76,25 +74,24 @@ public abstract class MultiLabelLearnerTestBase {
     @Test
     public void testMakeCopy() throws Exception {
         MultiLabelLearnerBase learner = getLearner();
+
+        String trainDatasetPath = path + "emotions-train.arff";
+        String testDatasetPath = path + "emotions-test.arff";
+        String xmlLabelsDefFilePath = path + "emotions.xml";
+        MultiLabelInstances trainDataSet = new MultiLabelInstances(
+                trainDatasetPath, xmlLabelsDefFilePath);
+        MultiLabelInstances testDataSet = new MultiLabelInstances(
+                testDatasetPath, xmlLabelsDefFilePath);
+
+        learner.build(trainDataSet);
+
         MultiLabelLearnerBase copy = (MultiLabelLearnerBase) learner.makeCopy();
 
-        // rough checks on obvious parameters ... interesting would be to
-        // compare learned models
-        Assert.assertEquals(learner.numLabels, copy.numLabels);
-        Assert.assertTrue(Arrays.equals(learner.featureIndices,
-                copy.featureIndices));
-        Assert.assertTrue(Arrays.equals(learner.labelIndices, copy.labelIndices));
-
-        // build on copy
-        MultiLabelInstances mlDataSet = DataSetBuilder.CreateDataSet(DATA_SET);
-        copy.build(mlDataSet);
-
-        // create a copy and test prediction - if build learner knowledge is
-        // persisted
-        copy = (MultiLabelLearnerBase) copy.makeCopy();
-        MultiLabelOutput prediction = copy.makePrediction(mlDataSet.getDataSet().firstInstance());
-        // Note: precision is not tested - if original performs same as copy
-        Assert.assertNotNull(prediction);
+        for (int i = 0; i < testDataSet.getDataSet().numInstances(); i++) {
+            MultiLabelOutput mlo1 = learner.makePrediction(testDataSet.getDataSet().instance(i));
+            MultiLabelOutput mlo2 = copy.makePrediction(testDataSet.getDataSet().instance(i));
+            Assert.assertEquals(mlo1, mlo2);
+        }
     }
 
     @Test(expected = ArgumentNullException.class)
@@ -111,6 +108,8 @@ public abstract class MultiLabelLearnerTestBase {
                 new String[]{"n1", "n2", "n3", "n4"}));
         definition.addAttribute(Attribute.createLabelAttribute("label_1"));
         definition.addAttribute(Attribute.createLabelAttribute("label_2"));
+        definition.addAttribute(Attribute.createLabelAttribute("label_3"));
+        definition.addAttribute(Attribute.createLabelAttribute("label_4"));
 
         MultiLabelInstances mlDataSet = DataSetBuilder.CreateDataSet(definition);
         getLearner().build(mlDataSet);
