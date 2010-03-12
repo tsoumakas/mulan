@@ -44,7 +44,10 @@ import weka.classifiers.functions.Logistic;
 import weka.classifiers.functions.SMO;
 import weka.classifiers.lazy.IBk;
 import weka.classifiers.trees.J48;
+import weka.core.Instances;
 import weka.core.Utils;
+import weka.filters.Filter;
+import weka.filters.unsupervised.instance.RemovePercentage;
 
 /**
  *
@@ -56,12 +59,27 @@ public class TrainTestExperiment {
         String[] methodsToCompare = {"HOMER", "BR", "CLR", "MLkNN", "MC-Copy", "IncludeLabels", "MC-Ignore", "RAkEL", "LP", "MLStacking"};
 
         try {
-            String path = Utils.getOption("path", args);
-            String filestem = Utils.getOption("filestem", args);
-            System.out.println("Loading the training set");
-            MultiLabelInstances train = new MultiLabelInstances(path + filestem + "-train.arff", path + filestem + ".xml");
-            System.out.println("Loading the test set");
-            MultiLabelInstances test = new MultiLabelInstances(path + filestem + "-test.arff", path + filestem + ".xml");
+            String path = Utils.getOption("path", args); // e.g. -path dataset/
+            String filestem = Utils.getOption("filestem", args); // e.g. -filestem emotions
+            String percentage = Utils.getOption("percentage", args); // e.g. -percentage 50 (for 50%)
+            System.out.println("Loading the dataset");
+            MultiLabelInstances mlDataSet = new MultiLabelInstances(path + filestem + ".arff", path + filestem + ".xml");
+            
+            //split the data set into train and test
+            Instances dataSet = mlDataSet.getDataSet();
+            //dataSet.randomize(new Random(1));
+            RemovePercentage rmvp = new RemovePercentage();
+            rmvp.setInvertSelection(true);
+            rmvp.setPercentage(Double.parseDouble(percentage));
+            rmvp.setInputFormat(dataSet);
+            Instances trainDataSet = Filter.useFilter(dataSet, rmvp);
+            
+            rmvp.setPercentage(Double.parseDouble(percentage));
+            rmvp.setInputFormat(dataSet);
+            Instances testDataSet = Filter.useFilter(dataSet, rmvp);
+            
+            MultiLabelInstances train = new MultiLabelInstances(trainDataSet, path + filestem + ".xml");
+            MultiLabelInstances test = new MultiLabelInstances(testDataSet, path + filestem + ".xml");
 
             Evaluator eval = new Evaluator();
             Evaluation results;
