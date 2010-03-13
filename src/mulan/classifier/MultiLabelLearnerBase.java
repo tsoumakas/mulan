@@ -102,7 +102,7 @@ public abstract class MultiLabelLearnerBase
     /**
      * Gets whether learner's model is initialized by {@link #build(MultiLabelInstances)}.
      * This is used to check if {@link #makePrediction(weka.core.Instance)} can be processed.
-     * @return
+     * @return isModelInitialized returns true if the model has been initialized
      */
     protected boolean isModelInitialized() {
         return isModelInitialized;
