@@ -5,9 +5,9 @@ import weka.classifiers.trees.J48;
 
 public class RAkELTest extends MultiLabelMetaLearnerTest {
 
-	@Override
-	public void setUp() throws Exception {
-		learner = new RAkEL(new LabelPowerset(new J48()));
-	}
+    @Override
+    public void setUp() throws Exception {
+        learner = new RAkEL(new LabelPowerset(new J48()));
+    }
 
 }
