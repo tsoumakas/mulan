@@ -138,7 +138,7 @@ public class RAkELd extends MultiLabelMetaLearner {
     @Override
     protected void buildInternal(MultiLabelInstances trainingData) throws Exception {
         //[R_d
-        if (numLabels % sizeOfSubset == 0) {
+        if (numLabels % sizeOfSubset == 0 || numLabels % sizeOfSubset == 1) {
             numOfModels = numLabels / sizeOfSubset;
         } else {
             numOfModels = numLabels / sizeOfSubset + 1;
@@ -172,17 +172,19 @@ public class RAkELd extends MultiLabelMetaLearner {
 
     public void updateClassifier(MultiLabelInstances mlTrainData, int model) throws Exception {
         Instances trainData = mlTrainData.getDataSet();
+
         //[R_d]
-        int randomLabelIndex;  // select labels for model i
-        for (int j = 0; j < sizeOfSubset; j++) {
-            if (listOfLabels.size() == 0) {
-                break;
+        if (model == numOfModels - 1) {
+            classIndicesPerSubset_d[model].addAll(listOfLabels);
+        } else {
+            int randomLabelIndex;  // select labels for model i
+            for (int j = 0; j < sizeOfSubset; j++) {
+                int randomLabel;
+                randomLabelIndex = Math.abs(rnd.nextInt() % listOfLabels.size());
+                randomLabel = listOfLabels.get(randomLabelIndex);
+                listOfLabels.remove(randomLabelIndex); //remove selected labels from the list
+                classIndicesPerSubset_d[model].add(randomLabel);
             }
-            int randomLabel;
-            randomLabelIndex = Math.abs(rnd.nextInt() % listOfLabels.size());
-            randomLabel = listOfLabels.get(randomLabelIndex);
-            listOfLabels.remove(randomLabelIndex); //remove selected labels from the list
-            classIndicesPerSubset_d[model].add(randomLabel);
         }
         //Probably not necessary but ensures that Rakel_d at subset=k=numLabels
         //will output the same results as LP
@@ -213,10 +215,6 @@ public class RAkELd extends MultiLabelMetaLearner {
         // build a MultiLabelLearner for the selected label subset;
         subsetClassifiers[model] = getBaseLearner().makeCopy();
         subsetClassifiers[model].build(mlTrainData.reintegrateModifiedDataSet(trainSubset));
-    }
-
-    public String getRevision() {
-        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     protected MultiLabelOutput makePredictionInternal(Instance instance) throws Exception {
