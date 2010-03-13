@@ -121,31 +121,23 @@ public class RAkEL extends MultiLabelMetaLearner {
         return result;
     }
 
-    public RAkEL() throws Exception {
-        rnd = new Random();
-    }
-
     public RAkEL(int models, int subset) throws Exception {
-        this();
         sizeOfSubset = subset;
         setNumModels(models);
     }
 
     public RAkEL(MultiLabelLearner baseLearner) {
         super(baseLearner);
-        rnd = new Random();
     }
 
     public RAkEL(MultiLabelLearner baseLearner, int models, int subset) {
         super(baseLearner);
-        rnd = new Random();
         sizeOfSubset = subset;
         setNumModels(models);
     }
 
     public RAkEL(MultiLabelLearner baseLearner, int models, int subset, double threshold) {
         super(baseLearner);
-        rnd = new Random();
         sizeOfSubset = subset;
         setNumModels(models);
         this.threshold = threshold;
@@ -153,7 +145,6 @@ public class RAkEL extends MultiLabelMetaLearner {
 
     public void setSeed(int x) {
         seed = x;
-        rnd = new Random(seed);
     }
 
     public void setSizeOfSubset(int size) {
@@ -187,13 +178,15 @@ public class RAkEL extends MultiLabelMetaLearner {
 
     @Override
     protected void buildInternal(MultiLabelInstances trainingData) throws Exception {
+        rnd = new Random(seed);
+
         // need a structure to hold different combinations
         combinations = new HashSet<String>();
         //MultiLabelInstances mlDataSet = trainData.clone();
 
         // default number of models = twice the number of labels
         if (numOfModels == 0) {
-            numOfModels = 2 * numLabels;
+            numOfModels = Math.min(2 * numLabels, binomial(numLabels, sizeOfSubset));
         }
         classIndicesPerSubset = new int[numOfModels][sizeOfSubset];
         absoluteIndicesToRemove = new int[numOfModels][sizeOfSubset];
@@ -205,7 +198,7 @@ public class RAkEL extends MultiLabelMetaLearner {
         }
     }
 
-    public void updateClassifier(MultiLabelInstances mlTrainData, int model) throws Exception {
+    private void updateClassifier(MultiLabelInstances mlTrainData, int model) throws Exception {
         //todo: check if the following is unnecessary (was used for cvparam)
         if (combinations == null) {
             combinations = new HashSet<String>();
@@ -248,10 +241,6 @@ public class RAkEL extends MultiLabelMetaLearner {
         // build a MultiLabelLearner for the selected label subset;
         subsetClassifiers[model] = getBaseLearner().makeCopy();
         subsetClassifiers[model].build(mlTrainData.reintegrateModifiedDataSet(trainSubset));
-    }
-
-    public String getRevision() {
-        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     protected MultiLabelOutput makePredictionInternal(Instance instance) throws Exception {
