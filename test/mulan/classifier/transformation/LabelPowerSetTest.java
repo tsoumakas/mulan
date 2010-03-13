@@ -1,14 +1,11 @@
 package mulan.classifier.transformation;
 
-import weka.classifiers.Classifier;
-import weka.classifiers.bayes.NaiveBayes;
+import weka.classifiers.trees.J48;
 
 public class LabelPowerSetTest extends TransformationBasedMultiLabelLearnerTest {
-	
-	@Override
-	public void setUp(){
-		Classifier baseClassifier = new NaiveBayes();
-		learner = new  LabelPowerset(baseClassifier);
-	}
 
+    @Override
+    public void setUp() {
+        learner = new LabelPowerset(new J48());
+    }
 }
