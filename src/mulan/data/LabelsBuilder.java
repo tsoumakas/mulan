@@ -154,9 +154,9 @@ public final class LabelsBuilder {
      * @throws LabelsBuilderException if specified file can not be read/opened
      * @throws LabelsBuilderException if error occurs during the serialization of meta-data to
      * 	the XML format of resulting XML is not valid against the schema
-     * @throw ArgumentNullException if path to the file is not specified
-     * @throw ArgumentNullException if specified labels meta-data is null
-     * @throw ArgumentException if underlying implementation of specified labels meta-data is not supported
+     * @throws ArgumentNullException if path to the file is not specified
+     * @throws ArgumentNullException if specified labels meta-data is null
+     * @throws ArgumentException if underlying implementation of specified labels meta-data is not supported
      */
     public static void dumpLabels(LabelsMetaData labelsMetaData, String xmlDumpFilePath) throws LabelsBuilderException {
 
@@ -194,9 +194,9 @@ public final class LabelsBuilder {
      * @param outputStream the output stream where XML dup will be written
      * @throws LabelsBuilderException if error occurs during the serialization of meta-data to
      * 	the XML format of resulting XML is not valid against the schema
-     * @throw ArgumentNullException if specified output strema is null.
-     * @throw ArgumentNullException if specified labels meta-data is null
-     * @throw ArgumentException if underlying implementation of specified labels meta-data is not supported
+     * @throws ArgumentNullException if specified output strema is null.
+     * @throws ArgumentNullException if specified labels meta-data is null
+     * @throws ArgumentException if underlying implementation of specified labels meta-data is not supported
      */
     public static void dumpLabels(LabelsMetaData labelsMetaData, OutputStream outputStream) throws LabelsBuilderException {
 
