@@ -257,6 +257,21 @@ public class MultiLabelOutput {
     }
 
     @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        if (bipartition != null) {
+            sb.append("Bipartion: " + Arrays.toString(bipartition) + " ");
+        }
+        if (confidences != null) {
+            sb.append("Confidences: " + Arrays.toString(confidences) + " ");
+        }
+        if (ranking != null) {
+            sb.append("Ranking: " + Arrays.toString(ranking));
+        }
+        return sb.toString();
+    }
+
+    @Override
     public int hashCode() {
         int hash = 7;
         hash = 89 * hash + Arrays.hashCode(this.bipartition);
