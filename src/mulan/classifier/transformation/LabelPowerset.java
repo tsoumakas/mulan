@@ -147,7 +147,7 @@ public class LabelPowerset extends TransformationBasedMultiLabelLearner {
                 Logger.getLogger(LabelPowerset.class.getName()).log(Level.SEVERE, null, ex);
             }
             bipartition = labelSet.toBooleanArray();
-            confidences = Arrays.copyOf(labelSet.toDoubleArray(), labelSet.size());
+            confidences = labelSet.toDoubleArray();
         } else {
             double[] distribution = null;
             try {
