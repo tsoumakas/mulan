@@ -291,10 +291,16 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner
                     for (int k = 0; k < train.numInstances(); k++) {
                         double[] values = new double[numLabels + 1];
                         for (int m = 0; m < numLabels; m++) {
-                            values[m] = train.instance(k).value(labelIndices[m]);
+                            values[m] = Double.parseDouble(train.attribute(
+									labelIndices[m]).value(
+											(int) train.instance(k).value(
+													labelIndices[m])));
                         }
-                        values[numLabels] = train.instance(k).value(
-                                labelIndices[i]);
+                        values[numLabels] = Double
+						.parseDouble(train.attribute(labelIndices[i])
+								.value(
+										(int) train.instance(k).value(
+												labelIndices[i])));
                         Instance metaInstance = DataUtils.createInstance(train.instance(k), 1, values);
                         metaInstance.setDataset(iporesult);
                         iporesult.add(metaInstance);
@@ -433,10 +439,16 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner
                     }
                 }
 
-                values[values.length - 1] = train.instance(l).value(
-                        labelIndices[i]);
+                values[values.length - 1] = Double.parseDouble(train.attribute(
+						labelIndices[i]).value(
+								(int) train.instance(l).value(labelIndices[i])));
                 Instance metaInstance = DataUtils.createInstance(train.instance(l), 1, values);
                 metaInstance.setDataset(metaLevelData[i]);
+                if (values[values.length - 1] > 0.5) {
+                	metaInstance.setClassValue("1");
+                } else {
+                	metaInstance.setClassValue("0");
+                }
                 metaLevelData[i].add(metaInstance);
             }
 
