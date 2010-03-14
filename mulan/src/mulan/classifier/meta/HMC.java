@@ -184,8 +184,6 @@ public class HMC extends MultiLabelMetaLearner {
             rootLabels.add(node.getName());
         }
 
-
-
         MultiLabelLearner mll = baseLearner.makeCopy();
         root = new HMCNode("root", mll);
         buildRec(root, dataSet.getDataSet());
@@ -213,7 +211,7 @@ public class HMC extends MultiLabelMetaLearner {
         Set<Integer> indicesToKeep = new HashSet<Integer>();
         for (int i = 0; i < currentNodeLabelIndices.length; i++) {
             String labelToKeep = currentNode.getHeader().attribute(currentNodeLabelIndices[i]).name();
-            indicesToKeep.add(labelsAndIndices.get(labelToKeep));
+            indicesToKeep.add(labelIndices[labelsAndIndices.get(labelToKeep)]);
         }
 
         if (labelIndices.length - indicesToKeep.size() != 0) {
