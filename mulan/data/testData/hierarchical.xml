@@ -1,0 +1,471 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<labels xmlns="http://mulan.sourceforge.net/labels">
+    <label name="01">
+        <label name="01/01">
+            <label name="01/01/03">
+                <label name="01/01/03/01">
+                    <label name="01/01/03/01/01"/>
+                    <label name="01/01/03/01/02"/>
+                </label>
+                <label name="01/01/03/02">
+                    <label name="01/01/03/02/01"/>
+                    <label name="01/01/03/02/02"/>
+                </label>
+                <label name="01/01/03/03">
+                    <label name="01/01/03/03/01"/>
+                    <label name="01/01/03/03/02"/>
+                </label>
+                <label name="01/01/03/05">
+                    <label name="01/01/03/05/01"/>
+                    <label name="01/01/03/05/02"/>
+                </label>
+            </label>
+            <label name="01/01/05">
+                <label name="01/01/05/01">
+                    <label name="01/01/05/01/01"/>
+                    <label name="01/01/05/01/02"/>
+                </label>
+                <label name="01/01/05/03"/>
+            </label>
+            <label name="01/01/06">
+                <label name="01/01/06/01">
+                    <label name="01/01/06/01/01"/>
+                    <label name="01/01/06/01/02"/>
+                </label>
+                <label name="01/01/06/02">
+                    <label name="01/01/06/02/01"/>
+                    <label name="01/01/06/02/02"/>
+                </label>
+                <label name="01/01/06/04">
+                    <label name="01/01/06/04/01"/>
+                    <label name="01/01/06/04/02"/>
+                </label>
+            </label>
+            <label name="01/01/09">
+                <label name="01/01/09/01">
+                    <label name="01/01/09/01/01"/>
+                    <label name="01/01/09/01/02"/>
+                </label>
+                <label name="01/01/09/02">
+                    <label name="01/01/09/02/01"/>
+                    <label name="01/01/09/02/02"/>
+                </label>
+                <label name="01/01/09/04">
+                    <label name="01/01/09/04/01"/>
+                    <label name="01/01/09/04/02"/>
+                </label>
+                <label name="01/01/09/06">
+                    <label name="01/01/09/06/01"/>
+                    <label name="01/01/09/06/02"/>
+                </label>
+            </label>
+            <label name="01/01/11">
+                <label name="01/01/11/01"/>
+                <label name="01/01/11/02">
+                    <label name="01/01/11/02/01"/>
+                    <label name="01/01/11/02/02"/>
+                </label>
+                <label name="01/01/11/03">
+                    <label name="01/01/11/03/01"/>
+                    <label name="01/01/11/03/02"/>
+                </label>
+                <label name="01/01/11/04">
+                    <label name="01/01/11/04/01"/>
+                    <label name="01/01/11/04/02"/>
+                </label>
+            </label>
+            <label name="01/01/13"/>
+        </label>
+        <label name="01/02">
+            <label name="01/02/03">
+                <label name="01/02/03/01"/>
+                <label name="01/02/03/03"/>
+                <label name="01/02/03/04"/>
+            </label>
+            <label name="01/02/07">
+                <label name="01/02/07/01"/>
+                <label name="01/02/07/03"/>
+            </label>
+        </label>
+        <label name="01/03">
+            <label name="01/03/01">
+                <label name="01/03/01/01"/>
+                <label name="01/03/01/03"/>
+            </label>
+            <label name="01/03/04">
+                <label name="01/03/04/01"/>
+                <label name="01/03/04/03"/>
+            </label>
+            <label name="01/03/07"/>
+            <label name="01/03/10"/>
+            <label name="01/03/13"/>
+            <label name="01/03/16">
+                <label name="01/03/16/01"/>
+                <label name="01/03/16/03"/>
+            </label>
+        </label>
+        <label name="01/05">
+            <label name="01/05/02">
+                <label name="01/05/02/04"/>
+                <label name="01/05/02/07"/>
+            </label>
+            <label name="01/05/05">
+                <label name="01/05/05/04"/>
+                <label name="01/05/05/07"/>
+            </label>
+            <label name="01/05/09">
+                <label name="01/05/09/04"/>
+                <label name="01/05/09/07"/>
+            </label>
+            <label name="01/05/13">
+                <label name="01/05/13/01"/>
+                <label name="01/05/13/03"/>
+            </label>
+            <label name="01/05/25"/>
+        </label>
+        <label name="01/06">
+            <label name="01/06/02">
+                <label name="01/06/02/01"/>
+                <label name="01/06/02/02"/>
+            </label>
+            <label name="01/06/05"/>
+            <label name="01/06/06">
+                <label name="01/06/06/09"/>
+                <label name="01/06/06/11"/>
+            </label>
+            <label name="01/06/10"/>
+        </label>
+        <label name="01/07">
+            <label name="01/07/01"/>
+            <label name="01/07/03"/>
+            <label name="01/07/04"/>
+            <label name="01/07/07"/>
+        </label>
+        <label name="01/20">
+            <label name="01/20/01">
+                <label name="01/20/01/01"/>
+                <label name="01/20/01/07"/>
+            </label>
+            <label name="01/20/17">
+                <label name="01/20/17/01"/>
+                <label name="01/20/17/03"/>
+                <label name="01/20/17/09"/>
+            </label>
+            <label name="01/20/19">
+                <label name="01/20/19/01"/>
+                <label name="01/20/19/05"/>
+            </label>
+            <label name="01/20/27"/>
+            <label name="01/20/31"/>
+            <label name="01/20/33"/>
+        </label>
+    </label>
+    <label name="02">
+        <label name="02/01">
+            <label name="02/01/01"/>
+            <label name="02/01/03"/>
+        </label>
+        <label name="02/04"/>
+        <label name="02/08"/>
+        <label name="02/10"/>
+        <label name="02/13">
+            <label name="02/13/01"/>
+            <label name="02/13/03"/>
+            <label name="02/13/05"/>
+        </label>
+        <label name="02/16">
+            <label name="02/16/01"/>
+            <label name="02/16/03"/>
+            <label name="02/16/09"/>
+            <label name="02/16/11"/>
+            <label name="02/16/13"/>
+        </label>
+        <label name="02/19"/>
+        <label name="02/25"/>
+        <label name="02/45">
+            <label name="02/45/11"/>
+            <label name="02/45/15"/>
+        </label>
+    </label>
+    <label name="10">
+        <label name="10/01">
+            <label name="10/01/02"/>
+            <label name="10/01/03">
+                <label name="10/01/03/03"/>
+                <label name="10/01/03/05"/>
+            </label>
+            <label name="10/01/05">
+                <label name="10/01/05/01"/>
+                <label name="10/01/05/03">
+                    <label name="10/01/05/03/01"/>
+                    <label name="10/01/05/03/03"/>
+                    <label name="10/01/05/03/05"/>
+                </label>
+            </label>
+            <label name="10/01/09">
+                <label name="10/01/09/03"/>
+                <label name="10/01/09/05"/>
+            </label>
+            <label name="10/01/11"/>
+        </label>
+        <label name="10/03">
+            <label name="10/03/01">
+                <label name="10/03/01/01">
+                    <label name="10/03/01/01/01"/>
+                    <label name="10/03/01/01/03"/>
+                    <label name="10/03/01/01/05"/>
+                    <label name="10/03/01/01/07"/>
+                    <label name="10/03/01/01/09"/>
+                    <label name="10/03/01/01/11"/>
+                </label>
+                <label name="10/03/01/02"/>
+                <label name="10/03/01/03"/>
+            </label>
+            <label name="10/03/03"/>
+            <label name="10/03/04">
+                <label name="10/03/04/01"/>
+                <label name="10/03/04/03"/>
+                <label name="10/03/04/05"/>
+                <label name="10/03/04/07"/>
+                <label name="10/03/04/09"/>
+            </label>
+            <label name="10/03/05">
+                <label name="10/03/05/01"/>
+                <label name="10/03/05/03"/>
+            </label>
+        </label>
+    </label>
+    <label name="11">
+        <label name="11/02">
+            <label name="11/02/01"/>
+            <label name="11/02/02"/>
+            <label name="11/02/03">
+                <label name="11/02/03/01">
+                    <label name="11/02/03/01/01"/>
+                    <label name="11/02/03/01/04"/>
+                    <label name="11/02/03/01/07"/>
+                </label>
+                <label name="11/02/03/04">
+                    <label name="11/02/03/04/01"/>
+                    <label name="11/02/03/04/03"/>
+                </label>
+            </label>
+        </label>
+        <label name="11/04">
+            <label name="11/04/01"/>
+            <label name="11/04/02"/>
+            <label name="11/04/03">
+                <label name="11/04/03/03"/>
+                <label name="11/04/03/05"/>
+                <label name="11/04/03/11"/>
+            </label>
+        </label>
+        <label name="11/06">
+            <label name="11/06/01"/>
+            <label name="11/06/02"/>
+            <label name="11/06/03"/>
+        </label>
+    </label>
+    <label name="12">
+        <label name="12/04">
+            <label name="12/04/01"/>
+            <label name="12/04/02"/>
+            <label name="12/04/03"/>
+        </label>
+        <label name="12/07"/>
+        <label name="12/10"/>
+    </label>
+    <label name="14">
+        <label name="14/01"/>
+        <label name="14/04"/>
+        <label name="14/07">
+            <label name="14/07/01"/>
+            <label name="14/07/02">
+                <label name="14/07/02/01"/>
+                <label name="14/07/02/02"/>
+            </label>
+            <label name="14/07/03"/>
+            <label name="14/07/04"/>
+            <label name="14/07/05"/>
+            <label name="14/07/07"/>
+            <label name="14/07/09"/>
+        </label>
+        <label name="14/10"/>
+    </label>
+    <label name="16">
+        <label name="16/01"/>
+        <label name="16/02"/>
+        <label name="16/03">
+            <label name="16/03/01"/>
+            <label name="16/03/03"/>
+        </label>
+        <label name="16/06"/>
+        <label name="16/07"/>
+        <label name="16/09"/>
+        <label name="16/11"/>
+        <label name="16/13">
+            <label name="16/13/01"/>
+            <label name="16/13/03"/>
+        </label>
+        <label name="16/17">
+            <label name="16/17/01"/>
+            <label name="16/17/07"/>
+            <label name="16/17/09"/>
+        </label>
+        <label name="16/19">
+            <label name="16/19/01"/>
+            <label name="16/19/03"/>
+            <label name="16/19/05"/>
+        </label>
+        <label name="16/21">
+            <label name="16/21/01"/>
+            <label name="16/21/05"/>
+            <label name="16/21/07"/>
+            <label name="16/21/08"/>
+            <label name="16/21/11"/>
+            <label name="16/21/15"/>
+            <label name="16/21/17"/>
+        </label>
+    </label>
+    <label name="18">
+        <label name="18/01">
+            <label name="18/01/01"/>
+            <label name="18/01/07"/>
+        </label>
+        <label name="18/02">
+            <label name="18/02/01">
+                <label name="18/02/01/01">
+                    <label name="18/02/01/01/01"/>
+                    <label name="18/02/01/01/03"/>
+                    <label name="18/02/01/01/05"/>
+                </label>
+                <label name="18/02/01/02">
+                    <label name="18/02/01/02/01"/>
+                    <label name="18/02/01/02/03"/>
+                    <label name="18/02/01/02/05"/>
+                </label>
+            </label>
+            <label name="18/02/03"/>
+            <label name="18/02/05"/>
+            <label name="18/02/09"/>
+        </label>
+    </label>
+    <label name="20">
+        <label name="20/01">
+            <label name="20/01/03">
+                <label name="20/01/03/01"/>
+                <label name="20/01/03/03"/>
+            </label>
+            <label name="20/01/07"/>
+            <label name="20/01/09"/>
+            <label name="20/01/10"/>
+            <label name="20/01/11"/>
+            <label name="20/01/13"/>
+            <label name="20/01/15"/>
+            <label name="20/01/17"/>
+            <label name="20/01/21"/>
+            <label name="20/01/23"/>
+            <label name="20/01/25"/>
+            <label name="20/01/26"/>
+            <label name="20/01/27"/>
+        </label>
+        <label name="20/03">
+            <label name="20/03/01">
+                <label name="20/03/01/01"/>
+                <label name="20/03/01/05"/>
+            </label>
+            <label name="20/03/22"/>
+            <label name="20/03/25"/>
+        </label>
+        <label name="20/09">
+            <label name="20/09/01"/>
+            <label name="20/09/03"/>
+            <label name="20/09/04"/>
+            <label name="20/09/05"/>
+            <label name="20/09/07">
+                <label name="20/09/07/03"/>
+                <label name="20/09/07/05"/>
+                <label name="20/09/07/06"/>
+                <label name="20/09/07/25"/>
+                <label name="20/09/07/27"/>
+                <label name="20/09/07/29"/>
+            </label>
+            <label name="20/09/13"/>
+        </label>
+    </label>
+    <label name="32">
+        <label name="32/01">
+            <label name="32/01/01"/>
+            <label name="32/01/03"/>
+            <label name="32/01/04"/>
+            <label name="32/01/05"/>
+            <label name="32/01/06"/>
+            <label name="32/01/07"/>
+            <label name="32/01/09"/>
+            <label name="32/01/11"/>
+            <label name="32/01/13"/>
+        </label>
+        <label name="32/07">
+            <label name="32/07/01"/>
+            <label name="32/07/03"/>
+            <label name="32/07/05"/>
+            <label name="32/07/07">
+                <label name="32/07/07/01"/>
+                <label name="32/07/07/03"/>
+                <label name="32/07/07/05"/>
+                <label name="32/07/07/07"/>
+            </label>
+        </label>
+    </label>
+    <label name="34">
+        <label name="34/01">
+            <label name="34/01/01">
+                <label name="34/01/01/01"/>
+                <label name="34/01/01/03"/>
+            </label>
+            <label name="34/01/03">
+                <label name="34/01/03/01"/>
+                <label name="34/01/03/03"/>
+                <label name="34/01/03/05"/>
+            </label>
+        </label>
+        <label name="34/07">
+            <label name="34/07/01"/>
+            <label name="34/07/02"/>
+        </label>
+        <label name="34/11">
+            <label name="34/11/03">
+                <label name="34/11/03/07"/>
+                <label name="34/11/03/11"/>
+                <label name="34/11/03/13"/>
+            </label>
+            <label name="34/11/09"/>
+            <label name="34/11/11"/>
+            <label name="34/11/12"/>
+        </label>
+    </label>
+    <label name="42">
+        <label name="42/01"/>
+        <label name="42/02"/>
+        <label name="42/03"/>
+        <label name="42/04">
+            <label name="42/04/03"/>
+            <label name="42/04/05"/>
+        </label>
+        <label name="42/05"/>
+        <label name="42/07"/>
+        <label name="42/08"/>
+        <label name="42/09"/>
+        <label name="42/10">
+            <label name="42/10/03"/>
+            <label name="42/10/05"/>
+            <label name="42/10/07"/>
+        </label>
+        <label name="42/16"/>
+        <label name="42/19"/>
+        <label name="42/22"/>
+        <label name="42/25"/>
+        <label name="42/29"/>
+    </label>
+    <label name="99"/>
+</labels>
