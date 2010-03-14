@@ -512,10 +512,8 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner
                 // compute sum of counts for each label in KNN
                 double count_for_label_j = 0;
                 for (int k = 0; k < numOfNeighbors; k++) {
-                    double value = Double.parseDouble(train.attribute(
-                            labelIndices[j]).value(
-                            (int) knn.instance(k).value(labelIndices[j])));
-                    if (Utils.eq(value, 1.0)) {
+                    String value = train.attribute(labelIndices[j]).value((int) knn.instance(k).value(labelIndices[j]));
+                    if (value.equals("1")) {
                         count_for_label_j++;
                     }
                 }
@@ -592,7 +590,7 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner
         // System.out.println(Utils.arrayToString(confidences));
 		/* creation of the meta-instance with the appropriate values */
         double[] values = new double[numLabels + 1];
-        ;
+
         if (includeAttrs) {
             values = new double[instance.numAttributes() + 1];
             // Copy the original features
