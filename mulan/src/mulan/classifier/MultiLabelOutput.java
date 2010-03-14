@@ -245,8 +245,9 @@ public class MultiLabelOutput {
             if (((MultiLabelOutput) mlo).confidences == null) {
                 return false;
             } else {
+                double[] conf = ((MultiLabelOutput) mlo).getConfidences();
                 for (int i = 0; i < confidences.length; i++) {
-                    if (confidences[i] != ((MultiLabelOutput) mlo).confidences[i]) {
+                    if (!weka.core.Utils.eq(confidences[i], conf[i])) {
                         return false;
                     }
                 }
