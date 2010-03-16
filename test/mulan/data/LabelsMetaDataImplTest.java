@@ -27,6 +27,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import weka.core.SerializedObject;
+
 /**
  * Unit test routines for {@link LabelsMetaDataImpl}.
  * 
@@ -36,7 +38,11 @@ public class LabelsMetaDataImplTest {
 
 	private final String INVALID_LABEL_NAME = "invalid_label";
 	private final String HIERARCHY_ROOT_NODE_NAME = "root";
-	private final String HIERARCHY_CHILD_1_NODE_NAME = "child_1";
+	/** This value 'aaa' is specific and makes serialization fail if not handled explicitly in the implementation
+	 *  The exact reason is unknown ... maybe the sequence of deserialization is influenced based on content dumped 
+	 *  in to the serialization stream
+	 * */
+	private final String HIERARCHY_CHILD_1_NODE_NAME = "aaa"; 
 	private final String HIERARCHY_CHILD_2_NODE_NAME = "child_2";
 	private final int HIERACHY_NODES_COUNT = 3;
 	private final int ROOT_NODES_COUNT = 2;
@@ -53,8 +59,9 @@ public class LabelsMetaDataImplTest {
 		root.addChildNode(new LabelNodeImpl(HIERARCHY_CHILD_1_NODE_NAME));
 		root.addChildNode(new LabelNodeImpl(HIERARCHY_CHILD_2_NODE_NAME));
 		
-		metaData.addRootNode(root);
+//		metaData.addRootNode(root);
 		metaData.addRootNode(new LabelNodeImpl(PLAIN_ROOT_NODE_NAME));
+		metaData.addRootNode(root);
 	}
 	
 	@After
@@ -112,6 +119,22 @@ public class LabelsMetaDataImplTest {
 	@Test
 	public void testClone(){
 		LabelsMetaData clonedMetaData = metaData.clone();
+		
+		Assert.assertNotSame(metaData, clonedMetaData);
+		Assert.assertEquals(metaData.isHierarchy(), clonedMetaData.isHierarchy());
+		Assert.assertEquals(metaData.getNumLabels(), clonedMetaData.getNumLabels());
+		Assert.assertEquals(metaData.getRootLabels().size(), clonedMetaData.getRootLabels().size());
+		
+		Assert.assertTrue(clonedMetaData.containsLabel(HIERARCHY_CHILD_1_NODE_NAME));
+		Assert.assertTrue(clonedMetaData.containsLabel(HIERARCHY_CHILD_2_NODE_NAME));
+		Assert.assertTrue(clonedMetaData.containsLabel(HIERARCHY_ROOT_NODE_NAME));
+		Assert.assertTrue(clonedMetaData.containsLabel(PLAIN_ROOT_NODE_NAME));
+	
+	}
+	
+	@Test
+	public void testSerialization() throws Exception {
+		LabelsMetaData clonedMetaData = (LabelsMetaData) new SerializedObject(metaData).getObject();
 		
 		Assert.assertNotSame(metaData, clonedMetaData);
 		Assert.assertEquals(metaData.isHierarchy(), clonedMetaData.isHierarchy());

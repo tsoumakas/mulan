@@ -20,6 +20,10 @@
  */
 package mulan.data;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
@@ -47,7 +51,7 @@ import weka.core.SerializedObject;
 @XmlRootElement(name = "labels", namespace = LabelsBuilder.LABELS_SCHEMA_NAMESPACE)
 @XmlAccessorType(XmlAccessType.NONE)
 @XmlType(name = "labelsRootType", propOrder = {"rootLabelNodes"})
-public class LabelsMetaDataImpl implements LabelsMetaData, Serializable {
+public class LabelsMetaDataImpl implements LabelsMetaData, Serializable, Externalizable {
 
     private static final long serialVersionUID = 5098050799557336378L;
     private Map<String, LabelNode> allLabelNodes;
@@ -197,4 +201,17 @@ public class LabelsMetaDataImpl implements LabelsMetaData, Serializable {
         Add,
         Remove
     }
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+		rootLabelNodes = (Set<LabelNode>)in.readObject();
+		doReInit();
+		
+	}
+
+	@Override
+	public void writeExternal(ObjectOutput out) throws IOException {
+		out.writeObject(this.rootLabelNodes);
+	}
 }
