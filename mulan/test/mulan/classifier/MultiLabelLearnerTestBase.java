@@ -106,9 +106,9 @@ public abstract class MultiLabelLearnerTestBase {
         definition.addAttribute(Attribute.createNumericAttribute("feature_1").setMissingValuesProbability(0.3));
         definition.addAttribute(Attribute.createNominalAttribute("feature_3",
                 new String[]{"n1", "n2", "n3", "n4"}));
-        definition.addAttribute(Attribute.createLabelAttribute("label_1"));
+        definition.addAttribute(Attribute.createLabelAttribute("label_1").setMissingValuesProbability(0.3));
         definition.addAttribute(Attribute.createLabelAttribute("label_2"));
-        definition.addAttribute(Attribute.createLabelAttribute("label_3"));
+        definition.addAttribute(Attribute.createLabelAttribute("label_3").setMissingValuesProbability(0.5));
         definition.addAttribute(Attribute.createLabelAttribute("label_4"));
 
         MultiLabelInstances mlDataSet = DataSetBuilder.CreateDataSet(definition);
