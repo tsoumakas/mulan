@@ -259,8 +259,7 @@ public class MultiLabelInstances {
 
         for (int i = 0; i < numInstances; i++) {
             for (int j = 0; j < numLabels; j++) {
-                double value = dataSet.instance(i).value(labelIndices[j]);
-                if (dataSet.attribute(labelIndices[j]).value((int) value).equals("1")) {
+                if (dataSet.instance(i).stringValue(labelIndices[j]).equals("1")) {
                     labelCardinality++;
                 }
             }
@@ -609,9 +608,10 @@ public class MultiLabelInstances {
     }
 
     private boolean isLabelSet(Instance instance, String labelName, Map<String, Attribute> attributesIndex) {
-        Attribute attr = attributesIndex.get(labelName);
-        String value = attr.value((int) instance.value(attr));
-        return (value.equals("1")) ? true : false;
+        if (instance.stringValue(attributesIndex.get(labelName)).equals("1"))
+            return true;
+        else
+            return false;
     }
 
     /**
