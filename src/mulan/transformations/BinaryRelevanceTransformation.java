@@ -133,19 +133,16 @@ public class BinaryRelevanceTransformation implements Serializable {
         double[] transformedValues = new double[values.length - labelIndices.length + 1];
 
         int counterTransformed = 0;
-        int counterLabelIndices = 0;
         boolean isLabel = false;
 
         for (int i = 0; i < values.length; i++) {
-            if (counterLabelIndices < labelIndices.length) {
-                for (int j = 0; j < labelIndices.length; j++) {
-                    if (i == labelIndices[j] && i != indexToKeep) {
-                        isLabel = true;
-                        break;
-                    }
+            for (int j = 0; j < labelIndices.length; j++) {
+                if (i == labelIndices[j] && i != indexToKeep) {
+                    isLabel = true;
+                    break;
                 }
-
             }
+
             if (!isLabel) {
                 transformedValues[counterTransformed] = instance.value(i);
                 counterTransformed++;
@@ -153,7 +150,7 @@ public class BinaryRelevanceTransformation implements Serializable {
             isLabel = false;
         }
 
-        Instance transformedInstance = DataUtils.createInstance(instance, 1,	transformedValues);
+        Instance transformedInstance = DataUtils.createInstance(instance, 1, transformedValues);
         return transformedInstance;
     }
 }
