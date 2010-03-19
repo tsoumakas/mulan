@@ -24,7 +24,7 @@ import mulan.classifier.MultiLabelOutput;
 
 /**
  * Interface for a measure, used to evaluate the performance of a multi-label learner
- * on when performing multi-label learning task. Various measures captures different 
+ * on when performing multi-label learning task. Various measures capture different 
  * characteristics of a learning task performance. 
  * 
  * @author Jozef Vilcek
@@ -41,7 +41,7 @@ public interface Measure {
      * Gets the value of a measure. The measure is incrementally cumulated for learner's
      * prediction by each {@link Measure#update(MultiLabelOutput, boolean[])} call. The value
      * returned by the method, returns sum of all update calls divided by the number
-     * of calls (average of all measures for all prediction).
+     * of calls (average of all measures for all predictions).
      *
      * @return the average measure value computed so far
      */
