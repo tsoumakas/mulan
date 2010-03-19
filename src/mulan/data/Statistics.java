@@ -129,8 +129,7 @@ public class Statistics implements Serializable {
                     if (i >= j) {
                         continue;
                     }
-                    if (data.attribute(numPredictors + i).value((int) temp.value(numPredictors + i)).compareTo("1") == 0 &&
-                            data.attribute(numPredictors + j).value((int) temp.value(numPredictors + j)).compareTo("1") == 0) {
+                    if (temp.stringValue(numPredictors + i).equals("1") && temp.stringValue(numPredictors + j).equals("1")) {
                         coocurrenceMatrix[i][j]++;
                     }
                 }
@@ -183,8 +182,7 @@ public class Statistics implements Serializable {
             int exampleCardinality = 0;
             double[] dblLabels = new double[numLabels];
             for (int j = 0; j < numLabels; j++) {
-                double value = data.instance(i).value(labelIndices[j]);
-                if (data.attribute(labelIndices[j]).value((int) value).equals("1")) {
+                if (data.instance(i).stringValue(labelIndices[j]).equals("1")) {
                     dblLabels[j] = 1;
                     exampleCardinality++;
                     labelCardinality++;
@@ -248,14 +246,14 @@ public class Statistics implements Serializable {
 
             for (int j = 0; j < result.numInstances(); j++) {
                 for (int l = 0; l < numLabels; l++) {
-                    if (result.instance(j).value(i) == 0.0) {
-                        if (result.instance(j).value(l) == 0.0) {
+                    if (result.instance(j).stringValue(i).equals("0")) {
+                        if (result.instance(j).stringValue(l).equals("0")) {
                             a[l]++;
                         } else {
                             c[l]++;
                         }
                     } else {
-                        if (result.instance(j).value(l) == 0.0) {
+                        if (result.instance(j).stringValue(l).equals("0")) {
                             b[l]++;
                         } else {
                             d[l]++;
