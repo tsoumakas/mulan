@@ -610,8 +610,8 @@ public class MultiLabelInstances {
 
     private boolean isLabelSet(Instance instance, String labelName, Map<String, Attribute> attributesIndex) {
         Attribute attr = attributesIndex.get(labelName);
-        double value = instance.value(attr);
-        return (value == 1) ? true : false;
+        String value = attr.value((int) instance.value(attr));
+        return (value.equals("1")) ? true : false;
     }
 
     /**
