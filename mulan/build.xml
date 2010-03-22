@@ -12,6 +12,7 @@
 	<property name="target.junit.reports.dir" value="${target.dir}/test-reports" description="Directory for generated xml tests reports." />
 	<property name="target.junit.summary.dir" value="${target.dir}/test-summary" description="Directory for generated tests summary report in htlm format." />
 
+	<property name="coverage.enabled" value="true" description="Enables/disables the converage generation while runing unit-tests." />
 	<property name="target.coverage.instrumented.dir" value="${target.dir}/coverage-instrumented" description="Directory where cobertura place instrumented files necessary for coverage tracking."/>
 	<property name="target.coverage.report.dir" value="${target.dir}/coverage-reports" description="Directory for generated coverage reports." />
 
@@ -35,6 +36,10 @@
 
 	<taskdef classpathref="dependency.test.libs.path" resource="tasks.properties" />
 
+	<!-- Coverage EMMA -->
+	<taskdef classpathref="dependency.test.libs.path" resource="emma_ant.properties" />
+	
+	
 	<target name="clean" description="Deletes the build directory.">
 		<delete dir="${target.dir}" />
 		<delete dir="${javadoc.dir}" />
@@ -148,6 +153,66 @@
 		
 		<fail if="test.failed" message="Tests failed." />
 	</target>
+	
+	
+	<target name="test2" depends="build-test"  description="Runs unit tests with coverage and generate reports for both.">
+			<mkdir dir="${target.junit.reports.dir}"/>
+			<mkdir dir="${target.junit.summary.dir}"/>
+			<mkdir dir="${target.coverage.instrumented.dir}"/>
+			<mkdir dir="${target.coverage.report.dir}"/>
+			
+			<delete file="${target.coverage.instrumented.dir}/cobertura.ser" />
+
+			<emma enabled="${coverage.enabled}" >
+		      	<instr  instrpath="${target.classes.dir}"	
+		      			mode="copy"
+		             	destdir="${target.coverage.instrumented.dir}"	
+		             	metadatafile="${target.coverage.instrumented.dir}/metadata.emma"
+		             	merge="yes" >
+		      		<filter excludes="*.examples.*" />
+	      		</instr>
+		    </emma>
+		
+			<junit fork="yes" dir="${basedir}" showoutput="no" filtertrace="yes" forkmode="once" printsummary="yes" haltonfailure="no" haltonerror="no" failureproperty="test.failed">
+				<jvmarg line="-Djava.awt.headless=true -Xmx512m -XX:MaxPermSize=128m"/>
+				<!-- start: stuff for coverage -->
+				<jvmarg value="-Demma.coverage.out.file=${target.coverage.instrumented.dir}/coverage.emma" />
+		      	<jvmarg value="-Demma.coverage.out.merge=true" />
+				<classpath location="${target.coverage.instrumented.dir}"/>
+				<!-- end: stuff for coverage -->
+				<classpath location="${target.testclasses.dir}" />
+				<classpath location="${target.classes.dir}"/>
+				<classpath location="${test.dir}"/>
+				<classpath refid="dependency.libs.path" />
+				<classpath refid="dependency.test.libs.path" />
+				<formatter type="xml"/>
+                <formatter type="brief" usefile="false"/>
+				<batchtest  todir="${target.junit.reports.dir}">
+					<fileset dir="${target.testclasses.dir}" includes="${test.includes}" excludes="${test.excludes}"/>
+				</batchtest>
+			</junit>
+			
+			<junitreport todir="${target.junit.reports.dir}">
+				<fileset dir="${target.junit.reports.dir}">
+					<include name="TEST-*.xml"/>
+				</fileset>
+				<report todir="${target.junit.summary.dir}"/>
+			</junitreport>
+
+			<emma enabled="${coverage.enabled}" >
+		      <report sourcepath="${src.dir}" metrics="method:70,block:80,line:80,class:100" >
+		      	<fileset dir="${target.coverage.instrumented.dir}">
+		      		<include name="*.emma" />
+			    </fileset>
+      	        <html outfile="${target.coverage.report.dir}/coverage.html"
+      	             depth="method"
+      	             columns="name,line,method,block,class"
+      	        />
+		      </report>
+		    </emma>
+			
+			<fail if="test.failed" message="Tests failed." />
+		</target>
 	
 	<target name="javadoc" description="Generates JavaDocs API documentation.">
 		<mkdir dir="${javadoc.dir}" />

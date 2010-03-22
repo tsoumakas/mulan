@@ -27,6 +27,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 
+import mulan.core.ArgumentNullException;
+
 /**
  * Implementation of a neuron unit. 
  * The neurons are used as processing elements in {@link NeuralNet}. 
@@ -46,8 +48,8 @@ public class Neuron implements Serializable {
     private List<Neuron> nextNeurons;
     // the dimension of input pattern vector without bias term
     private final int inputDim;
-
-    private  Random random;
+    private final Random random;
+    
     
     /**
      * Creates a new {@link Neuron} instance.
@@ -58,9 +60,22 @@ public class Neuron implements Serializable {
      * @param biasValue the bias input value
      */
     public Neuron(final ActivationFunction function, int inputDim, double biasValue) {
+    	this(function, inputDim, biasValue, new Random());
+    }
 
-        if (function == null) {
-            throw new IllegalArgumentException("Activation function is null.");
+    /**
+     * Creates a new {@link Neuron} instance.
+     *
+     * @param function the activation function of the neuron
+     * @param inputDim the dimension of input pattern vector the neuron can process (the bias not included).
+     * 				   The input dimension must be greater than zero.
+     * @param biasValue the bias input value
+     * @param random the pseudo-random generator to be used for computations involving randomness.
+     * 		This parameter can be null. In this case, new random instance with default seed will be constructed where needed.
+     */
+    public Neuron(final ActivationFunction function, int inputDim, double biasValue, final Random random) {
+    	if (function == null) {
+            throw new ArgumentNullException("function");
         }
         if (inputDim <= 0) {
             throw new IllegalArgumentException("Input dimension for the neuron must be greather than zero.");
@@ -72,10 +87,11 @@ public class Neuron implements Serializable {
         inputWeights = new double[inputDim + 1];
         deltaValues = new double[inputDim + 1];
         nextNeurons = new ArrayList<Neuron>();
-        random = new Random(1);
+        this.random = random == null ? new Random() : random;
         reset();
     }
-
+    
+    
     /**
      * Creates a new {@link Neuron} instance.
      *

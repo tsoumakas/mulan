@@ -29,6 +29,7 @@ import java.util.List;
 import mulan.classifier.neural.model.ActivationFunction;
 import mulan.classifier.neural.model.ActivationTANH;
 import mulan.classifier.neural.model.Neuron;
+import mulan.core.ArgumentNullException;
 
 import org.junit.After;
 import org.junit.Before;
@@ -60,16 +61,11 @@ public class NeuronTest {
 		neuron = null;
 	}
 	
-	@Test(expected=IllegalArgumentException.class)
-	public void testConstructorWithNullParam1(){
+	@Test(expected=ArgumentNullException.class)
+	public void testConstructorWithNullActivationFunction(){
 		new Neuron(null, INPUT_DIM, NEURON_BIAS);
 	}
-	
-	@Test(expected=IllegalArgumentException.class)
-	public void testConstructorWithNullParam2(){
-		new Neuron(ACTIVATION_FUNCTION, INPUT_DIM, NEURON_BIAS, null);
-	}
-	
+		
 	@Test(expected=IllegalArgumentException.class)
 	public void testConstructorWithInvalidDim(){
 		new Neuron(ACTIVATION_FUNCTION, INVALID_INPUT_DIM, NEURON_BIAS);

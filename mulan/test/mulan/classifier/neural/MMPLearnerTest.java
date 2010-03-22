@@ -50,7 +50,7 @@ public class MMPLearnerTest extends MultiLabelLearnerTestBase {
 
     @Before
     public void setUp() {
-        learner = new MMPLearner(new AveragePrecision(), MMPUpdateRuleType.UniformUpdate);
+        learner = new MMPLearner(new AveragePrecision(), MMPUpdateRuleType.UniformUpdate, 5);
     }
 
     @Test
