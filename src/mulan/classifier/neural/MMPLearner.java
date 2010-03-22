@@ -23,6 +23,7 @@ package mulan.classifier.neural;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 
 import mulan.classifier.InvalidDataException;
@@ -79,6 +80,7 @@ public class MMPLearner extends MultiLabelLearnerBase {
      * took place. This is because the {@link MMPLearner} is online and updatable.
      */
     private boolean isInitialized = false;
+    private final Long randomnessSeed;
 
     /**
      * Creates a new instance of {@link MMPLearner}.
@@ -97,6 +99,28 @@ public class MMPLearner extends MultiLabelLearnerBase {
 
         mmpUpdateRule = modelUpdateRule;
         this.lossMeasure = lossMeasure;
+        randomnessSeed = null;
+    }
+    
+    /**
+     * Creates a new instance of {@link MMPLearner}.
+     *
+     * @param lossMeasure the loss measure to be used when judging
+     * 	ranking performance in learning process
+     * @param modelUpdateRule 
+     * @param randomnessSeed the seed value for pseudo-random generator
+     */
+    public MMPLearner(RankingMeasureBase lossMeasure, MMPUpdateRuleType modelUpdateRule, long randomnessSeed) {
+        if (lossMeasure == null) {
+            throw new ArgumentNullException("lossMeasure");
+        }
+        if (modelUpdateRule == null) {
+            throw new ArgumentNullException("modelUpdateRule");
+        }
+
+        mmpUpdateRule = modelUpdateRule;
+        this.lossMeasure = lossMeasure;
+        this.randomnessSeed = randomnessSeed;
     }
 
     /**
@@ -197,9 +221,10 @@ public class MMPLearner extends MultiLabelLearnerBase {
 
     private List<Neuron> initializeModel(int numFeatures, int numLabels) {
 
-        List<Neuron> perceptrons = new ArrayList<Neuron>(numLabels);
+    	Random random = randomnessSeed == null ? null : new Random(randomnessSeed);
+    	List<Neuron> perceptrons = new ArrayList<Neuron>(numLabels);
         for (int i = 0; i < numLabels; i++) {
-            perceptrons.add(new Neuron(new ActivationLinear(), numFeatures, PERCEP_BIAS));
+            perceptrons.add(new Neuron(new ActivationLinear(), numFeatures, PERCEP_BIAS, random));
         }
 
         return perceptrons;

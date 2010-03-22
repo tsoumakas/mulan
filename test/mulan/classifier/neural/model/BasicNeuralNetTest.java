@@ -20,17 +20,18 @@
  */
 package mulan.classifier.neural.model;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
-import mulan.classifier.neural.model.ActivationLinear;
-import mulan.classifier.neural.model.ActivationTANH;
-import mulan.classifier.neural.model.BasicNeuralNet;
-import mulan.classifier.neural.model.Neuron;
+import mulan.core.ArgumentNullException;
 
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -45,7 +46,7 @@ public class BasicNeuralNetTest {
 	
 	@Before
 	public void setUp(){
-		neuralNet = new BasicNeuralNet(NET_TOPOLOGY, BIAS, ACT_FUNCT_CLASS);
+		neuralNet = new BasicNeuralNet(NET_TOPOLOGY, BIAS, ACT_FUNCT_CLASS, null);
 	}
 	
 	@After
@@ -55,17 +56,17 @@ public class BasicNeuralNetTest {
 	
 	@Test(expected=IllegalArgumentException.class)
 	public void testConstructorWithNullTolopogy(){
-		new BasicNeuralNet(null, BIAS, ACT_FUNCT_INPUT_LAYER_CLASS);
+		new BasicNeuralNet(null, BIAS, ACT_FUNCT_INPUT_LAYER_CLASS, null);
 	}
 	
 	@Test(expected=IllegalArgumentException.class)
 	public void testConstructorWithWrongTolology(){
-		new BasicNeuralNet(new int[] {0}, BIAS, ACT_FUNCT_INPUT_LAYER_CLASS);
+		new BasicNeuralNet(new int[] {0}, BIAS, ACT_FUNCT_INPUT_LAYER_CLASS, null);
 	}
 	
-	@Test(expected=IllegalArgumentException.class)
+	@Test(expected=ArgumentNullException.class)
 	public void testConstructorWithNullActFunction(){
-		new BasicNeuralNet(NET_TOPOLOGY, BIAS, null);
+		new BasicNeuralNet(NET_TOPOLOGY, BIAS, null, null);
 	}
 	
 	@Test
@@ -154,6 +155,19 @@ public class BasicNeuralNetTest {
 	public void testGetNetOutputSize(){
 		assertEquals("The size of the network output is not as expected.", 
 				NET_TOPOLOGY[NET_TOPOLOGY.length - 1], neuralNet.getNetOutputSize());
+	}
+	
+	@Test
+	public void testRandomness(){
+		neuralNet = new BasicNeuralNet(NET_TOPOLOGY, BIAS, ACT_FUNCT_CLASS, new Random(10));
+		double[] weights = neuralNet.getLayerUnits(1).get(0).getWeights();
+		neuralNet = new BasicNeuralNet(NET_TOPOLOGY, BIAS, ACT_FUNCT_CLASS, new Random(10));
+		Assert.assertTrue(Arrays.equals(weights, neuralNet.getLayerUnits(1).get(0).getWeights()));
+		
+		neuralNet = new BasicNeuralNet(NET_TOPOLOGY, BIAS, ACT_FUNCT_CLASS, null);
+		weights = neuralNet.getLayerUnits(1).get(0).getWeights();
+		neuralNet = new BasicNeuralNet(NET_TOPOLOGY, BIAS, ACT_FUNCT_CLASS, null);
+		Assert.assertFalse(Arrays.equals(weights, neuralNet.getLayerUnits(1).get(0).getWeights()));
 	}
 
 }

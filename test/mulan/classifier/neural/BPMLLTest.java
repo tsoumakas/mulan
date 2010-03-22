@@ -55,7 +55,7 @@ public class BPMLLTest extends MultiLabelLearnerTestBase {
 	
 	@Before
 	public void setUp(){
-		learner = new BPMLL();
+		learner = new BPMLL(10);
 		learner.setTrainingEpochs(10);
 		learner.setHiddenLayers(new int[] {});
 	}

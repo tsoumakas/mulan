@@ -69,6 +69,7 @@ public class BPMLL extends MultiLabelLearnerBase {
     private NominalToBinary nominalToBinaryFilter;
     // algorithm parameters
     private int epochs = 100;
+    private final Long randomnessSeed;
     private double weightsDecayCost = 0.00001;
     private double learningRate = 0.05;
     private int[] hiddenLayersTopology;
@@ -78,6 +79,21 @@ public class BPMLL extends MultiLabelLearnerBase {
     private NeuralNet model;
     private ThresholdFunction thresholdF;
 
+    /**
+     * Creates a new instance of {@link BPMLL} learner.
+     */
+    public BPMLL(){
+    	randomnessSeed = null;
+    }
+    
+    /**
+     * Creates a new instance of {@link BPMLL} learner.
+     * @param randomnessSeed the seed value for pseudo-random generator
+     */
+    public BPMLL(long randomnessSeed){
+    	this.randomnessSeed = randomnessSeed;
+    }
+    
     /**
      * Sets the topology of hidden layers for neural network.
      * The length of passed array defines number of hidden layers.
@@ -290,7 +306,8 @@ public class BPMLL extends MultiLabelLearnerBase {
             System.arraycopy(hiddenLayersTopology, 0, networkTopology, 1, hiddenLayersTopology.length);
             networkTopology[networkTopology.length - 1] = numLabels;
         }
-        NeuralNet model = new BasicNeuralNet(networkTopology, NET_BIAS, ActivationTANH.class);
+        
+        NeuralNet model = new BasicNeuralNet(networkTopology, NET_BIAS, ActivationTANH.class, randomnessSeed == null ? null :  new Random(randomnessSeed));
 
         return model;
     }

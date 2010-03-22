@@ -25,6 +25,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
+
+import mulan.core.ArgumentNullException;
 
 /**
  * Implementation of basic neural network. The network consists of one input layer, 
@@ -44,6 +47,7 @@ public class BasicNeuralNet implements NeuralNet, Serializable {
     private final int netInputDim;
     private final int netOutputDim;
 
+    
     /**
      * Creates a new {@link BasicNeuralNet} instance.
      *
@@ -52,17 +56,19 @@ public class BasicNeuralNet implements NeuralNet, Serializable {
      * 		of neurons in each particular layer.
      * @param biasInput the bias input value for neurons of the neural network.
      * @param activationFunction the type of activation function to be used by network elements
+     * @param random the pseudo-random generator instance to be used for computations involving randomness. 
+     * 	This parameter can be null. In this case, new random instance with default seed will be constructed where needed.
      * @throws IllegalArgumentException if network topology is incorrect of activation function class is null.
      */
     public BasicNeuralNet(int[] netTopology, double biasInput,
-            Class<? extends ActivationFunction> activationFunction) {
+            Class<? extends ActivationFunction> activationFunction, Random random) {
 
         if (netTopology == null || netTopology.length < 2) {
             throw new IllegalArgumentException("The topology for neural network is not specified " +
                     "or is invalid. Please provide correct topology for the network.");
         }
         if (activationFunction == null) {
-            throw new IllegalArgumentException("The activation functions is null.");
+            throw new ArgumentNullException("activationFunction");
         }
 
         netInputDim = netTopology[0];
@@ -71,7 +77,7 @@ public class BasicNeuralNet implements NeuralNet, Serializable {
         // set up input layer
         List<Neuron> inputLayer = new ArrayList<Neuron>(netTopology[0]);
         for (int n = 0; n < netTopology[0]; n++) {
-            Neuron neuron = new Neuron(new ActivationLinear(), 1, biasInput);
+            Neuron neuron = new Neuron(new ActivationLinear(), 1, biasInput, random);
             double[] weights = neuron.getWeights();
             weights[0] = 1;
             weights[1] = 0;
@@ -86,7 +92,7 @@ public class BasicNeuralNet implements NeuralNet, Serializable {
                 List<Neuron> layer = new ArrayList<Neuron>(netTopology[index]);
                 for (int n = 0; n < netTopology[index]; n++) {
                     Neuron neuron = new Neuron(activationFunction.newInstance(),
-                            netTopology[index - 1], biasInput);
+                            netTopology[index - 1], biasInput, random);
                     layer.add(neuron);
                 }
                 layers.add(layer);

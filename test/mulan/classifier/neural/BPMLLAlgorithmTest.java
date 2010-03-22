@@ -34,7 +34,7 @@ import org.junit.Test;
 
 public class BPMLLAlgorithmTest {
 
-	private static final NeuralNet NEURAL_NET = new BasicNeuralNet(new int[] { 2, 10, 3 }, 1, ActivationTANH.class);
+	private static final NeuralNet NEURAL_NET = new BasicNeuralNet(new int[] { 2, 10, 3 }, 1, ActivationTANH.class, null);
 	private static final double LEARNING_RATE = 0.05;
 	private static final double WEIGHTS_DECAY_COST = 0.00001;
 	private static final double WRONG_WEIGHTS_DECAY_LOW = 0;
