@@ -92,7 +92,7 @@
 		</jar>
 		
 		<zip destfile="${dist.dir}/mulan-${mulan.version}.zip" >
-			<fileset dir="${basedir}" includes="${javadoc.dir}/**, data/**" />
+			<fileset dir="${basedir}" includes="${javadoc.dir}/**, data/*.*" />
 			<fileset dir="${dist.dir}" includes="*.jar" />
 			<fileset file="${lib.dir}/weka.jar" />
 			<fileset file="license.txt"/>
