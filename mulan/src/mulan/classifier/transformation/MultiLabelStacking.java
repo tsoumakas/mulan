@@ -767,4 +767,8 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner
     public void setPartialBuild(boolean partialBuild) {
         this.partialBuild = partialBuild;
     }
+
+	public int getTopkCorrelated() {
+		return topkCorrelated;
+	}
 }
