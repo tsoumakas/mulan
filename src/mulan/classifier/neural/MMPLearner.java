@@ -331,19 +331,24 @@ public class MMPLearner extends MultiLabelLearnerBase {
 
     private double[] getFeatureVector(Instance inputInstance) {
 
+        if (convertNomToBin && nomToBinFilter != null) {
+        	try {
+	            nomToBinFilter.input(inputInstance);
+	            inputInstance = nomToBinFilter.output();
+	            inputInstance.setDataset(null);
+	        }
+	        catch(Exception ex){
+	        	throw new InvalidDataException("The input instance for prediction is invalid. " +
+	        			"Instance is not consistent with the data the model was built for.");
+	        }
+        }
+
         // check if number in attributes is at least equal to model input
         int numAttributes = inputInstance.numAttributes();
         int modelInputDim = perceptrons.get(0).getWeights().length - 1;
         if (numAttributes < modelInputDim) {
             throw new InvalidDataException("Input instance do not have enough attributes " +
                     "to be processed by the model. Instance is not consistent with the data the model was built for.");
-        }
-
-        // perform normalization if necessary
-        if (convertNomToBin && nomToBinFilter != null) {
-            nomToBinFilter.input(inputInstance);
-            inputInstance = nomToBinFilter.output();
-            inputInstance.setDataset(null);
         }
 
         // if instance has more attributes than model input, we assume that true outputs

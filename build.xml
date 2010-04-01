@@ -34,7 +34,6 @@
 		</fileset>
 	</path>
 
-	<taskdef classpathref="dependency.test.libs.path" resource="tasks.properties" />
 	<taskdef classpathref="dependency.test.libs.path" resource="emma_ant.properties" />
 	
 	
