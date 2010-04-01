@@ -37,6 +37,7 @@ import mulan.classifier.neural.model.BasicNeuralNet;
 import mulan.classifier.neural.model.NeuralNet;
 import mulan.core.WekaException;
 import mulan.data.DataUtils;
+import mulan.data.InvalidDataFormatException;
 import mulan.data.MultiLabelInstances;
 import weka.core.Attribute;
 import weka.core.Instance;
@@ -322,9 +323,17 @@ public class BPMLL extends MultiLabelLearnerBase {
     private List<DataPair> prepareData(MultiLabelInstances mlData) {
 
         Instances data = mlData.getDataSet();
-        if (!checkAttributesFormat(data, mlData.getFeatureAttributes())) {
+        data = checkAttributesFormat(data, mlData.getFeatureAttributes());
+        if (data == null) {
             throw new InvalidDataException("Attributes are not in correct format. " +
                     "Input attributes (all but the label attributes) must be nominal or numeric.");
+        }
+        else{
+        	try {
+				mlData = new MultiLabelInstances(data, mlData.getLabelsMetaData());
+			} catch (InvalidDataFormatException e) {
+				throw new InvalidDataException("Failed to create a multilabel data set from modified instances.");
+			}
         }
 
         if (normalizeAttributes) {
@@ -341,9 +350,9 @@ public class BPMLL extends MultiLabelLearnerBase {
      *
      * @param dataSet instances data to be checked
      * @param inputAttributes input/feature attributes which format need to be checked
-     * @return true if attributes are in correct format, false otherwise
+     * @return data set if it passed checks; otherwise <code>null</code>
      */
-    private boolean checkAttributesFormat(Instances dataSet, Set<Attribute> inputAttributes) {
+    private Instances checkAttributesFormat(Instances dataSet, Set<Attribute> inputAttributes) {
 
         StringBuilder nominalAttrRange = new StringBuilder();
         String rangeDelimiter = ",";
@@ -353,7 +362,7 @@ public class BPMLL extends MultiLabelLearnerBase {
                     nominalAttrRange.append((attribute.index() + 1) + rangeDelimiter);
                 } else {
                     // fail check if any other attribute type than nominal or numeric is used
-                    return false;
+                    return null;
                 }
             }
         }
@@ -376,23 +385,30 @@ public class BPMLL extends MultiLabelLearnerBase {
             }
         }
 
-        return true;
+        return dataSet;
     }
 
     public MultiLabelOutput makePredictionInternal(Instance instance) throws InvalidDataException {
 
-        int numAttributes = instance.numAttributes();
+    	Instance inputInstance = null;
+    	if (nominalToBinaryFilter != null) {
+    		try {
+	            nominalToBinaryFilter.input(instance);
+	            inputInstance = nominalToBinaryFilter.output();
+	            inputInstance.setDataset(null);
+        	} catch(Exception ex){
+	        	throw new InvalidDataException("The input instance for prediction is invalid. " +
+	        			"Instance is not consistent with the data the model was built for.");
+	        }
+    	}
+    	else{
+    		inputInstance = DataUtils.createInstance(instance, instance.weight(), instance.toDoubleArray());	
+    	}
+    	    	
+    	int numAttributes = inputInstance.numAttributes();
         if (numAttributes < model.getNetInputSize()) {
             throw new InvalidDataException("Input instance do not have enough attributes " +
                     "to be processed by the model. Instance is not consistent with the data the model was built for.");
-        }
-
-        Instance inputInstance = DataUtils.createInstance(instance, instance.weight(), instance.toDoubleArray());
-        
-        if (nominalToBinaryFilter != null) {
-            nominalToBinaryFilter.input(inputInstance);
-            inputInstance = nominalToBinaryFilter.output();
-            inputInstance.setDataset(null);
         }
 
         // if instance has more attributes than model input, we assume that true outputs
