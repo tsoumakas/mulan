@@ -284,6 +284,7 @@ public class MMPLearner extends MultiLabelLearnerBase {
             try {
                 dataSet = Filter.useFilter(dataSet, nomToBinFilter);
                 mlData = mlData.reintegrateModifiedDataSet(dataSet);
+                this.labelIndices = mlData.getLabelIndices();
             } catch (Exception exception) {
                 if (getDebug()) {
                     debug("Failed to apply NominalToBinary filter to the input instances data. " +

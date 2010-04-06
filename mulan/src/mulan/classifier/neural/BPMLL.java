@@ -330,7 +330,8 @@ public class BPMLL extends MultiLabelLearnerBase {
         }
         else{
         	try {
-				mlData = new MultiLabelInstances(data, mlData.getLabelsMetaData());
+        		mlData = mlData.reintegrateModifiedDataSet(data);
+        		this.labelIndices = mlData.getLabelIndices();
 			} catch (InvalidDataFormatException e) {
 				throw new InvalidDataException("Failed to create a multilabel data set from modified instances.");
 			}
