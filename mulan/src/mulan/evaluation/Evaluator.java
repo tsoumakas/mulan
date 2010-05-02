@@ -142,7 +142,6 @@ public class Evaluator {
             measures.add(new MacroPrecision(numOfLabels));
             measures.add(new MacroRecall(numOfLabels));
             measures.add(new MacroFMeasure(numOfLabels));
-            measures.add(new MAP(numOfLabels));
         }
         // add ranking-based measures if applicable
         if (prediction.hasRanking()) {
@@ -153,6 +152,13 @@ public class Evaluator {
             measures.add(new ErrorSetSize());
             measures.add(new Coverage());
             measures.add(new RankingLoss());
+        }
+        // add confidence measures if applicable
+        if (prediction.hasConfidences()) {
+            int numOfLabels = testSet.getNumLabels();
+            measures.add(new MAP(numOfLabels));
+            measures.add(new MicroAUC(numOfLabels));
+            measures.add(new MacroAUC(numOfLabels));
         }
         // add hierarchical measures if applicable
         if (testSet.getLabelsMetaData().isHierarchy()) {
