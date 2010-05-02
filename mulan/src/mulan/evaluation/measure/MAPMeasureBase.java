@@ -3,8 +3,6 @@ package mulan.evaluation.measure;
 import java.util.ArrayList;
 import java.util.List;
 
-import mulan.classifier.MultiLabelOutput;
-import mulan.core.ArgumentNullException;
 
 /**
  * 
@@ -12,7 +10,7 @@ import mulan.core.ArgumentNullException;
  * @author Eleftherios Spyromitros Xioufis
  *
  */
-public abstract class MAPMeasureBase extends MeasureBase {
+public abstract class MAPMeasureBase extends ConfidenceMeasureBase {
 
 	protected int numOfLabels;
 
@@ -24,21 +22,6 @@ public abstract class MAPMeasureBase extends MeasureBase {
 		for (int labelIndex = 0; labelIndex < numOfLabels; labelIndex++) {
 			confact[labelIndex] = new ArrayList<ConfidenceActual>();
 		}
-	}
-
-	public double updateInternal(MultiLabelOutput prediction, boolean[] truth) {
-		double[] confidences = prediction.getConfidences();
-
-		if (confidences == null) {
-			throw new ArgumentNullException("Confidences are null");
-		}
-		if (confidences.length != truth.length) {
-			throw new IllegalArgumentException(
-					"The dimensions of the "
-							+ "confidences array and the ground truth array do not match");
-		}
-
-		return updateInternal2(confidences, truth);
 	}
 
 	public double updateInternal2(double[] confidences, boolean[] truth) {
