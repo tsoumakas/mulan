@@ -142,6 +142,7 @@ public class Evaluator {
             measures.add(new MacroPrecision(numOfLabels));
             measures.add(new MacroRecall(numOfLabels));
             measures.add(new MacroFMeasure(numOfLabels));
+            measures.add(new MAP(numOfLabels));
         }
         // add ranking-based measures if applicable
         if (prediction.hasRanking()) {
