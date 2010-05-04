@@ -40,7 +40,6 @@ public class MicroAUC extends LabelBasedAUC {
 
     public double getValue() {
         ThresholdCurve tc = new ThresholdCurve();
-        System.out.println(all_Predictions);
         Instances result = tc.getCurve(all_Predictions, 1);
         return ThresholdCurve.getROCArea(result);
     }
