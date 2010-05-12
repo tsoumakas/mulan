@@ -8,11 +8,11 @@ import weka.core.Utils;
  * Implementation of MAP (Mean Average Precision)
  * 
  * @author Eleftherios Spyromitros Xioufis
- *
+ * 
  */
-public class MAP extends MAPMeasureBase {
+public class MeanAveragePrecision extends LabelBasedAveragePrecision {
 
-	public MAP(int numOfLabels) {
+	public MeanAveragePrecision(int numOfLabels) {
 		super(numOfLabels);
 	}
 
@@ -44,12 +44,6 @@ public class MAP extends MAPMeasureBase {
 
 	public double getIdealValue() {
 		return 1;
-	}
-
-	@Override
-	public void reset() {
-		// TODO Auto-generated method stub
-
 	}
 
 }

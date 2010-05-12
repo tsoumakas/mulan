@@ -3,20 +3,19 @@ package mulan.evaluation.measure;
 import java.util.ArrayList;
 import java.util.List;
 
-
 /**
  * 
  * 
  * @author Eleftherios Spyromitros Xioufis
- *
+ * 
  */
-public abstract class MAPMeasureBase extends ConfidenceMeasureBase {
+public abstract class LabelBasedAveragePrecision extends ConfidenceMeasureBase {
 
 	protected int numOfLabels;
 
 	List<ConfidenceActual>[] confact;
 
-	public MAPMeasureBase(int numOfLabels) {
+	public LabelBasedAveragePrecision(int numOfLabels) {
 		this.numOfLabels = numOfLabels;
 		confact = new ArrayList[numOfLabels];
 		for (int labelIndex = 0; labelIndex < numOfLabels; labelIndex++) {
