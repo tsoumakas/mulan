@@ -156,7 +156,7 @@ public class Evaluator {
         // add confidence measures if applicable
         if (prediction.hasConfidences()) {
             int numOfLabels = testSet.getNumLabels();
-            measures.add(new MAP(numOfLabels));
+            measures.add(new MeanAveragePrecision(numOfLabels));
             measures.add(new MicroAUC(numOfLabels));
             measures.add(new MacroAUC(numOfLabels));
         }

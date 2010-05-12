@@ -35,7 +35,7 @@ public class MicroAUC extends LabelBasedAUC {
     }
 
     public String getName() {
-        return "micro-averaged AUC";
+        return "Micro-averaged AUC";
     }
 
     public double getValue() {
