@@ -23,6 +23,7 @@ package mulan.evaluation.measure;
 import java.io.Serializable;
 import mulan.classifier.MultiLabelOutput;
 import mulan.core.ArgumentNullException;
+import weka.core.SerializedObject;
 
 /**
  * 
@@ -52,4 +53,8 @@ public abstract class MeasureBase implements Measure, Serializable {
     }
 
     protected abstract double updateInternal(MultiLabelOutput prediction, boolean[] truth);
+
+    public Measure makeCopy() throws Exception {
+        return (Measure) new SerializedObject(this).getObject();
+    }
 }
