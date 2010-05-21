@@ -68,6 +68,14 @@ public interface Measure {
     double update(MultiLabelOutput prediction, boolean[] truth);
 
     /**
+     * Creates a deep copy of the given measure using serialization.
+     *
+     * @return a deep copy of the measure
+     * @exception Exception if an error occurs while making copy of the measure.
+     */
+    public Measure makeCopy() throws Exception;
+
+    /**
      * Resets the cumulated measure value, so the process of computation can be started
      * from beginning (e.g. for a new series of outputs from learning task).
      */
