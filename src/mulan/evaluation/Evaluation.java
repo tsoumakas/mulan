@@ -20,6 +20,7 @@
  */
 package mulan.evaluation;
 
+import java.util.ArrayList;
 import java.util.List;
 import mulan.evaluation.measure.Measure;
 
@@ -36,8 +37,12 @@ public class Evaluation {
 
     private List<Measure> measures;
 
-    public Evaluation(List<Measure> measures) {
-        this.measures = measures;
+    public Evaluation(List<Measure> someMeasures) throws Exception {
+        measures = new ArrayList<Measure>();
+        for (Measure m : someMeasures) {
+            Measure newMeasure = m.makeCopy();
+            measures.add(newMeasure);
+        }
     }
 
     @Override
