@@ -56,7 +56,6 @@ public class MMPLearnerTest extends MultiLabelLearnerTestBase {
     @Test
     public void testTestDefaults() {
         Assert.assertEquals(true, learner.getConvertNominalToBinary());
-        Assert.assertEquals(true, learner.getNormalizeAttributes());
         Assert.assertTrue(learner.isUpdatable());
     }
 
@@ -74,12 +73,6 @@ public class MMPLearnerTest extends MultiLabelLearnerTestBase {
     public void testSetConvertNominalToBinary() {
         learner.setConvertNominalToBinary(false);
         Assert.assertFalse(learner.getConvertNominalToBinary());
-    }
-
-    @Test()
-    public void testSetNormalizeAttributes() {
-        learner.setNormalizeAttributes(false);
-        Assert.assertFalse(learner.getNormalizeAttributes());
     }
 
     @Test(expected = InvalidDataException.class)

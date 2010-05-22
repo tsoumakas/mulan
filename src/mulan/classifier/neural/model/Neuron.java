@@ -291,8 +291,8 @@ public class Neuron implements Serializable {
      */
     public void reset() {
 
-        final double max = 1.0;
-        final double min = -1.0;
+        final double max = 0.5;
+        final double min = -0.5;
         final int inputsCount = inputDim + 1;
 
         errorValue = 0;
