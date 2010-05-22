@@ -65,8 +65,11 @@ public class MMPLearner extends MultiLabelLearnerBase {
      * They are ordered in same sequence as labels observed from training data.
      **/
     private List<Neuron> perceptrons;
-    /** Determines if feature attributes has to be normalized prior to learning */
-    private boolean normalizeAttributes = true;
+    // TODO: Can not use current normalization filer as MMP is incremental algorithm and so, filter must be too
+    //       Investigate first, if we want to support normalization
+//    /** Determines if feature attributes has to be normalized prior to learning */
+//    private boolean normalizeAttributes = true;
+    private NormalizationFilter normalizer;
     /** Indicates whether any nominal attributes from input data set has to be converted to binary */
     private boolean convertNomToBin = true;
     /** Filter used for conversion of nominal attributes to binary (if enabled) */
@@ -143,26 +146,26 @@ public class MMPLearner extends MultiLabelLearnerBase {
         return convertNomToBin;
     }
 
-    /**
-     * Sets whether feature attributes should be normalized prior to learning.
-     * Normalization is performed on numeric attributes to the range <-1,1>.<br/>
-     * When making prediction, attributes of passed input instance are also
-     * normalized prior to making prediction.<br/>
-     * Default value is <code>true</code> (normalization of attributes takes place).
-     *
-     * @param normalize flag if normalization of feature attributes should be performed
-     */
-    public void setNormalizeAttributes(boolean normalize) {
-        normalizeAttributes = normalize;
-    }
-
-    /**
-     * Gets whether normalization of feature attributes takes place prior to learning.
-     * @return whether normalization of feature attributes takes place prior to learning
-     */
-    public boolean getNormalizeAttributes() {
-        return normalizeAttributes;
-    }
+//    /**
+//     * Sets whether feature attributes should be normalized prior to learning.
+//     * Normalization is performed on numeric attributes to the range <-1,1>.<br/>
+//     * When making prediction, attributes of passed input instance are also
+//     * normalized prior to making prediction.<br/>
+//     * Default value is <code>true</code> (normalization of attributes takes place).
+//     *
+//     * @param normalize flag if normalization of feature attributes should be performed
+//     */
+//    public void setNormalizeAttributes(boolean normalize) {
+//        normalizeAttributes = normalize;
+//    }
+//
+//    /**
+//     * Gets whether normalization of feature attributes takes place prior to learning.
+//     * @return whether normalization of feature attributes takes place prior to learning
+//     */
+//    public boolean getNormalizeAttributes() {
+//        return normalizeAttributes;
+//    }
 
     @Override
     public boolean isUpdatable() {
@@ -291,7 +294,7 @@ public class MMPLearner extends MultiLabelLearnerBase {
                             "Error message: " + exception.getMessage());
                 }
                 throw new WekaException("Failed to apply NominalToBinary filter to the input instances data.", exception);
-            }
+            }            
         }
 
         return DataPair.createDataPairs(mlData, false);

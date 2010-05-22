@@ -178,5 +178,4 @@ public class BPMLLTest extends MultiLabelLearnerTestBase {
 		MultiLabelInstances mlDataSet = DataSetBuilder.CreateDataSet(definition);
 		learner.build(mlDataSet);		
 	}
-	
 }
