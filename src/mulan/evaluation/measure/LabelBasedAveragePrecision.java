@@ -1,5 +1,6 @@
 package mulan.evaluation.measure;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,7 +44,7 @@ public abstract class LabelBasedAveragePrecision extends ConfidenceMeasureBase {
 		}
 	}
 
-	public class ConfidenceActual implements Comparable {
+	public class ConfidenceActual implements Comparable,Serializable {
 
 		boolean actual;
 		double confidence;
