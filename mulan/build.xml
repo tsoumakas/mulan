@@ -25,6 +25,7 @@
 	<path id="dependency.libs.path">
 		<fileset dir="${lib.dir}">
 			<include name="weka.jar" />
+			<include name="commons-cli-1.2.jar" />
 		</fileset>
 	</path>
 	
