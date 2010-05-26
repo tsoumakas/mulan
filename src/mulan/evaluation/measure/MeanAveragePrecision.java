@@ -11,13 +11,15 @@ import weka.core.Utils;
  * 
  */
 public class MeanAveragePrecision extends LabelBasedAveragePrecision {
+	
+	double[] AveragePrecision;
 
 	public MeanAveragePrecision(int numOfLabels) {
 		super(numOfLabels);
 	}
 
 	public double getValue() {
-		double[] AveragePrecision = new double[numOfLabels];
+		AveragePrecision = new double[numOfLabels];
 		for (int labelIndex = 0; labelIndex < numOfLabels; labelIndex++) {
 			AveragePrecision[labelIndex] = 0;
 			Collections.sort(confact[labelIndex], Collections.reverseOrder());
@@ -37,6 +39,10 @@ public class MeanAveragePrecision extends LabelBasedAveragePrecision {
 		}
 		return Utils.mean(AveragePrecision);
 	}
+	
+    public double getValue(int labelIndex) {
+        return AveragePrecision[labelIndex];
+    }
 
 	public String getName() {
 		return "Mean Average Precision";
