@@ -74,6 +74,7 @@ public class TrainTestExperiment {
             rmvp.setInputFormat(dataSet);
             Instances trainDataSet = Filter.useFilter(dataSet, rmvp);
             
+            rmvp = new RemovePercentage();
             rmvp.setPercentage(Double.parseDouble(percentage));
             rmvp.setInputFormat(dataSet);
             Instances testDataSet = Filter.useFilter(dataSet, rmvp);
