@@ -20,6 +20,7 @@
  */
 package mulan.evaluation;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import mulan.evaluation.measure.Measure;
 
@@ -32,23 +33,29 @@ import mulan.evaluation.measure.Measure;
  */
 public class MultipleEvaluation {
 
-    private Evaluation[] evaluations;
+    private ArrayList<Evaluation> evaluations;
     private HashMap<String, Double> mean;
     private HashMap<String, Double> standardDeviation;
 
-    public MultipleEvaluation(Evaluation[] evaluations) {
-        this.evaluations = evaluations;
+    public MultipleEvaluation() {
+        
+    }
+
+    public MultipleEvaluation(Evaluation[] someEvaluations) {
+        evaluations = new ArrayList<Evaluation>();
+        for (Evaluation e : someEvaluations)
+            evaluations.add(e);
         calculateStatistics();
     }
 
-    private void calculateStatistics() {
-        int size = evaluations.length;
+    public void calculateStatistics() {
+        int size = evaluations.size();
         HashMap<String, Double> sums = new HashMap<String, Double>();
 
 
         // calculate sums of measures
-        for (int i = 0; i < evaluations.length; i++) {
-            for (Measure m : evaluations[i].getMeasures()) {
+        for (int i = 0; i < evaluations.size(); i++) {
+            for (Measure m : evaluations.get(i).getMeasures()) {
                 double value = Double.NaN;
                 try {
                     value = m.getValue();
@@ -70,8 +77,8 @@ public class MultipleEvaluation {
         sums = new HashMap<String, Double>();
 
 
-        for (int i = 0; i < evaluations.length; i++) {
-            for (Measure m : evaluations[i].getMeasures()) {
+        for (int i = 0; i < evaluations.size(); i++) {
+            for (Measure m : evaluations.get(i).getMeasures()) {
                 double value = Double.NaN;
                 try {
                     value = m.getValue();
@@ -90,10 +97,17 @@ public class MultipleEvaluation {
         }
     }
 
+    public void addEvaluation(Evaluation evaluation) {
+        if (evaluations == null) {
+            evaluations = new ArrayList<Evaluation>();
+        }
+        evaluations.add(evaluation);
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        for (Measure m : evaluations[0].getMeasures()) {
+        for (Measure m : evaluations.get(0).getMeasures()) {
             String measureName = m.getName();
             sb.append(measureName);
             sb.append(": ");
@@ -105,9 +119,13 @@ public class MultipleEvaluation {
         return sb.toString();
     }
 
+    public double getMean(String measureName) {
+        return mean.get(measureName);
+    }
+
     public String toCSV() {
         StringBuilder sb = new StringBuilder();
-        for (Measure m : evaluations[0].getMeasures()) {
+        for (Measure m : evaluations.get(0).getMeasures()) {
             String measureName = m.getName();
             sb.append(mean.get(measureName));
             sb.append(";");
