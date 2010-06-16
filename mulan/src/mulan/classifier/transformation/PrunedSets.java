@@ -72,8 +72,7 @@ public class PrunedSets extends LabelsetPruning {
         b = aB;
         strategy = aStrategy;
         setConfidenceCalculationMethod(2);
-        setMakePredictionsBasedOnConfidences(true);
-        threshold = 0.21;
+        setMakePredictionsBasedOnConfidences(false);
     }
 
     /**
