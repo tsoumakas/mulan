@@ -83,9 +83,9 @@ public class EnsembleOfPrunedSets extends TransformationBasedMultiLabelLearner {
         for (int i = 0; i < numOfModels; i++) {
             dataSet.randomize(rand);
             RemovePercentage rmvp = new RemovePercentage();
-            rmvp.setInvertSelection(true);
-            rmvp.setPercentage(percentage);
             rmvp.setInputFormat(dataSet);
+            rmvp.setPercentage(percentage);
+            rmvp.setInvertSelection(true);
             Instances trainDataSet = Filter.useFilter(dataSet, rmvp);
             MultiLabelInstances train = new MultiLabelInstances(trainDataSet, trainingSet.getLabelsMetaData());
             ensemble[i].build(train);
@@ -110,9 +110,6 @@ public class EnsembleOfPrunedSets extends TransformationBasedMultiLabelLearner {
 
         int[] sumVotes = new int[numLabels];
 
-        for (int j = 0; j < numLabels; j++) {
-            sumVotes[j] = 0;
-        }
         for (int i = 0; i < numOfModels; i++) {
             MultiLabelOutput ensembleMLO = ensemble[i].makePrediction(instance);
             boolean[] bip = ensembleMLO.getBipartition();
