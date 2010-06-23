@@ -165,7 +165,7 @@ public class ClassifierChains extends TransformationBasedMultiLabelLearner {
         for (int counter = 0; counter < numLabels; counter++) {
             double distribution[] = new double[2];
             try {
-                distribution = ensemble[counter].distributionForInstance(instance);
+                distribution = ensemble[counter].distributionForInstance(tempInstance);
             } catch (Exception e) {
                 System.out.println(e);
                 return null;
