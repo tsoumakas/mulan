@@ -111,9 +111,9 @@ public class MultipleEvaluation {
             String measureName = m.getName();
             sb.append(measureName);
             sb.append(": ");
-            sb.append(mean.get(measureName));
+            sb.append(String.format("%.4f", mean.get(measureName)));
             sb.append("\u00B1");
-            sb.append(standardDeviation.get(measureName));
+            sb.append(String.format("%.4f",standardDeviation.get(measureName)));
             sb.append("\n");
         }
         return sb.toString();
@@ -127,9 +127,9 @@ public class MultipleEvaluation {
         StringBuilder sb = new StringBuilder();
         for (Measure m : evaluations.get(0).getMeasures()) {
             String measureName = m.getName();
-            sb.append(mean.get(measureName));
+            sb.append(String.format("%.4f",mean.get(measureName)));
             sb.append(";");
-            sb.append(standardDeviation.get(measureName));
+            sb.append(String.format("%.4f",standardDeviation.get(measureName)));
             sb.append(";");
         }
         sb.append("\n");
