@@ -48,8 +48,8 @@ public abstract class MeasureBase implements Measure, Serializable {
         try {
             value = getValue();
         } catch (Exception ex) {
-        }
-        return getName() + ": " + value;
+        } 
+        return getName() + ": " + String.format("%.4f", value);
     }
 
     protected abstract double updateInternal(MultiLabelOutput prediction, boolean[] truth);

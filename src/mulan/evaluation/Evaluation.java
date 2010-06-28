@@ -63,7 +63,7 @@ public class Evaluation {
                 value = m.getValue();
             } catch (Exception ex) {
             }
-            sb.append(value);
+            sb.append(String.format("%.4f", value));
             sb.append(";");
         }
         return sb.toString();
