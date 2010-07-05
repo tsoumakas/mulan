@@ -1,0 +1,3 @@
+#!/bin/bash
+
+java -cp "mulan.jar:weka.jar:commons-cli-1.2.jar" mulan.console.CommandDispatcher "$@"

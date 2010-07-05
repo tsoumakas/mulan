@@ -18,30 +18,26 @@
  *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
  */
 
-package mulan.console.driver;
+package mulan.console.builder;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 
 import mulan.classifier.MultiLabelLearner;
 import mulan.classifier.neural.BPMLL;
+import mulan.console.LearnerDriver;
+import mulan.core.ArgumentNullException;
 
 import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.GnuParser;
-import org.apache.commons.cli.HelpFormatter;
-import org.apache.commons.cli.Option;
 import org.apache.commons.cli.OptionBuilder;
-import org.apache.commons.cli.OptionGroup;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
-public class BPMLLDriver extends LearnerDriverBase {
+public class BPMLLBuilder implements LearnerBuilder {
 
 	@SuppressWarnings("static-access")
 	@Override
 	public Options getOptions() {
-		Options opt = super.getOptions();
+		Options opt = new Options();
 		
 		opt.addOption(OptionBuilder.withLongOpt("hidden-layers").hasArgs().withValueSeparator(',')
 				.withDescription("Sets the topology of hidden layers for the neural network. Enter the coma separated list of integer values, whenre number of values will define number of hidden layers and each value defines number of neurons in the particular layer. If empty value is passed, no hidden layers will be created.")
@@ -53,27 +49,59 @@ public class BPMLLDriver extends LearnerDriverBase {
 				.withDescription("Sets the regularization cost term for weights decay. The value must be greater than 0 and no more than 1.")
 				.create("wd"));
 		opt.addOption(OptionBuilder.withLongOpt("training-epochs").hasArg().withArgName("value").withType(Number.class)
-				.withDescription("Sets the number of training epochs. The value must be integer greater than 0.").create("te"));
+				.withDescription("Sets the number of training epochs. The value must be integer greater than 0.")
+				.create("te"));
 		opt.addOption(OptionBuilder.withLongOpt("normalize-inputs")
 				.withDescription("If defined, all input numeric attributes of the training data set (except label attributes) will be normalized prior to learning to the range <-1,1>.")
 				.create("n"));
+		opt.addOption(OptionBuilder.withLongOpt(LearnerDriver.SEED_OPT_LONG).hasArg().withType(Number.class).create(LearnerDriver.SEED_OPT));
 		
 		return opt;
 	}
 
 	@Override
-	public List<Class<? extends MultiLabelLearner>> getSupportedTypes() {
-		List<Class<? extends MultiLabelLearner>> list = new ArrayList<Class<? extends MultiLabelLearner>>();
-		list.add(BPMLL.class);
-		
-		return list;
+	public Class<? extends MultiLabelLearner> getSupportedType(){
+		return BPMLL.class;
 	}
 
 	@Override
-	protected MultiLabelLearner createLearner(CommandLine cmdLine) {
+	public MultiLabelLearner build(CommandLine cmdLine) throws ParseException {
+		if(cmdLine == null){
+			throw new ArgumentNullException("cmdLine");
+		}
 		
-	        // TODO: add param parsing and setup of the learner 
-	        return new BPMLL();
+		BPMLL learner = cmdLine.hasOption(LearnerDriver.SEED_OPT) ? 
+				new BPMLL(((Number)cmdLine.getParsedOptionValue(LearnerDriver.SEED_OPT)).longValue()) : 
+				new BPMLL();
+		
+		if(cmdLine.hasOption("hl")){
+			String[] values = cmdLine.getOptionValues("hl");
+			int[] layers = new int[values.length];
+			try{
+			for(int i = 0; i < values.length; i++){
+				layers[i] = Integer.parseInt(values[i]);
+			}
+			}catch(NumberFormatException ex){
+				throw new ParseException(String.format("Values for hiddnen layers are invalid: '%s'", Arrays.toString(values)));
+			}
+			learner.setHiddenLayers(layers);
+		}
+		if(cmdLine.hasOption("lr")){
+			learner.setLearningRate(((Number)cmdLine.getParsedOptionValue("wd")).doubleValue());
+		}	
+		if(cmdLine.hasOption("wd")){
+			learner.setWeightsDecayRegularization(((Number)cmdLine.getParsedOptionValue("wd")).doubleValue());
+		}
+		if(cmdLine.hasOption("te")){
+			learner.setTrainingEpochs(((Number)cmdLine.getParsedOptionValue("te")).intValue());
+		}
+		if(cmdLine.hasOption("n")){
+			learner.setNormalizeAttributes(true);
+		}else{
+			learner.setNormalizeAttributes(false);
+		}
+
+        return learner;
 	}
 	   
 }

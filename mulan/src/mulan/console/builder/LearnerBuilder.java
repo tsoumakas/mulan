@@ -18,17 +18,17 @@
  *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
  */
 
-package mulan.console.driver;
-
-import java.util.List;
+package mulan.console.builder;
 
 import mulan.classifier.MultiLabelLearner;
 
+import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
 
-public interface LearnerDriver {
+public interface LearnerBuilder {
 
 	Options getOptions();
-	List<Class<? extends MultiLabelLearner>> getSupportedTypes();
-	void run(String[] args);
+	Class<? extends MultiLabelLearner> getSupportedType();
+	MultiLabelLearner build(CommandLine cmdLine) throws ParseException;
 }
