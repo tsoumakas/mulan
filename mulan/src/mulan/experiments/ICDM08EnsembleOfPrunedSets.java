@@ -41,9 +41,12 @@ import mulan.evaluation.measure.HammingLoss;
 import mulan.evaluation.measure.Measure;
 import weka.classifiers.functions.SMO;
 import weka.core.Instances;
+import weka.core.TechnicalInformation;
 import weka.core.Utils;
+import weka.core.TechnicalInformation.Field;
+import weka.core.TechnicalInformation.Type;
 
-public class ICDM08EnsembleOfPrunedSets {
+public class ICDM08EnsembleOfPrunedSets extends Experiment {
 
     public static void main(String[] args) {
 
@@ -162,5 +165,24 @@ public class ICDM08EnsembleOfPrunedSets {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Returns an instance of a TechnicalInformation object, containing detailed
+     * information about the technical background of this class, e.g., paper
+     * reference or book this class is based on.
+     *
+     * @return the technical information about this class
+     */
+    @Override
+    public TechnicalInformation getTechnicalInformation() {
+        TechnicalInformation result = new TechnicalInformation(Type.CONFERENCE);
+        result.setValue(Field.AUTHOR, "Read, Jesse");
+        result.setValue(Field.TITLE, "Multi-label Classification using Ensembles of Pruned Sets");
+        result.setValue(Field.PAGES, "995-1000");
+        result.setValue(Field.BOOKTITLE, "ICDM'08: Eighth IEEE International Conference on Data Mining");
+        result.setValue(Field.YEAR, "2008");
+
+        return result;
     }
 }

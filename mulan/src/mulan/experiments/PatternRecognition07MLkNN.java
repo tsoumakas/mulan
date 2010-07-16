@@ -36,9 +36,12 @@ import mulan.evaluation.measure.HammingLoss;
 import mulan.evaluation.measure.Measure;
 import mulan.evaluation.measure.OneError;
 import mulan.evaluation.measure.RankingLoss;
+import weka.core.TechnicalInformation;
 import weka.core.Utils;
+import weka.core.TechnicalInformation.Field;
+import weka.core.TechnicalInformation.Type;
 
-public class PatternRecognition07MLkNN {
+public class PatternRecognition07MLkNN extends Experiment{
 
 	public static void main(String[] args) {
 
@@ -78,4 +81,30 @@ public class PatternRecognition07MLkNN {
 		}
 
 	}
+
+    /**
+     * Returns an instance of a TechnicalInformation object, containing detailed
+     * information about the technical background of this class, e.g., paper
+     * reference or book this class is based on.
+     *
+     * @return the technical information about this class
+     */
+    @Override
+    public TechnicalInformation getTechnicalInformation() {
+        TechnicalInformation result;
+
+        result = new TechnicalInformation(Type.ARTICLE);
+        result.setValue(Field.AUTHOR, "Min-Ling Zhang and Zhi-Hua Zhou");
+        result.setValue(Field.TITLE, "ML-KNN: A lazy learning approach to multi-label learning");
+        result.setValue(Field.JOURNAL, "Pattern Recogn.");
+        result.setValue(Field.VOLUME, "40");
+        result.setValue(Field.NUMBER, "7");
+        result.setValue(Field.YEAR, "2007");
+        result.setValue(Field.ISSN, "0031-3203");
+        result.setValue(Field.PAGES, "2038--2048");
+        result.setValue(Field.PUBLISHER, "Elsevier Science Inc.");
+        result.setValue(Field.ADDRESS, "New York, NY, USA");
+
+        return result;
+    }
 }
