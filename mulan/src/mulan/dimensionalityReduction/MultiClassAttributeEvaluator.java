@@ -15,59 +15,60 @@
  */
 
 /*
- *    LabelPowersetAttributeEvaluator.java
+ *    MultiClassAttributeEvaluator.java
  *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
  */
-package mulan.attributeSelection;
+package mulan.dimensionalityReduction;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import mulan.data.MultiLabelInstances;
-import mulan.transformations.LabelPowersetTransformation;
+import mulan.transformations.multiclass.MultiClassTransformation;
 import weka.attributeSelection.ASEvaluation;
 import weka.attributeSelection.AttributeEvaluator;
 import weka.core.Instances;
 
 /**
- * Performs attribute evaluation using the label powerset transformation. For
+ * Performs attribute evaluation using single-label transformations. For
  * more information, see <br/>
  * <br/>
- * K. Trohidis, G. Tsoumakas, G. Kalliris, I. Vlahavas. "Multilabel
- * Classification of Music into Emotions". Proc. 2008 International Conference
- * on Music Information Retrieval (ISMIR 2008)
+ * Chen, W., Yan, J., Zhang, B., Chen, Z., and Yang, Q. (2007).
+ * Document transformation for multi-label feature selection in text categorization.
+ * In 7th IEEE International Conference on Data Mining (ICDM'07), pages 451-456.
  * </p>
  *
  * BibTeX:
  *
  * <pre>
- * &#064;inproceedings{trohidis+etal:2008,
- *      author =    {Trohidis, K. and Tsoumakas, G. and Kalliris, G. and Vlahavas, I.},
- *      title =     {Multilabel Classification of Music into Emotions},
- *      booktitle = {Proc. 9th International Conference on Music Information Retrieval (ISMIR 2008), Philadelphia, PA, USA, 2008},
- *      year =      {2008},
- *      location =  {Philadephia, PA, USA},
+ * &#064;inproceedings{chen+etal:2007,
+ * 	author = {Chen, Weizhu and Yan, Jun and Zhang, Benyu and Chen, Zheng and Yang, Qiang},
+ *  booktitle = {Proc. 7th IEEE International Conference on Data Mining (ICDM'07)},
+ *  pages = {451--456},
+ *  title = {Document Transformation for Multi-label Feature Selection in Text Categorization},
+ *  year = {2007}
  * }
  * </pre>
  *
  * @author Grigorios Tsoumakas
  */
-public class LabelPowersetAttributeEvaluator extends ASEvaluation implements AttributeEvaluator {
+public class MultiClassAttributeEvaluator extends ASEvaluation implements AttributeEvaluator {
 
     /** The single-label attribute evaluator to use underneath */
     private ASEvaluation baseAttributeEvaluator;
 
-    /** Constructor that uses an evaluator on a multi-label dataset 
+    /** Constructor that uses an evaluator on a multi-label dataset using a transformation 
      * @param x 
+     * @param dt 
      * @param mlData */
-    public LabelPowersetAttributeEvaluator(ASEvaluation x, MultiLabelInstances mlData) {
+    public MultiClassAttributeEvaluator(ASEvaluation x, MultiClassTransformation dt, MultiLabelInstances mlData) {
         baseAttributeEvaluator = x;
-        LabelPowersetTransformation lpt = new LabelPowersetTransformation();
         Instances data;
         try {
-            data = lpt.transformInstances(mlData);
+            data = dt.transformInstances(mlData);
+            System.out.println(data);
             ((ASEvaluation) baseAttributeEvaluator).buildEvaluator(data);
         } catch (Exception ex) {
-            Logger.getLogger(LabelPowersetAttributeEvaluator.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(MultiClassAttributeEvaluator.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

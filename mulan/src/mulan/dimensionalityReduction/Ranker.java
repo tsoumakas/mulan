@@ -18,7 +18,7 @@
  *    Ranker.java
  *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
  */
-package mulan.attributeSelection;
+package mulan.dimensionalityReduction;
 
 import mulan.data.MultiLabelInstances;
 import weka.attributeSelection.ASEvaluation;
