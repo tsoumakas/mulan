@@ -125,25 +125,22 @@ public abstract class Meta extends MultiLabelMetaLearner {
     }
 
     /**
-     * A method that create a fast vector for the header of dataset
+     * A method that creates the header of the dataset
      *
      * @param @param trainingData The initial {@link MultiLabelInstances} dataset
      * @param xBased the type for constructing the meta dataset
      * @param xClass the type of the class
      * @return a list of attributes 
      */
-    protected ArrayList<Attribute> createFastVector(MultiLabelInstances trainingData, String xBased, String xClass) {
+    protected ArrayList<Attribute> createHeader(MultiLabelInstances trainingData, String xBased, String xClass) {
 
         // copy existing attributes
-        ArrayList<Attribute> atts;
+        ArrayList<Attribute> atts = new ArrayList<Attribute>();
         if (xBased.compareTo("Content-Based") == 0) {
-            atts = new ArrayList<Attribute>();
-            atts = new ArrayList<Attribute>(featureIndices.length+1);
-            for (int i = 0; i < trainingData.getDataSet().numAttributes() - numLabels; i++) {
-                atts.add(trainingData.getDataSet().attribute(i));   
+            for (int i = 0; i < featureIndices.length; i++) {
+                atts.add(trainingData.getDataSet().attribute(featureIndices[i]));
             }
         } else {     //Score-Based or Rank-Based
-            atts = new ArrayList<Attribute>(numLabels);
             for (int i = 0; i < numLabels; i++) {
                 Attribute f = new Attribute("Label-" + i);   
                 atts.add(f);
@@ -158,7 +155,7 @@ public abstract class Meta extends MultiLabelMetaLearner {
                 for (int i = 0; i < numLabels; i++) {
                     int labelIndice = labelIndices[i];
                     if (trainingData.getDataSet().attribute(labelIndice).value((int) trainingData.getDataSet().instance(instanceIndex).value(labelIndice)).equals("1")) {
-                        countTrueLabels += 1;
+                        countTrueLabels++;
                     }
                 }
                 treeSet.add(countTrueLabels);
@@ -187,7 +184,8 @@ public abstract class Meta extends MultiLabelMetaLearner {
         MultiLabelOutput mlo = null;
         if (metaDatasetChoice.compareTo("Content-Based") == 0) {
             double[] values = mlTest.getDataSet().instance(instanceIndex).toDoubleArray();
-            System.arraycopy(values, 0, newValues, 0, values.length - numLabels);
+            for (int i=0; i<featureIndices.length; i++) 
+                newValues[i] = values[featureIndices[i]];
         } else if (metaDatasetChoice.compareTo("Score-Based") == 0) {
             mlo = baseLearner.makePrediction(mlTest.getDataSet().instance(instanceIndex));
             double[] values = mlo.getConfidences();

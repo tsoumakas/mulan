@@ -33,6 +33,8 @@ import weka.core.Attribute;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.TechnicalInformation;
+import weka.core.TechnicalInformation.Field;
+import weka.core.TechnicalInformation.Type;
 
 /**
  *
@@ -52,11 +54,6 @@ public class ThresholdPrediction extends Meta {
      */
     public ThresholdPrediction(MultiLabelLearner baseLearner, Classifier classifier, int kFolds) {
         super(baseLearner, classifier, kFolds);
-    }
-
-    @Override
-    public TechnicalInformation getTechnicalInformation() {
-        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
@@ -87,7 +84,7 @@ public class ThresholdPrediction extends Meta {
 
     public Instances transformData(MultiLabelInstances trainingData) throws Exception {
         // copy existing attributes
-        ArrayList<Attribute> atts = createFastVector(trainingData, metaDatasetChoice, "Numeric-Class");
+        ArrayList<Attribute> atts = createHeader(trainingData, metaDatasetChoice, "Numeric-Class");
 
         // initialize  classifier instances
         Instances classifierInstances = new Instances(trainingData.getDataSet().relationName(), atts,
@@ -158,5 +155,15 @@ public class ThresholdPrediction extends Meta {
         }
         return classifierInstances;
 
+    }
+
+    @Override
+    public TechnicalInformation getTechnicalInformation() {
+        TechnicalInformation result = new TechnicalInformation(Type.INPROCEEDINGS);
+        result.setValue(Field.AUTHOR, "Elisseeff, Andre and Weston, Jason");
+        result.setValue(Field.TITLE, "A kernel method for multi-labelled classification");
+        result.setValue(Field.BOOKTITLE, "Proceedings of NIPS 14");
+        result.setValue(Field.YEAR, "2002");
+        return result;
     }
 }
