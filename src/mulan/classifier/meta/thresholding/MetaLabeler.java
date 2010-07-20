@@ -114,7 +114,7 @@ public class MetaLabeler extends Meta {
 
     public Instances transformData(MultiLabelInstances trainingData) throws Exception {
         // copy existing attributes
-        ArrayList<Attribute> atts = createFastVector(trainingData, metaDatasetChoice, classChoice);
+        ArrayList<Attribute> atts = createHeader(trainingData, metaDatasetChoice, classChoice);
 
         // initialize  classifier instances
         Instances classifierInstances = new Instances(trainingData.getDataSet().relationName(), atts,
@@ -146,7 +146,7 @@ public class MetaLabeler extends Meta {
                 for (int i = 0; i < numLabels; i++) {
                     int labelIndice = labelIndices[i];
                     if (mlTest.getDataSet().attribute(labelIndice).value((int) mlTest.getDataSet().instance(instanceIndex).value(labelIndice)).equals("1")) {
-                        countTrueLabels += 1;
+                        countTrueLabels++;
                     }
                 }
 
