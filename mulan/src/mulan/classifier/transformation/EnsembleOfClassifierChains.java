@@ -141,7 +141,7 @@ public class EnsembleOfClassifierChains extends TransformationBasedMultiLabelLea
                 newLabelIndices[j] = newLabelIndices[randomPosition];
                 newLabelIndices[randomPosition] = temp;
             }
-            System.out.println(Arrays.toString(newLabelIndices));
+            debug(Arrays.toString(newLabelIndices));
 
 
             // MAYBE WE SHOULD CHECK NOT TO PRODUCE THE SAME VECTOR FOR THE INDICES
