@@ -19,7 +19,7 @@
 	<property name="test.includes" value="mulan/**/*Test*" description="Default pattern used to identify tests implementation." />
 
 	<property name="mulan.title" value="Mulan - A Java library for multi-label learning" />
-	<property name="mulan.version" value="1.1.0" />
+	<property name="mulan.version" value="1.2.0" />
 	<property name="weka.version" value="3.7.1" />
 
 	<path id="dependency.libs.path">
