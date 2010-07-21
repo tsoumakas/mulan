@@ -156,7 +156,7 @@ public final class LabelsBuilder {
      * 	the XML format of resulting XML is not valid against the schema
      * @throws ArgumentNullException if path to the file is not specified
      * @throws ArgumentNullException if specified labels meta-data is null
-     * @throws ArgumentException if underlying implementation of specified labels meta-data is not supported
+     * @throws LabelsBuilderException if underlying implementation of specified labels meta-data is not supported
      */
     public static void dumpLabels(LabelsMetaData labelsMetaData, String xmlDumpFilePath) throws LabelsBuilderException {
 
@@ -196,7 +196,7 @@ public final class LabelsBuilder {
      * 	the XML format of resulting XML is not valid against the schema
      * @throws ArgumentNullException if specified output strema is null.
      * @throws ArgumentNullException if specified labels meta-data is null
-     * @throws ArgumentException if underlying implementation of specified labels meta-data is not supported
+     * @throws LabelsBuilderException if underlying implementation of specified labels meta-data is not supported
      */
     public static void dumpLabels(LabelsMetaData labelsMetaData, OutputStream outputStream) throws LabelsBuilderException {
 

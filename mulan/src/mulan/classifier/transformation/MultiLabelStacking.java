@@ -315,7 +315,7 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner
 
     /**
      * Builds the base-level classifiers.
-     * Their predictions are gathered in the {@link #baseLevelPredictions} member
+     * Their predictions are gathered in the baseLevelPredictions member
      * @param trainingSet 
      * @throws Exception
      */
@@ -761,7 +761,7 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner
     }
 
     /**
-     * sets the value for {@link #partialBuild}
+     * sets the value for partialBuild
      * @param partialBuild 
      */
     public void setPartialBuild(boolean partialBuild) {

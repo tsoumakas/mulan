@@ -21,7 +21,6 @@
 package mulan.evaluation.measure;
 
 import weka.classifiers.evaluation.ThresholdCurve;
-import weka.core.FastVector;
 import weka.core.Instances;
 import weka.core.Utils;
 
