@@ -20,15 +20,13 @@
  */
 package mulan.evaluation.measure;
 
-import java.util.ArrayList;
-import mulan.core.MulanRuntimeException;
 import weka.classifiers.evaluation.NominalPrediction;
 import weka.core.FastVector;
 
 /**
  * Implementation of the label-based macro precision measure.
  * 
- * @author Grigorios Tso
+ * @author Grigorios Tsoumakas
  * 
  */
 public abstract class LabelBasedAUC extends ConfidenceMeasureBase {

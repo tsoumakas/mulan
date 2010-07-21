@@ -127,7 +127,7 @@ public abstract class Meta extends MultiLabelMetaLearner {
     /**
      * A method that creates the header of the dataset
      *
-     * @param @param trainingData The initial {@link MultiLabelInstances} dataset
+     * @param trainingData The initial {@link MultiLabelInstances} dataset
      * @param xBased the type for constructing the meta dataset
      * @param xClass the type of the class
      * @return a list of attributes 

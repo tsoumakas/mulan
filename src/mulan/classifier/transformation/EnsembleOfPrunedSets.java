@@ -57,7 +57,6 @@ public class EnsembleOfPrunedSets extends TransformationBasedMultiLabelLearner {
      * @param aB pruned sets parameter b
      * @param baselearner the base learner
      * @param aThreshold the threshold for producing bipartitions
-     * @throws Exception
      */
     public EnsembleOfPrunedSets(double aPercentage, int aNumOfModels, double aThreshold, int aP, PrunedSets.Strategy aStrategy, int aB, Classifier baselearner) {
         super(baselearner);

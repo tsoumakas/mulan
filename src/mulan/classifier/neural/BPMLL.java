@@ -20,11 +20,9 @@
  */
 package mulan.classifier.neural;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
@@ -45,7 +43,6 @@ import weka.core.Instances;
 import weka.core.TechnicalInformation;
 import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
-import weka.experiment.Stats;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.NominalToBinary;
 
