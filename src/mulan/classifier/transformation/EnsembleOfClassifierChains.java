@@ -44,11 +44,12 @@ import weka.filters.unsupervised.instance.RemovePercentage;
  *
  * @author Eleftherios Spyromitros-Xioufis ( espyromi@csd.auth.gr )
  * @author Konstantinos Sechidis (sechidis@csd.auth.gr)
+ * @author Grigorios Tsoumakas (greg@csd.auth.gr)
  */
 public class EnsembleOfClassifierChains extends TransformationBasedMultiLabelLearner {
 
     /**
-     * The aThreshold to use for obtaining bipartitions
+     * The threshold to use for obtaining bipartitions
      */
     protected double threshold;
     /**
@@ -56,9 +57,9 @@ public class EnsembleOfClassifierChains extends TransformationBasedMultiLabelLea
      */
     protected int numOfModels;
     /**
-     * An array of ClassifierChains models
+     * An array of ClassifierChain models
      */
-    protected ClassifierChains[] ensemble;
+    protected ClassifierChain[] ensemble;
     /**
      * Random number generator
      */
@@ -67,7 +68,7 @@ public class EnsembleOfClassifierChains extends TransformationBasedMultiLabelLea
     /**
      * Creates a new object
      *
-     * @param classifier the base classifier for each ClassifierChains model
+     * @param classifier the base classifier for each ClassifierChain model
      * @param aNumOfModels the number of models
      * @param aThreshold the aThreshold to obtain bipartitions
      */
@@ -75,11 +76,8 @@ public class EnsembleOfClassifierChains extends TransformationBasedMultiLabelLea
         super(classifier);
         numOfModels = aNumOfModels;
         threshold = aThreshold;
-        ensemble = new ClassifierChains[aNumOfModels];
+        ensemble = new ClassifierChain[aNumOfModels];
         rand = new Random(1);
-        for (int i = 0; i < numOfModels; i++) {
-            ensemble[i] = new ClassifierChains(classifier);
-        }
     }
 
     /**
@@ -130,24 +128,23 @@ public class EnsembleOfClassifierChains extends TransformationBasedMultiLabelLea
             Instances trainDataSet = Filter.useFilter(dataSet, rmvp);
             MultiLabelInstances train = new MultiLabelInstances(trainDataSet, trainingSet.getLabelsMetaData());
 
-            int[] newLabelIndices = Arrays.copyOf(labelIndices, labelIndices.length);
-
-            // Shuffle the elements in the array
-            for (int j = 0; j < newLabelIndices.length; j++) {
-                int randomPosition = rand.nextInt(newLabelIndices.length);
-                int temp = newLabelIndices[j];
-                newLabelIndices[j] = newLabelIndices[randomPosition];
-                newLabelIndices[randomPosition] = temp;
+            int[] chain = new int[numLabels];
+            for (int j=0; j<numLabels; j++)
+                chain[j]=j;
+            for (int j = 0; j < chain.length; j++) {
+                int randomPosition = rand.nextInt(chain.length);
+                int temp = chain[j];
+                chain[j] = chain[randomPosition];
+                chain[randomPosition] = temp;
             }
-            debug(Arrays.toString(newLabelIndices));
+            debug(Arrays.toString(chain));
 
 
             // MAYBE WE SHOULD CHECK NOT TO PRODUCE THE SAME VECTOR FOR THE INDICES
             // BUT IN THE PAPER IT DID NOT MENTION SOMETHING LIKE THAT
             // IT JUST SIMPLE SAY A RANDOM CHAIN ORDERING OF L
 
-            ensemble[i].setRandom(true);
-            ensemble[i].setNewLabelIndices(newLabelIndices);
+            ensemble[i] = new ClassifierChain(baseClassifier, chain);
             ensemble[i].build(train);
         }
 
@@ -156,7 +153,6 @@ public class EnsembleOfClassifierChains extends TransformationBasedMultiLabelLea
     @Override
     protected MultiLabelOutput makePredictionInternal(Instance instance)
             throws Exception, InvalidDataException {
-
 
         int[] sumVotes = new int[numLabels];
 
