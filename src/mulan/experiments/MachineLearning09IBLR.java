@@ -47,7 +47,7 @@ public class MachineLearning09IBLR extends Experiment{
 
 			Random random = new Random(1);
 
-			for (int repetition = 0; repetition < 5; repetition++) {
+			for (int repetition = 0; repetition < 10; repetition++) {
 				// perform 10-fold CV and add each to the current results
 				dataSet.getDataSet().randomize(random);
 				for (int fold = 0; fold < 10; fold++) {
