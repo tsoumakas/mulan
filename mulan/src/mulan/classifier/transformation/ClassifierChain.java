@@ -15,7 +15,7 @@
  */
 
 /*
- *    ClassifierChains.java
+ *    ClassifierChain.java
  *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
  */
 package mulan.classifier.transformation;
@@ -44,18 +44,14 @@ import weka.filters.unsupervised.attribute.Remove;
  *
  * @author Eleftherios Spyromitros-Xioufis ( espyromi@csd.auth.gr )
  * @author Konstantinos Sechidis (sechidis@csd.auth.gr)
+ * @author Grigorios Tsoumakas (greg@csd.auth.gr)
  */
-public class ClassifierChains extends TransformationBasedMultiLabelLearner {
+public class ClassifierChain extends TransformationBasedMultiLabelLearner {
 
     /**
      * The new chain ordering of the label indices
      */
-    protected int[] newLabelIndices;
-    /**
-     * A boolean variable that determines whether we are taking the label indices
-     * as they are or not.
-     */
-    boolean random;
+    private int[] chain;
 
     /**
      * Returns a string describing classifier.
@@ -89,13 +85,6 @@ public class ClassifierChains extends TransformationBasedMultiLabelLearner {
     }
 
     /**
-     * Taking the new random chaim ordering of the label indices
-     * @param newLabelIndices
-     */
-    public void setNewLabelIndices(int[] newLabelIndices) {
-        this.newLabelIndices = newLabelIndices;
-    }
-    /**
      * The ensemble of binary relevance models. These are Weka
      * FilteredClassifier objects, where the filter corresponds to removing all
      * label apart from the one that serves as a target for the corresponding
@@ -104,11 +93,14 @@ public class ClassifierChains extends TransformationBasedMultiLabelLearner {
     protected FilteredClassifier[] ensemble;
 
     /**
-     * Determine whether we have a new label indices ordering or not
-     * @param random
+     * Creates a new instance
+     *
+     * @param classifier  the base-level classification algorithm that will be
+     * used for training each of the binary models
      */
-    public void setRandom(boolean random) {
-        this.random = random;
+    public ClassifierChain(Classifier classifier, int[] aChain) {
+        super(classifier);
+        chain = aChain;
     }
 
     /**
@@ -117,9 +109,10 @@ public class ClassifierChains extends TransformationBasedMultiLabelLearner {
      * @param classifier  the base-level classification algorithm that will be
      * used for training each of the binary models
      */
-    public ClassifierChains(Classifier classifier) {
+    public ClassifierChain(Classifier classifier) {
         super(classifier);
-        random = false;
+        for (int i=0; i<numLabels; i++)
+            chain[i] = i;
     }
 
     protected void buildInternal(MultiLabelInstances train) throws Exception {
@@ -127,9 +120,6 @@ public class ClassifierChains extends TransformationBasedMultiLabelLearner {
         numLabels = train.getNumLabels();
         ensemble = new FilteredClassifier[numLabels];
         trainDataset = train.getDataSet();
-        if (random == false) {//take label indices as they are
-            newLabelIndices = this.labelIndices;
-        }
 
         for (int i = 0; i < numLabels; i++) {
             ensemble[i] = new FilteredClassifier();
@@ -141,7 +131,7 @@ public class ClassifierChains extends TransformationBasedMultiLabelLearner {
             int[] indicesToRemove = new int[numLabels - 1 - i];
             int counter2 = 0;
             for (int counter1 = 0; counter1 < numLabels - i - 1; counter1++) {
-                indicesToRemove[counter1] = newLabelIndices[numLabels - 1 - counter2];
+                indicesToRemove[counter1] = labelIndices[chain[numLabels - 1 - counter2]];
                 counter2++;
             }
 
@@ -151,7 +141,7 @@ public class ClassifierChains extends TransformationBasedMultiLabelLearner {
             remove.setInvertSelection(false);
             ensemble[i].setFilter(remove);
 
-            trainDataset.setClassIndex(newLabelIndices[i]);
+            trainDataset.setClassIndex(labelIndices[chain[i]]);
             debug("Bulding model " + (i + 1) + "/" + numLabels);
             ensemble[i].buildClassifier(trainDataset);
         }
@@ -174,12 +164,12 @@ public class ClassifierChains extends TransformationBasedMultiLabelLearner {
 
             // Ensure correct predictions both for class values {0,1} and {1,0}
             Attribute classAttribute = ensemble[counter].getFilter().getOutputFormat().classAttribute();
-            bipartition[counter] = (classAttribute.value(maxIndex).equals("1")) ? true : false;
+            bipartition[chain[counter]] = (classAttribute.value(maxIndex).equals("1")) ? true : false;
 
             // The confidence of the label being equal to 1
-            confidences[counter] = distribution[classAttribute.indexOfValue("1")];
+            confidences[chain[counter]] = distribution[classAttribute.indexOfValue("1")];
 
-            tempInstance.setValue(newLabelIndices[counter], maxIndex);
+            tempInstance.setValue(labelIndices[chain[counter]], maxIndex);
 
         }
 
