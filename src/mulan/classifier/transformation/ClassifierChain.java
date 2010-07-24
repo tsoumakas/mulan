@@ -83,7 +83,6 @@ public class ClassifierChain extends TransformationBasedMultiLabelLearner {
         result.setValue(Field.ADDRESS, "Bled, Slovenia");
         return result;
     }
-
     /**
      * The ensemble of binary relevance models. These are Weka
      * FilteredClassifier objects, where the filter corresponds to removing all
@@ -111,11 +110,17 @@ public class ClassifierChain extends TransformationBasedMultiLabelLearner {
      */
     public ClassifierChain(Classifier classifier) {
         super(classifier);
-        for (int i=0; i<numLabels; i++)
-            chain[i] = i;
     }
 
     protected void buildInternal(MultiLabelInstances train) throws Exception {
+        if (chain == null) {
+            chain = new int[numLabels];
+            for (int i = 0; i < numLabels; i++) {
+                chain[i] = i;
+            }
+        }
+
+
         Instances trainDataset;
         numLabels = train.getNumLabels();
         ensemble = new FilteredClassifier[numLabels];
