@@ -36,11 +36,9 @@ import weka.core.Instances;
 public class Ranker {
 
     /**
-     * Calls a specified {@link AttributeEvaluator} to evaluate each feature attribute
-     * of specified {@link MultiLabelInstances} data set.
-     * Internally it uses {@link weka.attributeSelection.Ranker}, where
-     * {@link weka.attributeSelection.Ranker#setStartSet(String)} is preset with range of
-     * only feature attributes indices.
+     * Calls a specified {@link AttributeEvaluator} to evaluate each feature 
+     * attribute of specified {@link MultiLabelInstances} data set, excluding
+     * labels. Internally it uses {@link weka.attributeSelection.Ranker}
      *
      * @param attributeEval the attribute evaluator to guide the search
      * @param mlData the multi-label instances data set
