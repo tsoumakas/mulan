@@ -50,6 +50,7 @@ import weka.core.Instances;
  * </pre>
  *
  * @author Grigorios Tsoumakas
+ * @version 10 August 2010
  */
 public class MultiClassAttributeEvaluator extends ASEvaluation implements AttributeEvaluator {
 
@@ -65,7 +66,6 @@ public class MultiClassAttributeEvaluator extends ASEvaluation implements Attrib
         Instances data;
         try {
             data = dt.transformInstances(mlData);
-            System.out.println(data);
             ((ASEvaluation) baseAttributeEvaluator).buildEvaluator(data);
         } catch (Exception ex) {
             Logger.getLogger(MultiClassAttributeEvaluator.class.getName()).log(Level.SEVERE, null, ex);
