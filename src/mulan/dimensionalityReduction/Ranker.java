@@ -21,16 +21,17 @@
 package mulan.dimensionalityReduction;
 
 import mulan.data.MultiLabelInstances;
+import mulan.transformations.RemoveAllLabels;
 import weka.attributeSelection.ASEvaluation;
 import weka.attributeSelection.AttributeEvaluator;
 import weka.core.Instances;
-import weka.core.Range;
 
 /**
  * Ranks attributes according to an AttributeEvaluator. It internally uses Weka's
  * Ranker, initialized so as to neglect the labels.
  *
  * @author Grigorios Tsoumakas
+ * @version 10 August 2010
  */
 public class Ranker {
 
@@ -47,10 +48,8 @@ public class Ranker {
      * @throws Exception if an error occur in search
      */
     public int[] search(AttributeEvaluator attributeEval, MultiLabelInstances mlData) throws Exception {
-        Instances data = mlData.getDataSet();
-        String startSet = Range.indicesToRangeList(mlData.getLabelIndices());
+        Instances data = RemoveAllLabels.transformInstances(mlData);
         weka.attributeSelection.Ranker wekaRanker = new weka.attributeSelection.Ranker();
-        wekaRanker.setStartSet(startSet);
         return wekaRanker.search((ASEvaluation) attributeEval, data);
     }
 }
