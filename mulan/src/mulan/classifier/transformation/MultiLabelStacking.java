@@ -283,7 +283,7 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner
                     for (int j = 0; j < numLabels; j++) {
                         attributes.add(train.attribute(labelIndices[j]));
                     }
-                    attributes.add(train.attribute(labelIndices[i]));
+                    attributes.add(train.attribute(labelIndices[i]).copy("meta"));
 
                     Instances iporesult = new Instances("Meta format",
                             attributes, 0);
@@ -416,7 +416,7 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner
                     attributes.add(train.attribute(labelIndices[j]));
                 }
             }
-            attributes.add(train.attribute(labelIndices[i]));
+            attributes.add(train.attribute(labelIndices[i]).copy("meta"));
 
             metaLevelData[i] = new Instances("Meta format", attributes, 0);
             metaLevelData[i].setClassIndex(metaLevelData[i].numAttributes() - 1);
