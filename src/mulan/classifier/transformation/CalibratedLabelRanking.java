@@ -89,6 +89,8 @@ public class CalibratedLabelRanking extends TransformationBasedMultiLabelLearner
     protected BinaryRelevance virtualLabelModels;
     /** whether to use standard voting or the fast qweighted algorithm */
     private boolean useStandardVoting = true;
+    /** whether no data exist for one-vs-one learning */
+    protected boolean[] nodata;
 
     /**
      * Constructor that initializes the learner with a base algorithm
@@ -128,6 +130,7 @@ public class CalibratedLabelRanking extends TransformationBasedMultiLabelLearner
         // One-vs-one models
         numModels = ((numLabels) * (numLabels - 1)) / 2;
         oneVsOneModels = AbstractClassifier.makeCopies(getBaseClassifier(), numModels);
+        nodata = new boolean[numModels];
         metaDataTest = new Instances[numModels];
 
         Instances trainingData = trainingSet.getDataSet();
@@ -165,21 +168,14 @@ public class CalibratedLabelRanking extends TransformationBasedMultiLabelLearner
                     }
                 }
 
-                // remove all labels apart from label 1 and place it at the end
+                // remove all labels apart from label1 and place it at the end
                 Reorder filter = new Reorder();
                 int numPredictors = trainingData.numAttributes() - numLabels;
                 int[] reorderedIndices = new int[numPredictors + 1];
-                int labelIndicesCounter = 0;
-                int reorderedIndicesCounter = 0;
-                for (int i = 0; i < numPredictors + numLabels; i++) {
-                    if (labelIndices[labelIndicesCounter] == i) {
-                        labelIndicesCounter++;
-                        continue;
-                    }
-                    reorderedIndices[reorderedIndicesCounter] = i;
-                    reorderedIndicesCounter++;
+                for (int i = 0; i < numPredictors; i++) {
+                    reorderedIndices[i] = featureIndices[i];
                 }
-                reorderedIndices[reorderedIndicesCounter] = labelIndices[label1];
+                reorderedIndices[numPredictors] = labelIndices[label1];
                 filter.setAttributeIndicesArray(reorderedIndices);
                 filter.setInputFormat(dataOneVsOne);
                 dataOneVsOne = Filter.useFilter(dataOneVsOne, filter);
@@ -187,7 +183,11 @@ public class CalibratedLabelRanking extends TransformationBasedMultiLabelLearner
                 dataOneVsOne.setClassIndex(numPredictors);
 
                 // build model label1 vs label2
-                oneVsOneModels[counter].buildClassifier(dataOneVsOne);
+                if (dataOneVsOne.size() > 0) {
+                    oneVsOneModels[counter].buildClassifier(dataOneVsOne);
+                } else {
+                    nodata[counter] = true;
+                }
                 dataOneVsOne.delete();
                 metaDataTest[counter] = dataOneVsOne;
                 counter++;
@@ -233,23 +233,24 @@ public class CalibratedLabelRanking extends TransformationBasedMultiLabelLearner
         int counter = 0;
         for (int label1 = 0; label1 < numLabels - 1; label1++) {
             for (int label2 = label1 + 1; label2 < numLabels; label2++) {
-                double distribution[] = new double[2];
-                try {
-                    newInstance.setDataset(metaDataTest[counter]);
-                    distribution = oneVsOneModels[counter].distributionForInstance(newInstance);
-                } catch (Exception e) {
-                    System.out.println(e);
-                    return null;
-                }
-                int maxIndex = (distribution[0] > distribution[1]) ? 0 : 1;
+                if (!nodata[counter]) {
+                    double distribution[] = new double[2];
+                    try {
+                        newInstance.setDataset(metaDataTest[counter]);
+                        distribution = oneVsOneModels[counter].distributionForInstance(newInstance);
+                    } catch (Exception e) {
+                        System.out.println(e);
+                        return null;
+                    }
+                    int maxIndex = (distribution[0] > distribution[1]) ? 0 : 1;
+                    // Ensure correct predictions both for class values {0,1} and {1,0}
+                    Attribute classAttribute = metaDataTest[counter].classAttribute();
 
-                // Ensure correct predictions both for class values {0,1} and {1,0}
-                Attribute classAttribute = metaDataTest[counter].classAttribute();
-
-                if (classAttribute.value(maxIndex).equals("1")) {
-                    voteLabel[label1]++;
-                } else {
-                    voteLabel[label2]++;
+                    if (classAttribute.value(maxIndex).equals("1")) {
+                        voteLabel[label1]++;
+                    } else {
+                        voteLabel[label2]++;
+                    }
                 }
 
                 counter++;
