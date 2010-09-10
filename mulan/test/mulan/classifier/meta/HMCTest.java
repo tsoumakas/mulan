@@ -6,12 +6,8 @@ import mulan.classifier.MultiLabelLearnerBase;
 import mulan.classifier.MultiLabelOutput;
 import mulan.classifier.transformation.LabelPowerset;
 import mulan.data.MultiLabelInstances;
-
-import org.junit.Ignore;
-
 import weka.classifiers.trees.J48;
 
-@Ignore
 public class HMCTest extends MultiLabelMetaLearnerTest {
 
     @Override
