@@ -22,11 +22,14 @@ package mulan.classifier.meta.thresholding;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import mulan.classifier.MultiLabelLearner;
 import mulan.classifier.MultiLabelOutput;
 import mulan.data.DataUtils;
 import mulan.data.MultiLabelInstances;
+import mulan.transformations.RemoveAllLabels;
 
 import weka.classifiers.Classifier;
 import weka.core.Attribute;
@@ -52,8 +55,14 @@ public class ThresholdPrediction extends Meta {
      * @param classifier the binary classification
      * @param kFolds the number of folds for cross validation
      */
-    public ThresholdPrediction(MultiLabelLearner baseLearner, Classifier classifier, int kFolds) {
-        super(baseLearner, classifier, kFolds);
+    public ThresholdPrediction(MultiLabelLearner baseLearner, Classifier classifier, String metaDataChoice, int folds) {
+        super(baseLearner, classifier, metaDataChoice);
+        try {
+            foldLearner = baseLearner.makeCopy();
+        } catch (Exception ex) {
+            Logger.getLogger(ThresholdPrediction.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        kFoldsCV = folds;
     }
 
     @Override
@@ -64,7 +73,7 @@ public class ThresholdPrediction extends Meta {
 
         modifiedIns.insertAttributeAt(modifiedIns.numAttributes());
         // set dataset to instance
-        modifiedIns.setDataset(header);
+        modifiedIns.setDataset(classifierInstances);
 
         double bipartition_key = classifier.classifyInstance(modifiedIns);
         double[] arrayOfScores = new double[numLabels];
@@ -83,34 +92,37 @@ public class ThresholdPrediction extends Meta {
     }
 
     public Instances transformData(MultiLabelInstances trainingData) throws Exception {
-        // copy existing attributes
-        ArrayList<Attribute> atts = createHeader(trainingData, metaDatasetChoice, "Numeric-Class");
-
         // initialize  classifier instances
-        Instances classifierInstances = new Instances(trainingData.getDataSet().relationName(), atts,
-                trainingData.getDataSet().numInstances());
+        classifierInstances = RemoveAllLabels.transformInstances(trainingData);
+        classifierInstances = new Instances(classifierInstances, 0);
+        classifierInstances.insertAttributeAt(new Attribute("Class"), classifierInstances.numAttributes());
         classifierInstances.setClassIndex(classifierInstances.numAttributes() - 1);
 
         for (int k = 0; k < kFoldsCV; k++) {
             //Split data to train and test sets
+            MultiLabelLearner tempLearner;
             MultiLabelInstances mlTest;
             if (kFoldsCV == 1) {
-                mlTest = trainingData.clone();
-                baseLearner.build(mlTest);
+                tempLearner = baseLearner;
+                mlTest = trainingData;
             } else {
                 Instances train = trainingData.getDataSet().trainCV(kFoldsCV, k);
                 Instances test = trainingData.getDataSet().testCV(kFoldsCV, k);
                 MultiLabelInstances mlTrain = new MultiLabelInstances(train, trainingData.getLabelsMetaData());
                 mlTest = new MultiLabelInstances(test, trainingData.getLabelsMetaData());
-                baseLearner.build(mlTrain);
+                tempLearner = foldLearner.makeCopy();
+                tempLearner.build(mlTrain);
             }
 
             // copy features and labels, set metalabels
             for (int instanceIndex = 0; instanceIndex < mlTest.getDataSet().numInstances(); instanceIndex++) {
+                Instance instance = mlTest.getDataSet().instance(instanceIndex);
+
                 // initialize new class values
                 double[] newValues = new double[classifierInstances.numAttributes()];
-                // copy features
-                valuesX(mlTest, newValues, metaDatasetChoice, instanceIndex);
+
+                // create features
+                valuesX(tempLearner, instance, newValues, metaDatasetChoice);
 
                 boolean[] trueLabels = new boolean[numLabels];
                 // Indices of labels to take the truelabels for test instances
