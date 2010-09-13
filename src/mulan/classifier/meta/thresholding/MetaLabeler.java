@@ -21,10 +21,16 @@
 package mulan.classifier.meta.thresholding;
 
 import java.util.ArrayList;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import mulan.classifier.MultiLabelLearner;
 import mulan.classifier.MultiLabelOutput;
 import mulan.data.DataUtils;
 import mulan.data.MultiLabelInstances;
+import mulan.transformations.RemoveAllLabels;
 
 import weka.classifiers.Classifier;
 import weka.core.Attribute;
@@ -39,7 +45,7 @@ import weka.core.TechnicalInformation.Type;
  * @author Marios Ioannou
  * @author George Sakkas
  * @author Grigorios Tsoumakas
- * @version 0.1
+ * @version 12 September 2010
  */
 public class MetaLabeler extends Meta {
 
@@ -53,17 +59,17 @@ public class MetaLabeler extends Meta {
      * @param classifier the binary classification
      * @param kFolds the number of folds for cross validation
      */
-    public MetaLabeler(MultiLabelLearner baseLearner, Classifier classifier, int kFolds) {
-        super(baseLearner, classifier, kFolds);
-        classChoice = "Nominal-Class";
-    }
-
-    public void chooseNumericClass() {
-        classChoice = "Numeric-Class";
-    }
-
-    public void chooseNominalClass() {
-        classChoice = "Nominal-Class";
+    public MetaLabeler(MultiLabelLearner baseLearner, Classifier classifier, String metaDataChoice, String aClassChoice) {
+        super(baseLearner, classifier, metaDataChoice);
+        if (!metaDataChoice.equals("Content-Based")) {
+            try {
+                foldLearner = baseLearner.makeCopy();
+            } catch (Exception ex) {
+                Logger.getLogger(MetaLabeler.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            kFoldsCV = 3;
+        }
+        classChoice = aClassChoice;
     }
 
     @Override
@@ -80,19 +86,20 @@ public class MetaLabeler extends Meta {
 
     @Override
     protected MultiLabelOutput makePredictionInternal(Instance instance) throws Exception {
+        //System.out.println(instance);
         MultiLabelOutput mlo = baseLearner.makePrediction(instance);
         int[] arrayOfRankink = new int[numLabels];
         boolean[] predictedLabels = new boolean[numLabels];
         Instance modifiedIns = modifiedInstanceX(instance, metaDatasetChoice);
-
+        //System.out.println(modifiedIns);
         modifiedIns.insertAttributeAt(modifiedIns.numAttributes());
         // set dataset to instance
-        modifiedIns.setDataset(header);
+        modifiedIns.setDataset(classifierInstances);
         //get the bipartition_key after classify the instance
         int bipartition_key;
         if (classChoice.compareTo("Nominal-Class") == 0) {
             double classify_key = classifier.classifyInstance(modifiedIns);
-            String s = header.attribute(header.numAttributes() - 1).value((int) classify_key);
+            String s = classifierInstances.attribute(classifierInstances.numAttributes() - 1).value((int) classify_key);
             bipartition_key = Integer.valueOf(s);
         } else { //Numeric-Class
             double classify_key = classifier.classifyInstance(modifiedIns);
@@ -112,54 +119,112 @@ public class MetaLabeler extends Meta {
         return final_mlo;
     }
 
-    public Instances transformData(MultiLabelInstances trainingData) throws Exception {
-        // copy existing attributes
-        ArrayList<Attribute> atts = createHeader(trainingData, metaDatasetChoice, classChoice);
-
-        // initialize  classifier instances
-        Instances classifierInstances = new Instances(trainingData.getDataSet().relationName(), atts,
-                trainingData.getDataSet().numInstances());
-        classifierInstances.setClassIndex(classifierInstances.numAttributes() - 1);
-
-        for (int k = 0; k < kFoldsCV; k++) {
-            //Split data to train and test sets
-            MultiLabelInstances mlTest;
-            if (kFoldsCV == 1) {
-                mlTest = trainingData.clone();
-                baseLearner.build(mlTest);
-            } else {
-                Instances train = trainingData.getDataSet().trainCV(kFoldsCV, k);
-                Instances test = trainingData.getDataSet().testCV(kFoldsCV, k);
-                MultiLabelInstances mlTrain = new MultiLabelInstances(train, trainingData.getLabelsMetaData());
-                mlTest = new MultiLabelInstances(test, trainingData.getLabelsMetaData());
-                baseLearner.build(mlTrain);
+    private int countTrueLabels(Instance instance) {
+        int numTrueLabels = 0;
+        for (int i = 0; i < numLabels; i++) {
+            int labelIndice = labelIndices[i];
+            if (instance.dataset().attribute(labelIndice).value((int) instance.value(labelIndice)).equals("1")) {
+                numTrueLabels++;
             }
+        }
+        return numTrueLabels;
+    }
 
-            // copy features and labels, set metalabels
-            for (int instanceIndex = 0; instanceIndex < mlTest.getDataSet().numInstances(); instanceIndex++) {
-                // initialize new class values
-                double[] newValues = new double[classifierInstances.numAttributes()];
-                // copy features
-                valuesX(mlTest, newValues, metaDatasetChoice, instanceIndex);
-                //set the number of true labels of an instance
-                int countTrueLabels = 0;
+    protected Instances transformData(MultiLabelInstances trainingData) throws Exception {
+        // initialize  classifier instances
+        classifierInstances = RemoveAllLabels.transformInstances(trainingData);
+        classifierInstances = new Instances(classifierInstances, 0);
+        Attribute target = null;
+        if (classChoice.equals("Nominal-Class")) {
+            int countTrueLabels = 0;
+            Set<Integer> treeSet = new TreeSet();
+            for (int instanceIndex = 0; instanceIndex < trainingData.getDataSet().numInstances(); instanceIndex++) {
+                countTrueLabels = 0;
                 for (int i = 0; i < numLabels; i++) {
                     int labelIndice = labelIndices[i];
-                    if (mlTest.getDataSet().attribute(labelIndice).value((int) mlTest.getDataSet().instance(instanceIndex).value(labelIndice)).equals("1")) {
+                    if (trainingData.getDataSet().attribute(labelIndice).value((int) trainingData.getDataSet().instance(instanceIndex).value(labelIndice)).equals("1")) {
                         countTrueLabels++;
                     }
                 }
+                treeSet.add(countTrueLabels);
+            }
+            ArrayList<String> classlabel = new ArrayList<String>();
+            for (Integer x : treeSet) {
+                classlabel.add(x.toString());
+            }
+            target = new Attribute("Class", classlabel);
+        } else if (classChoice.equals("Numeric-Class")) {
+            target = new Attribute("Class");
+        }
+        classifierInstances.insertAttributeAt(target, classifierInstances.numAttributes());
+        classifierInstances.setClassIndex(classifierInstances.numAttributes() - 1);
 
-                if (classChoice.compareTo("Nominal-Class") == 0) {
-                    newValues[newValues.length - 1] = classifierInstances.attribute(classifierInstances.numAttributes() - 1).indexOfValue("" + countTrueLabels);
-                } else if (classChoice.compareTo("Numeric-Class") == 0) {
-                    newValues[newValues.length - 1] = countTrueLabels;
+        // create instances
+        if (metaDatasetChoice.equals("Content-Based")) {
+            for (int instanceIndex = 0; instanceIndex < trainingData.getNumInstances(); instanceIndex++) {
+                Instance instance = trainingData.getDataSet().instance(instanceIndex);
+                double[] values = instance.toDoubleArray();
+                double[] newValues = new double[classifierInstances.numAttributes()];
+                for (int i = 0; i < featureIndices.length; i++) {
+                    newValues[i] = values[featureIndices[i]];
                 }
-                // add the new insatnce to  classifierInstances
-                Instance newInstance = DataUtils.createInstance(mlTest.getDataSet().instance(instanceIndex), mlTest.getDataSet().instance(instanceIndex).weight(), newValues);
+
+                //set the number of true labels of an instance
+                int numTrueLabels = countTrueLabels(instance);
+                if (classChoice.compareTo("Nominal-Class") == 0) {
+                    newValues[newValues.length - 1] = classifierInstances.attribute(classifierInstances.numAttributes() - 1).indexOfValue("" + numTrueLabels);
+                } else if (classChoice.compareTo("Numeric-Class") == 0) {
+                    newValues[newValues.length - 1] = numTrueLabels;
+                }
+                Instance newInstance = DataUtils.createInstance(instance, instance.weight(), newValues);
                 classifierInstances.add(newInstance);
             }
+        } else {
+            for (int k = 0; k < kFoldsCV; k++) {
+                //Split data to train and test sets
+                MultiLabelLearner tempLearner;
+                MultiLabelInstances mlTest;
+                if (kFoldsCV == 1) {
+                    tempLearner = baseLearner;
+                    mlTest = trainingData;
+                } else {
+                    Instances train = trainingData.getDataSet().trainCV(kFoldsCV, k);
+                    Instances test = trainingData.getDataSet().testCV(kFoldsCV, k);
+                    MultiLabelInstances mlTrain = new MultiLabelInstances(train, trainingData.getLabelsMetaData());
+                    mlTest = new MultiLabelInstances(test, trainingData.getLabelsMetaData());
+                    tempLearner = foldLearner.makeCopy();
+                    tempLearner.build(mlTrain);
+                }
+
+                // copy features and labels, set metalabels
+                for (int instanceIndex = 0; instanceIndex < mlTest.getDataSet().numInstances(); instanceIndex++) {
+                    Instance instance = mlTest.getDataSet().instance(instanceIndex);
+
+                    // initialize new class values
+                    double[] newValues = new double[classifierInstances.numAttributes()];
+
+                    // create features
+                    valuesX(tempLearner, instance, newValues, metaDatasetChoice);
+
+                    //set the number of true labels of an instance   
+                    int numTrueLabels = countTrueLabels(instance);
+                    if (classChoice.compareTo("Nominal-Class") == 0) {
+                        newValues[newValues.length - 1] = classifierInstances.attribute(classifierInstances.numAttributes() - 1).indexOfValue("" + numTrueLabels);
+                    } else if (classChoice.compareTo("Numeric-Class") == 0) {
+                        newValues[newValues.length - 1] = numTrueLabels;
+                    }
+
+                    // add the new instance to  classifierInstances
+                    Instance newInstance = DataUtils.createInstance(mlTest.getDataSet().instance(instanceIndex), mlTest.getDataSet().instance(instanceIndex).weight(), newValues);
+                    classifierInstances.add(newInstance);
+                }
+            }
         }
+
         return classifierInstances;
+    }
+
+    public void setFolds(int f) {
+        kFoldsCV = f;
     }
 }

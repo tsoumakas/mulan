@@ -3,12 +3,10 @@
  * and open the template in the editor.
  */package mulan.classifier.meta.thresholding;
 
-import mulan.classifier.meta.*;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Set;
-import java.util.TreeSet;
 
+import mulan.classifier.meta.*;
 import mulan.classifier.MultiLabelLearner;
 import mulan.classifier.MultiLabelOutput;
 import mulan.data.DataUtils;
@@ -16,7 +14,6 @@ import mulan.data.MultiLabelInstances;
 import mulan.transformations.RemoveAllLabels;
 
 import weka.classifiers.Classifier;
-import weka.core.Attribute;
 import weka.core.Instance;
 import weka.core.Instances;
 
@@ -27,21 +24,24 @@ import weka.core.Instances;
  * @author Marios Ioannou
  * @author George Sakkas
  * @author Grigorios Tsoumakas
- * @version 0.1
+ * @version 12 September 2010
  */
 
 public abstract class Meta extends MultiLabelMetaLearner {
     /** the classifier to learn the number of top labels or the threshold */
     protected Classifier classifier;
 
-    /** the header of the instances */
-    protected Instances header;
+    /** the training instances for the single-label model */
+    protected Instances classifierInstances;
 
     /** the type for constructing the meta dataset*/
     protected String metaDatasetChoice;
 
     /**the number of folds for cross validation*/
     protected int kFoldsCV;
+
+    /** clean multi-label learner for cross-validation  */
+    protected MultiLabelLearner foldLearner;
 
     /**
      * Constructor that initializes the learner 
@@ -50,31 +50,14 @@ public abstract class Meta extends MultiLabelMetaLearner {
      * @param classifier the binary classification
      * @param kFolds the number of folds for cross validation
      */
-    public Meta(MultiLabelLearner baseLearner, Classifier classifier, int kFolds) {
+    public Meta(MultiLabelLearner baseLearner, Classifier aClassifier, String aMetaDatasetChoice) {
         super(baseLearner);
-        metaDatasetChoice = "Content-Based";
-        this.classifier = classifier;
-        kFoldsCV = kFolds;
-    }
-
-    public void chooseContentBased() {
-        metaDatasetChoice = "Content-Based";
-    }
-
-    public void chooseRankBased() {
-        metaDatasetChoice = "Rank-Based";
-    }
-
-    public void chooseScoreBased() {
-        metaDatasetChoice = "Score-Based";
+        metaDatasetChoice = aMetaDatasetChoice;
+        classifier = aClassifier;
     }
 
     public Classifier getClassifier() {
         return classifier;
-    }
-
-    public Instances getHeader() {
-        return header;
     }
 
     /**
@@ -125,53 +108,6 @@ public abstract class Meta extends MultiLabelMetaLearner {
     }
 
     /**
-     * A method that creates the header of the dataset
-     *
-     * @param trainingData The initial {@link MultiLabelInstances} dataset
-     * @param xBased the type for constructing the meta dataset
-     * @param xClass the type of the class
-     * @return a list of attributes 
-     */
-    protected ArrayList<Attribute> createHeader(MultiLabelInstances trainingData, String xBased, String xClass) {
-
-        // copy existing attributes
-        ArrayList<Attribute> atts = new ArrayList<Attribute>();
-        if (xBased.compareTo("Content-Based") == 0) {
-            for (int i = 0; i < featureIndices.length; i++) {
-                atts.add(trainingData.getDataSet().attribute(featureIndices[i]));
-            }
-        } else {     //Score-Based or Rank-Based
-            for (int i = 0; i < numLabels; i++) {
-                Attribute f = new Attribute("Label-" + i);   
-                atts.add(f);
-            }
-        }
-        // add metalabel attributes
-        if (xClass.compareTo("Nominal-Class") == 0) {
-            int countTrueLabels = 0;
-            Set<Integer> treeSet = new TreeSet();
-            for (int instanceIndex = 0; instanceIndex < trainingData.getDataSet().numInstances(); instanceIndex++) {
-                countTrueLabels = 0;
-                for (int i = 0; i < numLabels; i++) {
-                    int labelIndice = labelIndices[i];
-                    if (trainingData.getDataSet().attribute(labelIndice).value((int) trainingData.getDataSet().instance(instanceIndex).value(labelIndice)).equals("1")) {
-                        countTrueLabels++;
-                    }
-                }
-                treeSet.add(countTrueLabels);
-            }
-            ArrayList<String> classlabel = new ArrayList<String>();
-            for (Integer x : treeSet) {
-                classlabel.add(x.toString());
-            }
-            atts.add(new Attribute("Class", classlabel));
-        } else if (xClass.compareTo("Numeric-Class") == 0)
-            atts.add(new Attribute("Class"));
-        
-        return atts;
-    }
-
-    /**
      * A method that fill the array "newValues"
      *
      * @param mlTest the test dataset
@@ -180,18 +116,18 @@ public abstract class Meta extends MultiLabelMetaLearner {
      * @param instanceIndex
      * @throws Exception
      */
-    protected void valuesX(MultiLabelInstances mlTest, double[] newValues, String xBased, int instanceIndex) throws Exception {
+    protected void valuesX(MultiLabelLearner learner, Instance instance, double[] newValues, String xBased) throws Exception {
         MultiLabelOutput mlo = null;
         if (metaDatasetChoice.compareTo("Content-Based") == 0) {
-            double[] values = mlTest.getDataSet().instance(instanceIndex).toDoubleArray();
+            double[] values = instance.toDoubleArray();
             for (int i=0; i<featureIndices.length; i++) 
                 newValues[i] = values[featureIndices[i]];
         } else if (metaDatasetChoice.compareTo("Score-Based") == 0) {
-            mlo = baseLearner.makePrediction(mlTest.getDataSet().instance(instanceIndex));
+            mlo = learner.makePrediction(instance);
             double[] values = mlo.getConfidences();
             System.arraycopy(values, 0, newValues, 0, values.length);
         } else if (metaDatasetChoice.compareTo("Rank-Based") == 0) {
-            mlo = baseLearner.makePrediction(mlTest.getDataSet().instance(instanceIndex));
+            mlo = learner.makePrediction(instance);
             double[] values = mlo.getConfidences();
             ArrayList<Double> list = new ArrayList();
             for (int i = 0; i < numLabels; i++) {
@@ -208,16 +144,17 @@ public abstract class Meta extends MultiLabelMetaLearner {
 
     @Override
     protected void buildInternal(MultiLabelInstances trainingData) throws Exception {
+
         // build the base multilabel learner from the original training data
         baseLearner.build(trainingData);
 
-        // transform MultiLabelInstances to classifierInstances
-        Instances classifierInstances = transformData(trainingData);
+        classifierInstances = transformData(trainingData);
 
         // build the prediction model
         classifier.buildClassifier(classifierInstances);
 
-        // keep header information
-        header = new Instances(classifierInstances, 0);
+        // keep just the header information
+        classifierInstances = new Instances(classifierInstances, 0);
     }
+
 }
