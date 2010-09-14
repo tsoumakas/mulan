@@ -333,7 +333,12 @@ public abstract class MultiLabelLearnerTestBase {
 			Assert.assertEquals(mlo1, mlo2);
 		}
 	}
-
+	
+	/**
+	 * Tests if the build method correctly initializes the learner 
+	 * 
+	 * @throws Exception
+	 */
 	@Test
 	public void testBuild() throws Exception {
 		MultiLabelInstances mlDataSet = DataSetBuilder.CreateDataSet(DATA_SET);
@@ -351,17 +356,32 @@ public abstract class MultiLabelLearnerTestBase {
 
 	}
 
+	/**
+	 * Tests if the correct exception is thrown when the learner's makePrediction method is called with a null argument
+	 * 
+	 * @throws Exception
+	 */
 	@Test(expected = ArgumentNullException.class)
 	public void testMakePrediction_WithNullData() throws Exception {
 		getLearner().makePrediction(null);
 	}
 
+	/**
+	 * Tests if the correct exception is thrown when makePrediction is called before build
+	 * 
+	 * @throws Exception
+	 */
 	@Test(expected = ModelInitializationException.class)
 	public void testMakePrediction_BeforeBuild() throws Exception {
 		MultiLabelInstances mlDataSet = DataSetBuilder.CreateDataSet(DATA_SET);
 		getLearner().makePrediction(mlDataSet.getDataSet().firstInstance());
 	}
 
+	/**
+	 * Generic makePrediction test
+	 * 
+	 * @throws Exception
+	 */
 	@Test()
 	public void testMakePrediction_Generic() throws Exception {
 		MultiLabelInstances mlDataSet = DataSetBuilder.CreateDataSet(DATA_SET);
