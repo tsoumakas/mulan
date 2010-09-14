@@ -8,7 +8,7 @@ public class MetaLabelerTest extends MultiLabelMetaLearnerTest {
 
     @Override
     public void setUp() throws Exception {
-        learner = new MetaLabeler(new CalibratedLabelRanking(new J48()), new J48(), 5);
+        learner = new MetaLabeler(new CalibratedLabelRanking(new J48()), new J48(), "Content-Based", "Nominal-Class");
     }
 }
 

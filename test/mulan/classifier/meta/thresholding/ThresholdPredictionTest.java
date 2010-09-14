@@ -9,7 +9,7 @@ public class ThresholdPredictionTest extends MultiLabelMetaLearnerTest {
 
     @Override
     public void setUp() throws Exception {
-        learner = new ThresholdPrediction(new CalibratedLabelRanking(new J48()), new M5P(), 5);
+        learner = new ThresholdPrediction(new CalibratedLabelRanking(new J48()), new M5P(), "Content-Based", 3);
     }
 }
 
