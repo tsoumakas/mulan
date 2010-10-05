@@ -24,7 +24,7 @@ import weka.classifiers.evaluation.ThresholdCurve;
 import weka.core.Instances;
 
 /**
- * Implementation of the macro-averaged f measure.
+ * Implementation of the micro-averaged AUC measure.
  *
  * @author Grigorios Tsoumakas
  */
