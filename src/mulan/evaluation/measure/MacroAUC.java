@@ -25,7 +25,7 @@ import weka.core.Instances;
 import weka.core.Utils;
 
 /**
- * Implementation of the macro-averaged f measure.
+ * Implementation of the macro-averaged AUC measure.
  *
  * @author Grigorios Tsoumakas
  */
