@@ -8,6 +8,6 @@ public class EnsembleOfClassifierChainsTest extends TransformationBasedMultiLabe
     @Override
     public void setUp() {
         Classifier baseClassifier = new J48();
-        learner = new EnsembleOfClassifierChains(baseClassifier, 10, 0.5);
+        learner = new EnsembleOfClassifierChains(baseClassifier, 10, false);
     }
 }

@@ -45,13 +45,11 @@ import weka.filters.unsupervised.instance.RemovePercentage;
  * @author Eleftherios Spyromitros-Xioufis ( espyromi@csd.auth.gr )
  * @author Konstantinos Sechidis (sechidis@csd.auth.gr)
  * @author Grigorios Tsoumakas (greg@csd.auth.gr)
+ *
+ * @version 2010.10.11
  */
 public class EnsembleOfClassifierChains extends TransformationBasedMultiLabelLearner {
 
-    /**
-     * The threshold to use for obtaining bipartitions
-     */
-    protected double threshold;
     /**
      * The number of classifier chain models
      */
@@ -64,6 +62,11 @@ public class EnsembleOfClassifierChains extends TransformationBasedMultiLabelLea
      * Random number generator
      */
     protected Random rand;
+    /**
+     * Whether the output is computed based on the average votes or
+     * on the average confidences
+     */
+    protected boolean useConfidences;
 
     /**
      * Creates a new object
@@ -72,10 +75,11 @@ public class EnsembleOfClassifierChains extends TransformationBasedMultiLabelLea
      * @param aNumOfModels the number of models
      * @param aThreshold the aThreshold to obtain bipartitions
      */
-    public EnsembleOfClassifierChains(Classifier classifier, int aNumOfModels, double aThreshold) {
+    public EnsembleOfClassifierChains(Classifier classifier, int aNumOfModels, 
+                                      boolean doUseConfidences) {
         super(classifier);
         numOfModels = aNumOfModels;
-        threshold = aThreshold;
+        useConfidences = doUseConfidences;
         ensemble = new ClassifierChain[aNumOfModels];
         rand = new Random(1);
     }
@@ -155,25 +159,31 @@ public class EnsembleOfClassifierChains extends TransformationBasedMultiLabelLea
             throws Exception, InvalidDataException {
 
         int[] sumVotes = new int[numLabels];
+        double[] sumConf = new double[numLabels];
 
-        for (int j = 0; j < numLabels; j++) {
-            sumVotes[j] = 0;
-        }
+        Arrays.fill(sumVotes, 0);
+        Arrays.fill(sumConf, 0);
+
         for (int i = 0; i < numOfModels; i++) {
             MultiLabelOutput ensembleMLO = ensemble[i].makePrediction(instance);
             boolean[] bip = ensembleMLO.getBipartition();
+            double[] conf = ensembleMLO.getConfidences();
 
-            for (int j = 0; j < sumVotes.length; j++) {
+            for (int j = 0; j < numLabels; j++) {
                 sumVotes[j] += bip[j] == true ? 1 : 0;
+                sumConf[j] += conf[j];
             }
         }
-        double[] confidence = new double[numLabels];
 
-        for (int j = 0; j < sumVotes.length; j++) {
-            confidence[j] = (double) sumVotes[j] / (double) numOfModels;
+        double[] confidence = new double[numLabels];
+        for (int j = 0; j < numLabels; j++) {
+            if (useConfidences)
+                confidence[j] = sumConf[j] / numOfModels;
+            else
+                confidence[j] = sumVotes[j] / (double) numOfModels;
         }
 
-        MultiLabelOutput mlo = new MultiLabelOutput(confidence, threshold);
+        MultiLabelOutput mlo = new MultiLabelOutput(confidence, 0.5);
         return mlo;
     }
 }
