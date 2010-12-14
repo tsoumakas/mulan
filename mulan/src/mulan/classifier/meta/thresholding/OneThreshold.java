@@ -20,10 +20,12 @@
  */
 package mulan.classifier.meta.thresholding;
 
+import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import mulan.classifier.*;
 import mulan.classifier.meta.MultiLabelMetaLearner;
+import mulan.core.MulanRuntimeException;
 import mulan.data.LabelsMetaData;
 import mulan.data.MultiLabelInstances;
 import mulan.evaluation.measure.*;
@@ -39,7 +41,7 @@ import weka.core.TechnicalInformation.Type;
  * @author Marios Ioannou
  * @author George Sakkas
  * @author Grigorios Tsoumakas
- * @version May 17, 2010
+ * @version 2010.12.14
  */
 public class OneThreshold extends MultiLabelMetaLearner {
 
@@ -101,6 +103,9 @@ public class OneThreshold extends MultiLabelMetaLearner {
             measureForThreshold[i].reset();
         }
 
+        boolean[] thresholdHasProblem = new boolean[numOfThresholds];
+        Arrays.fill(thresholdHasProblem, false);
+
         for (int j = 0; j < data.getNumInstances(); j++) {
             Instance instance = data.getDataSet().instance(j);
 
@@ -119,6 +124,7 @@ public class OneThreshold extends MultiLabelMetaLearner {
 
             double[] confidences = mlo.getConfidences();
 
+
             int counter = 0;
             double currentThreshold = min;
             while (currentThreshold <= max) {
@@ -128,14 +134,22 @@ public class OneThreshold extends MultiLabelMetaLearner {
                         bipartition[k] = true;
                     }
                 }
-                measureForThreshold[counter].updateInternal2(bipartition, trueLabels);
+                try {
+                    MultiLabelOutput temp = new MultiLabelOutput(bipartition);
+                    measureForThreshold[counter].update(temp, trueLabels);
+                } catch (MulanRuntimeException e) {
+                    thresholdHasProblem[counter] = true;
+                }
                 currentThreshold += step;
                 counter++;
             }
         }
 
         for (int i = 0; i < numOfThresholds; i++) {
-            performance[i] = Math.abs(measure.getIdealValue() - measureForThreshold[i].getValue());
+            if (!thresholdHasProblem[i])
+                performance[i] = Math.abs(measure.getIdealValue() - measureForThreshold[i].getValue());
+            else
+                performance[i] = Double.MAX_VALUE;
         }
 
         return min + Utils.minIndex(performance) * step;
@@ -207,6 +221,11 @@ public class OneThreshold extends MultiLabelMetaLearner {
        return info;
     }
 
+    /**
+     * Returns the calculated threshold
+     *
+     * @return the calculated threshold
+     */
     public double getThreshold() {
         return threshold;
     }

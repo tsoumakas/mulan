@@ -24,12 +24,13 @@ import mulan.classifier.MultiLabelOutput;
 import mulan.core.ArgumentNullException;
 
 /**
- * 
+ *
  * @author Grigorios Tsoumakas
+ * @version 2010.11.01
  */
 public abstract class BipartitionMeasureBase extends MeasureBase {
 
-    public double updateInternal(MultiLabelOutput prediction, boolean[] truth) {
+    protected void updateInternal(MultiLabelOutput prediction, boolean[] truth) {
         boolean[] bipartition = prediction.getBipartition();
         if (bipartition == null) {
             throw new ArgumentNullException("Bipartition is null");
@@ -38,8 +39,15 @@ public abstract class BipartitionMeasureBase extends MeasureBase {
             throw new IllegalArgumentException("The dimensions of the " +
                     "bipartition and the ground truth array do not match");
         }
-        return updateInternal2(bipartition, truth);
+        updateBipartition(bipartition, truth);
     }
 
-    abstract public double updateInternal2(boolean[] bipartition, boolean[] truth);
+    /**
+     * Updates the measure based on an example
+     *
+     * @param bipartition the predicted bipartition
+     * @param truth the ground truth
+     */
+    protected abstract void updateBipartition(boolean[] bipartition, boolean[] truth);
+
 }

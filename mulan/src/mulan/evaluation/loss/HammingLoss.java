@@ -15,45 +15,35 @@
  */
 
 /*
- *    Coverage.java
+ *    HammingLoss.java
  *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
  */
-package mulan.evaluation.measure;
+package mulan.evaluation.loss;
 
 /**
- * Implementation of the coverage measure.
+ * Implementation of the hamming loss function. It is basically
+ * the symmetric difference between the predicted and ground truth labels
  * 
  * @author Grigorios Tsoumakas
- * @version 2010.12.04
+ * @version 2010.12.01
  */
-public class Coverage extends RankingMeasureBase {
-
-    public String getName() {
-        return "Coverage";
-    }
+public class HammingLoss extends BipartitionLossFunctionBase {
 
     @Override
-    public double getIdealValue() {
-        return 1;
+    public String getName() {
+        return "Hamming Loss";
     }
 
-    protected void updateRanking(int[] ranking, boolean[] trueLabels) {
-        int howDeep = 0;
-        int numLabels = trueLabels.length;
-        for (int rank = numLabels; rank >= 1; rank--) {
-            int indexOfRank;
-            for (indexOfRank = 0; indexOfRank < numLabels; indexOfRank++) {
-                if (ranking[indexOfRank] == rank) {
-                    break;
-                }
-            }
-            if (trueLabels[indexOfRank]) {
-                howDeep = rank - 1;
-                break;
+  
+    @Override
+    public double computeLoss(boolean[] bipartition, boolean[] groundTruth) {
+        double symmetricDifference = 0;
+        for (int i = 0; i < groundTruth.length; i++) {
+            if (bipartition[i] != groundTruth[i]) {
+                symmetricDifference++;
             }
         }
-
-        sum += howDeep;
-        count++;
+        return symmetricDifference / groundTruth.length;
     }
+
 }

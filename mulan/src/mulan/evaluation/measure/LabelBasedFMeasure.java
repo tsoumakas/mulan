@@ -23,38 +23,47 @@ package mulan.evaluation.measure;
 import mulan.core.MulanRuntimeException;
 
 /**
- * Implementation of the label-based macro precision measure.
+ * Base implementation of the label-based macro/micro f-measures.
  * 
- * @author Grigorios Tso
- * 
+ * @author Grigorios Tsoumakas
+ * @version 2010.11.05
  */
-public abstract class LabelBasedFMeasure extends BipartitionMeasureBase {
+public abstract class LabelBasedFMeasure extends LabelBasedBipartitionMeasureBase {
 
-    protected double beta = 1;
-    protected int numOfLabels;
-    protected double[] falsePositives;
-    protected double[] truePositives;
-    protected double[] falseNegatives;
+    // the parameter for combining precision and recall
+    private final double beta;
 
+    /**
+     * Constructs a new object with given number of labels
+     *
+     * @param numOfLabels the number of labels
+     */
     public LabelBasedFMeasure(int numOfLabels) {
-        this.numOfLabels = numOfLabels;
-        falsePositives = new double[numOfLabels];
-        truePositives = new double[numOfLabels];
-        falseNegatives = new double[numOfLabels];
+        this(numOfLabels, 1);
     }
 
-    public void reset() {
-        for (int labelIndex = 0; labelIndex < numOfLabels; labelIndex++) {
-            falsePositives[labelIndex] = 0;
-            truePositives[labelIndex] = 0;
-            falseNegatives[labelIndex] = 0;
-        }
+    /**
+     * Constructs a new object with given number of labels and beta parameter
+     *
+     * @param numOfLabels the number of labels
+     * @param beta the beta parameter
+     */
+    public LabelBasedFMeasure(int numOfLabels, double beta) {
+        super(numOfLabels);
+        this.beta = beta;
     }
 
     public double getIdealValue() {
         return 1;
     }
 
+    /**
+     * calculates the f-measure based on a precision and recall value
+     *
+     * @param precision a precision value
+     * @param recall a recall value
+     * @return the f-measure
+     */
     protected double calculateFMeasure(double precision, double recall) {
         if ((beta * beta * precision + recall) == 0) {
             reset();
@@ -63,7 +72,7 @@ public abstract class LabelBasedFMeasure extends BipartitionMeasureBase {
         return ((1 + beta * beta) * precision * recall) / (beta * beta * precision + recall);
     }
 
-    public double updateInternal2(boolean[] bipartition, boolean[] truth) {
+    protected void updateBipartition(boolean[] bipartition, boolean[] truth) {
         for (int labelIndex = 0; labelIndex < numOfLabels; labelIndex++) {
             boolean actual = truth[labelIndex];
             boolean predicted = bipartition[labelIndex];
@@ -78,7 +87,5 @@ public abstract class LabelBasedFMeasure extends BipartitionMeasureBase {
                 falseNegatives[labelIndex]++;
             }
         }
-
-        return 0;
     }
 }

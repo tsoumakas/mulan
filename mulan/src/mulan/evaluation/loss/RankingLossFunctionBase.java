@@ -15,38 +15,42 @@
  */
 
 /*
- *    ConfidenceMeasureBase.java
+ *    RankingLossFunctionBase.java
  *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
  */
-package mulan.evaluation.measure;
+package mulan.evaluation.loss;
 
+import java.io.Serializable;
 import mulan.classifier.MultiLabelOutput;
 import mulan.core.ArgumentNullException;
 
 /**
- * 
- * @author Grigorios Tsoumakas
- * @version 2010.12.04
+ * Base class for ranking loss functions
+ *
+ * @author GrigoriosTsoumakas
+ * @version 2010.11.10
  */
-public abstract class ConfidenceMeasureBase extends MeasureBase {
+public abstract class RankingLossFunctionBase implements RankingLossFunction, Serializable  {
 
-    protected void updateInternal(MultiLabelOutput prediction, boolean[] truth) {
-        double[] confidences = prediction.getConfidences();
-        if (confidences == null) {
-            throw new ArgumentNullException("Bipartition is null");
+    private void checkRanking(int[] ranking) {
+        if (ranking == null) {
+            throw new ArgumentNullException("Ranking is null");
         }
-        if (confidences.length != truth.length) {
-            throw new IllegalArgumentException("The dimensions of the " +
-                    "confidence array and the ground truth array do not match");
-        }
-        updateConfidence(confidences, truth);
     }
 
-    /**
-     * Updates the measure for a new example
-     *
-     * @param confidences the confidences output by the learner for the example
-     * @param truth the ground truth of the example
-     */
-    abstract protected void updateConfidence(double[] confidences, boolean[] truth);
+    private void checkLength(int[] ranking, boolean[] groundTruth) {
+        if (ranking.length != groundTruth.length) {
+            throw new IllegalArgumentException("The dimensions of the " +
+                    "ranking and the ground truth array do not match");
+        }
+    }
+
+    public final double computeLoss(MultiLabelOutput prediction, boolean[] groundTruth) {
+        int[] ranking = prediction.getRanking();
+        checkRanking(ranking);
+        checkLength(ranking, groundTruth);
+        return computeLoss(ranking, groundTruth);
+    }
+
+    abstract public double computeLoss(int[] ranking, boolean[] groundTruth);
 }

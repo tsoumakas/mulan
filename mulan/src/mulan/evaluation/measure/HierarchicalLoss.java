@@ -20,72 +20,24 @@
  */
 package mulan.evaluation.measure;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import mulan.data.LabelNode;
-import mulan.data.LabelsMetaData;
 import mulan.data.MultiLabelInstances;
 
 /**
  * Implementation of the Hierarchical loss measure.
  *
- * @author George Saridis
  * @author Grigorios Tsoumakas
+ * @version 2010.12.04
  */
-public class HierarchicalLoss extends ExampleBasedBipartitionMeasureBase {
-
-    private LabelsMetaData metaData;
-    private Map<String, Integer> labelPosition;
-    private double loss;
-
-    public String getName() {
-        return "Hierarchical Loss";
-
-    }
-
-    public HierarchicalLoss(MultiLabelInstances data) {
-        metaData = data.getLabelsMetaData();
-
-        // calculate the position of labels inside a bipartition
-        labelPosition = new HashMap<String, Integer>();
-        int[] indices = data.getLabelIndices();
-        int counter = 0;
-        for (int i : indices) {
-            labelPosition.put(data.getDataSet().attribute(i).name(), counter);
-            counter++;
-        }
-    }
-
-    public double updateInternal2(boolean[] bipartition, boolean[] truth) {
-        loss = 0;
-        calculateHLoss(bipartition, truth, metaData.getRootLabels());
-
-        sum += loss;
-        count++;
-
-        return loss;
-    }
+public class HierarchicalLoss extends LossBasedBipartitionMeasureBase {
 
     /**
-     * Recursively calculates the hierarchical loss
+     * Creates an instance of this object based on the corresponding loss
+     * function
      *
-     * @param bipartition
-     * @param truth
-     * @param children
+     * @param data the test instances
      */
-    protected void calculateHLoss(boolean[] bipartition, boolean[] truth, Set<LabelNode> children) {
-        for (LabelNode child : children) {
-            int labelPos = labelPosition.get(child.getName());
-            if (bipartition[labelPos] == truth[labelPos]) {
-                calculateHLoss(bipartition, truth, child.getChildren());
-            } else {
-                loss += 1;
-            }
-        }
+    public HierarchicalLoss(MultiLabelInstances data) {
+        super(new mulan.evaluation.loss.HierarchicalLoss(data));
     }
 
-    public double getIdealValue() {
-        return 0;
-    }
 }

@@ -24,32 +24,24 @@ package mulan.evaluation.measure;
  * Base implementation of the label-based macro/micro precision measures.
  * 
  * @author Grigorios Tsoumakas
- * 
+ * @version 2010.11.05
  */
-public abstract class LabelBasedPrecision extends BipartitionMeasureBase {
+public abstract class LabelBasedPrecision extends LabelBasedBipartitionMeasureBase {
 
-    protected int numOfLabels;
-    protected double[] falsePositives;
-    protected double[] truePositives;
-
+    /**
+     * Constructs a new object with given number of labels
+     *
+     * @param numOfLabels the number of labels
+     */
     public LabelBasedPrecision(int numOfLabels) {
-        this.numOfLabels = numOfLabels;
-        falsePositives = new double[numOfLabels];
-        truePositives = new double[numOfLabels];
-    }
-
-    public void reset() {
-        for (int labelIndex = 0; labelIndex < numOfLabels; labelIndex++) {
-            falsePositives[labelIndex] = 0;
-            truePositives[labelIndex] = 0;
-        }
+        super(numOfLabels);
     }
 
     public double getIdealValue() {
         return 1;
     }
 
-    public double updateInternal2(boolean[] bipartition, boolean[] truth) {
+    protected void updateBipartition(boolean[] bipartition, boolean[] truth) {
         for (int labelIndex = 0; labelIndex < numOfLabels; labelIndex++) {
             boolean actual = truth[labelIndex];
             boolean predicted = bipartition[labelIndex];
@@ -61,7 +53,5 @@ public abstract class LabelBasedPrecision extends BipartitionMeasureBase {
                 falsePositives[labelIndex]++;
             }
         }
-
-        return 0;
     }
 }

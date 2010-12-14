@@ -15,38 +15,42 @@
  */
 
 /*
- *    ConfidenceMeasureBase.java
+ *    BipartitionLossFunctionBase.java
  *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
  */
-package mulan.evaluation.measure;
+package mulan.evaluation.loss;
 
+import java.io.Serializable;
 import mulan.classifier.MultiLabelOutput;
 import mulan.core.ArgumentNullException;
 
 /**
- * 
- * @author Grigorios Tsoumakas
- * @version 2010.12.04
+ * Base class for bipartition loss functions
+ *
+ * @author GrigoriosTsoumakas
+ * @version 2010.11.10
  */
-public abstract class ConfidenceMeasureBase extends MeasureBase {
+public abstract class BipartitionLossFunctionBase implements BipartitionLossFunction, Serializable  {
 
-    protected void updateInternal(MultiLabelOutput prediction, boolean[] truth) {
-        double[] confidences = prediction.getConfidences();
-        if (confidences == null) {
+    private void checkBipartition(boolean[] bipartition) {
+        if (bipartition == null) {
             throw new ArgumentNullException("Bipartition is null");
         }
-        if (confidences.length != truth.length) {
-            throw new IllegalArgumentException("The dimensions of the " +
-                    "confidence array and the ground truth array do not match");
-        }
-        updateConfidence(confidences, truth);
     }
 
-    /**
-     * Updates the measure for a new example
-     *
-     * @param confidences the confidences output by the learner for the example
-     * @param truth the ground truth of the example
-     */
-    abstract protected void updateConfidence(double[] confidences, boolean[] truth);
+    private void checkLength(boolean[] bipartition, boolean[] groundTruth) {
+        if (bipartition.length != groundTruth.length) {
+            throw new IllegalArgumentException("The dimensions of the " +
+                    "bipartition and the ground truth array do not match");
+        }
+    }
+
+    public final double computeLoss(MultiLabelOutput prediction, boolean[] groundTruth) {
+        boolean[] bipartition = prediction.getBipartition();
+        checkBipartition(bipartition);
+        checkLength(bipartition, groundTruth);
+        return computeLoss(bipartition, groundTruth);
+    }
+
+    abstract public double computeLoss(boolean[] bipartition, boolean[] groundTruth);
 }

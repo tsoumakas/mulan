@@ -15,7 +15,7 @@
  */
 
 /*
- *    Meta.java
+ *    MetaLabeler.java
  *    Copyright (C) 2009 Aristotle University of Thessaloniki, Thessaloniki, Greece
  */
 package mulan.classifier.meta.thresholding;
@@ -45,7 +45,7 @@ import weka.core.TechnicalInformation.Type;
  * @author Marios Ioannou
  * @author George Sakkas
  * @author Grigorios Tsoumakas
- * @version 12 September 2010
+ * @version 2010.12.14
  */
 public class MetaLabeler extends Meta {
 
@@ -57,7 +57,8 @@ public class MetaLabeler extends Meta {
      *
      * @param baseLearner the underlying multi-label learner
      * @param classifier the binary classification
-     * @param kFolds the number of folds for cross validation
+     * @param metaDataChoice the type of meta-data
+     * @param aClassChoice the type of the class
      */
     public MetaLabeler(MultiLabelLearner baseLearner, Classifier classifier, String metaDataChoice, String aClassChoice) {
         super(baseLearner, classifier, metaDataChoice);
@@ -224,6 +225,11 @@ public class MetaLabeler extends Meta {
         return classifierInstances;
     }
 
+    /**
+     * Sets the number of folds for internal cv
+     *
+     * @param f the number of folds
+     */
     public void setFolds(int f) {
         kFoldsCV = f;
     }

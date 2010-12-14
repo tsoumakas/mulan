@@ -15,35 +15,28 @@
  */
 
 /*
- *    AveragePrecision.java
+ *    OneMinusAveragePrecision.java
  *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
  */
-package mulan.evaluation.measure;
+package mulan.evaluation.loss;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Implementation of the average precision measure. It evaluates the average
- * fraction of labels ranked above a particular relevant label, that are
- * actually relevant.
+ * Implementation of the average precision as loss function.
  * 
- * @author Jozef Vilcek
  * @author Grigorios Tsoumakas
- * @version 2010.11.05
+ * @version 2010.12.14
  */
-public class AveragePrecision extends RankingMeasureBase {
+public class OneMinusAveragePrecision extends RankingLossFunctionBase {
 
     public String getName() {
-        return "Average Precision";
+        return "1 - AveragePrecision";
     }
 
     @Override
-    public double getIdealValue() {
-        return 1;
-    }
-
-    protected void updateRanking(int[] ranking, boolean[] trueLabels) {
+    public double computeLoss(int[] ranking, boolean[] trueLabels) {
         double avgP = 0;
         int numLabels = trueLabels.length;
         List<Integer> relevant = new ArrayList<Integer>();
@@ -64,9 +57,7 @@ public class AveragePrecision extends RankingMeasureBase {
                 avgP += (rankedAbove / ranking[r]);
             }
             avgP /= relevant.size();
-            sum += avgP;
-            count++;
         }
+        return 1 - avgP;
     }
-
 }

@@ -24,32 +24,24 @@ package mulan.evaluation.measure;
  * Common class for the micro/macro label-based recall measures.
  * 
  * @author Grigorios Tsoumakas
- * 
+ * @version 2010.12.10
  */
-public abstract class LabelBasedRecall extends BipartitionMeasureBase {
+public abstract class LabelBasedRecall extends LabelBasedBipartitionMeasureBase {
 
-    protected int numOfLabels;
-    protected double[] falseNegatives;
-    protected double[] truePositives;
-
+    /**
+     * Constructs a new object with given number of labels
+     *
+     * @param numOfLabels the number of labels
+     */
     public LabelBasedRecall(int numOfLabels) {
-        this.numOfLabels = numOfLabels;
-        falseNegatives = new double[numOfLabels];
-        truePositives = new double[numOfLabels];
-    }
-
-    public void reset() {
-        for (int labelIndex = 0; labelIndex < numOfLabels; labelIndex++) {
-            falseNegatives[labelIndex] = 0;
-            truePositives[labelIndex] = 0;
-        }
+        super(numOfLabels);
     }
 
     public double getIdealValue() {
         return 1;
     }
 
-    public double updateInternal2(boolean[] bipartition, boolean[] truth) {
+    protected void updateBipartition(boolean[] bipartition, boolean[] truth) {
         for (int labelIndex = 0; labelIndex < numOfLabels; labelIndex++) {
             boolean actual = truth[labelIndex];
             boolean predicted = bipartition[labelIndex];
@@ -61,7 +53,5 @@ public abstract class LabelBasedRecall extends BipartitionMeasureBase {
                 falseNegatives[labelIndex]++;
             }
         }
-
-        return 0;
     }
 }

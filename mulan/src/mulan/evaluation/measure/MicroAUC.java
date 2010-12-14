@@ -15,7 +15,7 @@
  */
 
 /*
- *    MacroFMeasure.java
+ *    MicroAUC.java
  *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
  */
 package mulan.evaluation.measure;
@@ -27,9 +27,14 @@ import weka.core.Instances;
  * Implementation of the micro-averaged AUC measure.
  *
  * @author Grigorios Tsoumakas
+ * @version 2010.12.10
  */
 public class MicroAUC extends LabelBasedAUC {
 
+    /**
+     * Creates a new instance of this class
+     * @param numOfLabels
+     */
     public MicroAUC(int numOfLabels) {
         super(numOfLabels);
     }

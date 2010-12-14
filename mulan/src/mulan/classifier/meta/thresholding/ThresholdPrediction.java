@@ -15,7 +15,7 @@
  */
 
 /*
- *    Meta.java
+ *    ThresholdPrediction.java
  *    Copyright (C) 2009 Aristotle University of Thessaloniki, Thessaloniki, Greece
  */
 package mulan.classifier.meta.thresholding;
@@ -29,7 +29,6 @@ import mulan.classifier.MultiLabelLearner;
 import mulan.classifier.MultiLabelOutput;
 import mulan.data.DataUtils;
 import mulan.data.MultiLabelInstances;
-import mulan.transformations.RemoveAllLabels;
 
 import weka.classifiers.Classifier;
 import weka.core.Attribute;
@@ -44,7 +43,7 @@ import weka.core.TechnicalInformation.Type;
  * @author Marios Ioannou
  * @author George Sakkas
  * @author Grigorios Tsoumakas
- * @version 0.1
+ * @version 2010.12.14
  */
 public class ThresholdPrediction extends Meta {
 
@@ -53,7 +52,8 @@ public class ThresholdPrediction extends Meta {
      *
      * @param baseLearner the underlying multi-label learner
      * @param classifier the binary classification
-     * @param kFolds the number of folds for cross validation
+     * @param metaDataChoice the type of meta-data
+     * @param folds the number of internal cv folds
      */
     public ThresholdPrediction(MultiLabelLearner baseLearner, Classifier classifier, String metaDataChoice, int folds) {
         super(baseLearner, classifier, metaDataChoice);
@@ -67,17 +67,16 @@ public class ThresholdPrediction extends Meta {
 
     @Override
     protected MultiLabelOutput makePredictionInternal(Instance instance) throws Exception {
-        MultiLabelOutput mlo = baseLearner.makePrediction(instance);
         boolean[] predictedLabels = new boolean[numLabels];
         Instance modifiedIns = modifiedInstanceX(instance, metaDatasetChoice);
 
         modifiedIns.insertAttributeAt(modifiedIns.numAttributes());
         // set dataset to instance
         modifiedIns.setDataset(classifierInstances);
-
         double bipartition_key = classifier.classifyInstance(modifiedIns);
-        double[] arrayOfScores = new double[numLabels];
 
+        MultiLabelOutput mlo = baseLearner.makePrediction(instance);
+        double[] arrayOfScores = new double[numLabels];
         arrayOfScores = mlo.getConfidences();
         for (int i = 0; i < numLabels; i++) {
             if (arrayOfScores[i] >= bipartition_key) {
@@ -93,9 +92,9 @@ public class ThresholdPrediction extends Meta {
 
     public Instances transformData(MultiLabelInstances trainingData) throws Exception {
         // initialize  classifier instances
-        classifierInstances = RemoveAllLabels.transformInstances(trainingData);
-        classifierInstances = new Instances(classifierInstances, 0);
-        classifierInstances.insertAttributeAt(new Attribute("Class"), classifierInstances.numAttributes());
+
+        classifierInstances = prepareClassifierInstances(trainingData);
+        classifierInstances.insertAttributeAt(new Attribute("Threshold"), classifierInstances.numAttributes());
         classifierInstances.setClassIndex(classifierInstances.numAttributes() - 1);
 
         for (int k = 0; k < kFoldsCV; k++) {
@@ -159,8 +158,7 @@ public class ThresholdPrediction extends Meta {
                     prev = x;
                 }
                 newValues[newValues.length - 1] = threshold;
-
-                // add the new insatnce to  classifierInstances
+                // add the new instance to  classifierInstances
                 Instance newInstance = DataUtils.createInstance(mlTest.getDataSet().instance(instanceIndex), mlTest.getDataSet().instance(instanceIndex).weight(), newValues);
                 classifierInstances.add(newInstance);
             }

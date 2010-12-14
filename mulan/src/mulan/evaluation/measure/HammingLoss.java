@@ -24,29 +24,15 @@ package mulan.evaluation.measure;
  * Implementation of the Hamming loss function.
  * 
  * @author Grigorios Tsoumakas
+ * @version 2010.12.04
  */
-public class HammingLoss extends ExampleBasedBipartitionMeasureBase {
+public class HammingLoss extends LossBasedBipartitionMeasureBase {
 
-    public String getName() {
-        return "Hamming Loss";
-    }
-
-    public double getIdealValue() {
-        return 0;
-    }
-
-    public double updateInternal2(boolean[] bipartition, boolean[] truth) {
-        double symmetricDifference = 0;
-        for (int i = 0; i < truth.length; i++) {
-            if (bipartition[i] != truth[i]) {
-                symmetricDifference++;
-            }
-        }
-        double value = symmetricDifference / truth.length;
-
-        sum += value;
-        count++;
-
-        return value;
+    /**
+     * Creates an instance of this object based on the corresponding loss
+     * function
+     */
+    public HammingLoss() {
+        super(new mulan.evaluation.loss.HammingLoss());
     }
 }

@@ -15,45 +15,44 @@
  */
 
 /*
- *    Coverage.java
+ *    LossBasedBipartitionMeasureBase.java
  *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
  */
 package mulan.evaluation.measure;
 
-/**
- * Implementation of the coverage measure.
- * 
- * @author Grigorios Tsoumakas
- * @version 2010.12.04
- */
-public class Coverage extends RankingMeasureBase {
+import mulan.evaluation.loss.BipartitionLossFunction;
 
-    public String getName() {
-        return "Coverage";
+/**
+ *
+ * @author Grigorios Tsoumakas
+ * @version 2010.11.10
+ */
+public abstract class LossBasedBipartitionMeasureBase extends ExampleBasedBipartitionMeasureBase {
+
+    // a bipartition loss function
+    private final BipartitionLossFunction loss;
+
+    /**
+     * Creates a loss-based bipartition measure
+     *
+     * @param aLoss a bipartition loss function
+     */
+    public LossBasedBipartitionMeasureBase(BipartitionLossFunction aLoss) {
+        loss = aLoss;
     }
 
     @Override
-    public double getIdealValue() {
-        return 1;
-    }
-
-    protected void updateRanking(int[] ranking, boolean[] trueLabels) {
-        int howDeep = 0;
-        int numLabels = trueLabels.length;
-        for (int rank = numLabels; rank >= 1; rank--) {
-            int indexOfRank;
-            for (indexOfRank = 0; indexOfRank < numLabels; indexOfRank++) {
-                if (ranking[indexOfRank] == rank) {
-                    break;
-                }
-            }
-            if (trueLabels[indexOfRank]) {
-                howDeep = rank - 1;
-                break;
-            }
-        }
-
-        sum += howDeep;
+    public void updateBipartition(boolean[] bipartition, boolean[] truth) {
+        sum += loss.computeLoss(bipartition, truth);
         count++;
     }
+
+    public String getName() {
+        return loss.getName();
+    }
+
+    public double getIdealValue() {
+        return 0;
+    }
+
 }

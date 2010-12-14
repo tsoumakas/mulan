@@ -20,14 +20,15 @@
  */
 package mulan.evaluation.measure;
 
-import mulan.core.MulanRuntimeException;
-
 /**
  * Implementation of the example-based precision measure.
  * 
  * @author Grigorios Tsoumakas
+ * @version 2010.11.05
  */
 public class ExampleBasedPrecision extends ExampleBasedBipartitionMeasureBase {
+
+    private final boolean strict;
 
     public String getName() {
         return "Example-Based Precision";
@@ -37,7 +38,17 @@ public class ExampleBasedPrecision extends ExampleBasedBipartitionMeasureBase {
         return 1;
     }
 
-    public double updateInternal2(boolean[] bipartition, boolean[] truth) {
+    /**
+     * Creates a new object
+     *
+     * @param strict when false, divisions-by-zero are ignored
+     */
+    public ExampleBasedPrecision(boolean strict) {
+        this.strict = strict;
+    }
+
+    @Override
+    protected void updateBipartition(boolean[] bipartition, boolean[] truth) {
         double intersection = 0;
         double predicted = 0;
         for (int i = 0; i < truth.length; i++) {
@@ -48,16 +59,11 @@ public class ExampleBasedPrecision extends ExampleBasedBipartitionMeasureBase {
                 }
             }
         }
-        if (predicted == 0) {
-            reset();
-            throw new MulanRuntimeException("No label predicted");
-        }
+        if (predicted == 0 && strict == false)
+            return;
 
-        double value = intersection / predicted;
-
-        sum += value;
+        sum += intersection / predicted;
         count++;
-
-        return value;
     }
+
 }

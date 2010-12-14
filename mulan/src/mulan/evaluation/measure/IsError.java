@@ -20,60 +20,19 @@
  */
 package mulan.evaluation.measure;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
- * Implementation of is-error measure. The measure just indicates if the ranking is perfect 
- * or not. Speaking in terms of error set, the measure returns zero if cardinality of the
- * error-set is zero, and returns one if cardinality of the error set is greather than zero.
- * <br></br> 
- * The error set is defined as: set, composed of all possible label pairs, where one is relevant and 
- * the other is not, and which satisfies condition that relevant label is ranked lower than irrelevant.
+ * Measure based on the IsError ranking loss function
  * 
- * @author Jozef Vilcek
+ * @author Grigorios Tsoumakas
+ * @version 2010.11.10
  */
-public class IsError extends RankingMeasureBase {
+public class IsError extends LossBasedRankingMeasureBase {
 
-    public String getName() {
-        return "Is-Error";
-    }
-
-    public double updateInternal2(int[] ranking, boolean[] trueLabels) {
-
-        double isError = 0;
-        int numLabels = trueLabels.length;
-        List<Integer> relevant = new ArrayList<Integer>();
-        List<Integer> irrelevant = new ArrayList<Integer>();
-        for (int index = 0; index < numLabels; index++) {
-            if (trueLabels[index]) {
-                relevant.add(index);
-            } else {
-                irrelevant.add(index);
-            }
-        }
-
-        boolean terminate = false;
-        for (int rLabel : relevant) {
-            for (int irLabel : irrelevant) {
-                if (ranking[rLabel] > ranking[irLabel]) {
-                    isError = 1;
-                    terminate = true;
-                    break;
-                }
-            }
-            if (terminate) {
-                break;
-            }
-        }
-
-        sum += isError;
-        count++;
-        return isError;
-    }
-
-    @Override
-    public double getIdealValue() {
-        return 0;
+    /**
+     * Creates an instance of this object based on the corresponding loss
+     * function
+     */
+    public IsError() {
+        super(new mulan.evaluation.loss.IsError());
     }
 }

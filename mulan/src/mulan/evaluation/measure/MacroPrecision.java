@@ -21,28 +21,42 @@
 package mulan.evaluation.measure;
 
 import mulan.core.MulanRuntimeException;
-import weka.core.Utils;
 
 /**
  * Implementation of the macro-averaged precision measure.
  *
  * @author Grigorios Tsoumakas
+ * @version 2010.11.05
  */
 public class MacroPrecision extends LabelBasedPrecision {
 
-    public MacroPrecision(int numOfLabels) {
+    private boolean strict;
+
+    /**
+     * Constructs a new object with given number of labels
+     *
+     * @param numOfLabels the number of labels
+     * @param isStrict when false, divisions-by-zero are ignored
+     */
+    public MacroPrecision(int numOfLabels, boolean isStrict) {
         super(numOfLabels);
+        strict = isStrict;
     }
 
     public double getValue() {
-        double[] labelPrecision = new double[numOfLabels];
+        double sum = 0;
+        int count = 0;
         for (int labelIndex = 0; labelIndex < numOfLabels; labelIndex++) {
             if (truePositives[labelIndex] + falsePositives[labelIndex] == 0) {
-                throw new MulanRuntimeException("None example predicted positive");
+                if (strict) {
+                    throw new MulanRuntimeException("None example predicted positive");
+                }
+            } else {
+                sum += truePositives[labelIndex] / (truePositives[labelIndex] + falsePositives[labelIndex]);
+                count++;
             }
-            labelPrecision[labelIndex] = truePositives[labelIndex] / (truePositives[labelIndex] + falsePositives[labelIndex]);
         }
-        return Utils.mean(labelPrecision);
+        return sum / count;
     }
 
     public String getName() {

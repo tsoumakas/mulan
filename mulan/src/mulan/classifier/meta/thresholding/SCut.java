@@ -24,14 +24,12 @@ import mulan.classifier.meta.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import mulan.classifier.MultiLabelLearner;
 import mulan.classifier.MultiLabelOutput;
 import mulan.data.MultiLabelInstances;
 import mulan.evaluation.measure.BipartitionMeasureBase;
-
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.TechnicalInformation;
@@ -47,7 +45,7 @@ import weka.core.Utils;
  * @author Marios Ioannou
  * @author George Sakkas
  * @author Grigorios Tsoumakas
- * @version July 14, 2010
+ * @version 2010.12.14
  */
 public class SCut extends MultiLabelMetaLearner {
 
@@ -167,7 +165,8 @@ public class SCut extends MultiLabelMetaLearner {
                         for (int x = 0; x < numLabels; x++) {
                             predictedLabels[x] = (arraysOfConfidences[k][x] >= currentThresholds[x]);
                         }
-                        measureForThreshold[l].updateInternal2(predictedLabels, trueLabels[k]);
+                        MultiLabelOutput temp = new MultiLabelOutput(predictedLabels);
+                        measureForThreshold[l].update(temp, trueLabels[k]);
                     }
                     score += measureForThreshold[l].getValue();
                 }

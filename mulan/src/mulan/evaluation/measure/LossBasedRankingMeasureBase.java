@@ -15,45 +15,44 @@
  */
 
 /*
- *    Coverage.java
+ *    LossBasedRankingMeasureBase.java
  *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
  */
 package mulan.evaluation.measure;
 
-/**
- * Implementation of the coverage measure.
- * 
- * @author Grigorios Tsoumakas
- * @version 2010.12.04
- */
-public class Coverage extends RankingMeasureBase {
+import mulan.evaluation.loss.RankingLossFunction;
 
-    public String getName() {
-        return "Coverage";
+/**
+ *
+ * @author Grigorios Tsoumakas
+ * @version 2010.11.10
+ */
+public abstract class LossBasedRankingMeasureBase extends RankingMeasureBase {
+
+    // a ranking loss function
+    private final RankingLossFunction loss;
+
+    /**
+     * Creates a loss-based ranking measure
+     *
+     * @param aLoss a ranking loss function
+     */
+    public LossBasedRankingMeasureBase(RankingLossFunction aLoss) {
+        loss = aLoss;
     }
 
     @Override
-    public double getIdealValue() {
-        return 1;
-    }
-
-    protected void updateRanking(int[] ranking, boolean[] trueLabels) {
-        int howDeep = 0;
-        int numLabels = trueLabels.length;
-        for (int rank = numLabels; rank >= 1; rank--) {
-            int indexOfRank;
-            for (indexOfRank = 0; indexOfRank < numLabels; indexOfRank++) {
-                if (ranking[indexOfRank] == rank) {
-                    break;
-                }
-            }
-            if (trueLabels[indexOfRank]) {
-                howDeep = rank - 1;
-                break;
-            }
-        }
-
-        sum += howDeep;
+    protected void updateRanking(int[] ranking, boolean[] truth) {
+        sum += loss.computeLoss(ranking, truth);
         count++;
     }
+
+    public String getName() {
+        return loss.getName();
+    }
+
+    public double getIdealValue() {
+        return 0;
+    }
+
 }
