@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Set;
 
 import mulan.classifier.neural.model.Neuron;
-import mulan.evaluation.measure.RankingMeasureBase;
+import mulan.evaluation.loss.RankingLossFunction;
 
 /**
  * Implementation of uniform update rule for {@link MMPLearner}. The rule will penalize 
@@ -44,7 +44,7 @@ public class MMPUniformUpdateRule extends MMPUpdateRuleBase {
      * @param perceptrons the list of perceptrons, representing the model, which will receive updates.
      * @param lossMeasure the loss measure used to decide when the model should be updated by the rule
      */
-    public MMPUniformUpdateRule(List<Neuron> perceptrons, RankingMeasureBase lossMeasure) {
+    public MMPUniformUpdateRule(List<Neuron> perceptrons, RankingLossFunction lossMeasure) {
         super(perceptrons, lossMeasure);
     }
 

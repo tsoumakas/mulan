@@ -15,13 +15,16 @@
  */
 
 /*
- *    ICDM08EnsembleOfPrunedSets.java
+ *    PatternRecognition07MLkNN.java
  *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
  */
 package mulan.experiments;
 
 /**
- * @author Eleftherios Spyromitros-Xioufis ( espyromi@csd.auth.gr )
+ * Class replicating an experiment from a published paper
+ *
+ * @author Eleftherios Spyromitros-Xioufis (espyromi@csd.auth.gr)
+ * @version 2010.12.10
  */
 import java.util.ArrayList;
 import java.util.List;
@@ -41,46 +44,54 @@ import weka.core.Utils;
 import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
 
-public class PatternRecognition07MLkNN extends Experiment{
+/**
+ * Class replicating an experiment from a published paper
+ *
+ * @author Eleftherios Spyromitros-Xioufis (espyromi@csd.auth.gr)
+ * @version 2010.12.10
+ */
+public class PatternRecognition07MLkNN extends Experiment {
 
-	public static void main(String[] args) {
+    /**
+     * Main class
+     *
+     * @param args command line arguments
+     */
+    public static void main(String[] args) {
 
-		try {
-			String path = Utils.getOption("path", args);
-			String filestem = Utils.getOption("filestem", args);
+        try {
+            String path = Utils.getOption("path", args);
+            String filestem = Utils.getOption("filestem", args);
 
-			System.out.println("Loading the data set");
-			MultiLabelInstances dataSet = new MultiLabelInstances(path
-					+ filestem + ".arff", path + filestem + ".xml");
+            System.out.println("Loading the data set");
+            MultiLabelInstances dataSet = new MultiLabelInstances(path + filestem + ".arff", path + filestem + ".xml");
 
-			Evaluator eval = new Evaluator();
-			MultipleEvaluation results;
-			List<Measure> measures = new ArrayList<Measure>(5);
-			measures.add(new HammingLoss());
-			measures.add(new OneError());
-			measures.add(new Coverage());
-			measures.add(new RankingLoss());
-			measures.add(new AveragePrecision());
+            Evaluator eval = new Evaluator();
+            MultipleEvaluation results;
+            List<Measure> measures = new ArrayList<Measure>(5);
+            measures.add(new HammingLoss());
+            measures.add(new OneError());
+            measures.add(new Coverage());
+            measures.add(new RankingLoss());
+            measures.add(new AveragePrecision());
 
-			int numFolds = 10;
-			int numOfNeighbors;
+            int numOfNeighbors;
+            for (int i = 8; i <= 12; i++) {
+                System.out.println("MLkNN Experiment for " + i + " neighbors:");
+                numOfNeighbors = i;
+                double smooth = 1.0;
+                MLkNN mlknn = new MLkNN(numOfNeighbors, smooth);
+                mlknn.setDontNormalize(true);
+                // mlknn.setDebug(true);
+                results = eval.crossValidate(mlknn, dataSet, measures, 10);
+                System.out.println(results);
+            }
 
-			for (int i = 8; i <= 12; i++) {
-				System.out.println("MLkNN Experiment for " + i + " neighbors:");
-				numOfNeighbors = i;
-				double smooth = 1.0;
-				MLkNN mlknn = new MLkNN(numOfNeighbors, smooth);
-				mlknn.setDontNormalize(true);
-				// mlknn.setDebug(true);
-				results = eval.crossValidate(mlknn, dataSet, measures, numFolds);
-				System.out.println(results);
-			}
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-	}
+    }
 
     /**
      * Returns an instance of a TechnicalInformation object, containing detailed

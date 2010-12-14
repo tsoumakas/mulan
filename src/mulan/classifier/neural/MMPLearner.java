@@ -34,7 +34,7 @@ import mulan.classifier.neural.model.Neuron;
 import mulan.core.ArgumentNullException;
 import mulan.core.WekaException;
 import mulan.data.MultiLabelInstances;
-import mulan.evaluation.measure.RankingMeasureBase;
+import mulan.evaluation.loss.RankingLossFunction;
 import weka.core.Attribute;
 import weka.core.Instance;
 import weka.core.Instances;
@@ -58,10 +58,10 @@ public class MMPLearner extends MultiLabelLearnerBase {
 
     /** Version UID for serialization */
     private static final long serialVersionUID = 2221778416856852684L;
-    /** The bias value for perceptrons */
+    /** The bias value for tempPerceptrons */
     private static final double PERCEP_BIAS = 1;
     /**
-     * List of perceptrons representing model of the learner. One for each label.
+     * List of tempPerceptrons representing model of the learner. One for each label.
      * They are ordered in same sequence as labels observed from training data.
      **/
     private List<Neuron> perceptrons;
@@ -75,7 +75,7 @@ public class MMPLearner extends MultiLabelLearnerBase {
     /** Filter used for conversion of nominal attributes to binary (if enabled) */
     private NominalToBinary nomToBinFilter;
     /** The measure to be used to judge the performance of ranking when learning the model */
-    private final RankingMeasureBase lossMeasure;
+    private final RankingLossFunction lossFunction;
     /** The name of a model update rule used to update the model when learning from training data */
     private final MMPUpdateRuleType mmpUpdateRule;
     /**
@@ -88,11 +88,11 @@ public class MMPLearner extends MultiLabelLearnerBase {
     /**
      * Creates a new instance of {@link MMPLearner}.
      *
-     * @param lossMeasure the loss measure to be used when judging
+     * @param lossFunction the loss measure to be used when judging
      * 	ranking performance in learning process
      * @param modelUpdateRule 
      */
-    public MMPLearner(RankingMeasureBase lossMeasure, MMPUpdateRuleType modelUpdateRule) {
+    public MMPLearner(RankingLossFunction lossMeasure, MMPUpdateRuleType modelUpdateRule) {
         if (lossMeasure == null) {
             throw new ArgumentNullException("lossMeasure");
         }
@@ -101,19 +101,19 @@ public class MMPLearner extends MultiLabelLearnerBase {
         }
 
         mmpUpdateRule = modelUpdateRule;
-        this.lossMeasure = lossMeasure;
+        this.lossFunction = lossMeasure;
         randomnessSeed = null;
     }
-    
+
     /**
      * Creates a new instance of {@link MMPLearner}.
      *
-     * @param lossMeasure the loss measure to be used when judging
+     * @param lossFunction the loss measure to be used when judging
      * 	ranking performance in learning process
      * @param modelUpdateRule 
      * @param randomnessSeed the seed value for pseudo-random generator
      */
-    public MMPLearner(RankingMeasureBase lossMeasure, MMPUpdateRuleType modelUpdateRule, long randomnessSeed) {
+    public MMPLearner(RankingLossFunction lossMeasure, MMPUpdateRuleType modelUpdateRule, long randomnessSeed) {
         if (lossMeasure == null) {
             throw new ArgumentNullException("lossMeasure");
         }
@@ -122,7 +122,7 @@ public class MMPLearner extends MultiLabelLearnerBase {
         }
 
         mmpUpdateRule = modelUpdateRule;
-        this.lossMeasure = lossMeasure;
+        this.lossFunction = lossMeasure;
         this.randomnessSeed = randomnessSeed;
     }
 
@@ -166,7 +166,6 @@ public class MMPLearner extends MultiLabelLearnerBase {
 //    public boolean getNormalizeAttributes() {
 //        return normalizeAttributes;
 //    }
-
     @Override
     public boolean isUpdatable() {
         return true;
@@ -185,7 +184,7 @@ public class MMPLearner extends MultiLabelLearnerBase {
             isInitialized = true;
         }
 
-        ModelUpdateRule modelUpdateRule = getModelUpdateRule(lossMeasure);
+        ModelUpdateRule modelUpdateRule = getModelUpdateRule(lossFunction);
 
         for (DataPair dataItem : trainData) {
             modelUpdateRule.process(dataItem, null);
@@ -224,16 +223,16 @@ public class MMPLearner extends MultiLabelLearnerBase {
 
     private List<Neuron> initializeModel(int numFeatures, int numLabels) {
 
-    	Random random = randomnessSeed == null ? null : new Random(randomnessSeed);
-    	List<Neuron> perceptrons = new ArrayList<Neuron>(numLabels);
+        Random random = randomnessSeed == null ? null : new Random(randomnessSeed);
+        List<Neuron> tempPerceptrons = new ArrayList<Neuron>(numLabels);
         for (int i = 0; i < numLabels; i++) {
-            perceptrons.add(new Neuron(new ActivationLinear(), numFeatures, PERCEP_BIAS, random));
+            tempPerceptrons.add(new Neuron(new ActivationLinear(), numFeatures, PERCEP_BIAS, random));
         }
 
-        return perceptrons;
+        return tempPerceptrons;
     }
 
-    private ModelUpdateRule getModelUpdateRule(RankingMeasureBase lossMeasure) {
+    private ModelUpdateRule getModelUpdateRule(RankingLossFunction lossMeasure) {
         switch (mmpUpdateRule) {
             case UniformUpdate:
                 return new MMPUniformUpdateRule(perceptrons, lossMeasure);
@@ -294,7 +293,7 @@ public class MMPLearner extends MultiLabelLearnerBase {
                             "Error message: " + exception.getMessage());
                 }
                 throw new WekaException("Failed to apply NominalToBinary filter to the input instances data.", exception);
-            }            
+            }
         }
 
         return DataPair.createDataPairs(mlData, false);
@@ -336,15 +335,14 @@ public class MMPLearner extends MultiLabelLearnerBase {
     private double[] getFeatureVector(Instance inputInstance) {
 
         if (convertNomToBin && nomToBinFilter != null) {
-        	try {
-	            nomToBinFilter.input(inputInstance);
-	            inputInstance = nomToBinFilter.output();
-	            inputInstance.setDataset(null);
-	        }
-	        catch(Exception ex){
-	        	throw new InvalidDataException("The input instance for prediction is invalid. " +
-	        			"Instance is not consistent with the data the model was built for.");
-	        }
+            try {
+                nomToBinFilter.input(inputInstance);
+                inputInstance = nomToBinFilter.output();
+                inputInstance.setDataset(null);
+            } catch (Exception ex) {
+                throw new InvalidDataException("The input instance for prediction is invalid. " +
+                        "Instance is not consistent with the data the model was built for.");
+            }
         }
 
         // check if number in attributes is at least equal to model input

@@ -49,8 +49,19 @@ import weka.core.Utils;
 import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
 
+/**
+ * Class replicating an experiment from a published paper
+ *
+ * @author Grigorios Tsoumakas
+ * @version 2010.12.10
+ */
 public class ICTAI2010 extends Experiment {
 
+    /**
+     * Main class
+     *
+     * @param args command line arguments
+     */
     public static void main(String[] args) {
 
         try {
@@ -86,110 +97,110 @@ public class ICTAI2010 extends Experiment {
             for (int i = 0; i < learner.length; i++) {
                 // Default
                 results = eval.crossValidate(learner[i].makeCopy(), dataset, measures, numFolds);
-                System.out.println(learnerName[i]+";default;-;" + results.toCSV());
+                System.out.println(learnerName[i] + ";default;-;" + results.toCSV());
 
                 // One Threshold
                 OneThreshold ot;
                 ot = new OneThreshold(learner[i].makeCopy(), new HammingLoss());
                 results = eval.crossValidate(ot, dataset, measures, numFolds);
-                System.out.println(learnerName[i]+";one threshold;train;" + results.toCSV());
+                System.out.println(learnerName[i] + ";one threshold;train;" + results.toCSV());
                 ot = new OneThreshold(learner[i].makeCopy(), new HammingLoss(), 5);
                 results = eval.crossValidate(ot, dataset, measures, numFolds);
-                System.out.println(learnerName[i]+";one threshold;5-cv;" + results.toCSV());
+                System.out.println(learnerName[i] + ";one threshold;5-cv;" + results.toCSV());
 
                 // RCut
                 RCut rcut;
                 rcut = new RCut(learner[i].makeCopy());
                 results = eval.crossValidate(rcut, dataset, measures, numFolds);
-                System.out.println(learnerName[i]+";rcut;cardinality;" + results.toCSV());
+                System.out.println(learnerName[i] + ";rcut;cardinality;" + results.toCSV());
                 rcut = new RCut(learner[i].makeCopy(), new HammingLoss());
                 results = eval.crossValidate(rcut, dataset, measures, numFolds);
-                System.out.println(learnerName[i]+";rcut;train;" + results.toCSV());
+                System.out.println(learnerName[i] + ";rcut;train;" + results.toCSV());
                 rcut = new RCut(learner[i].makeCopy(), new HammingLoss(), 5);
                 results = eval.crossValidate(rcut, dataset, measures, numFolds);
-                System.out.println(learnerName[i]+";rcut;5-cv;" + results.toCSV());
+                System.out.println(learnerName[i] + ";rcut;5-cv;" + results.toCSV());
 
                 // SCut
                 SCut scut;
                 scut = new SCut(learner[i].makeCopy(), new HammingLoss());
                 results = eval.crossValidate(scut, dataset, measures, numFolds);
-                System.out.println(learnerName[i]+";scut;train;" + results.toCSV());
+                System.out.println(learnerName[i] + ";scut;train;" + results.toCSV());
                 scut = new SCut(learner[i].makeCopy(), new HammingLoss(), 5);
                 results = eval.crossValidate(scut, dataset, measures, numFolds);
-                System.out.println(learnerName[i]+";scut;5-cv;" + results.toCSV());
+                System.out.println(learnerName[i] + ";scut;5-cv;" + results.toCSV());
 
                 // MetaLabeler
                 MetaLabeler ml;
                 ml = new MetaLabeler(learner[i].makeCopy(), new M5P(), "Content-Based", "Numeric-Class");
                 ml.setFolds(1);
                 results = eval.crossValidate(ml, dataset, measures, numFolds);
-                System.out.println(learnerName[i]+";metalabeler;m5p;train;content;" + results.toCSV());
+                System.out.println(learnerName[i] + ";metalabeler;m5p;train;content;" + results.toCSV());
                 ml = new MetaLabeler(learner[i].makeCopy(), new M5P(), "Score-Based", "Numeric-Class");
                 ml.setFolds(1);
                 results = eval.crossValidate(ml, dataset, measures, numFolds);
-                System.out.println(learnerName[i]+";metalabeler;m5p;train;scores;" + results.toCSV());
+                System.out.println(learnerName[i] + ";metalabeler;m5p;train;scores;" + results.toCSV());
                 ml = new MetaLabeler(learner[i].makeCopy(), new M5P(), "Rank-Based", "Numeric-Class");
                 ml.setFolds(1);
                 results = eval.crossValidate(ml, dataset, measures, numFolds);
-                System.out.println(learnerName[i]+";metalabeler;m5p;train;ranks;" + results.toCSV());
+                System.out.println(learnerName[i] + ";metalabeler;m5p;train;ranks;" + results.toCSV());
                 ml = new MetaLabeler(learner[i].makeCopy(), new J48(), "Content-Based", "Nominal-Class");
                 ml.setFolds(1);
                 results = eval.crossValidate(ml, dataset, measures, numFolds);
-                System.out.println(learnerName[i]+";metalabeler;j48;train;content;" + results.toCSV());
+                System.out.println(learnerName[i] + ";metalabeler;j48;train;content;" + results.toCSV());
                 ml = new MetaLabeler(learner[i].makeCopy(), new J48(), "Score-Based", "Nominal-Class");
                 ml.setFolds(1);
                 results = eval.crossValidate(ml, dataset, measures, numFolds);
-                System.out.println(learnerName[i]+";metalabeler;j48;train;scores;" + results.toCSV());
+                System.out.println(learnerName[i] + ";metalabeler;j48;train;scores;" + results.toCSV());
                 ml = new MetaLabeler(learner[i].makeCopy(), new J48(), "Rank-Based", "Nominal-Class");
                 ml.setFolds(1);
                 results = eval.crossValidate(ml, dataset, measures, numFolds);
-                System.out.println(learnerName[i]+";metalabeler;j48;cv;ranks;" + results.toCSV());
+                System.out.println(learnerName[i] + ";metalabeler;j48;cv;ranks;" + results.toCSV());
 
                 ml = new MetaLabeler(learner[i].makeCopy(), new M5P(), "Content-Based", "Numeric-Class");
                 ml.setFolds(5);
                 results = eval.crossValidate(ml, dataset, measures, numFolds);
-                System.out.println(learnerName[i]+";metalabeler;m5p;cv;content;" + results.toCSV());
+                System.out.println(learnerName[i] + ";metalabeler;m5p;cv;content;" + results.toCSV());
                 ml = new MetaLabeler(learner[i].makeCopy(), new M5P(), "Score-Based", "Numeric-Class");
                 ml.setFolds(5);
                 results = eval.crossValidate(ml, dataset, measures, numFolds);
-                System.out.println(learnerName[i]+";metalabeler;m5p;cv;scores;" + results.toCSV());
+                System.out.println(learnerName[i] + ";metalabeler;m5p;cv;scores;" + results.toCSV());
                 ml = new MetaLabeler(learner[i].makeCopy(), new M5P(), "Rank-Based", "Numeric-Class");
                 ml.setFolds(5);
                 results = eval.crossValidate(ml, dataset, measures, numFolds);
-                System.out.println(learnerName[i]+";metalabeler;m5p;cv;ranks;" + results.toCSV());
+                System.out.println(learnerName[i] + ";metalabeler;m5p;cv;ranks;" + results.toCSV());
                 ml = new MetaLabeler(learner[i].makeCopy(), new J48(), "Content-Based", "Nominal-Class");
                 ml.setFolds(5);
                 results = eval.crossValidate(ml, dataset, measures, numFolds);
-                System.out.println(learnerName[i]+";metalabeler;j48;cv;content;" + results.toCSV());
+                System.out.println(learnerName[i] + ";metalabeler;j48;cv;content;" + results.toCSV());
                 ml = new MetaLabeler(learner[i].makeCopy(), new J48(), "Score-Based", "Nominal-Class");
                 ml.setFolds(5);
                 results = eval.crossValidate(ml, dataset, measures, numFolds);
-                System.out.println(learnerName[i]+";metalabeler;j48;cv;scores;" + results.toCSV());
+                System.out.println(learnerName[i] + ";metalabeler;j48;cv;scores;" + results.toCSV());
                 ml = new MetaLabeler(learner[i].makeCopy(), new J48(), "Rank-Based", "Nominal-Class");
                 ml.setFolds(5);
                 results = eval.crossValidate(ml, dataset, measures, numFolds);
-                System.out.println(learnerName[i]+";metalabeler;j48;cv;ranks;" + results.toCSV());
+                System.out.println(learnerName[i] + ";metalabeler;j48;cv;ranks;" + results.toCSV());
 
                 // ThresholdPrediction
                 ThresholdPrediction tp;
                 tp = new ThresholdPrediction(learner[i].makeCopy(), new M5P(), "Content-Based", 1);
                 results = eval.crossValidate(tp, dataset, measures, numFolds);
-                System.out.println(learnerName[i]+";tp;m5p;train;content;" + results.toCSV());
+                System.out.println(learnerName[i] + ";tp;m5p;train;content;" + results.toCSV());
                 tp = new ThresholdPrediction(learner[i].makeCopy(), new M5P(), "Score-Based", 1);
                 results = eval.crossValidate(tp, dataset, measures, numFolds);
-                System.out.println(learnerName[i]+";tp;m5p;train;scores;" + results.toCSV());
+                System.out.println(learnerName[i] + ";tp;m5p;train;scores;" + results.toCSV());
                 tp = new ThresholdPrediction(learner[i].makeCopy(), new M5P(), "Rank-Based", 1);
                 results = eval.crossValidate(tp, dataset, measures, numFolds);
-                System.out.println(learnerName[i]+";tp;m5p;train;ranks;" + results.toCSV());
+                System.out.println(learnerName[i] + ";tp;m5p;train;ranks;" + results.toCSV());
                 tp = new ThresholdPrediction(learner[i].makeCopy(), new M5P(), "Content-Based", 5);
                 results = eval.crossValidate(tp, dataset, measures, numFolds);
-                System.out.println(learnerName[i]+";tp;m5p;5-cv;content;" + results.toCSV());
+                System.out.println(learnerName[i] + ";tp;m5p;5-cv;content;" + results.toCSV());
                 tp = new ThresholdPrediction(learner[i].makeCopy(), new M5P(), "Score-Based", 5);
                 results = eval.crossValidate(tp, dataset, measures, numFolds);
-                System.out.println(learnerName[i]+";tp;m5p;5-cv;scores;" + results.toCSV());
+                System.out.println(learnerName[i] + ";tp;m5p;5-cv;scores;" + results.toCSV());
                 tp = new ThresholdPrediction(learner[i].makeCopy(), new M5P(), "Rank-Based", 5);
                 results = eval.crossValidate(tp, dataset, measures, numFolds);
-                System.out.println(learnerName[i]+";tp;m5p;5-cv;ranks;" + results.toCSV());
+                System.out.println(learnerName[i] + ";tp;m5p;5-cv;ranks;" + results.toCSV());
             }
         } catch (Exception e) {
             e.printStackTrace();

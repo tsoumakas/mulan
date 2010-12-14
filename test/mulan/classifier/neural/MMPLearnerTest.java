@@ -28,10 +28,10 @@ import mulan.classifier.MultiLabelOutput;
 import mulan.core.ArgumentNullException;
 import mulan.data.MultiLabelInstances;
 import mulan.data.generation.DataSetBuilder;
-import mulan.evaluation.measure.AveragePrecision;
-import mulan.evaluation.measure.ErrorSetSize;
-import mulan.evaluation.measure.IsError;
-import mulan.evaluation.measure.OneError;
+import mulan.evaluation.loss.ErrorSetSize;
+import mulan.evaluation.loss.IsError;
+import mulan.evaluation.loss.OneError;
+import mulan.evaluation.loss.RankingLoss;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -50,7 +50,7 @@ public class MMPLearnerTest extends MultiLabelLearnerTestBase {
 
     @Before
     public void setUp() {
-        learner = new MMPLearner(new AveragePrecision(), MMPUpdateRuleType.UniformUpdate, 5);
+        learner = new MMPLearner(new RankingLoss(), MMPUpdateRuleType.UniformUpdate, 5);
     }
 
     @Test
@@ -66,7 +66,7 @@ public class MMPLearnerTest extends MultiLabelLearnerTestBase {
 
     @Test(expected = ArgumentNullException.class)
     public void testConstructorWithNullUpdateRule() {
-        new MMPLearner(new AveragePrecision(), null);
+        new MMPLearner(new RankingLoss(), null);
     }
 
     @Test()
@@ -102,10 +102,9 @@ public class MMPLearnerTest extends MultiLabelLearnerTestBase {
     public void testDifferentLossAndUpdateRules() throws Exception {
         MultiLabelInstances mlDataSet = DataSetBuilder.CreateDataSet(DATA_SET);
 
-        MMPLearner learner;
         MultiLabelOutput prediction;
 
-        learner = new MMPLearner(new AveragePrecision(), MMPUpdateRuleType.UniformUpdate);
+        learner = new MMPLearner(new RankingLoss(), MMPUpdateRuleType.UniformUpdate);
         learner.build(mlDataSet);
         prediction = learner.makePrediction(mlDataSet.getDataSet().instance(0));
         Assert.assertNotNull(prediction);

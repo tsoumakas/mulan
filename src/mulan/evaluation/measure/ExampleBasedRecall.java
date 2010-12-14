@@ -20,14 +20,15 @@
  */
 package mulan.evaluation.measure;
 
-import mulan.core.MulanRuntimeException;
-
 /**
  * Implementation of the example-based recall measure.
  * 
  * @author Grigorios Tsoumakas
+ * @version 2010.11.05
  */
 public class ExampleBasedRecall extends ExampleBasedBipartitionMeasureBase {
+
+    private final boolean strict;
 
     public String getName() {
         return "Example-Based Recall";
@@ -37,7 +38,17 @@ public class ExampleBasedRecall extends ExampleBasedBipartitionMeasureBase {
         return 1;
     }
 
-    public double updateInternal2(boolean[] bipartition, boolean[] truth) {
+    /**
+     * Creates a new object
+     *
+     * @param strict when false, divisions-by-zero are ignored
+     */
+    public ExampleBasedRecall(boolean strict) {
+        this.strict = strict;
+    }
+
+    @Override
+    protected void updateBipartition(boolean[] bipartition, boolean[] truth) {
         double intersection = 0;
         double actual = 0;
         for (int i = 0; i < truth.length; i++) {
@@ -48,14 +59,11 @@ public class ExampleBasedRecall extends ExampleBasedBipartitionMeasureBase {
                 }
             }
         }
-        if (actual == 0) {
-            throw new MulanRuntimeException("No relevant label");
-        }
-        double value = intersection / actual;
 
-        sum += value;
+        if (actual == 0 && strict == false)
+            return;
+
+        sum += intersection / actual;
         count++;
-
-        return value;
     }
 }

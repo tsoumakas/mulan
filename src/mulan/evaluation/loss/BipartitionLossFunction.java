@@ -15,40 +15,25 @@
  */
 
 /*
- *    SubsetAccuracy.java
+ *    BipartitionLossFunction.java
  *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
  */
-package mulan.evaluation.measure;
+package mulan.evaluation.loss;
 
 /**
- * Implementation of the subset accuracy measure. This measure is the opposite
- * of the zero-one loss for multi-label classification.
- * 
+ * Interfance for bipartition loss functions
+ *
  * @author Grigorios Tsoumakas
- * @version 2010.11.05
+ * @version 2010.12.01
  */
-public class SubsetAccuracy extends ExampleBasedBipartitionMeasureBase {
+public interface BipartitionLossFunction extends MultiLabelLossFunction {
 
-    public String getName() {
-        return "Subset Accuracy";
-    }
-
-    public double getIdealValue() {
-        return 1;
-    }
-
-    @Override
-    protected void updateBipartition(boolean[] bipartition, boolean[] truth) {
-        double value = 1;
-        for (int i = 0; i < truth.length; i++) {
-            if (bipartition[i] != truth[i]) {
-                value = 0;
-                break;
-            }
-        }
-
-        sum += value;
-        count++;
-    }
-
+    /**
+     * Computes the bipartition loss function
+     *
+     * @param bipartition the biprtition of the learner for an example
+     * @param groundTruth the ground truth of the example
+     * @return the value of the loss function
+     */
+    public double computeLoss(boolean[] bipartition, boolean[] groundTruth);
 }

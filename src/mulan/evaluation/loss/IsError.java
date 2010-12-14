@@ -15,58 +15,57 @@
  */
 
 /*
- *    AveragePrecision.java
+ *    IsError.java
  *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
  */
-package mulan.evaluation.measure;
+package mulan.evaluation.loss;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Implementation of the average precision measure. It evaluates the average
- * fraction of labels ranked above a particular relevant label, that are
- * actually relevant.
+ * Implementation of the IsError loss function, which is simply the indicator
+ * of whether the induced ranking is perfect or not. Speaking in terms of error
+ * set, the loss is zero if the cardinality of the error-set is zero
+ * and one if the cardinality of the error set is greather than zero.
  * 
- * @author Jozef Vilcek
  * @author Grigorios Tsoumakas
- * @version 2010.11.05
+ * @version 2010.11.10
  */
-public class AveragePrecision extends RankingMeasureBase {
+public class IsError extends RankingLossFunctionBase {
 
     public String getName() {
-        return "Average Precision";
+        return "IsError";
     }
 
     @Override
-    public double getIdealValue() {
-        return 1;
-    }
-
-    protected void updateRanking(int[] ranking, boolean[] trueLabels) {
-        double avgP = 0;
-        int numLabels = trueLabels.length;
+    public double computeLoss(int[] ranking, boolean[] groundTruth) {
         List<Integer> relevant = new ArrayList<Integer>();
+        List<Integer> irrelevant = new ArrayList<Integer>();
+        int numLabels = groundTruth.length;
         for (int index = 0; index < numLabels; index++) {
-            if (trueLabels[index]) {
+            if (groundTruth[index]) {
                 relevant.add(index);
+            } else {
+                irrelevant.add(index);
             }
         }
 
-        if (relevant.size() != 0) {
-            for (int r : relevant) {
-                double rankedAbove = 0;
-                for (int rr : relevant) {
-                    if (ranking[rr] <= ranking[r]) {
-                        rankedAbove++;
-                    }
+        double isError = 0;
+        boolean terminate = false;
+        for (int rLabel : relevant) {
+            for (int irLabel : irrelevant) {
+                if (ranking[rLabel] > ranking[irLabel]) {
+                    isError = 1;
+                    terminate = true;
+                    break;
                 }
-                avgP += (rankedAbove / ranking[r]);
             }
-            avgP /= relevant.size();
-            sum += avgP;
-            count++;
+            if (terminate) {
+                break;
+            }
         }
-    }
 
+        return isError;
+    }
 }

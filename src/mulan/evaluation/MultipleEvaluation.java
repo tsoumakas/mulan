@@ -37,21 +37,33 @@ public class MultipleEvaluation {
     private HashMap<String, Double> mean;
     private HashMap<String, Double> standardDeviation;
 
+    /**
+     * Constructs a new object
+     */
     public MultipleEvaluation() {
-        
+        evaluations = new ArrayList<Evaluation>();
     }
 
+    /**
+     * Constructs a new object with given array of evaluations and calculates
+     * statistics
+     *
+     * @param someEvaluations
+     */
     public MultipleEvaluation(Evaluation[] someEvaluations) {
         evaluations = new ArrayList<Evaluation>();
-        for (Evaluation e : someEvaluations)
+        for (Evaluation e : someEvaluations) {
             evaluations.add(e);
+        }
         calculateStatistics();
     }
 
+    /**
+     * Computes mean and standard deviation of all evaluation measures
+     */
     public void calculateStatistics() {
         int size = evaluations.size();
         HashMap<String, Double> sums = new HashMap<String, Double>();
-
 
         // calculate sums of measures
         for (int i = 0; i < evaluations.size(); i++) {
@@ -97,10 +109,12 @@ public class MultipleEvaluation {
         }
     }
 
+    /**
+     * Adds an evaluation results to the list of evaluations
+     *
+     * @param evaluation an evaluation result
+     */
     public void addEvaluation(Evaluation evaluation) {
-        if (evaluations == null) {
-            evaluations = new ArrayList<Evaluation>();
-        }
         evaluations.add(evaluation);
     }
 
@@ -113,22 +127,34 @@ public class MultipleEvaluation {
             sb.append(": ");
             sb.append(String.format("%.4f", mean.get(measureName)));
             sb.append("\u00B1");
-            sb.append(String.format("%.4f",standardDeviation.get(measureName)));
+            sb.append(String.format("%.4f", standardDeviation.get(measureName)));
+            sb.append("\n");
         }
         return sb.toString();
     }
 
+    /**
+     * Returns the mean value of a measure
+     *
+     * @param measureName the name of the measure
+     * @return the mean value of the measure
+     */
     public double getMean(String measureName) {
         return mean.get(measureName);
     }
 
+    /**
+     * Returns a CSV string representation of the results
+     *
+     * @return a CSV string representation of the results
+     */
     public String toCSV() {
         StringBuilder sb = new StringBuilder();
         for (Measure m : evaluations.get(0).getMeasures()) {
             String measureName = m.getName();
-            sb.append(String.format("%.4f",mean.get(measureName)));
+            sb.append(String.format("%.4f", mean.get(measureName)));
             sb.append("\u00B1");
-            sb.append(String.format("%.4f",standardDeviation.get(measureName)));
+            sb.append(String.format("%.4f", standardDeviation.get(measureName)));
             sb.append(";");
         }
         return sb.toString();

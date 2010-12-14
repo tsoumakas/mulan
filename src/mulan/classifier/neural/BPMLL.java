@@ -50,11 +50,11 @@ import weka.filters.unsupervised.attribute.NominalToBinary;
  * The implementation of Back-Propagation Multi-Label Learning (BPMLL) learner.
  * The learned model is stored in {@link NeuralNet} neural network. The models of the
  * learner is built by {@link BPMLLAlgorithm} from given training data set.
- * 
+ *
  * <!-- technical-bibtex-start -->
- * 
+ *
  * <!-- technical-bibtex-end -->
- * 
+ *
  * @author Jozef Vilcek
  * @see BPMLLAlgorithm
  */
@@ -80,18 +80,18 @@ public class BPMLL extends MultiLabelLearnerBase {
     /**
      * Creates a new instance of {@link BPMLL} learner.
      */
-    public BPMLL(){
-    	randomnessSeed = null;
+    public BPMLL() {
+        randomnessSeed = null;
     }
-    
+
     /**
      * Creates a new instance of {@link BPMLL} learner.
      * @param randomnessSeed the seed value for pseudo-random generator
      */
-    public BPMLL(long randomnessSeed){
-    	this.randomnessSeed = randomnessSeed;
+    public BPMLL(long randomnessSeed) {
+        this.randomnessSeed = randomnessSeed;
     }
-    
+
     /**
      * Sets the topology of hidden layers for neural network.
      * The length of passed array defines number of hidden layers.
@@ -118,7 +118,7 @@ public class BPMLL extends MultiLabelLearnerBase {
 
     /**
      * Gets an array defining topology of hidden layer of the underlying neural model.
-     * 
+     *
      * @return The method returns a copy of the array.
      */
     public int[] getHiddenLayers() {
@@ -237,7 +237,7 @@ public class BPMLL extends MultiLabelLearnerBase {
         double prevError = Double.MAX_VALUE;
         double error = 0;
         for (int epoch = 0; epoch < epochs; epoch++) {
-            Collections.shuffle(trainData,new Random(1));
+            Collections.shuffle(trainData, new Random(1));
             for (int index = 0; index < numInstances; index++) {
                 DataPair trainPair = trainData.get(index);
                 double result = learnAlg.learn(trainPair.getInput(), trainPair.getOutput(), learningRate);
@@ -297,17 +297,19 @@ public class BPMLL extends MultiLabelLearnerBase {
 
         int[] networkTopology;
         if (hiddenLayersTopology == null) {
-            networkTopology = new int[]{inputsDim, numLabels};
+            int hiddenUnits = Math.round(0.2f * inputsDim);
+            hiddenLayersTopology = new int[]{hiddenUnits};
+            networkTopology = new int[]{inputsDim, hiddenUnits, numLabels};
         } else {
             networkTopology = new int[hiddenLayersTopology.length + 2];
             networkTopology[0] = inputsDim;
             System.arraycopy(hiddenLayersTopology, 0, networkTopology, 1, hiddenLayersTopology.length);
             networkTopology[networkTopology.length - 1] = numLabels;
         }
-        
-        NeuralNet model = new BasicNeuralNet(networkTopology, NET_BIAS, ActivationTANH.class, randomnessSeed == null ? null :  new Random(randomnessSeed));
 
-        return model;
+        NeuralNet aModel = new BasicNeuralNet(networkTopology, NET_BIAS, ActivationTANH.class, randomnessSeed == null ? null : new Random(randomnessSeed));
+
+        return aModel;
     }
 
     /**
@@ -324,21 +326,20 @@ public class BPMLL extends MultiLabelLearnerBase {
         if (data == null) {
             throw new InvalidDataException("Attributes are not in correct format. " +
                     "Input attributes (all but the label attributes) must be nominal or numeric.");
-        }
-        else{
-        	try {
-        		mlData = mlData.reintegrateModifiedDataSet(data);
-        		this.labelIndices = mlData.getLabelIndices();
-			} catch (InvalidDataFormatException e) {
-				throw new InvalidDataException("Failed to create a multilabel data set from modified instances.");
-			}
-        }
+        } else {
+            try {
+                mlData = mlData.reintegrateModifiedDataSet(data);
+                this.labelIndices = mlData.getLabelIndices();
+            } catch (InvalidDataFormatException e) {
+                throw new InvalidDataException("Failed to create a multilabel data set from modified instances.");
+            }
 
-        if (normalizeAttributes) {
-            normalizer = new NormalizationFilter(mlData, true, -0.8, 0.8);
-        }
+            if (normalizeAttributes) {
+                normalizer = new NormalizationFilter(mlData, true, -0.8, 0.8);
+            }
 
-        return DataPair.createDataPairs(mlData, true);
+            return DataPair.createDataPairs(mlData, true);
+        }
     }
 
     /**
@@ -388,22 +389,21 @@ public class BPMLL extends MultiLabelLearnerBase {
 
     public MultiLabelOutput makePredictionInternal(Instance instance) throws InvalidDataException {
 
-    	Instance inputInstance = null;
-    	if (nominalToBinaryFilter != null) {
-    		try {
-	            nominalToBinaryFilter.input(instance);
-	            inputInstance = nominalToBinaryFilter.output();
-	            inputInstance.setDataset(null);
-        	} catch(Exception ex){
-	        	throw new InvalidDataException("The input instance for prediction is invalid. " +
-	        			"Instance is not consistent with the data the model was built for.");
-	        }
-    	}
-    	else{
-    		inputInstance = DataUtils.createInstance(instance, instance.weight(), instance.toDoubleArray());	
-    	}
-    	    	
-    	int numAttributes = inputInstance.numAttributes();
+        Instance inputInstance = null;
+        if (nominalToBinaryFilter != null) {
+            try {
+                nominalToBinaryFilter.input(instance);
+                inputInstance = nominalToBinaryFilter.output();
+                inputInstance.setDataset(null);
+            } catch (Exception ex) {
+                throw new InvalidDataException("The input instance for prediction is invalid. " +
+                        "Instance is not consistent with the data the model was built for.");
+            }
+        } else {
+            inputInstance = DataUtils.createInstance(instance, instance.weight(), instance.toDoubleArray());
+        }
+
+        int numAttributes = inputInstance.numAttributes();
         if (numAttributes < model.getNetInputSize()) {
             throw new InvalidDataException("Input instance do not have enough attributes " +
                     "to be processed by the model. Instance is not consistent with the data the model was built for.");
@@ -411,11 +411,11 @@ public class BPMLL extends MultiLabelLearnerBase {
 
         // if instance has more attributes than model input, we assume that true outputs
         // are there, so we remove them
-        List<Integer> labelIndices = new ArrayList<Integer>();
+        List<Integer> someLabelIndices = new ArrayList<Integer>();
         boolean labelsAreThere = false;
         if (numAttributes > model.getNetInputSize()) {
             for (int index : this.labelIndices) {
-                labelIndices.add(index);
+                someLabelIndices.add(index);
             }
 
             labelsAreThere = true;
@@ -429,7 +429,7 @@ public class BPMLL extends MultiLabelLearnerBase {
         double[] inputPattern = new double[inputDim];
         int indexCounter = 0;
         for (int attrIndex = 0; attrIndex < numAttributes; attrIndex++) {
-            if (labelsAreThere && labelIndices.contains(attrIndex)) {
+            if (labelsAreThere && someLabelIndices.contains(attrIndex)) {
                 continue;
             }
             inputPattern[indexCounter] = inputInstance.value(attrIndex);

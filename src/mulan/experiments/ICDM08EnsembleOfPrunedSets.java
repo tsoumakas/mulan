@@ -23,6 +23,7 @@ package mulan.experiments;
 /**
  * @author Emmanouela Stachtiari
  * @author Grigorios Tsoumakas
+ * @version 2010.12.10
  */
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -37,6 +38,7 @@ import mulan.evaluation.Evaluator;
 import mulan.evaluation.MultipleEvaluation;
 import mulan.evaluation.measure.BipartitionMeasureBase;
 import mulan.evaluation.measure.ExampleBasedAccuracy;
+import mulan.evaluation.measure.ExampleBasedFMeasure;
 import mulan.evaluation.measure.HammingLoss;
 import mulan.evaluation.measure.Measure;
 import weka.classifiers.functions.SMO;
@@ -46,8 +48,19 @@ import weka.core.Utils;
 import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
 
+/**
+ * Class replicating an experiment from a published paper
+ *
+ * @author Grigorios Tsoumakas
+ * @version 2010.12.10
+ */
 public class ICDM08EnsembleOfPrunedSets extends Experiment {
 
+    /**
+     * Main class
+     *
+     * @param args command line arguments
+     */
     public static void main(String[] args) {
 
         try {
@@ -60,15 +73,14 @@ public class ICDM08EnsembleOfPrunedSets extends Experiment {
             Evaluator evaluator;
 
             Measure[] evaluationMeasures = new Measure[2];
-            evaluationMeasures[0] = new ExampleBasedAccuracy();
+            evaluationMeasures[0] = new ExampleBasedAccuracy(false);
             evaluationMeasures[1] = new HammingLoss();
-            // Example-based FMeasure not included due to undefined precision/recall values (division by zero)
-            // evaluationMeasures[2] = new ExampleBasedFMeasure();
+            evaluationMeasures[2] = new ExampleBasedFMeasure(false);
 
-            HashMap<String,MultipleEvaluation> result = new HashMap<String, MultipleEvaluation>();
+            HashMap<String, MultipleEvaluation> result = new HashMap<String, MultipleEvaluation>();
             for (Measure m : evaluationMeasures) {
                 MultipleEvaluation me = new MultipleEvaluation();
-                result.put(m.getName(),me);
+                result.put(m.getName(), me);
             }
 
             Random random = new Random(1);
@@ -77,7 +89,7 @@ public class ICDM08EnsembleOfPrunedSets extends Experiment {
                 // perform 2-fold CV and add each to the current results
                 dataSet.getDataSet().randomize(random);
                 for (int fold = 0; fold < 2; fold++) {
-                    System.out.println("Experiment " + (repetition*2+fold+1));
+                    System.out.println("Experiment " + (repetition * 2 + fold + 1));
                     Instances train = dataSet.getDataSet().trainCV(2, fold);
                     MultiLabelInstances multiTrain = new MultiLabelInstances(train, dataSet.getLabelsMetaData());
                     Instances test = dataSet.getDataSet().testCV(2, fold);
@@ -94,7 +106,7 @@ public class ICDM08EnsembleOfPrunedSets extends Experiment {
                     System.out.println("Searching parameters");
                     for (int p = 5; p > 1; p--) {
                         for (int b = 1; b < 4; b++) {
-                            MultipleEvaluation innerResult;
+                            MultipleEvaluation innerResult = null;
                             LinkedList<Measure> measures;
                             PrunedSets ps;
                             double diff;
@@ -182,7 +194,6 @@ public class ICDM08EnsembleOfPrunedSets extends Experiment {
         result.setValue(Field.PAGES, "995-1000");
         result.setValue(Field.BOOKTITLE, "ICDM'08: Eighth IEEE International Conference on Data Mining");
         result.setValue(Field.YEAR, "2008");
-
         return result;
     }
 }

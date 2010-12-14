@@ -24,25 +24,19 @@ import mulan.classifier.MultiLabelOutput;
 import mulan.core.ArgumentNullException;
 
 /**
- * Base class for measures that are calculated based on rankings
  *
  * @author Grigorios Tsoumakas
+ * @version 2010.12.03
  */
 public abstract class RankingMeasureBase extends MeasureBase {
-
-    protected double sum, count;
-
-    public double updateInternal(MultiLabelOutput prediction, boolean[] truth) {
-        int[] ranking = prediction.getRanking();
-        if (ranking == null) {
-            throw new ArgumentNullException("Ranking is null");
-        }
-        if (ranking.length != truth.length) {
-            throw new IllegalArgumentException("The dimensions of the " +
-                    "ranking and the ground truth array do not match");
-        }
-        return updateInternal2(ranking, truth);
-    }
+    /**
+     * The current sum of the measure
+     */
+    protected double sum;
+    /**
+     * The number of validation examples processed
+     */
+    protected int count;
 
     public void reset() {
         sum = 0;
@@ -53,5 +47,24 @@ public abstract class RankingMeasureBase extends MeasureBase {
         return sum / count;
     }
 
-    abstract public double updateInternal2(int[] ranking, boolean[] truth);
+    protected void updateInternal(MultiLabelOutput prediction, boolean[] truth) {
+        int[] ranking = prediction.getRanking();
+        if (ranking == null) {
+            throw new ArgumentNullException("Bipartition is null");
+        }
+        if (ranking.length != truth.length) {
+            throw new IllegalArgumentException("The dimensions of the " +
+                    "bipartition and the ground truth array do not match");
+        }
+        updateRanking(ranking, truth);
+    }
+
+    /**
+     * Updates the measure based on an example
+     *
+     * @param ranking the predicted ranking
+     * @param truth the ground truth
+     */
+    protected abstract void updateRanking(int[] ranking, boolean[] truth);
+
 }

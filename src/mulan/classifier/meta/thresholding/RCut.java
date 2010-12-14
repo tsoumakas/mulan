@@ -29,7 +29,6 @@ import mulan.data.InvalidDataFormatException;
 import mulan.data.LabelsMetaData;
 import mulan.data.MultiLabelInstances;
 import mulan.evaluation.measure.BipartitionMeasureBase;
-
 import weka.core.Utils;
 import weka.core.Instance;
 import weka.core.Instances;
@@ -44,7 +43,7 @@ import weka.core.TechnicalInformation.Type;
  * @author Marios Ioannou
  * @author George Sakkas
  * @author Grigorios Tsoumakas
- * @version 0.1
+ * @version 2010.12.14
  */
 /**
  *
@@ -196,7 +195,7 @@ public class RCut extends MultiLabelMetaLearner {
                     }
                 }
                 // this doesn't work with label-based measures
-                diff[threshold] += Math.abs(measure.getIdealValue() - measure.updateInternal2(bipartition, trueLabels));
+//                diff[threshold] += Math.abs(measure.getIdealValue() - measure.updateBipartition(bipartition, trueLabels));
             }
         }
         return diff;

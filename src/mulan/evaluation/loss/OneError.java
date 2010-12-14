@@ -15,45 +15,38 @@
  */
 
 /*
- *    Coverage.java
+ *    OneError.java
  *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
  */
-package mulan.evaluation.measure;
+package mulan.evaluation.loss;
 
 /**
- * Implementation of the coverage measure.
+ * Implementation of the one-error loss function. For a given example and
+ * prediction, one-error is 1 if the top ranked label is a relevant and 0
+ * otherwise.
  * 
+ * @author Jozef Vilcek
  * @author Grigorios Tsoumakas
- * @version 2010.12.04
+ * @version 2010.11.10
  */
-public class Coverage extends RankingMeasureBase {
+public class OneError extends RankingLossFunctionBase {
 
     public String getName() {
-        return "Coverage";
+        return "OneError";
     }
 
     @Override
-    public double getIdealValue() {
-        return 1;
-    }
-
-    protected void updateRanking(int[] ranking, boolean[] trueLabels) {
-        int howDeep = 0;
-        int numLabels = trueLabels.length;
-        for (int rank = numLabels; rank >= 1; rank--) {
-            int indexOfRank;
-            for (indexOfRank = 0; indexOfRank < numLabels; indexOfRank++) {
-                if (ranking[indexOfRank] == rank) {
-                    break;
+    public double computeLoss(int[] ranking, boolean[] groundTruth) {
+        double oneError = 0;
+        int numLabels = groundTruth.length;
+        for (int topRated = 0; topRated < numLabels; topRated++) {
+            if (ranking[topRated] == 1) {
+                if (!groundTruth[topRated]) {
+                    oneError++;
                 }
-            }
-            if (trueLabels[indexOfRank]) {
-                howDeep = rank - 1;
                 break;
             }
         }
-
-        sum += howDeep;
-        count++;
+        return oneError;
     }
 }

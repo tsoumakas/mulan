@@ -26,7 +26,7 @@ import java.util.Map;
 import mulan.classifier.MultiLabelOutput;
 import mulan.classifier.neural.model.Neuron;
 import mulan.core.ArgumentNullException;
-import mulan.evaluation.measure.RankingMeasureBase;
+import mulan.evaluation.loss.RankingLossFunction;
 
 /**
  * The base class of update rules for {@link MMPLearner}. The base class implements the
@@ -42,23 +42,23 @@ public abstract class MMPUpdateRuleBase implements ModelUpdateRule {
     /** The list of Neurons representing the model to be updated by the rule in learning process */
     private final List<Neuron> perceptrons;
     /** The masure used to decide when (and to what extend) the model should be updated by the rule */
-    private final RankingMeasureBase measure;
+    private final RankingLossFunction lossFunction;
 
     /**
      * Creates a new instance of {@link MMPUpdateRuleBase}.
      *
      * @param perceptrons the list of perceptrons, representing the model, which will receive updates.
-     * @param measure the loss measure used to decide when the model should be updated by the rule
+     * @param measure the lossFunction measure used to decide when the model should be updated by the rule
      */
-    public MMPUpdateRuleBase(List<Neuron> perceptrons, RankingMeasureBase measure) {
+    public MMPUpdateRuleBase(List<Neuron> perceptrons, RankingLossFunction loss) {
         if (perceptrons == null) {
             throw new ArgumentNullException("perceptrons");
         }
-        if (measure == null) {
+        if (loss == null) {
             throw new ArgumentNullException("lossMeasure");
         }
         this.perceptrons = perceptrons;
-        this.measure = measure;
+        this.lossFunction = loss;
     }
 
     public final double process(DataPair example, Map<String, Object> params) {
@@ -74,8 +74,8 @@ public abstract class MMPUpdateRuleBase implements ModelUpdateRule {
         }
         MultiLabelOutput mlOut = new MultiLabelOutput(confidences);
 
-        // get a loss measure of a model for given example
-        double loss = Math.abs(measure.getIdealValue() - measure.update(mlOut, example.getOutputBoolean()));
+        // get a lossFunction measure of a model for given example
+        double loss = lossFunction.computeLoss(mlOut.getRanking(), example.getOutputBoolean());
         if (loss != 0) {
             // update update parameters for perceptrons
             double[] updateParams = computeUpdateParameters(example, confidences, loss);
@@ -102,7 +102,7 @@ public abstract class MMPUpdateRuleBase implements ModelUpdateRule {
      *
      * @param example the input example
      * @param confidences the confidences outputed by the model the input example
-     * @param loss the loss measure of the model for given input example
+     * @param lossFunction the lossFunction measure of the model for given input example
      * @return the parameters for updating preceptrons
      */
     protected abstract double[] computeUpdateParameters(DataPair example,
