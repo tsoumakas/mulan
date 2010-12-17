@@ -30,6 +30,7 @@ import java.util.List;
  * 
  * @author Jozef Vilcek
  * @author Grigorios Tsoumakas
+ * @version 2010.11.05
  */
 public class AveragePrecision extends RankingMeasureBase {
 
@@ -37,8 +38,12 @@ public class AveragePrecision extends RankingMeasureBase {
         return "Average Precision";
     }
 
-    public double updateInternal2(int[] ranking, boolean[] trueLabels) {
+    @Override
+    public double getIdealValue() {
+        return 1;
+    }
 
+    protected void updateRanking(int[] ranking, boolean[] trueLabels) {
         double avgP = 0;
         int numLabels = trueLabels.length;
         List<Integer> relevant = new ArrayList<Integer>();
@@ -62,12 +67,6 @@ public class AveragePrecision extends RankingMeasureBase {
             sum += avgP;
             count++;
         }
-
-        return avgP;
     }
 
-    @Override
-    public double getIdealValue() {
-        return 1;
-    }
 }

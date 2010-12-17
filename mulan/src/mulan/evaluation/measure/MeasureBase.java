@@ -31,15 +31,14 @@ import weka.core.SerializedObject;
  */
 public abstract class MeasureBase implements Measure, Serializable {
 
-    public final double update(MultiLabelOutput prediction, boolean[] truth) {
+    public final void update(MultiLabelOutput prediction, boolean[] truth) {
         if (prediction == null) {
             throw new ArgumentNullException("Prediction is null");
         }
         if (truth == null) {
             throw new ArgumentNullException("Ground truth is null");
         }
-
-        return updateInternal(prediction, truth);
+        updateInternal(prediction, truth);
     }
 
     @Override
@@ -48,11 +47,17 @@ public abstract class MeasureBase implements Measure, Serializable {
         try {
             value = getValue();
         } catch (Exception ex) {
-        }
-        return getName() + ": " + value;
+        } 
+        return getName() + ": " + String.format("%.4f", value);
     }
 
-    protected abstract double updateInternal(MultiLabelOutput prediction, boolean[] truth);
+    /**
+     * Updates the measure based on an example
+     *
+     * @param prediction the output of the algorithm for the example
+     * @param truth the ground truth of the example
+     */
+    protected abstract void updateInternal(MultiLabelOutput prediction, boolean[] truth);
 
     public Measure makeCopy() throws Exception {
         return (Measure) new SerializedObject(this).getObject();

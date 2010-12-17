@@ -102,9 +102,6 @@ public class HierarchyBuilder implements Serializable {
      * @throws java.lang.Exception
      */
     public LabelsMetaData buildLabelHierarchy(MultiLabelInstances mlData) throws Exception {
-        if (mlData.getNumLabels() <= numPartitions) {
-            throw new Exception("Labels are less than the number of clusters you asked! (or equal)");
-        }
         if (numPartitions > mlData.getNumLabels()) {
             throw new IllegalArgumentException("Number of labels is smaller than the number of partitions");
         }

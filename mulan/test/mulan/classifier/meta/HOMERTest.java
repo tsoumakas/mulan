@@ -1,10 +1,8 @@
 package mulan.classifier.meta;
 
 import mulan.classifier.transformation.LabelPowerset;
-import org.junit.Ignore;
 import weka.classifiers.trees.J48;
 
-@Ignore
 public class HOMERTest extends MultiLabelMetaLearnerTest {
 
     @Override

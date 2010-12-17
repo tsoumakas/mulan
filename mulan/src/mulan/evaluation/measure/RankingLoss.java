@@ -20,58 +20,19 @@
  */
 package mulan.evaluation.measure;
 
-import java.util.ArrayList;
-
 /**
  * Implementation of the ranking loss measure.
  * 
  * @author Grigorios Tsoumakas
+ * @version 2010.11.23
  */
-public class RankingLoss extends RankingMeasureBase {
+public class RankingLoss extends LossBasedRankingMeasureBase {
 
-    public String getName() {
-        return "Ranking Loss";
-    }
-
-    public double updateInternal2(int[] ranking, boolean[] trueLabels) {
-
-        // gather indexes of true and false labels
-        // indexes of true and false labels
-        int numLabels = trueLabels.length;
-        ArrayList<Integer> trueIndexes = new ArrayList<Integer>();
-        ArrayList<Integer> falseIndexes = new ArrayList<Integer>();
-        for (int labelIndex = 0; labelIndex < numLabels; labelIndex++) {
-            if (trueLabels[labelIndex]) {
-                trueIndexes.add(labelIndex);
-            } else {
-                falseIndexes.add(labelIndex);
-            }
-        }
-
-        //======ranking loss related=============
-        if (trueIndexes.size() != 0 && falseIndexes.size() != 0) {
-            int rolp = 0; // reversed ordered label pairs
-            for (int k : trueIndexes) {
-                for (int l : falseIndexes) {
-                    //	if (output[instanceIndex].getConfidences()[trueIndexes.get(k)] <= output[instanceIndex].getConfidences()[falseIndexes.get(l)])
-                    if (ranking[k] > ranking[l]) {
-                        rolp++;
-                    }
-                }
-            }
-            double rloss = (double) rolp / (trueIndexes.size() * falseIndexes.size());
-
-            sum += rloss;
-            count++;
-
-            return rloss;
-        } else {
-            return Double.NaN;
-        }
-    }
-
-    @Override
-    public double getIdealValue() {
-        return 1;
+    /**
+     * Creates an instance of this class based on the corresponding loss
+     * function
+     */
+    public RankingLoss() {
+        super(new mulan.evaluation.loss.RankingLoss());
     }
 }

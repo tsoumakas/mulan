@@ -20,8 +20,22 @@
  */
 package mulan.evaluation.measure;
 
+/**
+ * Base class for example-based bipartition measures
+ *
+ * @author Grigorios Tsoumakas
+ * @version 2010.12.03
+ */
 public abstract class ExampleBasedBipartitionMeasureBase extends BipartitionMeasureBase {
-    double sum, count;
+
+    /**
+     * The current sum of the measure
+     */
+    protected double sum;
+    /**
+     * The number of validation examples processed
+     */
+    protected int count;
 
     public void reset() {
         sum = 0;
@@ -31,4 +45,5 @@ public abstract class ExampleBasedBipartitionMeasureBase extends BipartitionMeas
     public double getValue() {
         return sum / count;
     }
+
 }

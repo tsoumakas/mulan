@@ -24,7 +24,8 @@ import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import mulan.classifier.MultiLabelOutput;
-import mulan.classifier.transformation.BinaryRelevance;
+import mulan.classifier.meta.RAkEL;
+import mulan.classifier.transformation.LabelPowerset;
 import mulan.data.InvalidDataFormatException;
 import mulan.data.MultiLabelInstances;
 import weka.classifiers.trees.J48;
@@ -38,28 +39,36 @@ import weka.core.Utils;
  * either unspecified (set to symbol ?), or randomly set to 0/1.
  *
  * @author Grigorios Tsoumakas
+ * @version 2010.12.15
  */
 public class GettingPredictionsOnUnlabeledData {
 
+    /**
+     * Executes this example
+     *
+     * @param args command-line arguments -arff, -xml and -unlabeled
+     */
     public static void main(String[] args) {
 
         try {
-            String trainingDataFilename = Utils.getOption("training", args);
-            String unlabeledDataFilename = Utils.getOption("unlabeled", args);
-            String labelsFilename = Utils.getOption("labels", args);
+            String arffFilename = Utils.getOption("arff", args);
+            String xmlFilename = Utils.getOption("xml", args);
             System.out.println("Loading the training data set...");
-            MultiLabelInstances trainingData = new MultiLabelInstances(trainingDataFilename, labelsFilename);
-            System.out.println("Loading the unlabeled data set...");
-            MultiLabelInstances unlabeledData = new MultiLabelInstances(unlabeledDataFilename, labelsFilename);
+            MultiLabelInstances trainingData = new MultiLabelInstances(arffFilename, xmlFilename);
 
-            BinaryRelevance learner = new BinaryRelevance(new J48());
+            RAkEL model = new RAkEL(new LabelPowerset(new J48()));
 
             System.out.println("Building the model...");
-            learner.build(trainingData);
-            int numInstances = unlabeledData.getDataSet().numInstances();
-            for (int i = 0; i < numInstances; i++) {
-                Instance instance = unlabeledData.getDataSet().instance(i);
-                MultiLabelOutput output = learner.makePrediction(instance);
+            model.build(trainingData);
+
+            String unlabeledDataFilename = Utils.getOption("unlabeled", args);
+            System.out.println("Loading the unlabeled data set...");
+            MultiLabelInstances unlabeledData = new MultiLabelInstances(unlabeledDataFilename, xmlFilename);
+
+            int numInstances = unlabeledData.getNumInstances();
+            for (int instanceIndex = 0; instanceIndex < numInstances; instanceIndex++) {
+                Instance instance = unlabeledData.getDataSet().instance(instanceIndex);
+                MultiLabelOutput output = model.makePrediction(instance);
                 if (output.hasBipartition()) {
                     String bipartion = Arrays.toString(output.getBipartition());
                     System.out.println("Predicted bipartion: " + bipartion);

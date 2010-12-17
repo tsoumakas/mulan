@@ -283,7 +283,7 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner
                     for (int j = 0; j < numLabels; j++) {
                         attributes.add(train.attribute(labelIndices[j]));
                     }
-                    attributes.add(train.attribute(labelIndices[i]));
+                    attributes.add(train.attribute(labelIndices[i]).copy("meta"));
 
                     Instances iporesult = new Instances("Meta format",
                             attributes, 0);
@@ -315,7 +315,7 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner
 
     /**
      * Builds the base-level classifiers.
-     * Their predictions are gathered in the {@link #baseLevelPredictions} member
+     * Their predictions are gathered in the baseLevelPredictions member
      * @param trainingSet 
      * @throws Exception
      */
@@ -416,7 +416,7 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner
                     attributes.add(train.attribute(labelIndices[j]));
                 }
             }
-            attributes.add(train.attribute(labelIndices[i]));
+            attributes.add(train.attribute(labelIndices[i]).copy("meta"));
 
             metaLevelData[i] = new Instances("Meta format", attributes, 0);
             metaLevelData[i].setClassIndex(metaLevelData[i].numAttributes() - 1);
@@ -761,7 +761,7 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner
     }
 
     /**
-     * sets the value for {@link #partialBuild}
+     * sets the value for partialBuild
      * @param partialBuild 
      */
     public void setPartialBuild(boolean partialBuild) {

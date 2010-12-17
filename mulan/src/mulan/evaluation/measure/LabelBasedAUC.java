@@ -15,28 +15,34 @@
  */
 
 /*
- *    LabelBasedFMeasure.java
+ *    LabelBasedAUC.java
  *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
  */
 package mulan.evaluation.measure;
 
-import java.util.ArrayList;
-import mulan.core.MulanRuntimeException;
 import weka.classifiers.evaluation.NominalPrediction;
 import weka.core.FastVector;
 
 /**
  * Implementation of the label-based macro precision measure.
  * 
- * @author Grigorios Tso
- * 
+ * @author Grigorios Tsoumakas
+ * @version 2010.12.04
  */
 public abstract class LabelBasedAUC extends ConfidenceMeasureBase {
 
+    /** The number of labels */
     protected int numOfLabels;
+    /** The predictions for each label */
     protected FastVector[] m_Predictions;
+    /** The predictions for all labels */
     protected FastVector all_Predictions;
 
+    /**
+     * Creates a new instance of this class
+     * 
+     * @param numOfLabels the number of labels
+     */
     public LabelBasedAUC(int numOfLabels) {
         this.numOfLabels = numOfLabels;
         m_Predictions = new FastVector[numOfLabels];
@@ -57,7 +63,7 @@ public abstract class LabelBasedAUC extends ConfidenceMeasureBase {
         return 1;
     }
 
-    public double updateInternal2(double[] confidences, boolean[] truth) {
+    protected void updateConfidence(double[] confidences, boolean[] truth) {
         for (int labelIndex = 0; labelIndex < numOfLabels; labelIndex++) {
 
             int classValue;
@@ -75,7 +81,5 @@ public abstract class LabelBasedAUC extends ConfidenceMeasureBase {
             m_Predictions[labelIndex].addElement(new NominalPrediction(classValue, dist, 1));
             all_Predictions.addElement(new NominalPrediction(classValue, dist, 1));
         }
-
-        return 0;
     }
 }

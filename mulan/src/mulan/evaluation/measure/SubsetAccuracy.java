@@ -25,6 +25,7 @@ package mulan.evaluation.measure;
  * of the zero-one loss for multi-label classification.
  * 
  * @author Grigorios Tsoumakas
+ * @version 2010.11.05
  */
 public class SubsetAccuracy extends ExampleBasedBipartitionMeasureBase {
 
@@ -36,7 +37,8 @@ public class SubsetAccuracy extends ExampleBasedBipartitionMeasureBase {
         return 1;
     }
 
-    public double updateInternal2(boolean[] bipartition, boolean[] truth) {
+    @Override
+    protected void updateBipartition(boolean[] bipartition, boolean[] truth) {
         double value = 1;
         for (int i = 0; i < truth.length; i++) {
             if (bipartition[i] != truth[i]) {
@@ -47,8 +49,6 @@ public class SubsetAccuracy extends ExampleBasedBipartitionMeasureBase {
 
         sum += value;
         count++;
-
-        return value;
     }
 
 }

@@ -20,23 +20,35 @@
  */
 package mulan.evaluation.measure;
 
-import mulan.core.MulanRuntimeException;
-
 /**
  * Implementation of the example-based F measure.
  * 
  * @author Grigorios Tsoumakas
+ * @version 2010.11.05
  */
 public class ExampleBasedFMeasure extends ExampleBasedBipartitionMeasureBase {
 
     private final double beta;
+    private final boolean strict;
 
-    public ExampleBasedFMeasure() {
-        this(1.0);
+    /**
+     * Creates a new object
+     *
+     * @param strict when false, divisions-by-zero are ignored
+     */
+    public ExampleBasedFMeasure(boolean strict) {
+        this(strict, 1.0);
     }
 
-    public ExampleBasedFMeasure(double b) {
-        beta = b;
+    /**
+     * Creates a new object
+     *
+     * @param strict when false, divisions-by-zero are ignored
+     * @param beta the beta parameter for precision and recall combination
+     */
+    public ExampleBasedFMeasure(boolean strict, double beta) {
+        this.strict = strict;
+        this.beta = beta;
     }
 
     public String getName() {
@@ -47,7 +59,8 @@ public class ExampleBasedFMeasure extends ExampleBasedBipartitionMeasureBase {
         return 1;
     }
 
-    public double updateInternal2(boolean[] bipartition, boolean[] truth) {
+    @Override
+    protected void updateBipartition(boolean[] bipartition, boolean[] truth) {
         double intersection = 0;
         double predicted = 0;
         double actual = 0;
@@ -62,28 +75,16 @@ public class ExampleBasedFMeasure extends ExampleBasedBipartitionMeasureBase {
                 intersection++;
             }
         }
-        if (predicted == 0) {
-            reset();
-            throw new MulanRuntimeException("No label predicted");
-        }
-        if (actual == 0) {
-            reset();
-            throw new MulanRuntimeException("No relevant label");
-        }
+        if ((predicted == 0 || actual == 0) && (strict == false))
+            return;
 
         double precision = intersection / predicted;
         double recall = intersection / actual;
 
-        if ((beta * beta * precision + recall) == 0) {
-            reset();
-            throw new MulanRuntimeException("F Measure is undefined");
-        }
+        if (((beta * beta * precision + recall) == 0) && (strict == false))
+            return;
 
-        double value = ((1 + beta * beta) * precision * recall) / (beta * beta * precision + recall);
-
-        sum += value;
+        sum += ((1 + beta * beta) * precision * recall) / (beta * beta * precision + recall);
         count++;
-
-        return value;
     }
 }

@@ -32,11 +32,19 @@ import mulan.evaluation.measure.Measure;
  * 
  * @author Jozef Vilcek
  * @author Grigorios Tsoumakas
+ * @version 2010.11.05
  */
 public class Evaluation {
 
     private List<Measure> measures;
 
+    /**
+     * Creates a new evaluation object by deep copying the measure objects that
+     * are given as parameters
+     *
+     * @param someMeasures calculated measures
+     * @throws Exception
+     */
     public Evaluation(List<Measure> someMeasures) throws Exception {
         measures = new ArrayList<Measure>();
         for (Measure m : someMeasures) {
@@ -55,6 +63,11 @@ public class Evaluation {
         return sb.toString();
     }
 
+    /**
+     * Returns a CSV representation of the calculated measures
+     *
+     * @return the CSV representation of the calculated measures
+     */
     public String toCSV() {
         StringBuilder sb = new StringBuilder();
         for (Measure m : measures) {
@@ -63,7 +76,7 @@ public class Evaluation {
                 value = m.getValue();
             } catch (Exception ex) {
             }
-            sb.append(value);
+            sb.append(String.format("%.4f", value));
             sb.append(";");
         }
         return sb.toString();

@@ -62,10 +62,9 @@ public interface Measure {
      *
      * @param prediction the prediction for which measure has to be computed
      * @param truth the true labels bipartition for given prediction
-     * @return the value of a measure
      * @see Measure#getValue()
      */
-    double update(MultiLabelOutput prediction, boolean[] truth);
+    void update(MultiLabelOutput prediction, boolean[] truth);
 
     /**
      * Creates a deep copy of the given measure using serialization.

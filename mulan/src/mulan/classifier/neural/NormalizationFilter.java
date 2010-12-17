@@ -35,7 +35,7 @@ import weka.experiment.Stats;
  * Performs a normalization of numeric attributes of the data set.
  * It is initialized based on given {@link MultiLabelInstances} data set and then can 
  * be used to normalize {@link Instance} instances which conform to the format of the 
- * data set the {@link Normalizer} was initialized from. 
+ * data set the {@link NormalizationFilter} was initialized from. 
  * 
  * @author Jozef Vilcek
  */
@@ -48,7 +48,7 @@ public class NormalizationFilter implements Serializable {
     private Hashtable<Integer, double[]> attStats;
 
     /**
-     * Creates a new instance of {@link Normalizer} class for given data set.
+     * Creates a new instance of {@link NormalizationFilter} class for given data set.
      *
      * @param mlData the {@link MultiLabelInstances} data set from which normalizer
      * should be initialized.
@@ -83,7 +83,7 @@ public class NormalizationFilter implements Serializable {
     }
 
     /**
-     * Creates a new instance of {@link Normalizer} class for given data set.
+     * Creates a new instance of {@link NormalizationFilter} class for given data set.
      * The normalizer will be initialized to perform normalization to the default
      * range <-1,1>.
      *
@@ -98,7 +98,7 @@ public class NormalizationFilter implements Serializable {
 
     /**
      * Performs a normalization of numerical attributes on given instance.
-     * The instance must conform to format of instances data the {@link Normalizer}
+     * The instance must conform to format of instances data the {@link NormalizationFilter}
      * was initialized with.
      * @param instance the instance to be normalized
      */

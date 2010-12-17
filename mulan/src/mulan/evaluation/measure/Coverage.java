@@ -24,6 +24,7 @@ package mulan.evaluation.measure;
  * Implementation of the coverage measure.
  * 
  * @author Grigorios Tsoumakas
+ * @version 2010.12.04
  */
 public class Coverage extends RankingMeasureBase {
 
@@ -31,8 +32,12 @@ public class Coverage extends RankingMeasureBase {
         return "Coverage";
     }
 
-    public double updateInternal2(int[] ranking, boolean[] trueLabels) {
+    @Override
+    public double getIdealValue() {
+        return 1;
+    }
 
+    protected void updateRanking(int[] ranking, boolean[] trueLabels) {
         int howDeep = 0;
         int numLabels = trueLabels.length;
         for (int rank = numLabels; rank >= 1; rank--) {
@@ -50,12 +55,5 @@ public class Coverage extends RankingMeasureBase {
 
         sum += howDeep;
         count++;
-
-        return howDeep;
-    }
-
-    @Override
-    public double getIdealValue() {
-        return 1;
     }
 }

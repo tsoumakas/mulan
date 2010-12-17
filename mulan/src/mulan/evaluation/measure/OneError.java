@@ -21,42 +21,18 @@
 package mulan.evaluation.measure;
 
 /**
- * Implementation of the one-error measure. For a given example and prediction, 
- * one-error is 1 if the top ranked label is a relevant and 0 otherwise.
+ * Measure based on the one error loss function
  * 
- * @author Jozef Vilcek
  * @author Grigorios Tsoumakas
+ * @version 2010.12.10
  */
-public class OneError extends RankingMeasureBase {
-
-    public String getName() {
-        return "One-Error";
-    }
+public class OneError extends LossBasedRankingMeasureBase {
 
     /**
-     * {@inheritDoc}<br/>
-     * The computed value of one-error is from {0,1} set. The one-error is '1'
-     * if the top ranked label is relevant.
+     * Creates an instance of this class based on the corresponding loss
+     * function
      */
-    public double updateInternal2(int[] ranking, boolean[] trueLabels) {
-
-        double oneError = 0;
-        int numLabels = trueLabels.length;
-        for (int topRated = 0; topRated < numLabels; topRated++) {
-            if (ranking[topRated] == 1) {
-                if (!trueLabels[topRated]) {
-                    oneError++;
-                    sum += oneError;
-                }
-                break;
-            }
-        }
-        count++;
-        return oneError;
-    }
-
-    @Override
-    public double getIdealValue() {
-        return 0;
+    public OneError() {
+        super(new mulan.evaluation.loss.OneError());
     }
 }

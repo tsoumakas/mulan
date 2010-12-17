@@ -20,16 +20,21 @@
  */
 package mulan.evaluation.measure;
 
-import mulan.core.MulanRuntimeException;
 import weka.core.Utils;
 
 /**
  * Implementation of the micro-averaged precision measure.
  *
  * @author Grigorios Tsoumakas
+ * @version 2010.11.05
  */
 public class MicroPrecision extends LabelBasedPrecision {
 
+    /**
+     * Constructs a new object with given number of labels
+     *
+     * @param numOfLabels the number of labels
+     */
     public MicroPrecision(int numOfLabels) {
         super(numOfLabels);
     }
@@ -37,10 +42,6 @@ public class MicroPrecision extends LabelBasedPrecision {
     public double getValue() {
         double tp = Utils.sum(truePositives);
         double fp = Utils.sum(falsePositives);
-
-        if (tp + fp == 0) {
-            throw new MulanRuntimeException("None example predicted positive");
-        }
         return tp / (tp + fp);
     }
 

@@ -61,7 +61,7 @@ public abstract class MultiLabelMetaLearner extends MultiLabelLearnerBase {
     /**
      * Returns the {@link MultiLabelLearner} which is used internally by the learner.
      *
-     * @return the {@link #baseLearner}
+     * @return the baseLearner
      */
     public MultiLabelLearner getBaseLearner() {
         return baseLearner;

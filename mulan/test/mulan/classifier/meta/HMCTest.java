@@ -4,16 +4,10 @@ import junit.framework.Assert;
 import mulan.classifier.MultiLabelLearner;
 import mulan.classifier.MultiLabelLearnerBase;
 import mulan.classifier.MultiLabelOutput;
-import mulan.classifier.transformation.BinaryRelevance;
 import mulan.classifier.transformation.LabelPowerset;
 import mulan.data.MultiLabelInstances;
-import org.junit.Ignore;
 import weka.classifiers.trees.J48;
-import weka.core.Instances;
-import weka.filters.Filter;
-import weka.filters.unsupervised.attribute.SwapValues;
 
-@Ignore
 public class HMCTest extends MultiLabelMetaLearnerTest {
 
     @Override

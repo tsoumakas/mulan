@@ -15,23 +15,28 @@
  */
 
 /*
- *    MacroFMeasure.java
+ *    MacroAUC.java
  *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
  */
 package mulan.evaluation.measure;
 
 import weka.classifiers.evaluation.ThresholdCurve;
-import weka.core.FastVector;
 import weka.core.Instances;
 import weka.core.Utils;
 
 /**
- * Implementation of the macro-averaged f measure.
+ * Implementation of the macro-averaged AUC measure.
  *
  * @author Grigorios Tsoumakas
+ * @version 2010.12.10
  */
 public class MacroAUC extends LabelBasedAUC {
 
+    /**
+     * Creates a new instance of this class
+     *
+     * @param numOfLabels the number of labels
+     */
     public MacroAUC(int numOfLabels) {
         super(numOfLabels);
     }

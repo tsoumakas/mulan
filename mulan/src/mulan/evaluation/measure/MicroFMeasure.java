@@ -20,7 +20,6 @@
  */
 package mulan.evaluation.measure;
 
-import mulan.core.MulanRuntimeException;
 import weka.core.Utils;
 
 /**
@@ -30,6 +29,11 @@ import weka.core.Utils;
  */
 public class MicroFMeasure extends LabelBasedFMeasure {
 
+    /**
+     * Constructs a new object with given number of labels
+     *
+     * @param numOfLabels the number of labels
+     */
     public MicroFMeasure(int numOfLabels) {
         super(numOfLabels);
     }
@@ -39,15 +43,8 @@ public class MicroFMeasure extends LabelBasedFMeasure {
         double fp = Utils.sum(falsePositives);
         double fn = Utils.sum(falseNegatives);
 
-        if (tp + fp == 0) {
-            throw new MulanRuntimeException("None example predicted positive");
-        }
-        if (tp + fn == 0) {
-            throw new MulanRuntimeException("None example actually positive");
-        }
         double precision = tp / (tp + fp);
         double recall = tp / (tp + fn);
-
         return calculateFMeasure(precision, recall);
     }
 

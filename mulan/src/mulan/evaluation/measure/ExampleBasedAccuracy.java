@@ -20,23 +20,35 @@
  */
 package mulan.evaluation.measure;
 
-import mulan.core.MulanRuntimeException;
-
 /**
  * Implementation of the example-based accuracy measure.
  * 
  * @author Grigorios Tsoumakas
+ * @version 2010.11.05
  */
 public class ExampleBasedAccuracy extends ExampleBasedBipartitionMeasureBase {
 
+    private final boolean strict;
     private final double forgivenessRate;
 
-    public ExampleBasedAccuracy() {
-        this(1.0);
+    /**
+     * Constructs a new object
+     *
+     * @param strict when false, divisions by zero are ignored
+     */
+    public ExampleBasedAccuracy(boolean strict) {
+        this(strict, 1.0);
     }
 
-    public ExampleBasedAccuracy(double r) {
-        forgivenessRate = r;
+    /**
+     * Constructs a new object
+     *
+     * @param strict when false, divisions by zero are ignored
+     * @param aForgivenessRate the forgiveness rate
+     */
+    public ExampleBasedAccuracy(boolean strict, double aForgivenessRate) {
+        this.strict = strict;
+        forgivenessRate = aForgivenessRate;
     }
 
     public String getName() {
@@ -47,7 +59,8 @@ public class ExampleBasedAccuracy extends ExampleBasedBipartitionMeasureBase {
         return 1;
     }
 
-    public double updateInternal2(boolean[] bipartition, boolean[] truth) {
+    @Override
+    protected void updateBipartition(boolean[] bipartition, boolean[] truth) {
         double intersection = 0;
         double union = 0;
         for (int i = 0; i < truth.length; i++) {
@@ -58,17 +71,11 @@ public class ExampleBasedAccuracy extends ExampleBasedBipartitionMeasureBase {
                 union++;
             }
         }
-        if (union == 0) {
-            reset();
-            throw new MulanRuntimeException("Empty union of predicted/relevant sets");
-        }
 
-        double value = Math.pow(intersection / union, forgivenessRate);
+        if (union == 0 && strict == false)
+            return;
 
-        sum += value;
+        sum += Math.pow(intersection / union, forgivenessRate);
         count++;
-
-        return value;
     }
-
 }

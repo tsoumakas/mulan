@@ -18,28 +18,27 @@
  *    Ranker.java
  *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
  */
-package mulan.attributeSelection;
+package mulan.dimensionalityReduction;
 
 import mulan.data.MultiLabelInstances;
+import mulan.transformations.RemoveAllLabels;
 import weka.attributeSelection.ASEvaluation;
 import weka.attributeSelection.AttributeEvaluator;
 import weka.core.Instances;
-import weka.core.Range;
 
 /**
  * Ranks attributes according to an AttributeEvaluator. It internally uses Weka's
  * Ranker, initialized so as to neglect the labels.
  *
  * @author Grigorios Tsoumakas
+ * @version 10 August 2010
  */
 public class Ranker {
 
     /**
-     * Calls a specified {@link AttributeEvaluator} to evaluate each feature attribute
-     * of specified {@link MultiLabelInstances} data set.
-     * Internally it uses {@link weka.attributeSelection.Ranker}, where
-     * {@link weka.attributeSelection.Ranker#setStartSet(String)} is preset with range of
-     * only feature attributes indices.
+     * Calls a specified {@link AttributeEvaluator} to evaluate each feature 
+     * attribute of specified {@link MultiLabelInstances} data set, excluding
+     * labels. Internally it uses {@link weka.attributeSelection.Ranker}
      *
      * @param attributeEval the attribute evaluator to guide the search
      * @param mlData the multi-label instances data set
@@ -47,10 +46,8 @@ public class Ranker {
      * @throws Exception if an error occur in search
      */
     public int[] search(AttributeEvaluator attributeEval, MultiLabelInstances mlData) throws Exception {
-        Instances data = mlData.getDataSet();
-        String startSet = Range.indicesToRangeList(mlData.getLabelIndices());
+        Instances data = RemoveAllLabels.transformInstances(mlData);
         weka.attributeSelection.Ranker wekaRanker = new weka.attributeSelection.Ranker();
-        wekaRanker.setStartSet(startSet);
         return wekaRanker.search((ASEvaluation) attributeEval, data);
     }
 }

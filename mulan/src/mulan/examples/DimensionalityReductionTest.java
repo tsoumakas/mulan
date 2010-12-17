@@ -21,13 +21,13 @@
 package mulan.examples;
 
 import java.util.Arrays;
-import mulan.attributeSelection.Ranker;
-import mulan.attributeSelection.MultiClassAttributeEvaluator;
 import mulan.data.MultiLabelInstances;
+import mulan.dimensionalityReduction.MultiClassAttributeEvaluator;
+import mulan.dimensionalityReduction.Ranker;
 import mulan.transformations.multiclass.Copy;
 import mulan.transformations.multiclass.MultiClassTransformation;
 import weka.attributeSelection.ASEvaluation;
-import weka.attributeSelection.ChiSquaredAttributeEval;
+import weka.attributeSelection.GainRatioAttributeEval;
 import weka.core.Instances;
 import weka.core.Utils;
 import weka.filters.Filter;
@@ -38,14 +38,14 @@ import weka.filters.unsupervised.attribute.Remove;
  *
  * @author Grigorios Tsoumakas
  */
-public class AttributeSelectionTest {
+public class DimensionalityReductionTest {
 
     public static void main(String[] args) throws Exception {
         String path = Utils.getOption("path", args);
         String filestem = Utils.getOption("filestem", args);
         MultiLabelInstances mlData = new MultiLabelInstances(path + filestem + ".arff", path + filestem + ".xml");
 
-        ASEvaluation ase = new ChiSquaredAttributeEval();
+        ASEvaluation ase = new GainRatioAttributeEval();
         //LabelPowersetAttributeEvaluator ae = new LabelPowersetAttributeEvaluator(ase, mlData);
         //BinaryRelevanceAttributeEvaluator ae = new BinaryRelevanceAttributeEvaluator(ase, mlData, "max", "dl", "eval");
         MultiClassTransformation mt = new Copy();

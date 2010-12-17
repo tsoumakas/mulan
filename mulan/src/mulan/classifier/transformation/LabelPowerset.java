@@ -64,7 +64,7 @@ public class LabelPowerset extends TransformationBasedMultiLabelLearner {
      */
     protected double threshold = 0.5;
     /** The object that performs the data transformation */
-    private LabelPowersetTransformation transformation;
+    protected LabelPowersetTransformation transformation;
     /**
      * Random number generator for randomly solving tied predictions
      */

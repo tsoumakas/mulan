@@ -22,10 +22,10 @@ package mulan.classifier.lazy;
 
 import java.util.ArrayList;
 import mulan.classifier.MultiLabelOutput;
-import mulan.data.MultiLabelInstances;
 import mulan.data.DataUtils;
+import mulan.data.MultiLabelInstances;
 import weka.classifiers.Classifier;
-import weka.classifiers.functions.SimpleLogistic;
+import weka.classifiers.functions.Logistic;
 import weka.core.Attribute;
 import weka.core.Instance;
 import weka.core.Instances;
@@ -71,7 +71,7 @@ public class IBLR_ML extends MultiLabelKNN {
 
     private static final long serialVersionUID = 1L;
     /**
-     * For each label we creat a corresponding binary classifier.
+     * For each label we create a corresponding binary classifier.
      */
     Classifier[] classifier;
     /**
@@ -203,7 +203,7 @@ public class IBLR_ML extends MultiLabelKNN {
 
         // for every label create a corresponding classifier.
         for (int i = 0; i < numLabels; i++) {
-            classifier[i] = new SimpleLogistic();
+            classifier[i] = new Logistic();
             classifier[i].buildClassifier(trainingDataForLabel[i]);
         }
 

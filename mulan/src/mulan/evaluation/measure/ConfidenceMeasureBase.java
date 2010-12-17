@@ -15,7 +15,7 @@
  */
 
 /*
- *    BipartitionMeasureBase.java
+ *    ConfidenceMeasureBase.java
  *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
  */
 package mulan.evaluation.measure;
@@ -26,10 +26,11 @@ import mulan.core.ArgumentNullException;
 /**
  * 
  * @author Grigorios Tsoumakas
+ * @version 2010.12.04
  */
 public abstract class ConfidenceMeasureBase extends MeasureBase {
 
-    public double updateInternal(MultiLabelOutput prediction, boolean[] truth) {
+    protected void updateInternal(MultiLabelOutput prediction, boolean[] truth) {
         double[] confidences = prediction.getConfidences();
         if (confidences == null) {
             throw new ArgumentNullException("Bipartition is null");
@@ -38,8 +39,14 @@ public abstract class ConfidenceMeasureBase extends MeasureBase {
             throw new IllegalArgumentException("The dimensions of the " +
                     "confidence array and the ground truth array do not match");
         }
-        return updateInternal2(confidences, truth);
+        updateConfidence(confidences, truth);
     }
 
-    abstract public double updateInternal2(double[] confidences, boolean[] truth);
+    /**
+     * Updates the measure for a new example
+     *
+     * @param confidences the confidences output by the learner for the example
+     * @param truth the ground truth of the example
+     */
+    abstract protected void updateConfidence(double[] confidences, boolean[] truth);
 }
