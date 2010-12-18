@@ -26,9 +26,31 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
+/**
+ * Builder of {@link MultiLabelLearner} instance from command line interface.
+ * 
+ * @author Jozef Vilcek
+ */
 public interface LearnerBuilder {
 
+	/**
+	 * Returns command line options supported by the {@link LearnerBuilder}
+	 * @return
+	 */
 	Options getOptions();
+	
+	/**
+	 * Returns the {@link Class} type of the {@link MultiLabelLearner} operated by this {@link LearnerBuilder}.
+	 * @return
+	 */
 	Class<? extends MultiLabelLearner> getSupportedType();
+	
+	/**
+	 * Builds up the {@link MultiLabelLearner} instance from {@link CommandLine} options.
+	 * 
+	 * @param cmdLine the input command line parameters for learner creation
+	 * @return
+	 * @throws ParseException if input {@link CommandLine} parameters are not valid
+	 */
 	MultiLabelLearner build(CommandLine cmdLine) throws ParseException;
 }

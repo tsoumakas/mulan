@@ -24,7 +24,7 @@ import java.util.Arrays;
 
 import mulan.classifier.MultiLabelLearner;
 import mulan.classifier.neural.BPMLL;
-import mulan.console.LearnerDriver;
+import mulan.console.CommonOptions;
 import mulan.core.ArgumentNullException;
 
 import org.apache.commons.cli.CommandLine;
@@ -32,6 +32,12 @@ import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
+/**
+ * Command line interface builder for {@link BPMLL} learner.
+ * 
+ * @see LearnerBuilder
+ * @author Jozef Vilcek
+ */
 public class BPMLLBuilder implements LearnerBuilder {
 
 	@SuppressWarnings("static-access")
@@ -54,7 +60,7 @@ public class BPMLLBuilder implements LearnerBuilder {
 		opt.addOption(OptionBuilder.withLongOpt("normalize-inputs")
 				.withDescription("If defined, all input numeric attributes of the training data set (except label attributes) will be normalized prior to learning to the range <-1,1>.")
 				.create("n"));
-		opt.addOption(OptionBuilder.withLongOpt(LearnerDriver.SEED_OPT_LONG).hasArg().withType(Number.class).create(LearnerDriver.SEED_OPT));
+		opt.addOption(CommonOptions.getSeedOption());
 		
 		return opt;
 	}
@@ -70,8 +76,8 @@ public class BPMLLBuilder implements LearnerBuilder {
 			throw new ArgumentNullException("cmdLine");
 		}
 		
-		BPMLL learner = cmdLine.hasOption(LearnerDriver.SEED_OPT) ? 
-				new BPMLL(((Number)cmdLine.getParsedOptionValue(LearnerDriver.SEED_OPT)).longValue()) : 
+		BPMLL learner = cmdLine.hasOption(CommonOptions.SEED_OPT) ? 
+				new BPMLL(((Number)cmdLine.getParsedOptionValue(CommonOptions.SEED_OPT)).longValue()) : 
 				new BPMLL();
 		
 		if(cmdLine.hasOption("hl")){

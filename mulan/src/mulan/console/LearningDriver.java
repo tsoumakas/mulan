@@ -42,21 +42,28 @@ import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
-public class LearnerDriver {
+import weka.core.SerializationHelper;
 
-	//private static final String LIST_LEARNERS_OPT = "l";
-	private static final String HELP_OPT = "h";
-	private static final String TRAIN_DATA_OPT = "trd";
-	private static final String TEST_DATA_OPT = "tsd";
-	private static final String LABELS_DEF_DATA_OPT = "ld";
-	public static final String SEED_OPT = "s";
-	public static final String SEED_OPT_LONG = "s";
-	
+/**
+ * Drives the learning experiment command line interface. 
+ * 
+ * The driver performs:
+ * - command line checks
+ * - constructs correct learner
+ * - train it on the specified train data set
+ * - evaluate learner on test data set
+ * - optionally stores learner state to the file for later reuse
+ * 
+ * @author Jozef Vilcek
+ */
+public class LearningDriver {
+
+	private static final String OUTPUT_FILE_OPT = "o";
 	private static final Map<String, LearnerBuilder> learnerBuidersMap;
 	
 	static {
 		// REMARK: new builders for learners should be added here...
-		// To instantiate builders all the time all is not 'nice', 
+		// To instantiate builders all the time all is not 'nice', but also no issue for now 
 		
 		LearnerBuilder builder = null;
 		
@@ -65,25 +72,20 @@ public class LearnerDriver {
 		learnerBuidersMap.put(builder.getSupportedType().getName(), builder);	
 	}
 	
-	@SuppressWarnings("static-access")
-	private Options getCommonOptions() {
-		Options opt = new Options();
-		
-		opt.addOption(OptionBuilder.withLongOpt("train-data").hasArg().withType(File.class)
-				.withDescription("Path to the data set which should be used for training a learner. The option is required.").create(TRAIN_DATA_OPT));
-		opt.addOption(OptionBuilder.withLongOpt("test-data").hasArg().withType(File.class)
-				.withDescription("Path to the data set which should be used for testing a learner. The option is required.").create(TEST_DATA_OPT));
-		opt.addOption(OptionBuilder.withLongOpt("labels-definition").hasArg().withType(File.class)
-				.withDescription("Path to the XML file with label definitions. The option is required.").create(LABELS_DEF_DATA_OPT));
-		opt.addOption(OptionBuilder.withLongOpt("help").create(HELP_OPT));
-		
-		return opt;
-	}
-	
+	/**
+	 * Returns set of learners supported by learning command line interface
+	 * @return
+	 */
 	public Set<String> getSupportedLearners(){
 		return new HashSet<String>(learnerBuidersMap.keySet());
 	}
 	
+	/**
+	 * Performs learning experiment for specified learner and parameters  
+	 * 
+	 * @param learnerName The name of a learner to be used
+	 * @param args input parameters
+	 */
 	public void doLearningExperiment(String learnerName, String[] args){
 		if(learnerName == null || learnerName.equals("")){
 			throw new IllegalArgumentException("The learnerName must be set.");
@@ -94,7 +96,7 @@ public class LearnerDriver {
 			throw new IllegalArgumentException(String.format("The learner with name '%s' is not suppoerted.", learnerName));
 		}
 		
-		Options options = getCommonOptions();	
+		Options options = getCommonLerningOptions();	
 		for(Object o : builder.getOptions().getOptions()){
 			options.addOption((Option)o);
 		}
@@ -103,27 +105,27 @@ public class LearnerDriver {
 		try {
 			CommandLine cmdLine = parser.parse(options, args);
 			
-			if(cmdLine.hasOption(HELP_OPT)){
+			if(cmdLine.hasOption(CommonOptions.HELP_OPT)){
 	        	HelpFormatter formatter = new HelpFormatter();
 	        	formatter.printHelp(learnerName, options, true);
 			} else {
 			
 				cmdLine = parser.parse(options, args);
 	        
-				if(!cmdLine.hasOption(TRAIN_DATA_OPT)){
-					throw new ParseException(String.format("The option '%s' is required.", TRAIN_DATA_OPT));
+				if(!cmdLine.hasOption(CommonOptions.TRAIN_DATA_OPT)){
+					throw new ParseException(String.format("The option '%s' is required.", CommonOptions.TRAIN_DATA_OPT));
 				}
-	        	File trainFile =(File)cmdLine.getParsedOptionValue(TRAIN_DATA_OPT);
+	        	File trainFile =(File)cmdLine.getParsedOptionValue(CommonOptions.TRAIN_DATA_OPT);
 	        	
-	        	if(!cmdLine.hasOption(TEST_DATA_OPT)){
-					throw new ParseException(String.format("The option '%s' is required.", TEST_DATA_OPT));
+	        	if(!cmdLine.hasOption(CommonOptions.TEST_DATA_OPT)){
+					throw new ParseException(String.format("The option '%s' is required.", CommonOptions.TEST_DATA_OPT));
 				}
-	        	File testFile = (File)cmdLine.getParsedOptionValue(TEST_DATA_OPT);
+	        	File testFile = (File)cmdLine.getParsedOptionValue(CommonOptions.TEST_DATA_OPT);
 	        	
-	        	if(!cmdLine.hasOption(LABELS_DEF_DATA_OPT)){
-					throw new ParseException(String.format("The option '%s' is required.", LABELS_DEF_DATA_OPT));
+	        	if(!cmdLine.hasOption(CommonOptions.LABELS_DEF_DATA_OPT)){
+					throw new ParseException(String.format("The option '%s' is required.", CommonOptions.LABELS_DEF_DATA_OPT));
 				}
-	        	File labelsDefFile = (File)cmdLine.getParsedOptionValue(LABELS_DEF_DATA_OPT);
+	        	File labelsDefFile = (File)cmdLine.getParsedOptionValue(CommonOptions.LABELS_DEF_DATA_OPT);
 	        	
 	    		if(!trainFile.exists()){
 	    			throw new ParseException(String.format("The training file '%s' do not exists.", trainFile.getAbsoluteFile()));
@@ -137,6 +139,14 @@ public class LearnerDriver {
 	    		
 	        	MultiLabelLearner learner = builder.build(cmdLine);
 	        	perfromLearning(learner, trainFile, testFile, labelsDefFile);
+	        	
+	        	if(cmdLine.hasOption(OUTPUT_FILE_OPT)){
+	        		System.out.println("Storing the model...");
+	        		File outputFile = (File)cmdLine.getParsedOptionValue(OUTPUT_FILE_OPT);
+	        		System.out.println(outputFile.getAbsolutePath());
+	        		SerializationHelper.write(outputFile.getAbsolutePath(), learner);
+	        	}
+	        	System.out.println("Done...");
 	        }
 	        
 	    }
@@ -149,6 +159,20 @@ public class LearnerDriver {
 	    	System.err.println("Failed to perform learning experiment:");
 	    	e.printStackTrace(System.err);
 	    }
+	}
+
+	@SuppressWarnings("static-access")
+	private Options getCommonLerningOptions() {
+		Options opt = new Options();
+		
+		opt.addOption(CommonOptions.getTrainDataOption());
+		opt.addOption(CommonOptions.getTestDataOption());
+		opt.addOption(CommonOptions.getLabelsDefinitionOption());
+		opt.addOption(OptionBuilder.withLongOpt("output").hasArg().withType(File.class)
+				.withDescription("Optional file path where to store trained learner state.").create(OUTPUT_FILE_OPT));
+		opt.addOption(CommonOptions.getHelpOption());
+		
+		return opt;
 	}
 	
 	private LearnerBuilder getBuilderForLearnerName(String learnerName){

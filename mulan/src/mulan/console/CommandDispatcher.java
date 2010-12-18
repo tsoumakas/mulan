@@ -20,7 +20,6 @@
 
 package mulan.console;
 
-import java.util.Arrays;
 import java.util.Set;
 
 /**
@@ -32,6 +31,7 @@ import java.util.Set;
 public class CommandDispatcher {
 
 	private static String LEARN_EXP_CMD = "learn";
+	private static String PREDICT_EXP_CMD = "predict";
 	
 	/**
 	 * Main entry to launch command dispatcher.
@@ -45,7 +45,10 @@ public class CommandDispatcher {
 			String learner = args.length > 1 ?
 					(args[1].startsWith("-") ? null : args[1]) : null;
 			processLearnCommand(learner, args);
-		} else{
+		} else if(args[0].equals(PREDICT_EXP_CMD)){
+			processPredictCommand(args);
+		}
+		else{
 			printGeneralHelp();
 		}
 	}
@@ -55,7 +58,8 @@ public class CommandDispatcher {
 		System.out.println("type: 'mulan <command> -h' for the help on a specific command");
 		System.out.println();
 		System.out.println("Available commands:");
-		System.out.println("\t" + LEARN_EXP_CMD + ":\tperforms learning experiment on the specific learner");
+		System.out.println("\t" + LEARN_EXP_CMD + ":\t\tperforms learning experiment on the specific learner");
+		System.out.println("\t" + PREDICT_EXP_CMD + ":\tperforms prediction on test data from stored learner state");
 	}
 	
 	private static void printLearnHelp(){
@@ -69,7 +73,7 @@ public class CommandDispatcher {
 			// try process listing if requested or print help
 			if(args.length >= 2 && args[1] != null && args[1].equals("--list")){
 				System.out.println("Available learners:");
-		        LearnerDriver driver = new LearnerDriver();
+		        LearningDriver driver = new LearningDriver();
 		        Set<String> learners = driver.getSupportedLearners();
 		        for(String learner : learners){
 		        	System.out.println("\t" + learner);
@@ -80,9 +84,14 @@ public class CommandDispatcher {
 		    }
 		} else {
 			// process learning via driver
-			LearnerDriver driver = new LearnerDriver();
+			LearningDriver driver = new LearningDriver();
 			driver.doLearningExperiment(learnerName, args);
 		}
+	}
+	
+	private static void processPredictCommand(String[] args) {
+		PredictionDriver driver = new PredictionDriver();
+		driver.doPredictionExperiment(args);
 	}
 
 }
