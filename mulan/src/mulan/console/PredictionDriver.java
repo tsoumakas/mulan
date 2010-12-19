@@ -107,11 +107,12 @@ public class PredictionDriver {
 	    			throw new ParseException(String.format("The labels definition file '%s' do not exists.", labelsDefFile.getAbsoluteFile()));
 	    		}
 	    		
-	    		
+	    		// Successfully
 	    		System.out.println("Loading the learner...");
 	            MultiLabelLearner learner = null;
 	            try{
 	            	learner = (MultiLabelLearner) SerializationHelper.read(inputFile.getAbsolutePath());
+	            	System.out.println(String.format("Learner '%s' loaded successfully.", learner.getClass().getName()));
 	            }
 	            catch(Exception ex){
 	            	throw new MulanException("Failed to load learner state from the specified input file.", ex);

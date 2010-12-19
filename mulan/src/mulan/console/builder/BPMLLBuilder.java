@@ -48,13 +48,13 @@ public class BPMLLBuilder implements LearnerBuilder {
 		opt.addOption(OptionBuilder.withLongOpt("hidden-layers").hasArgs().withValueSeparator(',')
 				.withDescription("Sets the topology of hidden layers for the neural network. Enter the coma separated list of integer values, whenre number of values will define number of hidden layers and each value defines number of neurons in the particular layer. If empty value is passed, no hidden layers will be created.")
 				.create("hl"));
-		opt.addOption(OptionBuilder.withLongOpt("learning-rate").hasArg().withArgName("value").withType(Number.class)
+		opt.addOption(OptionBuilder.withLongOpt("learning-rate").hasArg().withType(Number.class)
 				.withDescription("Sets the learning rate. The value must be greater than 0 and no more than 1.")
 				.create("lr"));
-		opt.addOption(OptionBuilder.withLongOpt("weights-decay").hasArg().withArgName("value").withType(Number.class)
+		opt.addOption(OptionBuilder.withLongOpt("weights-decay").hasArg().withType(Number.class)
 				.withDescription("Sets the regularization cost term for weights decay. The value must be greater than 0 and no more than 1.")
 				.create("wd"));
-		opt.addOption(OptionBuilder.withLongOpt("training-epochs").hasArg().withArgName("value").withType(Number.class)
+		opt.addOption(OptionBuilder.withLongOpt("training-epochs").hasArg().withType(Number.class)
 				.withDescription("Sets the number of training epochs. The value must be integer greater than 0.")
 				.create("te"));
 		opt.addOption(OptionBuilder.withLongOpt("normalize-inputs")

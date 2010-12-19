@@ -50,7 +50,8 @@ public final class CommonOptions {
 	@SuppressWarnings("static-access")
 	public static Option getTrainDataOption(){
 		return OptionBuilder.withLongOpt("train-data").hasArg().withType(File.class)
-			.withDescription("Path to the data set which should be used for training a learner. The option is required.").create(TRAIN_DATA_OPT);
+			.withDescription("Path to the data set which should be used for training a learner. The option is required.")
+			.create(TRAIN_DATA_OPT);
 	}
 	
 	/**
@@ -60,7 +61,8 @@ public final class CommonOptions {
 	@SuppressWarnings("static-access")
 	public static Option getTestDataOption(){
 		return OptionBuilder.withLongOpt("test-data").hasArg().withType(File.class)
-			.withDescription("Path to the data set which should be used for testing a learner. The option is required.").create(TEST_DATA_OPT);
+			.withDescription("Path to the data set which should be used for testing a learner. The option is required.")
+			.create(TEST_DATA_OPT);
 	}
 	
 	/**
@@ -70,7 +72,8 @@ public final class CommonOptions {
 	@SuppressWarnings("static-access")
 	public static Option getLabelsDefinitionOption(){
 		return OptionBuilder.withLongOpt("labels-definition").hasArg().withType(File.class)
-			.withDescription("Path to the XML file with label definitions. The option is required.").create(LABELS_DEF_DATA_OPT);
+			.withDescription("Path to the XML file with label definitions. The option is required.")
+			.create(LABELS_DEF_DATA_OPT);
 	}
 	
 	/**

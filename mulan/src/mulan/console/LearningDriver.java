@@ -29,6 +29,7 @@ import java.util.Set;
 import mulan.classifier.MultiLabelLearner;
 import mulan.console.builder.BPMLLBuilder;
 import mulan.console.builder.LearnerBuilder;
+import mulan.console.builder.MMPLearnerBuilder;
 import mulan.data.MultiLabelInstances;
 import mulan.evaluation.Evaluation;
 import mulan.evaluation.Evaluator;
@@ -66,9 +67,11 @@ public class LearningDriver {
 		// To instantiate builders all the time all is not 'nice', but also no issue for now 
 		
 		LearnerBuilder builder = null;
-		
 		learnerBuidersMap = new HashMap<String, LearnerBuilder>();
+		
 		builder = new BPMLLBuilder();
+		learnerBuidersMap.put(builder.getSupportedType().getName(), builder);	
+		builder = new MMPLearnerBuilder();
 		learnerBuidersMap.put(builder.getSupportedType().getName(), builder);	
 	}
 	
@@ -137,6 +140,7 @@ public class LearningDriver {
 	    			throw new ParseException(String.format("The labels definition file '%s' do not exists.", labelsDefFile.getAbsoluteFile()));
 	    		}
 	    		
+	    		System.out.println("Creating learner instance ...");
 	        	MultiLabelLearner learner = builder.build(cmdLine);
 	        	perfromLearning(learner, trainFile, testFile, labelsDefFile);
 	        	

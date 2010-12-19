@@ -33,9 +33,21 @@ public class CommandDispatcherTest {
 //				"-ld=./data/testData/emotions.xml",
 //				"--seed=1",
 //				"--output=./data/learner.dat"};
-//		//String[] args = new String[]{"learn", "mulan.classifier.neural.BPMLL", "--help"};
+		
+//		String[] args = new String[]{
+//				"learn", "mulan.classifier.neural.MMPLearner", 
+//				"-trd=./data/testData/emotions-train.arff", 
+//				"-tsd=./data/testData/emotions-test.arff", 
+//				"-ld=./data/testData/emotions.xml",
+//				"--seed=1",
+//				"-rl=mulan.evaluation.loss.RankingLoss",
+//				"-ur=UniformUpdate",
+//				"--output=./data/MMPlearner.dat",
+//				};
+		
+		//String[] args = new String[]{"learn", "mulan.classifier.neural.MMPLearner", "--help"};
 //		CommandDispatcher.main(args);
-//		
+		
 //		args = new String[]{
 //				"predict", 
 //				"-tsd=./data/testData/emotions-test.arff", 
