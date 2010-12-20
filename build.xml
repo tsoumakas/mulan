@@ -5,6 +5,7 @@
 	<property name="test.dir" value="test" description="Directory containing tests." />
 	<property name="javadoc.dir" value="doc" description="Directory for generated API documentation." />
 	<property name="dist.dir" value="${basedir}/dist" description="Directory for distribution artifacts, e.g. jars." />
+	<property name="scripts.dir" value="${basedir}/scripts" description="Directory containing sripts for running mulan via console." />
 
 	<property name="target.dir" value="${basedir}/target" description="All artifacts produced by the build, except 'docs/api' and 'dist', goes here." />
 	<property name="target.classes.dir" value="${target.dir}/classes" description="Directory for compiled source code classes." />
@@ -25,6 +26,7 @@
 	<path id="dependency.libs.path">
 		<fileset dir="${lib.dir}">
 			<include name="weka.jar" />
+			<include name="commons-cli-1.2.jar" />
 		</fileset>
 	</path>
 	
@@ -91,8 +93,9 @@
 		<zip destfile="${dist.dir}/mulan-${mulan.version}.zip" >
 			<fileset dir="${basedir}" includes="${javadoc.dir}/**, data/*.*" />
 			<fileset dir="${dist.dir}" includes="*.jar" />
-			<fileset file="${lib.dir}/weka.jar" />
+			<path refid="dependency.libs.path" />
 			<fileset file="license.txt"/>
+			<fileset dir="${scripts.dir}" />
 		</zip> 
 	</target>
 
