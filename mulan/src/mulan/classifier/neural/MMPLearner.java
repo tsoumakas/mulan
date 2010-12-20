@@ -69,7 +69,7 @@ public class MMPLearner extends MultiLabelLearnerBase {
     //       Investigate first, if we want to support normalization
 //    /** Determines if feature attributes has to be normalized prior to learning */
 //    private boolean normalizeAttributes = true;
-    private NormalizationFilter normalizer;
+//    private NormalizationFilter normalizer;
     /** Indicates whether any nominal attributes from input data set has to be converted to binary */
     private boolean convertNomToBin = true;
     /** Filter used for conversion of nominal attributes to binary (if enabled) */
