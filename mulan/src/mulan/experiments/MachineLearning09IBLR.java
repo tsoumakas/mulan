@@ -143,22 +143,13 @@ public class MachineLearning09IBLR extends Experiment {
 
     }
 
-    /**
-     * Returns an instance of a TechnicalInformation object, containing detailed
-     * information about the technical background of this class, e.g., paper
-     * reference or book this class is based on.
-     *
-     * @return the technical information about this class
-     */
     @Override
     public TechnicalInformation getTechnicalInformation() {
         TechnicalInformation result;
 
         result = new TechnicalInformation(Type.ARTICLE);
         result.setValue(Field.AUTHOR, "Weiwei Cheng and Eyke Hullermeier");
-        result.setValue(
-                Field.TITLE,
-                "Combining instance-based learning and logistic regression for multilabel classification ");
+        result.setValue(Field.TITLE, "Combining instance-based learning and logistic regression for multilabel classification ");
         result.setValue(Field.JOURNAL, "Machine Learning");
         result.setValue(Field.VOLUME, "76");
         result.setValue(Field.NUMBER, "2-3");
