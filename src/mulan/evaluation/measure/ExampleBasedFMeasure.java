@@ -16,15 +16,17 @@
 
 /*
  *    ExampleBasedFMeasure.java
- *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2011 Aristotle University of Thessaloniki, Greece
  */
 package mulan.evaluation.measure;
+
+import mulan.core.MulanRuntimeException;
 
 /**
  * Implementation of the example-based F measure.
  * 
  * @author Grigorios Tsoumakas
- * @version 2010.11.05
+ * @version 2010.12.31
  */
 public class ExampleBasedFMeasure extends ExampleBasedBipartitionMeasureBase {
 
@@ -61,30 +63,31 @@ public class ExampleBasedFMeasure extends ExampleBasedBipartitionMeasureBase {
 
     @Override
     protected void updateBipartition(boolean[] bipartition, boolean[] truth) {
-        double intersection = 0;
-        double predicted = 0;
-        double actual = 0;
+        double tp = 0;
+        double fp = 0;
+        double fn = 0;
         for (int i = 0; i < truth.length; i++) {
-            if (bipartition[i]) {
-                predicted++;
-            }
-            if (truth[i]) {
-                actual++;
-            }
             if (bipartition[i] && truth[i]) {
-                intersection++;
+                tp++;
+            }
+            if (bipartition[i] && !truth[i]) {
+                fp++;
+            }
+            if (!bipartition[i] && truth[i]) {
+                fn++;
             }
         }
-        if ((predicted == 0 || actual == 0) && (strict == false))
-            return;
 
-        double precision = intersection / predicted;
-        double recall = intersection / actual;
-
-        if (((beta * beta * precision + recall) == 0) && (strict == false))
-            return;
-
-        sum += ((1 + beta * beta) * precision * recall) / (beta * beta * precision + recall);
-        count++;
+        if (strict) {
+            sum += FMeasure.compute(tp, fp, fn, beta);
+            count++;
+        } else {
+            try {
+                sum += FMeasure.compute(tp, fp, fn, beta);
+                count++;
+            } catch (MulanRuntimeException e) {
+                return;
+            }
+        }
     }
 }

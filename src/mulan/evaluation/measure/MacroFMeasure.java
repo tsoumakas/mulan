@@ -16,7 +16,7 @@
 
 /*
  *    MacroFMeasure.java
- *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2011 Aristotle University of Thessaloniki, Greece
  */
 package mulan.evaluation.measure;
 
@@ -26,14 +26,14 @@ import mulan.core.MulanRuntimeException;
  * Implementation of the macro-averaged f measure.
  *
  * @author Grigorios Tsoumakas
- * @version 2010.11.05
+ * @version 2010.12.31
  */
 public class MacroFMeasure extends LabelBasedFMeasure {
 
     private boolean strict;
 
     /**
-     * Constructs a new object with given number of labels
+     * Constructs a new object with given number of labels and strictness
      *
      * @param numOfLabels the number of labels
      * @param isStrict when false, divisions-by-zero are ignored
@@ -44,7 +44,7 @@ public class MacroFMeasure extends LabelBasedFMeasure {
     }
 
     /**
-     * Constructs a new object with given number of labels
+     * Full constructor
      *
      * @param numOfLabels the number of labels
      * @param isStrict when false, divisions-by-zero are ignored
@@ -63,24 +63,21 @@ public class MacroFMeasure extends LabelBasedFMeasure {
         double sum = 0;
         int count = 0;
         for (int labelIndex = 0; labelIndex < numOfLabels; labelIndex++) {
-            if (truePositives[labelIndex] + falsePositives[labelIndex] == 0) {
-                if (strict) {
-                    throw new MulanRuntimeException("None example predicted positive");
-                } else {
+            if (strict) {
+                sum += FMeasure.compute(truePositives[labelIndex],
+                                        falsePositives[labelIndex],
+                                        falseNegatives[labelIndex], beta);
+                count++;
+            } else {
+                try {
+                sum += FMeasure.compute(truePositives[labelIndex],
+                                        falsePositives[labelIndex],
+                                        falseNegatives[labelIndex], beta);
+                    count++;
+                } catch (MulanRuntimeException e) {
                     continue;
                 }
             }
-            if (truePositives[labelIndex] + falseNegatives[labelIndex] == 0) {
-                if (strict) {
-                    throw new MulanRuntimeException("None example actually positive");
-                } else {
-                    continue;
-                }
-            }
-            double precision = truePositives[labelIndex] / (truePositives[labelIndex] + falsePositives[labelIndex]);
-            double recall = truePositives[labelIndex] / (truePositives[labelIndex] + falseNegatives[labelIndex]);
-            sum += calculateFMeasure(precision, recall);
-            count++;
         }
         return sum / count;
     }
