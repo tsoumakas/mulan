@@ -16,7 +16,7 @@
 
 /*
  *    MicroFMeasure.java
- *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2011 Aristotle University of Thessaloniki, Greece
  */
 package mulan.evaluation.measure;
 
@@ -26,6 +26,7 @@ import weka.core.Utils;
  * Implementation of the micro-averaged precision measure.
  *
  * @author Grigorios Tsoumakas
+ * @version 2010.12.31
  */
 public class MicroFMeasure extends LabelBasedFMeasure {
 
@@ -38,18 +39,25 @@ public class MicroFMeasure extends LabelBasedFMeasure {
         super(numOfLabels);
     }
 
+    /**
+     * Full constructor
+     *
+     * @param numOfLabels the number of labels
+     * @param beta the beta parameter
+     */
+    public MicroFMeasure(int numOfLabels, double beta) {
+        super(numOfLabels, beta);
+    }
+
     public double getValue() {
         double tp = Utils.sum(truePositives);
         double fp = Utils.sum(falsePositives);
         double fn = Utils.sum(falseNegatives);
 
-        double precision = tp / (tp + fp);
-        double recall = tp / (tp + fn);
-        return calculateFMeasure(precision, recall);
+        return FMeasure.compute(tp, fp, fn, beta);
     }
 
     public String getName() {
         return "Micro-averaged F-Measure";
-
     }
 }

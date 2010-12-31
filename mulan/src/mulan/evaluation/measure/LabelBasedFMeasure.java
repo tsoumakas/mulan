@@ -16,22 +16,20 @@
 
 /*
  *    LabelBasedFMeasure.java
- *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2011 Aristotle University of Thessaloniki, Greece
  */
 package mulan.evaluation.measure;
-
-import mulan.core.MulanRuntimeException;
 
 /**
  * Base implementation of the label-based macro/micro f-measures.
  * 
  * @author Grigorios Tsoumakas
- * @version 2010.11.05
+ * @version 2010.12.31
  */
 public abstract class LabelBasedFMeasure extends LabelBasedBipartitionMeasureBase {
 
     // the parameter for combining precision and recall
-    private final double beta;
+    protected final double beta;
 
     /**
      * Constructs a new object with given number of labels
@@ -55,21 +53,6 @@ public abstract class LabelBasedFMeasure extends LabelBasedBipartitionMeasureBas
 
     public double getIdealValue() {
         return 1;
-    }
-
-    /**
-     * calculates the f-measure based on a precision and recall value
-     *
-     * @param precision a precision value
-     * @param recall a recall value
-     * @return the f-measure
-     */
-    protected double calculateFMeasure(double precision, double recall) {
-        if ((beta * beta * precision + recall) == 0) {
-            reset();
-            throw new MulanRuntimeException("F Measure is undefined");
-        }
-        return ((1 + beta * beta) * precision * recall) / (beta * beta * precision + recall);
     }
 
     protected void updateBipartition(boolean[] bipartition, boolean[] truth) {
