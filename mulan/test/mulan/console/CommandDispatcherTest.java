@@ -32,9 +32,12 @@ public class CommandDispatcherTest {
 //				"-tsd=./data/testData/emotions-test.arff", 
 //				"-ld=./data/testData/emotions.xml",
 //				"--seed=1",
-//				"--output=./data/learner.dat"};
-		
-//		String[] args = new String[]{
+//				"-te=100",
+//				};
+//		
+//		CommandDispatcher.main(args);
+//		
+//		args = new String[]{
 //				"learn", "mulan.classifier.neural.MMPLearner", 
 //				"-trd=./data/testData/emotions-train.arff", 
 //				"-tsd=./data/testData/emotions-test.arff", 
@@ -42,19 +45,12 @@ public class CommandDispatcherTest {
 //				"--seed=1",
 //				"-rl=mulan.evaluation.loss.RankingLoss",
 //				"-ur=UniformUpdate",
-//				"--output=./data/MMPlearner.dat",
-//				};
-		
-		//String[] args = new String[]{"learn", "mulan.classifier.neural.MMPLearner", "--help"};
-//		CommandDispatcher.main(args);
-		
-//		args = new String[]{
-//				"predict", 
-//				"-tsd=./data/testData/emotions-test.arff", 
-//				"-ld=./data/testData/emotions.xml",
-//				"--input=./data/learner.dat"};
-//		
+//				"-te=1000",
 //				
+//				};
+//		
+//		//String[] args = new String[]{"learn", "mulan.classifier.neural.MMPLearner", "--help"};
 //		CommandDispatcher.main(args);
+		
 	}
 }
