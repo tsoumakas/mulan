@@ -28,20 +28,34 @@ import org.apache.commons.cli.OptionBuilder;
 /**
  * Helper for construction of common command line option reused by multiple classes.
  * 
- * @author Jozef Vilce
+ * @author Jozef Vilcek
  */
 public final class CommonOptions {
 
-	/** Seed option short name */
+	/** Short name for option specifying seed */
 	public static final String SEED_OPT = "s";
-	/** Help option short name */
+	/** Short name for option specifying help */
 	public static final String HELP_OPT = "h";
-	/** Train data set option short name */
+	/** Short name for option specifying train data set */
 	public static final String TRAIN_DATA_OPT = "trd";
-	/** Test data set option short name */
+	/** Short name for option specifying test data set */
 	public static final String TEST_DATA_OPT = "tsd";
-	/** Labels definition option short name */
+	/** Short name for option specifying labels definition */
 	public static final String LABELS_DEF_DATA_OPT = "ld";
+	/** Short name for option specifying number of training epochs  */
+	public static final String TRAINING_EPOCHS_OPT = "te";
+	
+	
+	/**
+	 * Creates option for specifying number of training epochs
+	 * @return
+	 */
+	@SuppressWarnings("static-access")
+	public static Option getTrainingEpochsOption(){
+		return OptionBuilder.withLongOpt("training-epochs").hasArg().withType(Number.class)
+				.withDescription("Sets the number of training epochs. The value must be integer greater than 0.")
+				.create(TRAINING_EPOCHS_OPT);
+	}
 	
 	/**
 	 * Creates option for specifying train data set

@@ -45,7 +45,7 @@ import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.NominalToBinary;
 
 /**
- * Implementation of Multiclass Multilabel Percpetrons learner. For more information refer
+ * Implementation of Multiclass Multilabel Perceptrons learner. For more information refer
  * to technical paper describing the learner.
  * 
  * <!-- technical-bibtex-start -->
@@ -70,6 +70,9 @@ public class MMPLearner extends MultiLabelLearnerBase {
 //    /** Determines if feature attributes has to be normalized prior to learning */
 //    private boolean normalizeAttributes = true;
 //    private NormalizationFilter normalizer;
+    
+    /** The number of training epochs to perform with trainig data during the model learning / building */
+    private int epochs = 1;
     /** Indicates whether any nominal attributes from input data set has to be converted to binary */
     private boolean convertNomToBin = true;
     /** Filter used for conversion of nominal attributes to binary (if enabled) */
@@ -78,6 +81,7 @@ public class MMPLearner extends MultiLabelLearnerBase {
     private final RankingLossFunction lossFunction;
     /** The name of a model update rule used to update the model when learning from training data */
     private final MMPUpdateRuleType mmpUpdateRule;
+    
     /**
      * The flag indicating if initialization with of learner first learning data samples already
      * took place. This is because the {@link MMPLearner} is online and updatable.
@@ -126,6 +130,30 @@ public class MMPLearner extends MultiLabelLearnerBase {
         this.randomnessSeed = randomnessSeed;
     }
 
+    /**
+     * Sets the number of training epochs. Must be greater than 0.<br/>
+     * Default value is 1.
+     *
+     * @param epochs the number of training epochs
+     * @throws IllegalArgumentException if passed value is invalid
+     */
+    public void setTrainingEpochs(int epochs) {
+        if (epochs <= 0) {
+            throw new IllegalArgumentException("The number of training epochs must be greater than zero. " +
+                    "Entered value is : " + epochs);
+        }
+        this.epochs = epochs;
+    }
+
+    /**
+     * Gets number of training epochs.
+     * Default value is 1.
+     * @return training epochs
+     */
+    public int getTrainingEpochs() {
+        return epochs;
+    }
+    
     /**
      * Sets whether nominal attributes from input data set has to be converted to binary
      * prior to learning (and respectively making a prediction).
@@ -186,8 +214,10 @@ public class MMPLearner extends MultiLabelLearnerBase {
 
         ModelUpdateRule modelUpdateRule = getModelUpdateRule(lossFunction);
 
-        for (DataPair dataItem : trainData) {
-            modelUpdateRule.process(dataItem, null);
+        for(int iter = 0; iter < epochs; iter++){
+	        for (DataPair dataItem : trainData) {
+	            modelUpdateRule.process(dataItem, null);
+	        }
         }
     }
 

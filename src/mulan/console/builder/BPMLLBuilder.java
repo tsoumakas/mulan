@@ -54,9 +54,7 @@ public class BPMLLBuilder implements LearnerBuilder {
 		opt.addOption(OptionBuilder.withLongOpt("weights-decay").hasArg().withType(Number.class)
 				.withDescription("Sets the regularization cost term for weights decay. The value must be greater than 0 and no more than 1.")
 				.create("wd"));
-		opt.addOption(OptionBuilder.withLongOpt("training-epochs").hasArg().withType(Number.class)
-				.withDescription("Sets the number of training epochs. The value must be integer greater than 0.")
-				.create("te"));
+		opt.addOption(CommonOptions.getTrainingEpochsOption());
 		opt.addOption(OptionBuilder.withLongOpt("normalize-inputs")
 				.withDescription("If defined, all input numeric attributes of the training data set (except label attributes) will be normalized prior to learning to the range <-1,1>.")
 				.create("n"));
@@ -98,8 +96,8 @@ public class BPMLLBuilder implements LearnerBuilder {
 		if(cmdLine.hasOption("wd")){
 			learner.setWeightsDecayRegularization(((Number)cmdLine.getParsedOptionValue("wd")).doubleValue());
 		}
-		if(cmdLine.hasOption("te")){
-			learner.setTrainingEpochs(((Number)cmdLine.getParsedOptionValue("te")).intValue());
+		if(cmdLine.hasOption(CommonOptions.TRAINING_EPOCHS_OPT)){
+			learner.setTrainingEpochs(((Number)cmdLine.getParsedOptionValue(CommonOptions.TRAINING_EPOCHS_OPT)).intValue());
 		}
 		if(cmdLine.hasOption("n")){
 			learner.setNormalizeAttributes(true);

@@ -81,7 +81,7 @@ public class MMPUniformUpdateRule extends MMPUpdateRuleBase {
         }
 
         for (int index = 0; index < numLabels; index++) {
-            if (params[index] > 0) {
+            if (params[index] != 0) {
                 params[index] *= loss / setCount;
             }
         }

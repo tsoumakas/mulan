@@ -182,7 +182,7 @@ public class BPMLL extends MultiLabelLearnerBase {
      */
     public void setTrainingEpochs(int epochs) {
         if (epochs <= 0) {
-            throw new IllegalArgumentException("The learning rate must be greater than zero. " +
+            throw new IllegalArgumentException("The number of training epochs must be greater than zero. " +
                     "Entered value is : " + epochs);
         }
         this.epochs = epochs;

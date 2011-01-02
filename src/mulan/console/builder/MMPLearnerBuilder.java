@@ -20,10 +20,7 @@
 
 package mulan.console.builder;
 
-import java.util.Arrays;
-
 import mulan.classifier.MultiLabelLearner;
-import mulan.classifier.neural.BPMLL;
 import mulan.classifier.neural.MMPLearner;
 import mulan.classifier.neural.MMPUpdateRuleType;
 import mulan.console.CommonOptions;
@@ -64,6 +61,7 @@ public class MMPLearnerBuilder implements LearnerBuilder {
 		opt.addOption(OptionBuilder.withLongOpt("update-rule").hasArg()
 				.withDescription("Sets the update rule to be used when updating the learner model during the learning phase. " + sb.toString())
 				.create(UPDATE_RULE_OPT));
+		opt.addOption(CommonOptions.getTrainingEpochsOption());
 		opt.addOption(OptionBuilder.withLongOpt("nominal-to-binary")
 				.withDescription("If defined, all nominal attributes from train data set will be converted to binary prior to learning (and respectively making a prediction).")
 				.create(NOMINAL_TO_BINARY_OPT));
@@ -113,6 +111,10 @@ public class MMPLearnerBuilder implements LearnerBuilder {
 			learner.setConvertNominalToBinary(true);
 		}else{
 			learner.setConvertNominalToBinary(false);
+		}
+		
+		if(cmdLine.hasOption(CommonOptions.TRAINING_EPOCHS_OPT)){
+			learner.setTrainingEpochs(((Number)cmdLine.getParsedOptionValue(CommonOptions.TRAINING_EPOCHS_OPT)).intValue());
 		}
 
         return learner;
