@@ -33,19 +33,18 @@ import weka.filters.unsupervised.attribute.Remove;
 /**
  *
  * <!-- globalinfo-start -->
- *
- * Class that implements the Binary Relevance (BR) method. For more information, see <br/>
+ * 
+ * Class that implements the Binary Relevance (BR) method. For more information,
+ * see <br/>
  * <br/>
- * G. Tsoumakas, I. Katakis, I. Vlahavas, "Mining Multi-label Data",
- * Data Mining and Knowledge Discovery Handbook (draft of preliminary accepted chapter),
- * O. Maimon, L. Rokach (Ed.), 2nd edition, Springer, 2009.
- * </p>
- *
+ * G. Tsoumakas, I. Katakis, I. Vlahavas, "Mining Multi-label Data", Data Mining
+ * and Knowledge Discovery Handbook (draft of preliminary accepted chapter), O.
+ * Maimon, L. Rokach (Ed.), 2nd edition, Springer, 2009. </p>
+ * 
  * <!-- globalinfo-end -->
- *
- * <!-- technical-bibtex-start -->
- * BibTeX:
- *
+ * 
+ * <!-- technical-bibtex-start --> BibTeX:
+ * 
  * <pre>
  * &#064;inbook{tsoumakas+etal:2009,
  *    author =    {Tsoumakas, G. and Katakis, I. and Vlahavas, I.},
@@ -55,12 +54,13 @@ import weka.filters.unsupervised.attribute.Remove;
  *    editor =    {Maimon, O. and Rokach, L.},
  * }
  * </pre>
- *
- * <p/> <!-- technical-bibtex-end -->
- *
+ * 
+ * <p/>
+ * <!-- technical-bibtex-end -->
+ * 
  * @author Robert Friberg
- * @author Grigorios Tsoumakas 
- * @version $Revision: 0.05$
+ * @author Grigorios Tsoumakas
+ * @version $Revision: 0.06$
  */
 public class BinaryRelevance extends TransformationBasedMultiLabelLearner {
 
@@ -81,9 +81,15 @@ public class BinaryRelevance extends TransformationBasedMultiLabelLearner {
         super(classifier);
     }
 
+	/**
+	 * The correspondence between ensemble models and label indices
+	 */
+	private int[] correspondence;
+
     protected void buildInternal(MultiLabelInstances train) throws Exception {
         numLabels = train.getNumLabels();
         ensemble = new FilteredClassifier[numLabels];
+		correspondence = new int[numLabels];
         Instances trainingData = train.getDataSet();
         for (int i = 0; i < numLabels; i++) {
             ensemble[i] = new FilteredClassifier();
@@ -105,36 +111,52 @@ public class BinaryRelevance extends TransformationBasedMultiLabelLearner {
             remove.setInvertSelection(false);
             ensemble[i].setFilter(remove);
 
-            trainingData.setClassIndex(labelIndices[i]);
-            debug("Bulding model " + (i + 1) + "/" + numLabels);
-            ensemble[i].buildClassifier(trainingData);
-        }
-    }
+			trainingData.setClassIndex(labelIndices[i]);
+			correspondence[i] = labelIndices[i];
+			debug("Bulding model " + (i + 1) + "/" + numLabels);
+			ensemble[i].buildClassifier(trainingData);
+		}
+	}
 
     protected MultiLabelOutput makePredictionInternal(Instance instance) throws Exception {
         boolean[] bipartition = new boolean[numLabels];
         double[] confidences = new double[numLabels];
 
-        for (int counter = 0; counter < numLabels; counter++) {
-            double distribution[] = new double[2];
-            try {
-                distribution = ensemble[counter].distributionForInstance(instance);
-            } catch (Exception e) {
-                System.out.println(e);
-                return null;
-            }
-            int maxIndex = (distribution[0] > distribution[1]) ? 0 : 1;
+		for (int counter = 0; counter < numLabels; counter++) {
+			double distribution[] = new double[2];
+			try {
+				distribution = ensemble[counter].distributionForInstance(instance);
+			} catch (Exception e) {
+				System.out.println(e);
+				return null;
+			}
+			int maxIndex = (distribution[0] > distribution[1]) ? 0 : 1;
 
-            // Ensure correct predictions both for class values {0,1} and {1,0}
-            Attribute classAttribute = ensemble[counter].getFilter().getOutputFormat().classAttribute();
-            bipartition[counter] = (classAttribute.value(maxIndex).equals("1")) ? true : false;
+			// Ensure correct predictions both for class values {0,1} and {1,0}
+			Attribute classAttribute = ensemble[counter].getFilter().getOutputFormat().classAttribute();
+			bipartition[counter] = (classAttribute.value(maxIndex).equals("1")) ? true : false;
 
-            // The confidence of the label being equal to 1
-            confidences[counter] = distribution[classAttribute.indexOfValue("1")];
-        }
+			// The confidence of the label being equal to 1
+			confidences[counter] = distribution[classAttribute.indexOfValue("1")];
+		}
 
-        MultiLabelOutput mlo = new MultiLabelOutput(bipartition, confidences);
-        return mlo;
-    }
+		MultiLabelOutput mlo = new MultiLabelOutput(bipartition, confidences);
+		return mlo;
+	}
+
+	/**
+	 * Returns the model which corresponds to the label with labelIndex
+	 * 
+	 * @param labelIndex
+	 * @return the corresponding model or null if the labelIndex is wrong
+	 */
+	public Classifier getModel(int labelIndex) {
+		// find the FilteredClassifier which corresponds to this label
+		for (int i = 0; i < numLabels; i++) {
+			if (correspondence[i] == labelIndex) {
+				return ensemble[i].getClassifier();
+			}
+		}
+		return null;
+	}
 }
-
