@@ -31,7 +31,7 @@ import weka.core.Instances;
 import weka.filters.unsupervised.attribute.Remove;
 
 /**
- *
+ * 
  * <!-- globalinfo-start -->
  * 
  * Class that implements the Binary Relevance (BR) method. For more information,
@@ -82,37 +82,37 @@ public class BinaryRelevance extends TransformationBasedMultiLabelLearner {
     }
 
 	/**
-	 * The correspondence between ensemble models and label indices
+	 * The correspondence between ensemble models and labels
 	 */
-	private int[] correspondence;
+	private String[] correspondence;
 
-    protected void buildInternal(MultiLabelInstances train) throws Exception {
-        numLabels = train.getNumLabels();
-        ensemble = new FilteredClassifier[numLabels];
-		correspondence = new int[numLabels];
-        Instances trainingData = train.getDataSet();
-        for (int i = 0; i < numLabels; i++) {
-            ensemble[i] = new FilteredClassifier();
-            ensemble[i].setClassifier(AbstractClassifier.makeCopy(baseClassifier));
+	protected void buildInternal(MultiLabelInstances train) throws Exception {
+		numLabels = train.getNumLabels();
+		ensemble = new FilteredClassifier[numLabels];
+		correspondence = new String[numLabels];
+		Instances trainingData = train.getDataSet();
+		for (int i = 0; i < numLabels; i++) {
+			ensemble[i] = new FilteredClassifier();
+			ensemble[i].setClassifier(AbstractClassifier.makeCopy(baseClassifier));
 
-            // Indices of attributes to remove
-            int[] indicesToRemove = new int[numLabels - 1];
-            int counter2 = 0;
-            for (int counter1 = 0; counter1 < numLabels; counter1++) {
-                if (labelIndices[counter1] != labelIndices[i]) {
-                    indicesToRemove[counter2] = labelIndices[counter1];
-                    counter2++;
-                }
-            }
+			// Indices of attributes to remove
+			int[] indicesToRemove = new int[numLabels - 1];
+			int counter2 = 0;
+			for (int counter1 = 0; counter1 < numLabels; counter1++) {
+				if (labelIndices[counter1] != labelIndices[i]) {
+					indicesToRemove[counter2] = labelIndices[counter1];
+					counter2++;
+				}
+			}
 
-            Remove remove = new Remove();
-            remove.setAttributeIndicesArray(indicesToRemove);
-            remove.setInputFormat(trainingData);
-            remove.setInvertSelection(false);
-            ensemble[i].setFilter(remove);
+			Remove remove = new Remove();
+			remove.setAttributeIndicesArray(indicesToRemove);
+			remove.setInputFormat(trainingData);
+			remove.setInvertSelection(false);
+			ensemble[i].setFilter(remove);
 
 			trainingData.setClassIndex(labelIndices[i]);
-			correspondence[i] = labelIndices[i];
+			correspondence[i] = trainingData.classAttribute().name();
 			debug("Bulding model " + (i + 1) + "/" + numLabels);
 			ensemble[i].buildClassifier(trainingData);
 		}
@@ -145,15 +145,14 @@ public class BinaryRelevance extends TransformationBasedMultiLabelLearner {
 	}
 
 	/**
-	 * Returns the model which corresponds to the label with labelIndex
+	 * Returns the model which corresponds to the label with labelName
 	 * 
-	 * @param labelIndex
+	 * @param labelName
 	 * @return the corresponding model or null if the labelIndex is wrong
 	 */
-	public Classifier getModel(int labelIndex) {
-		// find the FilteredClassifier which corresponds to this label
+	public Classifier getModel(String labelName) {
 		for (int i = 0; i < numLabels; i++) {
-			if (correspondence[i] == labelIndex) {
+			if (correspondence[i].equals(labelName)) {
 				return ensemble[i].getClassifier();
 			}
 		}
