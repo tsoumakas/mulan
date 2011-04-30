@@ -114,7 +114,6 @@ public class MLkNN extends MultiLabelKNN {
     public MLkNN(int numOfNeighbors, double smooth) {
         super(numOfNeighbors);
         this.smooth = smooth;
-        dontNormalize = false;
     }
     
     /**
@@ -123,7 +122,6 @@ public class MLkNN extends MultiLabelKNN {
     public MLkNN() {
     	super();
     	this.smooth = 1.0;
-    	dontNormalize = false;
     }
 
     /**
