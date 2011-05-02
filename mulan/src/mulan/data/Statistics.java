@@ -432,11 +432,7 @@ public class Statistics implements Serializable {
      * @return array of prior probabilities of labels
      */
     public double[] priors() {
-        double[] pr = new double[numLabels];
-        for (int i = 0; i < numLabels; i++) {
-            pr[i] = examplesPerLabel[i] / numInstances;
-        }
-        return pr;
+        return examplesPerLabel;
     }
 
     /** 
