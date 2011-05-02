@@ -18,7 +18,6 @@ public class MLkNNTest extends MultiLabelKNNTest {
 	public void testTestDefaultParameters(){
 		Assert.assertEquals(DEFAULT_numOfNeighbors, learner.numOfNeighbors);
 		Assert.assertEquals(DEFAULT_smooth, ((MLkNN)learner).smooth);
-		Assert.assertEquals(DEFAULT_dontNormalize, learner.dontNormalize);
 		
 		// common tests
 		Assert.assertTrue(learner.isUpdatable());

@@ -81,7 +81,6 @@ public class PatternRecognition07MLkNN extends Experiment {
                 numOfNeighbors = i;
                 double smooth = 1.0;
                 MLkNN mlknn = new MLkNN(numOfNeighbors, smooth);
-                mlknn.setDontNormalize(true);
                 // mlknn.setDebug(true);
                 results = eval.crossValidate(mlknn, dataSet, measures, 10);
                 System.out.println(results);
