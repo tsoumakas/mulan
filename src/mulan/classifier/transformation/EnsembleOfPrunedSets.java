@@ -91,6 +91,13 @@ public class EnsembleOfPrunedSets extends TransformationBasedMultiLabelLearner {
         }
     }
 
+    /**
+     * Returns an instance of a TechnicalInformation object, containing detailed
+     * information about the technical background of this class, e.g., paper
+     * reference or book this class is based on.
+     *
+     * @return the technical information about this class
+     */
     @Override
     public TechnicalInformation getTechnicalInformation() {
         TechnicalInformation result = new TechnicalInformation(Type.CONFERENCE);

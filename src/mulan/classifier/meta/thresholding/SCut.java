@@ -147,10 +147,10 @@ public class SCut extends MultiLabelMetaLearner {
             for (int j = 0; j < numLabels; j++) {
                 measureTable[1][j] = measureTable[0][j];
             }
-            //for all labels computing the best thressholds
+            //for all labels computing the best thresholds
             for (int j = 0; j < numLabels; j++) {
                 double score = 0;
-                //get a measure for all Thressholds
+                //get a measure for all Thresholds
                 for (int l = numOfThresholds - 1; l >= 0; l--) //posa instances diladi tosa thresshold
                 {
                     measureForThreshold[l].reset();
@@ -159,7 +159,7 @@ public class SCut extends MultiLabelMetaLearner {
                     } else {
                         currentThresholds[j] = (conf[j].get(l) + conf[j].get(l - 1)) / 2;
                     }
-                    //get the predicted labels for all innsatnces according to Thresholds
+                    //get the predicted labels for all instances according to Thresholds
                     for (int k = 0; k < data.getNumInstances(); k++) {
                         boolean[] predictedLabels = new boolean[numLabels];
                         for (int x = 0; x < numLabels; x++) {
