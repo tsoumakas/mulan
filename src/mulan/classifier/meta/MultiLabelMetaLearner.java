@@ -22,48 +22,51 @@ package mulan.classifier.meta;
 
 import mulan.classifier.transformation.*;
 import mulan.classifier.*;
+import mulan.core.ArgumentNullException;
 import weka.classifiers.trees.J48;
 
 /**
  * Base class for multi-label learners, which use other multi-label learners
- *
+ * 
  * @author Grigorios Tsoumakas
  * @version $Revision: 0.01 $
  */
 public abstract class MultiLabelMetaLearner extends MultiLabelLearnerBase {
 
-    /**
-     * The encapsulated classifier or used for making clones in the
-     * case of ensemble classifiers.
-     */
-    protected final MultiLabelLearner baseLearner;
+	/**
+	 * The encapsulated classifier or used for making clones in the case of ensemble classifiers.
+	 */
+	protected final MultiLabelLearner baseLearner;
 
-    /**
-     * Creates a new instance of {@link MultiLabelMetaLearner} with default
-     * {@link LabelPowerset} multi-label classifier using J48 as the base
-     * classifier.
-     * @throws Exception 
-     */
-    public MultiLabelMetaLearner() throws Exception {
-        this(new LabelPowerset(new J48()));
-    }
+	/**
+	 * Creates a new instance of {@link MultiLabelMetaLearner} with default {@link LabelPowerset}
+	 * multi-label classifier using J48 as the base classifier.
+	 * 
+	 * @throws Exception
+	 */
+	public MultiLabelMetaLearner() throws Exception {
+		this(new LabelPowerset(new J48()));
+	}
 
-    /**
-     * Creates a new instance.
-     *
-     * @param baseLearner the base multi-label learner which will be used
-     * internally to handle the data.
-     */
-    public MultiLabelMetaLearner(MultiLabelLearner baseLearner) {
-        this.baseLearner = baseLearner;
-    }
+	/**
+	 * Creates a new instance.
+	 * 
+	 * @param baseLearner the base multi-label learner which will be used internally to handle the
+	 * data.
+	 */
+	public MultiLabelMetaLearner(MultiLabelLearner baseLearner) {
+		if (baseLearner == null) {
+			throw new ArgumentNullException("baseLearner");
+		}
+		this.baseLearner = baseLearner;
+	}
 
-    /**
-     * Returns the {@link MultiLabelLearner} which is used internally by the learner.
-     *
-     * @return the baseLearner
-     */
-    public MultiLabelLearner getBaseLearner() {
-        return baseLearner;
-    }
+	/**
+	 * Returns the {@link MultiLabelLearner} which is used internally by the learner.
+	 * 
+	 * @return the baseLearner
+	 */
+	public MultiLabelLearner getBaseLearner() {
+		return baseLearner;
+	}
 }

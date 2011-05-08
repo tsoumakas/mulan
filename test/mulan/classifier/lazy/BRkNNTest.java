@@ -7,7 +7,6 @@ import org.junit.Test;
 public class BRkNNTest extends MultiLabelKNNTest {
 
 	private static final int DEFAULT_numOfNeighbors = 10;
-	private static boolean DEFAULT_dontNormalize = false;
 
 	@Override
 	public void setUp() {

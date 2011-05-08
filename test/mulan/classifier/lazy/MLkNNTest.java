@@ -8,7 +8,6 @@ public class MLkNNTest extends MultiLabelKNNTest {
 	
 	private static final int DEFAULT_numOfNeighbors = 10; 
 	private static final double DEFAULT_smooth = 1.0;
-	private static boolean DEFAULT_dontNormalize = false;
 		
 	@Override
 	public void setUp(){			learner = new MLkNN();
