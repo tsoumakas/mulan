@@ -175,9 +175,8 @@ public class EnsembleOfSubsetLearners extends MultiLabelMetaLearner {
 	public List<int[][]> createRandomSets(int numLabels, int numSets) {
 		List<int[][]> sets;
 		int n = 2 * numLabels - 1; // values from 0 to numLabels-1 will indicate a label and
-		int[][] permutations = GenerateRandomPermutations(n, numSets); // values from numLabels to
-		// n-1 will indicate a
-		// separator of two groups
+		// values from numLabels to n-1 will indicate a separator of two groups
+        int[][] permutations = GenerateRandomPermutations(n, numSets);
 		sets = convertToSets(permutations, numLabels);
 		return sets;
 	}
@@ -206,52 +205,21 @@ public class EnsembleOfSubsetLearners extends MultiLabelMetaLearner {
 	 */
 	private List<LabelSubsetsWeight> createLabelSetPartitions(MultiLabelInstances trainingData) {
 		List<LabelSubsetsWeight> selectedSets; // a list of selected partitions
-		LabelsPair[] labelPairs = dependenceIdentifier.calculateDependence(trainingData); // get a
-		// list
-		// of
-		// labels
-		// pairs
-		// along
-		// with
-		// their
-		// dependence
-		// scores
+		LabelsPair[] labelPairs = dependenceIdentifier.calculateDependence(trainingData); // get a list of labels pairs along
+                                                                                                                                                                                          //  with their dependence scores
 		double criticalValue = dependenceIdentifier.getCriticalValue();
 		double[][] weightsMatrix = createDependenceWeightsMatrix(labelPairs, criticalValue,
 				numLabels, true); // compute normalized dependence scores of all label pairs
-		List<int[][]> randomPartitions = createRandomSets(numLabels, numOfRandomPartitions); // create
-		// random
-		// label
-		// set
-		// partitions
-		ArrayList<LabelSubsetsWeight> weightedSets = setWeights(randomPartitions, weightsMatrix); // compute
-		// 'dependence'
-		// score
-		// of
-		// each
-		// random
-		// partition
+		List<int[][]> randomPartitions = createRandomSets(numLabels, numOfRandomPartitions); // create random label set partitions
+		ArrayList<LabelSubsetsWeight> weightedSets = setWeights(randomPartitions, weightsMatrix); // compute 'dependence' score
+                                                                                                                                                                                                              //  of each random partition
 		Collections.sort(weightedSets, Collections.reverseOrder()); // sort partitions in descending
-		// order of the 'dependence'
-		// score
-		List<LabelSubsetsWeight> distinctSets = getDistinctSets(weightedSets); // remove same
-		// partitions of
-		// labels (as were
-		// randomly
-		// generated)
+		                                                                                                                               // order of the 'dependence' score
+		List<LabelSubsetsWeight> distinctSets = getDistinctSets(weightedSets); // remove same partitions
+                                                                                                                                                                    // of labels (as were randomly generated)
 		if (selectDiverseModels) { // for the diverse version of the algorithm
-			int numForDiversity = Math.min(distinctSets.size(), numOfPartitionsForDiversity); // number
-			// of
-			// high
-			// scored
-			// partition
-			// to
-			// consider
-			List<LabelSubsetsWeight> highestSets = getHighOrdered(distinctSets, numForDiversity); // get
-			// 'numForDiversity'
-			// high
-			// scored
-			// partitions
+			int numForDiversity = Math.min(distinctSets.size(), numOfPartitionsForDiversity); // number of high scored partition to consider
+			List<LabelSubsetsWeight> highestSets = getHighOrdered(distinctSets, numForDiversity); // get 'numForDiversity' high scored partitions
 			selectedSets = selectByDiversity(highestSets);
 		} else { // take 'numModels' high scored partitions
 			selectedSets = getHighOrdered(distinctSets, numModels);
@@ -411,23 +379,17 @@ public class EnsembleOfSubsetLearners extends MultiLabelMetaLearner {
 	 * @param weightsMatrix the matrix containing dependence score for each labels pair
 	 * @return a list of weighted label subsets
 	 */
-	private ArrayList<LabelSubsetsWeight> setWeights(List<int[][]> partitions,
-			double[][] weightsMatrix) {
-		ArrayList<LabelSubsetsWeight> weightedList = new ArrayList<LabelSubsetsWeight>(partitions
-				.size());
-		for (int[][] partition : partitions) {
-			Double weight = computeWeight(partition, weightsMatrix, numLabels); // compute
-			// 'dependence'
-			// score of a
-			// partition
-			LabelSubsetsWeight p = new LabelSubsetsWeight(weight, partition); // storing the weight
-			// for a partition
-			// in an intended
-			// class
-			weightedList.add(p);
-		}
-		return weightedList;
-	}
+    private ArrayList<LabelSubsetsWeight> setWeights(List<int[][]> partitions,
+                                                     double[][] weightsMatrix) {
+        ArrayList<LabelSubsetsWeight> weightedList = new ArrayList<LabelSubsetsWeight>(partitions
+                .size());
+        for (int[][] partition : partitions) {
+            Double weight = computeWeight(partition, weightsMatrix, numLabels); // compute 'dependence' score of a partition
+            LabelSubsetsWeight p = new LabelSubsetsWeight(weight, partition); // storing the weight for a partition in an intended class
+            weightedList.add(p);
+        }
+        return weightedList;
+    }
 
 	/**
 	 * Computes 'dependence' score of a partition.
@@ -452,12 +414,10 @@ public class EnsembleOfSubsetLearners extends MultiLabelMetaLearner {
 						ind.add(n);
 					}
 				}
-				weight = weight + weightOf(dep, aLabel, matrix); // summing up the scores of all
-				// pairs whose labels are in the
-				// same group
-				weight = weight - weightOf(ind, aLabel, matrix); // subtracting the scores of all
-				// pairs whose labels are in
-				// different groups
+				weight = weight + weightOf(dep, aLabel, matrix); // summing up the scores of all pairs
+                                                                                                                   // whose labels are in the same group
+				weight = weight - weightOf(ind, aLabel, matrix); // subtracting the scores of all pairs
+                                                                                                                 // whose labels are in different groups
 			}
 		}
 		return weight;
@@ -613,7 +573,7 @@ public class EnsembleOfSubsetLearners extends MultiLabelMetaLearner {
 			SubsetsDistance[] differentSets = Arrays.copyOfRange(minDistToSelected, startIndx,
 					endIndx);
 			Arrays.sort(differentSets, new IdComparator()); // 3 - take one with the highest score
-			// (highest score => minimal id)
+			                                                                                                   // (highest score => minimal id)
 			Integer setId = differentSets[0].getSubsetsId();
 			LabelSubsetsWeight selectedSet = sets.get(setId);
 			selected.add(selectedSet);
