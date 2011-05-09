@@ -43,20 +43,19 @@ import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.Remove;
 
 /**
- * A class for learning a classifier according to the LPBR method: the Label Powerset approach is
- * applied to subsets with multiple labels and the Binary Relevance approach is applied to single
- * label subsets. The final classification prediction is determined by combining labels predicted by
- * all the learned models. Note: the class is not multi-thread safe. <br>
+ * A class for learning a classifier according to disjoint label subsets: a multi-label learner
+ * (the Label Powerset by default) is applied to subsets with multiple labels and a single-label learner
+ * is applied to single label subsets. The final classification prediction is determined by combining
+ * labels predicted by all the learned models. Note: the class is not multi-thread safe. <br>
  * <br>
- * Implementation of this class is based on {@link mulan.classifier.meta.SubsetLearner} class. A
- * mechanism for caching and reusing classification models has been added. The caching mechanism is
+ * There is a mechanism for caching and reusing learned classification models. The caching mechanism is
  * controlled by {@link #useCache} parameter.
  * 
- * For more information: Tenenboim, L., Rokach, L. and Shapira, B. (2009).
- * "Multi-label Classification by Analyzing Labels Dependencies" Proc. ECML/PKDD 2009 Workshop on
- * Learning from Multi-Label Data (MLD'09)" Tenenboim-Chekina, L., Rokach, L. and Shapira, B.
- * (2010). "Identification of Label Dependencies for Multi-label Classification". Proc. ICML 2010
- * Workshop on Learning from Multi-Label Data (MLD'10");
+ * For more information:
+ * Tenenboim, L., Rokach, L. and Shapira, B. (2009). "Multi-label Classification by Analyzing Labels Dependencies"
+ * Proc. ECML/PKDD 2009 Workshop on Learning from Multi-Label Data (MLD'09)
+ * "Tenenboim-Chekina, L., Rokach, L. and Shapira, B. (2010). "Identification of Label Dependencies for Multi-label
+ * Classification". Proc. ICML 2010 Workshop on Learning from Multi-Label Data (MLD'10");
  * 
  * @author Lena Chekina (lenat@bgu.ac.il)
  * @author Vasiloudis Theodoros
@@ -93,14 +92,14 @@ public class SubsetLearner extends MultiLabelMetaLearner {
 
 	/**
 	 * HashMaps containing created models - caching mechanism is used, if enabled by setting the
-	 * useCache field to true, for LPBRClustering and EnsembleOfLPBR methods run time optimization
+	 * useCache field to true, for GreedyLabelClustering and EnsembleOfSubsetLearners methods run time optimization
 	 */
 	private static HashMap<String, MultiLabelLearner> existingMultiLabelModels = new HashMap<String, MultiLabelLearner>();
 	private static HashMap<String, FilteredClassifier> existingSingleLabelModels = new HashMap<String, FilteredClassifier>();
 	private static HashMap<String, Remove> existingRemove = new HashMap<String, Remove>();
 
 	/**
-	 * Initialize the LPBRlearner with labels subsets partitioning and single label learner.
+	 * Initialize the SubsetLearner with labels subsets partitioning and single label learner.
 	 * {@link mulan.classifier.transformation.LabelPowerset} method initialized with the specified
 	 * single label learner.will be used as multilabel learner.
 	 * 
@@ -122,7 +121,7 @@ public class SubsetLearner extends MultiLabelMetaLearner {
 	}
 
 	/**
-	 * Initialize the LPBRlearner with labels set partitioning, multilabel and single label
+	 * Initialize the SubsetLearner with labels set partitioning, multilabel and single label
 	 * learners.
 	 * 
 	 * @param labelsSubsets subsets of dependent labels
@@ -146,7 +145,7 @@ public class SubsetLearner extends MultiLabelMetaLearner {
 	}
 
 	/**
-	 * Initialize the LPBRlearner with a label clustering method, multilabel and single label
+	 * Initialize the SubsetLearner with a label clustering method, multilabel and single label
 	 * learners.
 	 * 
 	 * @param clusteringMethod
@@ -223,13 +222,10 @@ public class SubsetLearner extends MultiLabelMetaLearner {
 	 */
 	private void prepareIndicesToRemove() {
 		int numofSplits = splitOrder.length; // Number of sets the main is going to be split into
-		for (int r = 0; r < splitOrder.length; r++) { // Initialization required to avoid
-			// NullPointer exception
+		for (int r = 0; r < splitOrder.length; r++) { // Initialization required to avoid NullPointer exception
 			absoluteIndicesToRemove[r] = new int[numLabels - splitOrder[r].length];
 		}
-		boolean[][] Selected = new boolean[splitOrder.length][numLabels]; // Initialize an array
-		// containing which
-		// labels we want
+		boolean[][] Selected = new boolean[splitOrder.length][numLabels]; // Initialize an array containing which labels we want
 		for (int i = 0; i < numofSplits; i++) { // Set true for the labels we need to keep
 			for (int j = 0; j < splitOrder[i].length; j++) {
 				Selected[i][splitOrder[i][j]] = true;
@@ -257,22 +253,20 @@ public class SubsetLearner extends MultiLabelMetaLearner {
 	 */
 	private void buildMultiLabelModel(MultiLabelInstances trainingSet, int countMulti,
 			int totalSplitNo, String modelKey) throws Exception {
-		if (useCache && existingMultiLabelModels.containsKey(modelKey)) { // try to get existing
-			// model from cache
+		if (useCache && existingMultiLabelModels.containsKey(modelKey)) { // try to get existing model from cache
 			MultiLabelLearner model = existingMultiLabelModels.get(modelKey);
-			resetRandomSeed(model); // reset random seed of the classifier to it's initial value,
-			// such that it will be equal to that if the classifier was just trained.
-			multiLabelLearners.add(model);
+			resetRandomSeed(model); // reset random seed of the classifier to it's initial value,	 such that it will be
+                                                              //  equal to that if the classifier was just trained.
+			multiLabelLearners.add(model.makeCopy());
 			remove[totalSplitNo] = existingRemove.get(modelKey);
-		} else { // (there is no such model in cache) -> build it
+		} else {  // (there is no such model in cache) -> build it
 			Instances trainSubset = trainingSet.getDataSet();
-			remove[totalSplitNo] = new Remove(); // Remove the unneeded labels
+			remove[totalSplitNo] = new Remove();  // Remove the unneeded labels
 			remove[totalSplitNo].setAttributeIndicesArray(absoluteIndicesToRemove[totalSplitNo]);
 			remove[totalSplitNo].setInputFormat(trainSubset);
 			remove[totalSplitNo].setInvertSelection(false);
 			trainSubset = Filter.useFilter(trainSubset, remove[totalSplitNo]);
-			multiLabelLearners.add(baseLearner.makeCopy()); // Reintegrate dataset and
-			// train learner
+			multiLabelLearners.add(baseLearner.makeCopy()); // Reintegrate dataset and train learner
 			multiLabelLearners.get(countMulti).build(
 					trainingSet.reintegrateModifiedDataSet(trainSubset));
 			if (useCache) { // add trained model and related Remove object to cache
@@ -297,8 +291,7 @@ public class SubsetLearner extends MultiLabelMetaLearner {
 			// if single-label model is in cache -> get it
 			FilteredClassifier model = existingSingleLabelModels.get(modelKey);
 			Classifier classifier = model.getClassifier();
-			// reset random seed of the classifier to it's initial value,
-			// such that it will be equal to that if the classifier was just trained
+			// reset random seed of the classifier to it's initial value, such that it will be equal to that if the classifier was just trained
 			resetRandomSeed(classifier);
 			singleLabelLearners.add(model);
 			remove[totalSplitNo] = existingRemove.get(modelKey);
@@ -307,8 +300,7 @@ public class SubsetLearner extends MultiLabelMetaLearner {
 			singleLabelLearners.get(countSingle).setClassifier(
 					AbstractClassifier.makeCopy(baseSingleLabelClassifier));
 			Instances trainSubset = trainingSet.getDataSet();
-			remove[totalSplitNo] = new Remove(); // Set the remove filter for the
-			// FilteredClassifiers
+			remove[totalSplitNo] = new Remove(); // Set the remove filter for the	 FilteredClassifiers
 			remove[totalSplitNo].setAttributeIndicesArray(absoluteIndicesToRemove[totalSplitNo]);
 			remove[totalSplitNo].setInputFormat(trainSubset);
 			remove[totalSplitNo].setInvertSelection(false);
@@ -394,8 +386,7 @@ public class SubsetLearner extends MultiLabelMetaLearner {
 		int singleSplitNo = 0, multiSplitNo = 0;
 		boolean[][] BooleanSubsets = new boolean[splitOrder.length][];
 		double[][] ConfidenceSubsets = new double[splitOrder.length][];
-		for (int r = 0; r < splitOrder.length; r++) { // Initilization required to avoid NullPointer
-			// exception
+		for (int r = 0; r < splitOrder.length; r++) { // Initilization required to avoid NullPointer exception
 			BooleanSubsets[r] = new boolean[splitOrder[r].length];
 			ConfidenceSubsets[r] = new double[splitOrder[r].length];
 		}

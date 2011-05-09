@@ -39,9 +39,9 @@ import weka.core.Utils;
 
 
 /**
- * A main class with examples for LPBR methods usage.
+ * A main class with examples for SubsetLearner, GreedyLabelClustering and EnsembleOfSubsetLearners methods usage.
  */
-public class LPBRMethodsExamples {
+public class SubsetLearnerExamples {
 
 	public static void main(String[] args) throws Exception {
 		String path = Utils.getOption("path", args); // e.g. -path dataset/
@@ -54,13 +54,13 @@ public class LPBRMethodsExamples {
 				+ filestem + ".xml");
 
 		/*
-		 * The usage of the following methods is demonstrated: "LPBRClustering-U" - an example for
-		 * running LPBRClustering algorithm using Unconditional labels dependence identification.
-		 * "EnsembleOfLPBR-U" - an example for running EnsembleOfLPBR algorithm using Unconditional
-		 * labels dependence identification. "LPBRClustering-C" - an example for running
-		 * LPBRClustering algorithm using Conditional labels dependence identification.
-		 * "EnsembleOfLPBR-C" - an example for running EnsembleOfLPBR algorithm using Conditional
-		 * labels dependence identification. "LPBRLearner" - an example for running LPBRLearner
+		 * The usage of the following methods is demonstrated: "GreedyLabelClustering-U" - an example for
+		 * running SubsetLearner using GreedyLabelClustering algorithm along with Unconditional labels dependence identification.
+		 * "EnsembleOfSubsetLearners-U" - an example for running EnsembleOfSubsetLearners algorithm using Unconditional
+		 * labels dependence identification. "GreedyLabelClustering-C" - an example for running
+		 * SubsetLearner using GreedyLabelClustering algorithm along with Conditional labels dependence identification.
+		 * "EnsembleOfSubsetLearners-C" - an example for running EnsembleOfSubsetLearners algorithm using Conditional
+		 * labels dependence identification. "SubsetLearner" - an example for running SubsetLearner
 		 * algorithm "UnconditionalLDI" - an example for running the algorithm for Unconditional
 		 * labels dependence identification. "ConditionalLDI" - an example for running the algorithm
 		 * for Conditional labels dependence identification.
