@@ -226,7 +226,7 @@ public class MultiLabelInstances {
 
         validate(dataSet, labelsMetaData);
         this.dataSet = dataSet;
-        this.labelsMetaData = (LabelsMetaDataImpl) labelsMetaData;
+        this.labelsMetaData = labelsMetaData;
     }
 
     /**
