@@ -69,7 +69,7 @@ public class MMPLearner extends MultiLabelLearnerBase {
     //       Investigate first, if we want to support normalization
 //    /** Determines if feature attributes has to be normalized prior to learning */
 //    private boolean normalizeAttributes = true;
-//    private NormalizationFilter normalizer;
+    private NormalizationFilter normalizer;
     
     /** The number of training epochs to perform with trainig data during the model learning / building */
     private int epochs = 1;
