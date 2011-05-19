@@ -77,7 +77,7 @@
         <java-data xmlns="http://www.netbeans.org/ns/freeform-project-java/2">
             <compilation-unit>
                 <package-root>src</package-root>
-                <classpath mode="compile">lib/weka.jar:lib/commons-cli-1.2.jar</classpath>
+                <classpath mode="compile">lib/weka.jar</classpath>
                 <source-level>1.5</source-level>
             </compilation-unit>
             <compilation-unit>
