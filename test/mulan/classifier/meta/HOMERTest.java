@@ -7,7 +7,7 @@ public class HOMERTest extends MultiLabelMetaLearnerTest {
 
     @Override
     public void setUp() throws Exception {
-        learner = new HOMER(new LabelPowerset(new J48()), 3, HierarchyBuilder.Method.Random);
+        learner = new HOMER(new LabelPowerset(new J48()), 3, HierarchyBuilder.Method.Clustering);
     }
     
 }
