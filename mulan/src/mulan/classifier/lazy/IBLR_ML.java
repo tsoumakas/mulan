@@ -76,7 +76,7 @@ public class IBLR_ML extends MultiLabelKNN {
     Classifier[] classifier;
     /**
      * By default, IBLR-ML is used. One can change to IBLR-ML+ with
-     * {@link setAddFeatures}
+     * {@link #setAddFeatures}
      */
     boolean addFeatures = false;
 

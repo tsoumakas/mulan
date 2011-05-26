@@ -61,7 +61,6 @@ import weka.filters.unsupervised.attribute.Remove;
  *
  * <p/> <!-- technical-bibtex-end -->
  *
- * @author 
  * @version $Revision: 0.04 $
  */
 @SuppressWarnings("serial")
