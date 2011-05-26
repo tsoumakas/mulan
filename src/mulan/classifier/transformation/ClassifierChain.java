@@ -96,6 +96,7 @@ public class ClassifierChain extends TransformationBasedMultiLabelLearner {
      *
      * @param classifier  the base-level classification algorithm that will be
      * used for training each of the binary models
+     * @param aChain 
      */
     public ClassifierChain(Classifier classifier, int[] aChain) {
         super(classifier);

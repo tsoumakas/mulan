@@ -653,7 +653,7 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner
      * Attaches an index attribute at the beginning of each instance
      *
      * @param original
-     * @return
+     * @return the modified instances
      */
     protected Instances attachIndexes(Instances original) {
 
@@ -683,7 +683,7 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner
      * Detaches the index attribute from the beginning of each instance
      *
      * @param original
-     * @return
+     * @return the modified instances
      * @throws Exception
      */
     protected Instances detachIndexes(Instances original) throws Exception {

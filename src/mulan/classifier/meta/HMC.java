@@ -273,10 +273,10 @@ public class HMC extends MultiLabelMetaLearner {
      * names of the node that is going to be trained as attributes and deletes
      * the rest.
      *
-     * @param data the instances from which the attributes will be removed
-     * @param labelName the name of the node whose children will be kept as attributes
+     * @param mlData the instances from which the attributes will be removed
+     * @param currentLabel the name of the node whose children will be kept as attributes
      * @return MultiLabelInstances
-     * @throws mulan.core.data.InvalidDataFormatException
+     * @throws mulan.data.InvalidDataFormatException
      */
     protected MultiLabelInstances deleteLabels(MultiLabelInstances mlData, String currentLabel, boolean keepSubTree) throws InvalidDataFormatException {
         LabelsMetaData currentMetaData = mlData.getLabelsMetaData();

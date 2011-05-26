@@ -1,0 +1,12 @@
+Mulan's 1.3.0 release contains:
+
+A jar file with Mulan classes (mulan.jar)
+A jar file with Weka classes, upon which Mulan is built (weka.jar)
+A jar file with Mulan sources (mulan-src.jar)
+A folder with the API reference documentation for offline inspection (apidoc/)
+A folder with a sample dataset (data/)
+A change log file with changes from the previous Mulan version (changelog-1.3.0)
+This readme file (readme)
+
+To get started with Mulan please refer to our online documentation:
+http://mulan.sourfeforge.net/starting.html

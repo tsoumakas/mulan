@@ -38,6 +38,7 @@ public class FMeasure {
      * @param tp true positives
      * @param fp false positives
      * @param fn false negatives
+     * @param beta 
      * @return the value of the f-measure
      */
     public static double compute(double tp, double fp, double fn, double beta) {

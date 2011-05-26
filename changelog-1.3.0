@@ -1,0 +1,34 @@
+Learners
+-New algorithms added in the meta package.
+-EnsembleOfClassifierChains: The final confidences can now be computed not only by averaging votes, but also by averaging confidences. The option of sampling with replacement was added.
+-MMP: updated with loss functions. Added possibility to specify number of training epochs for MMPLearner.
+-BinaryRelevance: Added method to get the model built for a label.
+-Update to the lazy package: Euclidean is still the default distance function, the option to use a different distance function is given.
+
+Measures
+-Introduced loss functions package.
+-Refurbished the measures package so that the measure hierarchy has cleaner semantics and takes loss functions into consideration.
+-Strict/nostrict evaluation (handles divisions by zero differently).
+-Uniform calculation of f-measure for all related measures.
+
+Bug fixes
+-Bug fix in the dimensionality reduction package.
+-Bug fix in CalibratedLabelRanking class.
+-Updated design and bug fixes in thresholding strategies.
+-Fixed defect in MMPUniformUpdateRule.
+-Bug fix in the getPriors method.
+-Javadoc comment updates.
+
+API changes
+-Upgrade to Weka 3.7.3.
+
+Experiments
+-Experiment from ICTAI 2010 paper added.
+
+Examples
+-Simplified source examples for consistency with the online documentation.
+-Added an example that shows storing/loading a multi-label model.
+
+Unit Tests
+-HOMER and HMC tests added.
+-MetaLabeler and ThresholdPrediction test updated.

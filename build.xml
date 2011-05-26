@@ -3,7 +3,7 @@
 	<property name="lib.dir" value="${basedir}/lib" description="Directory containing all 3rd party jars." />
 	<property name="src.dir" value="src" description="Source code directory." />
 	<property name="test.dir" value="test" description="Directory containing tests." />
-	<property name="javadoc.dir" value="doc" description="Directory for generated API documentation." />
+	<property name="javadoc.dir" value="apidoc" description="Directory for generated API documentation." />
 	<property name="dist.dir" value="${basedir}/dist" description="Directory for distribution artifacts, e.g. jars." />
 
 	<property name="target.dir" value="${basedir}/target" description="All artifacts produced by the build, except 'docs/api' and 'dist', goes here." />
@@ -89,10 +89,12 @@
 		</jar>
 		
 		<zip destfile="${dist.dir}/mulan-${mulan.version}.zip" >
-			<fileset dir="${basedir}" includes="${javadoc.dir}/**, data/*.*" />
-			<fileset dir="${dist.dir}" includes="*.jar" />
-			<fileset file="${lib.dir}/weka.jar" />
-			<fileset file="license.txt"/>
+			<zipfileset prefix="mulan-${mulan.version}" dir="${basedir}" includes="${javadoc.dir}/**, data/*.*" />
+			<zipfileset prefix="mulan-${mulan.version}" dir="${dist.dir}" includes="*.jar" />
+			<zipfileset prefix="mulan-${mulan.version}" file="${lib.dir}/weka.jar" />
+			<zipfileset prefix="mulan-${mulan.version}" file="license.txt"/>
+			<zipfileset prefix="mulan-${mulan.version}" file="readme"/>
+			<zipfileset prefix="mulan-${mulan.version}" file="changelog-1.3.0"/>
 		</zip> 
 	</target>
 

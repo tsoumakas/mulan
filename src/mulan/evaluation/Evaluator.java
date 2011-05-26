@@ -229,6 +229,7 @@ public class Evaluator {
      *
      * @param learner the learner to be evaluated via cross-validation
      * @param data the multi-label data set for cross-validation
+     * @param someFolds 
      * @return a {@link MultipleEvaluation} object holding the results
      */
     public MultipleEvaluation crossValidate(MultiLabelLearner learner, MultiLabelInstances data, int someFolds)
@@ -247,6 +248,7 @@ public class Evaluator {
      * @param learner the learner to be evaluated via cross-validation
      * @param data the multi-label data set for cross-validation
      * @param measures the evaluation measures to compute
+     * @param someFolds 
      * @return a {@link MultipleEvaluation} object holding the results
      */
     public MultipleEvaluation crossValidate(MultiLabelLearner learner, MultiLabelInstances data, List<Measure> measures, int someFolds)

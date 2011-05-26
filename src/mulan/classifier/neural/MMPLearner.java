@@ -92,7 +92,7 @@ public class MMPLearner extends MultiLabelLearnerBase {
     /**
      * Creates a new instance of {@link MMPLearner}.
      *
-     * @param lossFunction the loss measure to be used when judging
+     * @param lossMeasure the loss measure to be used when judging
      * 	ranking performance in learning process
      * @param modelUpdateRule 
      */
@@ -112,7 +112,7 @@ public class MMPLearner extends MultiLabelLearnerBase {
     /**
      * Creates a new instance of {@link MMPLearner}.
      *
-     * @param lossFunction the loss measure to be used when judging
+     * @param lossMeasure the loss measure to be used when judging
      * 	ranking performance in learning process
      * @param modelUpdateRule 
      * @param randomnessSeed the seed value for pseudo-random generator

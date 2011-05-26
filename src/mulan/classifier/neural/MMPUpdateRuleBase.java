@@ -48,7 +48,7 @@ public abstract class MMPUpdateRuleBase implements ModelUpdateRule {
      * Creates a new instance of {@link MMPUpdateRuleBase}.
      *
      * @param perceptrons the list of perceptrons, representing the model, which will receive updates.
-     * @param measure the lossFunction measure used to decide when the model should be updated by the rule
+     * @param loss the lossFunction measure used to decide when the model should be updated by the rule
      */
     public MMPUpdateRuleBase(List<Neuron> perceptrons, RankingLossFunction loss) {
         if (perceptrons == null) {
@@ -102,7 +102,7 @@ public abstract class MMPUpdateRuleBase implements ModelUpdateRule {
      *
      * @param example the input example
      * @param confidences the confidences outputed by the model the input example
-     * @param lossFunction the lossFunction measure of the model for given input example
+     * @param loss the lossFunction measure of the model for given input example
      * @return the parameters for updating preceptrons
      */
     protected abstract double[] computeUpdateParameters(DataPair example,

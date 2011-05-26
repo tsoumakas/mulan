@@ -54,7 +54,6 @@ import weka.core.TechnicalInformation.*;
  * <!-- technical-bibtex-end -->
  *
  * @author Grigorios Tsoumakas
- * @revisions 0.01
  */
 public class HOMER extends MultiLabelMetaLearner {
 

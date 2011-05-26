@@ -34,7 +34,7 @@ import weka.filters.unsupervised.instance.RemovePercentage;
  *
  * @author Emmanouela Stachtiari
  * @author Grigorios Tsoumakas
- * @revisions June 6, 2010
+ * @version June 6, 2010
  */
 public class EnsembleOfPrunedSets extends TransformationBasedMultiLabelLearner {
 
