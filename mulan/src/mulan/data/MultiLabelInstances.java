@@ -460,17 +460,18 @@ public class MultiLabelInstances {
         return aDataSet;
     }
 
-    private Instances loadInstances(InputStream stream) {
-        Instances aDataSet = null;
-        InputStreamReader streamReader = new InputStreamReader(stream);
-        try {
-            aDataSet = new Instances(streamReader);
-        } catch (IOException exception) {
-            throw new DataLoadException(
-                    String.format("Error creating Instances data from supplied Reader data source", exception));
-        }
-        return aDataSet;
-    }
+	private Instances loadInstances(InputStream stream) {
+		Instances aDataSet = null;
+		InputStreamReader streamReader = new InputStreamReader(stream);
+		try {
+			aDataSet = new Instances(streamReader);
+		} catch (IOException exception) {
+			throw new DataLoadException(String.format(
+					"Error creating Instances data from supplied Reader data source: "
+							+ exception.getMessage(), exception));
+		}
+		return aDataSet;
+	}
 
     private LabelsMetaData loadLabesMeta(String xmlLabelsDefFilePath) {
         LabelsMetaData labelsMeta = null;
