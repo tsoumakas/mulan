@@ -16,7 +16,7 @@
 
 /*
  *    LabelBasedBipartitionMeasureBase.java
- *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2011 Aristotle University of Thessaloniki, Greece
  */
 package mulan.evaluation.measure;
 
@@ -24,7 +24,7 @@ package mulan.evaluation.measure;
  * Base class for label-based bipartition measures
  *
  * @author Grigorios Tsoumakas
- * @version 2010.12.03
+ * @version 2011.09.06
  */
 public abstract class LabelBasedBipartitionMeasureBase extends BipartitionMeasureBase {
     
@@ -37,6 +37,8 @@ public abstract class LabelBasedBipartitionMeasureBase extends BipartitionMeasur
     protected double[] truePositives;
     /** the number of false positives for each label */
     protected double[] falsePositives;
+    /** the number of true negatives for each label */
+    protected double[] trueNegatives;
 
     /**
      * Creates a new instance of this class
@@ -48,6 +50,7 @@ public abstract class LabelBasedBipartitionMeasureBase extends BipartitionMeasur
         falseNegatives = new double[numOfLabels];
         truePositives = new double[numOfLabels];
         falsePositives = new double[numOfLabels];
+        trueNegatives = new double[numOfLabels];
     }
 
     public void reset() {
@@ -55,6 +58,7 @@ public abstract class LabelBasedBipartitionMeasureBase extends BipartitionMeasur
             falseNegatives[labelIndex] = 0;
             truePositives[labelIndex] = 0;
             falsePositives[labelIndex] = 0;
+            trueNegatives[labelIndex] = 0;
         }
     }
 }
