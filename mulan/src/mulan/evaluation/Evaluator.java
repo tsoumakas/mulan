@@ -16,7 +16,7 @@
 
 /*
  *    Evaluator.java
- *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2011 Aristotle University of Thessaloniki, Greece
  */
 package mulan.evaluation;
 
@@ -40,7 +40,7 @@ import weka.core.Instances;
  * Evaluator - responsible for generating evaluation data
  * @author rofr
  * @author Grigorios Tsoumakas
- * @version 2010.11.06
+ * @version 2011.09.06
  */
 public class Evaluator {
 
@@ -174,14 +174,17 @@ public class Evaluator {
                 measures.add(new ExampleBasedRecall(strict));
                 measures.add(new ExampleBasedFMeasure(strict));
                 measures.add(new ExampleBasedAccuracy(strict));
+                measures.add(new ExampleBasedSpecificity(strict));
                 // add label-based measures
                 int numOfLabels = data.getNumLabels();
                 measures.add(new MicroPrecision(numOfLabels));
                 measures.add(new MicroRecall(numOfLabels));
                 measures.add(new MicroFMeasure(numOfLabels));
+                measures.add(new MicroSpecificity(numOfLabels));
                 measures.add(new MacroPrecision(numOfLabels, strict));
                 measures.add(new MacroRecall(numOfLabels, strict));
                 measures.add(new MacroFMeasure(numOfLabels, strict));
+                measures.add(new MacroSpecificity(numOfLabels, strict));
             }
             // add ranking-based measures if applicable
             if (prediction.hasRanking()) {
@@ -285,4 +288,3 @@ public class Evaluator {
         return new MultipleEvaluation(evaluation);
     }
 }
-
