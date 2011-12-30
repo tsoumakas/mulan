@@ -16,7 +16,7 @@
 
 /*
  *    LabelsBuilder.java
- *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
  */
 package mulan.data;
 
@@ -172,6 +172,7 @@ public final class LabelsBuilder {
                 xmlDumpFile.createNewFile();
             }
             fileOutStream = new BufferedOutputStream(new FileOutputStream(xmlDumpFile));
+            dumpLabels(labelsMetaData, fileOutStream);
         } catch (IOException exception) {
             if (!fileExists) {
                 xmlDumpFile.delete();
