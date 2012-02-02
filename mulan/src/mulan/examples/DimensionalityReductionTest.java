@@ -15,13 +15,14 @@
  */
 
 /*
- *    AttributeSelectionTest.java
- *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    DimensionalityReductionTest.java
+ *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
  */
 package mulan.examples;
 
 import java.util.Arrays;
 import mulan.data.MultiLabelInstances;
+import mulan.dimensionalityReduction.BinaryRelevanceAttributeEvaluator;
 import mulan.dimensionalityReduction.MultiClassAttributeEvaluator;
 import mulan.dimensionalityReduction.Ranker;
 import mulan.transformations.multiclass.Copy;
@@ -37,6 +38,7 @@ import weka.filters.unsupervised.attribute.Remove;
  * Demonstrates the attribute selection capabilities of Mulan
  *
  * @author Grigorios Tsoumakas
+ * @version 2012.02.02
  */
 public class DimensionalityReductionTest {
 
@@ -47,9 +49,9 @@ public class DimensionalityReductionTest {
 
         ASEvaluation ase = new GainRatioAttributeEval();
         //LabelPowersetAttributeEvaluator ae = new LabelPowersetAttributeEvaluator(ase, mlData);
-        //BinaryRelevanceAttributeEvaluator ae = new BinaryRelevanceAttributeEvaluator(ase, mlData, "max", "dl", "eval");
-        MultiClassTransformation mt = new Copy();
-        MultiClassAttributeEvaluator ae = new MultiClassAttributeEvaluator(ase, mt, mlData);
+        BinaryRelevanceAttributeEvaluator ae = new BinaryRelevanceAttributeEvaluator(ase, mlData, "max", "dl", "eval");
+        //MultiClassTransformation mt = new Copy();
+        //MultiClassAttributeEvaluator ae = new MultiClassAttributeEvaluator(ase, mt, mlData);
 
         Ranker r = new Ranker();
         int[] result = r.search(ae, mlData);
@@ -59,9 +61,7 @@ public class DimensionalityReductionTest {
         int[] toKeep = new int[NUM_TO_KEEP + mlData.getNumLabels()];
         System.arraycopy(result, 0, toKeep, 0, NUM_TO_KEEP);
         int[] labelIndices = mlData.getLabelIndices();
-        for (int i = 0; i < mlData.getNumLabels(); i++) {
-            toKeep[NUM_TO_KEEP + i] = labelIndices[i];
-        }
+        System.arraycopy(labelIndices, 0, toKeep, NUM_TO_KEEP, mlData.getNumLabels());
 
         Remove filterRemove = new Remove();
         filterRemove.setAttributeIndicesArray(toKeep);

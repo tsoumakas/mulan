@@ -16,7 +16,7 @@
 
 /*
  *    EstimationOfStatistics.java
- *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
  */
 package mulan.examples;
 
@@ -25,8 +25,10 @@ import mulan.data.MultiLabelInstances;
 import weka.core.Utils;
 
 /**
- *
+ * Class that calculates multi-label stastistics for a multi-label dataset
+ * 
  * @author Grigorios Tsoumakas
+ * @version 2012.02.02
  */
 public class EstimationOfStatistics {
 
