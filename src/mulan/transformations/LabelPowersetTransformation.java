@@ -16,7 +16,7 @@
 
 /*
  *    LabelPowersetTransformation.java
- *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
  */
 package mulan.transformations;
 
@@ -35,15 +35,27 @@ import weka.core.Instances;
  *
  * @author Stavros Mpakirtzoglou
  * @author Grigorios Tsoumakas
+ * @version 2012.02.02
  */
 public class LabelPowersetTransformation implements Serializable {
 
     private Instances transformedFormat;
 
+    /**
+     * Returns the format of the transformed instances
+     * 
+     * @return the format of the transformed instances
+     */
     public Instances getTransformedFormat() {
         return transformedFormat;
     }
 
+    /**
+     * 
+     * @param mlData
+     * @return
+     * @throws Exception
+     */
     public Instances transformInstances(MultiLabelInstances mlData) throws Exception {
         Instances data = mlData.getDataSet();
         int numLabels = mlData.getNumLabels();
@@ -96,6 +108,13 @@ public class LabelPowersetTransformation implements Serializable {
         return newData;
     }
 
+    /**
+     * 
+     * @param instance
+     * @param labelIndices
+     * @return
+     * @throws Exception
+     */
     public Instance transformInstance(Instance instance, int[] labelIndices) throws Exception {
         Instance transformedInstance = RemoveAllLabels.transformInstance(instance, labelIndices);
         transformedInstance.setDataset(null);

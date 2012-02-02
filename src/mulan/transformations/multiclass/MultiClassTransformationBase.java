@@ -16,7 +16,7 @@
 
 /*
  *    MultiClassTransformationBase.java
- *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
  */
 package mulan.transformations.multiclass;
 
@@ -34,7 +34,8 @@ import weka.core.Instances;
  * implementation of the {@link MultiClassTransformation} interface. All
  * implementations of transformation methods should reuse this base class.
  *  
- * @author Stavros
+ * @author Stavros Bakirtzoglou
+ * @version 2012.02.02
  */
 public abstract class MultiClassTransformationBase implements Serializable, MultiClassTransformation {
 

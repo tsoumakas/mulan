@@ -16,7 +16,7 @@
 
 /*
  *    Ignore.java
- *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
  */
 package mulan.transformations.multiclass;
 
@@ -29,7 +29,8 @@ import weka.core.Instance;
 
 /**
  * Class that implement the Ignore transformation method
- * @author Stavros
+ * @author Stavros Bakirtzoglou
+ * @version 2012.02.02
  */
 public class Ignore extends MultiClassTransformationBase {
 

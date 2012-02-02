@@ -16,7 +16,7 @@
 
 /*
  *    BinaryRelevanceTransformation.java
- *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
  */
 package mulan.transformations;
 
@@ -29,13 +29,20 @@ import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.Remove;
 
 /**
- *
+ * Class that implements the binary relevance transformation
+ * 
  * @author Grigorios Tsoumakas
+ * @version 2012.02.02
  */
 public class BinaryRelevanceTransformation implements Serializable {
 
     int numOfLabels;
 
+    /**
+     * Constructor
+     * 
+     * @param num the number of labels
+     */
     public BinaryRelevanceTransformation(int num) {
         numOfLabels = num;
     }

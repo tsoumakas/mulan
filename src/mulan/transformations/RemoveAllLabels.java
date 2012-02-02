@@ -16,7 +16,7 @@
 
 /*
  *    RemoveAllLabels.java
- *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
  */
 package mulan.transformations;
 
@@ -28,18 +28,35 @@ import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.Remove;
 
 /**
- *
+ * This transformation removes all the label attributes from a 
+ * multi-label dataset
+ * 
  * @author Stavros Mpakirtzoglou
  * @author Grigorios Tsoumakas
+ * @version 2012.02.02
  */
 public class RemoveAllLabels {
 
+    /**
+     * 
+     * @param mlData
+     * @return
+     * @throws Exception
+     */
     public static Instances transformInstances(MultiLabelInstances mlData) throws Exception {
         Instances result;
         result = transformInstances(mlData.getDataSet(), mlData.getLabelIndices());
         return result;
     }
 
+    /**
+     * Removes the labels from a set of instances
+     * 
+     * @param dataSet a multi-label dataset
+     * @param labelIndices the indices of the labels
+     * @return the transformed dataset
+     * @throws Exception
+     */
     public static Instances transformInstances(Instances dataSet, int[] labelIndices) throws Exception {
         Remove remove = new Remove();
         remove.setAttributeIndicesArray(labelIndices);
@@ -48,6 +65,12 @@ public class RemoveAllLabels {
         return result;
     }
 
+    /**
+     * 
+     * @param instance
+     * @param labelIndices
+     * @return
+     */
     public static Instance transformInstance(Instance instance, int[] labelIndices) {
         double[] oldValues = instance.toDoubleArray();
         double[] newValues = new double[oldValues.length - labelIndices.length];
@@ -64,14 +87,4 @@ public class RemoveAllLabels {
         }
         return DataUtils.createInstance(instance, instance.weight(), newValues);
     }
-    /*
-    public static Instance transformInstance(Instance instance, int[] labelIndices) throws Exception
-    {
-    Remove remove = new Remove();
-    remove.setAttributeIndicesArray(labelIndices);
-    remove.setInputFormat(instance.dataset());
-    remove.input(instance);
-    remove.batchFinished();
-    return remove.output();
-    }*/
 }
