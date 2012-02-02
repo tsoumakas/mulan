@@ -15,8 +15,8 @@
  */
 
 /*
- *    PT6Transformation.java
- *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    IncludeLabelsTransformation.java
+ *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
  */
 package mulan.transformations;
 
@@ -28,14 +28,22 @@ import weka.core.Instance;
 import weka.core.Instances;
 
 /**
- *
+ * Class that implements the PT6 transformation
+ * 
  * @author Stavros Mpakirtzoglou
  * @author Grigorios Tsoumakas
+ * @version 2012.02.02
  */
-public class PT6Transformation implements Serializable {
+public class IncludeLabelsTransformation implements Serializable {
 
     private int[] labelIndices;
 
+    /**
+     * 
+     * @param mlData
+     * @return
+     * @throws Exception
+     */
     public Instances transformInstances(MultiLabelInstances mlData) throws Exception {
         int numLabels = mlData.getNumLabels();
         labelIndices = mlData.getLabelIndices();
@@ -83,6 +91,14 @@ public class PT6Transformation implements Serializable {
         return transformed;
     }
 
+    /**
+     * Transform an unlabeled instance to the format expected by
+     * the binary classifier
+     * 
+     * @param instance an unlabeled instance
+     * @return a transformed unlabeled instance
+     * @throws Exception
+     */
     public Instance transformInstance(Instance instance) throws Exception {
         if (labelIndices == null) {
             System.out.println("Label Indices not set!!");
