@@ -16,7 +16,7 @@
 
 /*
  *    GettingPredictionsOnUnlabeledData.java
- *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
  */
 package mulan.examples;
 
@@ -60,6 +60,7 @@ public class GettingPredictionsOnUnlabeledData {
 
             System.out.println("Building the model...");
             model.build(trainingData);
+            model.setSizeOfSubset(2);
 
             String unlabeledDataFilename = Utils.getOption("unlabeled", args);
             System.out.println("Loading the unlabeled data set...");
@@ -72,14 +73,6 @@ public class GettingPredictionsOnUnlabeledData {
                 if (output.hasBipartition()) {
                     String bipartion = Arrays.toString(output.getBipartition());
                     System.out.println("Predicted bipartion: " + bipartion);
-                }
-                if (output.hasRanking()) {
-                    String ranking = Arrays.toString(output.getRanking());
-                    System.out.println("Predicted ranking: " + ranking);
-                }
-                if (output.hasConfidences()) {
-                    String confidences = Arrays.toString(output.getConfidences());
-                    System.out.println("Predicted confidences: " + confidences);
                 }
             }
         } catch (InvalidDataFormatException e) {
