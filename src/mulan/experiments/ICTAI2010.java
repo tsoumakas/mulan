@@ -16,13 +16,10 @@
 
 /*
  *    ICTAI2010.java
- *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Thessaloniki, Greece
  */
 package mulan.experiments;
 
-/**
- * @author Grigorios Tsoumakas
- */
 import java.util.ArrayList;
 import java.util.List;
 
@@ -208,13 +205,6 @@ public class ICTAI2010 extends Experiment {
 
     }
 
-    /**
-     * Returns an instance of a TechnicalInformation object, containing detailed
-     * information about the technical background of this class, e.g., paper
-     * reference or book this class is based on.
-     *
-     * @return the technical information about this class
-     */
     @Override
     public TechnicalInformation getTechnicalInformation() {
         TechnicalInformation result;

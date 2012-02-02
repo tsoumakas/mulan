@@ -16,7 +16,7 @@
 
 /*
  *    MachineLearning09IBLR.java
- *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
  */
 package mulan.experiments;
 
@@ -91,7 +91,6 @@ public class MachineLearning09IBLR extends Experiment {
 
                     System.out.println("IBLR-ML Experiment");
                     IBLR_ML iblrml = new IBLR_ML();
-                    // iblrml.setDontNormalize(true);
                     iblrml.build(multiTrain);
                     evaluator = new Evaluator();
                     Evaluation e1 = evaluator.evaluate(iblrml, multiTest,
@@ -118,9 +117,7 @@ public class MachineLearning09IBLR extends Experiment {
                      */
 
                     System.out.println("IBLR-ML+ Experiment");
-                    IBLR_ML iblrmlplus = new IBLR_ML();
-                    iblrmlplus.setAddFeatures(true);
-                    // iblrmlplus.setDontNormalize(true);
+                    IBLR_ML iblrmlplus = new IBLR_ML(10, true);
                     iblrmlplus.build(multiTrain);
                     evaluator = new Evaluator();
                     Evaluation e2 = evaluator.evaluate(iblrmlplus, multiTest,
