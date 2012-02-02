@@ -16,16 +16,10 @@
 
 /*
  *    PatternRecognition07MLkNN.java
- *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Thessaloniki, Greece
  */
 package mulan.experiments;
 
-/**
- * Class replicating an experiment from a published paper
- *
- * @author Eleftherios Spyromitros-Xioufis (espyromi@csd.auth.gr)
- * @version 2010.12.10
- */
 import java.util.ArrayList;
 import java.util.List;
 
@@ -92,13 +86,6 @@ public class PatternRecognition07MLkNN extends Experiment {
 
     }
 
-    /**
-     * Returns an instance of a TechnicalInformation object, containing detailed
-     * information about the technical background of this class, e.g., paper
-     * reference or book this class is based on.
-     *
-     * @return the technical information about this class
-     */
     @Override
     public TechnicalInformation getTechnicalInformation() {
         TechnicalInformation result;
