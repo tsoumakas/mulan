@@ -16,7 +16,7 @@
 
 /*
  *    OneMinusAveragePrecision.java
- *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
  */
 package mulan.evaluation.loss;
 
@@ -46,7 +46,7 @@ public class OneMinusAveragePrecision extends RankingLossFunctionBase {
             }
         }
 
-        if (relevant.size() != 0) {
+        if (!relevant.isEmpty()) {
             for (int r : relevant) {
                 double rankedAbove = 0;
                 for (int rr : relevant) {
