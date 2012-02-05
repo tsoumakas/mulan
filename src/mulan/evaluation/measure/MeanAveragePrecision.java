@@ -15,8 +15,8 @@
  */
 
 /*
- *    MacroAveragePrecision.java
- *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    MeanAveragePrecision.java
+ *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
  */
 package mulan.evaluation.measure;
 

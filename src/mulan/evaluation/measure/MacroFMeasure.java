@@ -16,7 +16,7 @@
 
 /*
  *    MacroFMeasure.java
- *    Copyright (C) 2009-2011 Aristotle University of Thessaloniki, Greece
+ *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
  */
 package mulan.evaluation.measure;
 
