@@ -16,7 +16,7 @@
 
 /*
  *    Evaluator.java
- *    Copyright (C) 2009-2011 Aristotle University of Thessaloniki, Greece
+ *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
  */
 package mulan.evaluation;
 
@@ -285,6 +285,8 @@ public class Evaluator {
                 Logger.getLogger(Evaluator.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        return new MultipleEvaluation(evaluation);
+        MultipleEvaluation me = new MultipleEvaluation(evaluation);
+        me.calculateStatistics();
+        return me;        
     }
 }
