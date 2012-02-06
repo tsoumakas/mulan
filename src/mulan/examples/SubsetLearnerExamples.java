@@ -42,10 +42,17 @@ import weka.core.Utils;
  * EnsembleOfSubsetLearners methods usage.
  * 
  * @author Lena Chekina (lenat@bgu.ac.il)
- * @version 2012.02.02
+ * @version 2012.02.06
  */
 public class SubsetLearnerExamples {
 
+    /**
+     * Executes this example
+     *
+     * @param args command-line arguments -path, -filestem, 
+     * e.g. -path dataset/ -filestem emotions
+     * @throws Exception  
+     */
     public static void main(String[] args) throws Exception {
         String path = Utils.getOption("path", args); // e.g. -path dataset/
         String filestem = Utils.getOption("filestem", args); // e.g. -filestem emotions
