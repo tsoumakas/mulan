@@ -42,6 +42,13 @@ import weka.filters.unsupervised.attribute.Remove;
  */
 public class DimensionalityReductionTest {
 
+    /**
+     * Executes this example
+     *
+     * @param args command-line arguments -path and -filestem, e.g.
+     * -path datasets/ -filestem emotions
+     * @throws Exception  
+     */
     public static void main(String[] args) throws Exception {
         String path = Utils.getOption("path", args);
         String filestem = Utils.getOption("filestem", args);

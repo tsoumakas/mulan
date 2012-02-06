@@ -28,7 +28,9 @@ package mulan.evaluation.measure;
  */
 public abstract class LabelBasedFMeasure extends LabelBasedBipartitionMeasureBase {
 
-    // the parameter for combining precision and recall
+    /**
+     * the parameter for combining precision and recall
+     */
     protected final double beta;
 
     /**
