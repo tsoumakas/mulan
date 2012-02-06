@@ -16,11 +16,12 @@
 
 /*
  *    MultipleEvaluation.java
- *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
  */
 package mulan.evaluation;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import mulan.evaluation.measure.Measure;
 
@@ -52,10 +53,7 @@ public class MultipleEvaluation {
      */
     public MultipleEvaluation(Evaluation[] someEvaluations) {
         evaluations = new ArrayList<Evaluation>();
-        for (Evaluation e : someEvaluations) {
-            evaluations.add(e);
-        }
-        calculateStatistics();
+        evaluations.addAll(Arrays.asList(someEvaluations));
     }
 
     /**
