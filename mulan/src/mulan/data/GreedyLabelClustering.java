@@ -16,7 +16,7 @@
 
 /*
  *    GreedyLabelClustering.java
- *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Thessaloniki, Greece
  */
 package mulan.data;
 
@@ -42,7 +42,7 @@ import weka.classifiers.Classifier;
  * An SubsetLearner is build for each new partition and its accuracy is evaluated in terms of the
  * {@link #measure}. The process of grouping labels continues as long as the accuracy improves (or
  * at least is not reduced). A number of steps specified by {@link #allowedNonImprovementSteps}
- * without seeking any concomitant improvement in the accuracy is allowed. Such a “non-useful”
+ * without seeking any concomitant improvement in the accuracy is allowed. Such a ï¿½non-usefulï¿½
  * partitions are filtered out and the algorithm continues to evaluate subsequent pairs of dependent
  * labels until one of the stop conditions is reached. The possible stop conditions are: <br>
  * - no more label pairs to consider; <br>

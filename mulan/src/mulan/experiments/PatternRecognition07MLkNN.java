@@ -86,7 +86,6 @@ public class PatternRecognition07MLkNN extends Experiment {
 
     }
 
-    @Override
     public TechnicalInformation getTechnicalInformation() {
         TechnicalInformation result;
 

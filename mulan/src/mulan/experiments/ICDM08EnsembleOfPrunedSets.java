@@ -179,7 +179,6 @@ public class ICDM08EnsembleOfPrunedSets extends Experiment {
         }
     }
 
-    @Override
     public TechnicalInformation getTechnicalInformation() {
         TechnicalInformation result = new TechnicalInformation(Type.CONFERENCE);
         result.setValue(Field.AUTHOR, "Read, Jesse");
