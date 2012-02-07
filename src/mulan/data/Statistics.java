@@ -16,7 +16,7 @@
 
 /*
  *    Statistics.java
- *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
  */
 package mulan.data;
 
@@ -27,52 +27,45 @@ import java.util.HashMap;
 import java.util.Set;
 import weka.core.Instance;
 import weka.core.Instances;
+import weka.core.TechnicalInformation;
+import weka.core.TechnicalInformation.Field;
+import weka.core.TechnicalInformation.Type;
+import weka.core.TechnicalInformationHandler;
 import weka.core.Utils;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.Remove;
 
 /**
 <!-- globalinfo-start -->
- * Class for calculating statistics of a multilabel dataset <p>
- * <br/>
- * For more information, see<br/>
- * <br/>
- * G. Tsoumakas, I. Katakis (2007). Multi-Label Classification: An Overview. International Journal of Data Warehousing and Mining, 3(3):1-13.
- * </p>
+* Class for calculating statistics of a multi-label dataset. For more information, see<br/>
+* <br/>
+* Tsoumakas, Grigorios, Katakis, Ioannis, Vlahavas, Ioannis: Mining Multi-Label Data. In Maimon, Oded and Rokach, Lior, editors, Data Mining and Knowledge Discovery Handbook, 667-685, 2010.
+* <p/>
 <!-- globalinfo-end -->
  * 
 <!-- technical-bibtex-start -->
- * BibTeX:
- * <pre>
- * &#64;article{tsoumakas+katakis:2007,
- *    author = {G. Tsoumakas, I. Katakis},
- *    journal = {International Journal of Data Warehousing and Mining},
- *    pages = {1-13},
- *    title = {Multi-Label Classification: An Overview},
- *    volume = {3},
- *    number = {3},
- *    year = {2007}
- * }
- * </pre>
- * <p/>
+* BibTeX:
+* <pre>
+* &#64;inbook{Tsoumakas2010,
+*    author = {Tsoumakas, Grigorios and Katakis, Ioannis and Vlahavas, Ioannis},
+*    booktitle = {Data Mining and Knowledge Discovery Handbook},
+*    edition = {2nd},
+*    editor = {Maimon, Oded and Rokach, Lior},
+*    pages = {667-685},
+*    publisher = {Springer},
+*    title = {Mining Multi-Label Data},
+*    year = {2010}
+* }
+* </pre>
+* <p/>
 <!-- technical-bibtex-end -->
  *
-<!-- options-start -->
- * Valid options are: <p/>
- * 
- * <pre> -F &lt;filename&gt;
- *  The filename (including full path) of the multilabel mlData set).</pre>
- * 
- * <pre> -L &lt;number of labels&gt;
- *  Number of labels. </pre>
- * 
-<!-- options-end -->
  *
  * @author Grigorios Tsoumakas 
  * @author Robert Friberg
- * @version $Revision: 0.03 $ 
+ * @version 2012.02.06 
  */
-public class Statistics implements Serializable {
+public class Statistics implements Serializable, TechnicalInformationHandler {
 
     private static final long serialVersionUID = 1206845794397561633L;
     /** the number of instances */
@@ -396,31 +389,31 @@ public class Statistics implements Serializable {
     public String toString() {
         StringBuilder sb = new StringBuilder();
 
-        sb.append("Examples: " + numInstances + "\n");
-        sb.append("Predictors: " + numPredictors + "\n");
-        sb.append("--Nominal: " + numNominal + "\n");
-        sb.append("--Numeric: " + numNumeric + "\n");
+        sb.append("Examples: ").append(numInstances).append("\n");
+        sb.append("Predictors: ").append(numPredictors).append("\n");
+        sb.append("--Nominal: ").append(numNominal).append("\n");
+        sb.append("--Numeric: ").append(numNumeric).append("\n");
 
-        sb.append("Labels: " + numLabels + "\n");
+        sb.append("Labels: ").append(numLabels).append("\n");
 
         sb.append("\n");
-        sb.append("Cardinality: " + labelCardinality + "\n");
-        sb.append("Density: " + labelDensity + "\n");
-        sb.append("Distinct Labelsets: " + labelsets.size() + "\n");
+        sb.append("Cardinality: ").append(labelCardinality).append("\n");
+        sb.append("Density: ").append(labelDensity).append("\n");
+        sb.append("Distinct Labelsets: ").append(labelsets.size()).append("\n");
 
         sb.append("\n");
         for (int j = 0; j < numLabels; j++) {
-            sb.append("Percentage of examples with label " + (j + 1) + ": " + examplesPerLabel[j] + "\n");
+            sb.append("Percentage of examples with label ").append(j + 1).append(": ").append(examplesPerLabel[j]).append("\n");
         }
 
         sb.append("\n");
         for (int j = 0; j <= numLabels; j++) {
-            sb.append("Examples of cardinality " + j + ": " + cardinalityDistribution[j] + "\n");
+            sb.append("Examples of cardinality ").append(j).append(": ").append(cardinalityDistribution[j]).append("\n");
         }
 
         sb.append("\n");
         for (LabelSet set : labelsets.keySet()) {
-            sb.append("Examples of combination " + set + ": " + labelsets.get(set) + "\n");
+            sb.append("Examples of combination ").append(set).append(": ").append(labelsets.get(set)).append("\n");
         }
 
         return sb.toString();
@@ -471,5 +464,24 @@ public class Statistics implements Serializable {
     public int labelFrequency(LabelSet x) {
         return labelsets.get(x);
     }
-}
 
+    public TechnicalInformation getTechnicalInformation() {
+        TechnicalInformation result = new TechnicalInformation(Type.INCOLLECTION);
+        result.setValue(Field.AUTHOR, "Tsoumakas, Grigorios and Katakis, Ioannis and Vlahavas, Ioannis");
+        result.setValue(Field.TITLE, "Mining Multi-Label Data");
+        result.setValue(Field.PAGES, "667-685");
+        result.setValue(Field.BOOKTITLE, "Data Mining and Knowledge Discovery Handbook");
+        result.setValue(Field.EDITOR, "Maimon, Oded and Rokach, Lior");
+        result.setValue(Field.PUBLISHER, "Springer");
+        result.setValue(Field.EDITION, "2nd");
+        result.setValue(Field.YEAR, "2010");
+        return result;
+    }
+    
+    public String globalInfo() {
+        return "Class for calculating statistics of a multi-label dataset. "
+                + "For more information, see\n\n"
+                + getTechnicalInformation().toString();
+    }
+
+}

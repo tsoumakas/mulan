@@ -139,8 +139,7 @@ public class MachineLearning09IBLR extends Experiment {
         }
 
     }
-
-    @Override
+    
     public TechnicalInformation getTechnicalInformation() {
         TechnicalInformation result;
 

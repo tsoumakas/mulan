@@ -205,7 +205,6 @@ public class ICTAI2010 extends Experiment {
 
     }
 
-    @Override
     public TechnicalInformation getTechnicalInformation() {
         TechnicalInformation result;
 
