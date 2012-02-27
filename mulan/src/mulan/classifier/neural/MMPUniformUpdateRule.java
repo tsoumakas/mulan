@@ -16,14 +16,13 @@
 
 /*
  *    MMPUniformUpdateRule.java
- *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
  */
 package mulan.classifier.neural;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 import mulan.classifier.neural.model.Neuron;
 import mulan.evaluation.loss.RankingLossFunction;
 
@@ -35,6 +34,7 @@ import mulan.evaluation.loss.RankingLossFunction;
  * 
  * @see MMPUpdateRuleBase
  * @author Jozef Vilcek
+ * @version 2012.02.27
  */
 public class MMPUniformUpdateRule extends MMPUpdateRuleBase {
 

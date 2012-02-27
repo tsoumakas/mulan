@@ -16,7 +16,7 @@
 
 /*
  *    ThresholdPrediction.java
- *    Copyright (C) 2009 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
  */
 package mulan.classifier.meta.thresholding;
 
@@ -24,13 +24,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import mulan.classifier.MultiLabelLearner;
 import mulan.classifier.MultiLabelOutput;
+import mulan.classifier.transformation.BinaryRelevance;
 import mulan.data.DataUtils;
 import mulan.data.MultiLabelInstances;
-
 import weka.classifiers.Classifier;
+import weka.classifiers.trees.J48;
 import weka.core.Attribute;
 import weka.core.Instance;
 import weka.core.Instances;
@@ -39,6 +39,18 @@ import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
 
 /**
+ <!-- technical-bibtex-start -->
+ * BibTeX:
+ * <pre>
+ * &#64;inproceedings{Elisseeff2002,
+ *    author = {Elisseeff, Andre and Weston, Jason},
+ *    booktitle = {Proceedings of NIPS 14},
+ *    title = {A kernel method for multi-labelled classification},
+ *    year = {2002}
+ * }
+ * </pre>
+ * <p/>
+ <!-- technical-bibtex-end -->
  *
  * @author Marios Ioannou
  * @author George Sakkas
@@ -47,6 +59,13 @@ import weka.core.TechnicalInformation.Type;
  */
 public class ThresholdPrediction extends Meta {
 
+    /**
+     * Default constructor
+     */
+    public ThresholdPrediction() {
+        this(new BinaryRelevance(new J48()), new J48(), "Content-Based", 3);
+    }
+    
     /**
      * Constructor that initializes the learner
      *

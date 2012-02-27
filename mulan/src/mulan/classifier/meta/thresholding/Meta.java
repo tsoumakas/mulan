@@ -16,24 +16,22 @@
 
 /*
  *    Meta.java
- *    Copyright (C) 2009 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
  */
 package mulan.classifier.meta.thresholding;
 
 import java.util.ArrayList;
 import java.util.Collections;
-
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import mulan.classifier.InvalidDataException;
 import mulan.classifier.ModelInitializationException;
-import mulan.classifier.meta.*;
 import mulan.classifier.MultiLabelLearner;
 import mulan.classifier.MultiLabelOutput;
+import mulan.classifier.meta.MultiLabelMetaLearner;
 import mulan.data.DataUtils;
 import mulan.data.MultiLabelInstances;
 import mulan.transformations.RemoveAllLabels;
-
 import weka.classifiers.Classifier;
 import weka.core.Attribute;
 import weka.core.Instance;

@@ -40,7 +40,7 @@ public class RemoveAllLabels {
     /**
      * 
      * @param mlData
-     * @return
+     * @return transformed instances
      * @throws Exception
      */
     public static Instances transformInstances(MultiLabelInstances mlData) throws Exception {
@@ -69,7 +69,7 @@ public class RemoveAllLabels {
      * 
      * @param instance
      * @param labelIndices
-     * @return
+     * @return tranformed instance
      */
     public static Instance transformInstance(Instance instance, int[] labelIndices) {
         double[] oldValues = instance.toDoubleArray();

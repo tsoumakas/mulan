@@ -16,7 +16,7 @@
 
 /*
  *    ActivationTANH.java
- *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
  */
 package mulan.classifier.neural.model;
 
@@ -25,6 +25,7 @@ package mulan.classifier.neural.model;
  * The function output values are from interval <-1,1>.
  * 
  * @author Jozef Vilcek
+ * @version 2012.02.27
  */
 public class ActivationTANH extends ActivationFunction {
 

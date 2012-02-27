@@ -16,14 +16,12 @@
 
 /*
  *    GreedyLabelClustering.java
- *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
  */
 package mulan.data;
 
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.HashMap;
-
 import mulan.classifier.MultiLabelLearner;
 import mulan.classifier.meta.SubsetLearner;
 import mulan.evaluation.Evaluator;

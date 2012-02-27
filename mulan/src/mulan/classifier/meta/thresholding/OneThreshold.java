@@ -16,28 +16,48 @@
 
 /*
  *    OneThreshold.java
- *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
  */
 package mulan.classifier.meta.thresholding;
 
 import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import mulan.classifier.*;
+import mulan.classifier.InvalidDataException;
+import mulan.classifier.MultiLabelLearner;
+import mulan.classifier.MultiLabelOutput;
 import mulan.classifier.meta.MultiLabelMetaLearner;
+import mulan.classifier.transformation.BinaryRelevance;
 import mulan.core.MulanRuntimeException;
 import mulan.data.LabelsMetaData;
 import mulan.data.MultiLabelInstances;
-import mulan.evaluation.measure.*;
-
-import weka.core.Utils;
+import mulan.evaluation.measure.BipartitionMeasureBase;
+import mulan.evaluation.measure.HammingLoss;
+import weka.classifiers.trees.J48;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.TechnicalInformation;
 import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
+import weka.core.Utils;
 
 /**
+ *
+ <!-- technical-bibtex-start -->
+ * BibTeX:
+ * <pre>
+ * &#64;inproceedings{Read2008,
+ *    author = {Read, Jesse and Pfahringer, Bernhard and Holmes, Geoff},
+ *    booktitle = {Data Mining, 2008. ICDM '08. Eighth IEEE International Conference on},
+ *    pages = {995-1000},
+ *    title = {Multi-label Classification Using Ensembles of Pruned Sets},
+ *    year = {2008},
+ *    location = {Pisa, Italy}
+ * }
+ * </pre>
+ * <p/>
+ <!-- technical-bibtex-end -->
+ *
  * @author Marios Ioannou
  * @author George Sakkas
  * @author Grigorios Tsoumakas
@@ -54,6 +74,13 @@ public class OneThreshold extends MultiLabelMetaLearner {
     /** copy of a clean multi-label learner to use at each fold */
     private MultiLabelLearner foldLearner;
 
+    /**
+     * Default constructor
+     */
+    public OneThreshold() {
+        this(new BinaryRelevance(new J48()), new HammingLoss(), 3);
+    } 
+    
     /**
      * @param baseLearner the underlying multi=label learner
      * @param aMeasure the measure to optimize

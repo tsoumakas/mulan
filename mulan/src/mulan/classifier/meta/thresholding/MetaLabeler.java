@@ -16,7 +16,7 @@
 
 /*
  *    MetaLabeler.java
- *    Copyright (C) 2009 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
  */
 package mulan.classifier.meta.thresholding;
 
@@ -25,14 +25,14 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import mulan.classifier.MultiLabelLearner;
 import mulan.classifier.MultiLabelOutput;
+import mulan.classifier.transformation.BinaryRelevance;
 import mulan.data.DataUtils;
 import mulan.data.MultiLabelInstances;
 import mulan.transformations.RemoveAllLabels;
-
 import weka.classifiers.Classifier;
+import weka.classifiers.trees.J48;
 import weka.core.Attribute;
 import weka.core.Instance;
 import weka.core.Instances;
@@ -41,6 +41,20 @@ import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
 
 /**
+ <!-- technical-bibtex-start -->
+ * BibTeX:
+ * <pre>
+ * &#64;inproceedings{Tang2009,
+ *    author = {Lei Tang and Sugu Rajan and Yijay K. Narayanan},
+ *    booktitle = {Proceedings of the 18th international conference on World wide web },
+ *    pages = {211-220},
+ *    title = {Large scale multi-label classification via metalabeler},
+ *    year = {2009},
+ *    location = {Madrid, Spain}
+ * }
+ * </pre>
+ * <p/>
+ <!-- technical-bibtex-end -->
  *
  * @author Marios Ioannou
  * @author George Sakkas
@@ -52,6 +66,13 @@ public class MetaLabeler extends Meta {
     /** the type of the class*/
     private String classChoice;
 
+    /**
+     * Default constructor
+     */
+    public MetaLabeler() {
+        this(new BinaryRelevance(new J48()), new J48(), "Content-based", "Nominal-Class");
+    }
+    
     /**
      * Constructor that initializes the learner
      *

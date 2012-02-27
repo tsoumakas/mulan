@@ -53,7 +53,7 @@ public class LabelPowersetTransformation implements Serializable {
     /**
      * 
      * @param mlData
-     * @return
+     * @return the transformed instances
      * @throws Exception
      */
     public Instances transformInstances(MultiLabelInstances mlData) throws Exception {
@@ -112,7 +112,7 @@ public class LabelPowersetTransformation implements Serializable {
      * 
      * @param instance
      * @param labelIndices
-     * @return
+     * @return tranformed instance
      * @throws Exception
      */
     public Instance transformInstance(Instance instance, int[] labelIndices) throws Exception {

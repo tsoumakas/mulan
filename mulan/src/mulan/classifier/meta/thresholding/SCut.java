@@ -16,11 +16,10 @@
 
 /*
  *    SCut.java
- *    Copyright (C) 2009 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
  */
 package mulan.classifier.meta.thresholding;
 
-import mulan.classifier.meta.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -28,8 +27,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import mulan.classifier.MultiLabelLearner;
 import mulan.classifier.MultiLabelOutput;
+import mulan.classifier.meta.MultiLabelMetaLearner;
+import mulan.classifier.transformation.BinaryRelevance;
 import mulan.data.MultiLabelInstances;
 import mulan.evaluation.measure.BipartitionMeasureBase;
+import mulan.evaluation.measure.HammingLoss;
+import weka.classifiers.trees.J48;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.TechnicalInformation;
@@ -41,6 +44,21 @@ import weka.core.Utils;
  * Class that implements the SCut method (Score-based local optimization).
  * It computes a separate threshold for each label based on improving a user defined
  * performance measure.
+ *
+ <!-- technical-bibtex-start -->
+ * BibTeX:
+ * <pre>
+ * &#64;inproceedings{Yang2001,
+ *    author = {Yiming Yang},
+ *    booktitle = {Proceedings of the 24th annual international ACM SIGIR conference on Research and development in information retrieval},
+ *    pages = {137 - 145},
+ *    title = {A study of thresholding strategies for text categorization},
+ *    year = {2001},
+ *    location = {New Orleans, Louisiana, United States}
+ * }
+ * </pre>
+ * <p/>
+ <!-- technical-bibtex-end -->
  *
  * @author Marios Ioannou
  * @author George Sakkas
@@ -56,6 +74,13 @@ public class SCut extends MultiLabelMetaLearner {
     /** one threshold for each label to consider relevant */
     double[] thresholds;
 
+    /**
+     * Default constructor
+     */
+    public SCut() {
+        this(new BinaryRelevance(new J48()), new HammingLoss(), 3);
+    }
+    
     /**
      * Constructor that initializes the learner with a base algorithm , Measure and num of folds
      *

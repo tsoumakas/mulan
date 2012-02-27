@@ -16,13 +16,12 @@
 
 /*
  *    MMPUpdateRuleBase.java
- *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
  */
 package mulan.classifier.neural;
 
 import java.util.List;
 import java.util.Map;
-
 import mulan.classifier.MultiLabelOutput;
 import mulan.classifier.neural.model.Neuron;
 import mulan.core.ArgumentNullException;
@@ -36,6 +35,7 @@ import mulan.evaluation.loss.RankingLossFunction;
  * 
  * @see MMPLearner 
  * @author Jozef Vilcek
+ * @version 2012.02.27
  */
 public abstract class MMPUpdateRuleBase implements ModelUpdateRule {
 
@@ -87,7 +87,7 @@ public abstract class MMPUpdateRuleBase implements ModelUpdateRule {
                     weights[iIndex] += updateParams[lIndex] * dataInput[iIndex];
                 }
                 // update bias weight
-                weights[numFeatures] += updateParams[lIndex] * perceptron.getBiasInput();
+                //weights[numFeatures] += updateParams[lIndex] * perceptron.getBiasInput();
             }
         }
 
