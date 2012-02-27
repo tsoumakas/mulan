@@ -16,22 +16,17 @@
 
 /*
  *    LPBRMethodsExamples.java
- *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
  */
 package mulan.examples;
 
 import java.util.Arrays;
 import java.util.List;
-
 import mulan.classifier.MultiLabelLearner;
 import mulan.classifier.meta.EnsembleOfSubsetLearners;
 import mulan.classifier.meta.SubsetLearner;
 import mulan.classifier.transformation.LabelPowerset;
-import mulan.data.ConditionalDependenceIdentifier;
-import mulan.data.GreedyLabelClustering;
-import mulan.data.LabelsPair;
-import mulan.data.MultiLabelInstances;
-import mulan.data.UnconditionalChiSquareIdentifier;
+import mulan.data.*;
 import mulan.evaluation.Evaluation;
 import mulan.evaluation.Evaluator;
 import weka.classifiers.trees.J48;

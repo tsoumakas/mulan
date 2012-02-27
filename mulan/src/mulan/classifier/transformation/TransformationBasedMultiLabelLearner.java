@@ -16,11 +16,11 @@
 
 /*
  *    TransformationBasedMultiLabelLearner.java
- *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
  */
 package mulan.classifier.transformation;
 
-import mulan.classifier.*;
+import mulan.classifier.MultiLabelLearnerBase;
 import weka.classifiers.Classifier;
 import weka.classifiers.trees.J48;
 import weka.core.TechnicalInformation;
@@ -28,24 +28,28 @@ import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
 
 /**
- * Base class for multi-label learners, which use problem 
- * transformation to handle multi-label data.
+ <!-- globalinfo-start -->
+ <!-- globalinfo-end -->
+ *
+ <!-- technical-bibtex-start -->
+ <!-- technical-bibtex-end -->
  *
  * @author Robert Friberg
  * @author Jozef Vilcek
- * @version $Revision: 0.02 $ 
+ * @author Grigorios Tsoumakas
+ * @version 2010.12.25
  */
 @SuppressWarnings("serial")
 public abstract class TransformationBasedMultiLabelLearner extends MultiLabelLearnerBase {
 
     /**
-     * The encapsulated classifier used for making clones in the
-     * case of ensemble classifiers.
+     * The underlying single-label classifier.
      */
-    protected final Classifier baseClassifier;
+    protected Classifier baseClassifier;
 
     /**
-     * Creates a new instance of {@link TransformationBasedMultiLabelLearner} with default
+     * Creates a new instance of {@link TransformationBasedMultiLabelLearner}
+     * with default
      * {@link J48} base classifier.
      */
     public TransformationBasedMultiLabelLearner() {
@@ -55,7 +59,8 @@ public abstract class TransformationBasedMultiLabelLearner extends MultiLabelLea
     /**
      * Creates a new instance.
      *
-     * @param baseClassifier the base classifier which will be used internally to handle the data.
+     * @param baseClassifier the base classifier which will be used internally
+     * to handle the data.
      * @see Classifier
      */
     public TransformationBasedMultiLabelLearner(Classifier baseClassifier) {
@@ -72,14 +77,35 @@ public abstract class TransformationBasedMultiLabelLearner extends MultiLabelLea
         return baseClassifier;
     }
 
+    /**
+     * Returns an instance of a TechnicalInformation object, containing detailed
+     * information about the technical background of this class, e.g., paper
+     * reference or book this class is based on.
+     *
+     * @return the technical information about this class
+     */
     public TechnicalInformation getTechnicalInformation() {
-        TechnicalInformation result = new TechnicalInformation(Type.ARTICLE);
-        result.setValue(Field.AUTHOR, "Grigorios Tsoumakas, Ioannis Katakis");
-        result.setValue(Field.YEAR, "2007");
-        result.setValue(Field.TITLE, "Multi-Label Classification: An Overview");
-        result.setValue(Field.JOURNAL, "International Journal of Data Warehousing and Mining");
-        result.setValue(Field.VOLUME, "3(3)");
-        result.setValue(Field.PAGES, "1-13");
+        TechnicalInformation result = new TechnicalInformation(Type.INCOLLECTION);
+        result.setValue(Field.AUTHOR, "Tsoumakas, Grigorios and Katakis, Ioannis and Vlahavas, Ioannis");
+        result.setValue(Field.TITLE, "Mining Multi-Label Data");
+        result.setValue(Field.PAGES, "667-685");
+        result.setValue(Field.BOOKTITLE, "Data Mining and Knowledge Discovery Handbook");
+        result.setValue(Field.EDITOR, "Maimon, Oded and Rokach, Lior");
+        result.setValue(Field.PUBLISHER, "Springer");
+        result.setValue(Field.EDITION, "2nd");
+        result.setValue(Field.YEAR, "2010");
         return result;
+    }
+    
+    /**
+     * Returns a string describing the classifier.
+     *
+     * @return a string description of the classifier
+     */
+    public String globalInfo() {
+        return "Base class for multi-label learners, which use problem "
+                + "transformation to handle multi-label data. "
+                + "For more information, see\n\n"
+                + getTechnicalInformation().toString();
     }
 }

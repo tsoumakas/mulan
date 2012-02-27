@@ -16,20 +16,17 @@
 
 /*
  *    ICTAI2010.java
- *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
  */
 package mulan.experiments;
 
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import mulan.classifier.MultiLabelLearner;
 import mulan.classifier.lazy.MLkNN;
-import mulan.classifier.meta.thresholding.MetaLabeler;
-import mulan.classifier.meta.thresholding.OneThreshold;
-import mulan.classifier.meta.thresholding.RCut;
-import mulan.classifier.meta.thresholding.SCut;
-import mulan.classifier.meta.thresholding.ThresholdPrediction;
+import mulan.classifier.meta.thresholding.*;
 import mulan.classifier.neural.BPMLL;
 import mulan.classifier.transformation.BinaryRelevance;
 import mulan.classifier.transformation.CalibratedLabelRanking;
@@ -42,9 +39,9 @@ import weka.classifiers.meta.Bagging;
 import weka.classifiers.trees.J48;
 import weka.classifiers.trees.M5P;
 import weka.core.TechnicalInformation;
-import weka.core.Utils;
 import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
+import weka.core.Utils;
 
 /**
  * Class replicating an experiment from a published paper
@@ -60,7 +57,6 @@ public class ICTAI2010 extends Experiment {
      * @param args command line arguments
      */
     public static void main(String[] args) {
-
         try {
             String path = Utils.getOption("path", args);
             String filestem = Utils.getOption("filestem", args);
@@ -199,11 +195,10 @@ public class ICTAI2010 extends Experiment {
                 results = eval.crossValidate(tp, dataset, measures, numFolds);
                 System.out.println(learnerName[i] + ";tp;m5p;5-cv;ranks;" + results.toCSV());
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception ex) {
+            Logger.getLogger(ICTAI2010.class.getName()).log(Level.SEVERE, null, ex);
         }
-
-    }
+    } 
 
     public TechnicalInformation getTechnicalInformation() {
         TechnicalInformation result;

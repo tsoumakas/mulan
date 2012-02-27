@@ -16,27 +16,21 @@
 
 /*
  *    PatternRecognition07MLkNN.java
- *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
  */
 package mulan.experiments;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import mulan.classifier.lazy.MLkNN;
 import mulan.data.MultiLabelInstances;
 import mulan.evaluation.Evaluator;
 import mulan.evaluation.MultipleEvaluation;
-import mulan.evaluation.measure.AveragePrecision;
-import mulan.evaluation.measure.Coverage;
-import mulan.evaluation.measure.HammingLoss;
-import mulan.evaluation.measure.Measure;
-import mulan.evaluation.measure.OneError;
-import mulan.evaluation.measure.RankingLoss;
+import mulan.evaluation.measure.*;
 import weka.core.TechnicalInformation;
-import weka.core.Utils;
 import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
+import weka.core.Utils;
 
 /**
  * Class replicating an experiment from a published paper
