@@ -25,13 +25,9 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
-import weka.core.Instance;
-import weka.core.Instances;
-import weka.core.TechnicalInformation;
 import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
-import weka.core.TechnicalInformationHandler;
-import weka.core.Utils;
+import weka.core.*;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.Remove;
 
@@ -46,7 +42,7 @@ import weka.filters.unsupervised.attribute.Remove;
 <!-- technical-bibtex-start -->
 * BibTeX:
 * <pre>
-* &#64;inbook{Tsoumakas2010,
+* &#64;incollection{Tsoumakas2010,
 *    author = {Tsoumakas, Grigorios and Katakis, Ioannis and Vlahavas, Ioannis},
 *    booktitle = {Data Mining and Knowledge Discovery Handbook},
 *    edition = {2nd},

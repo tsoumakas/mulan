@@ -16,7 +16,7 @@
 
 /*
  *    MultiClassLearner.java
- *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
  */
 package mulan.classifier.transformation;
 
@@ -31,7 +31,7 @@ import weka.core.Instances;
 /**
  * @author Stavros Mpakirtzoglou
  * @author Grigorios Tsoumakas
- * @version $Revision: 0.05$
+ * @version 2012.02.27
  */
 public class MultiClassLearner extends TransformationBasedMultiLabelLearner {
 

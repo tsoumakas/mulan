@@ -16,7 +16,7 @@
 
 /*
  *    ClassifierChain.java
- *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
  */
 package mulan.classifier.transformation;
 
@@ -26,6 +26,7 @@ import mulan.data.MultiLabelInstances;
 import weka.classifiers.AbstractClassifier;
 import weka.classifiers.Classifier;
 import weka.classifiers.meta.FilteredClassifier;
+import weka.classifiers.trees.J48;
 import weka.core.Attribute;
 import weka.core.Instance;
 import weka.core.Instances;
@@ -35,16 +36,36 @@ import weka.core.TechnicalInformation.Type;
 import weka.filters.unsupervised.attribute.Remove;
 
 /**
- * 
- * <!-- globalinfo-start -->
- * <!-- globalinfo-end -->
- * 
- * <!-- technical-bibtex-start -->
- * <!-- technical-bibtex-end -->
+ *
+ <!-- globalinfo-start -->
+ * Class implementing the Classifier Chain (CC) algorithm.<br/>
+ * <br/>
+ * For more information, see<br/>
+ * <br/>
+ * Read, Jesse, Pfahringer, Bernhard, Holmes, Geoff, Frank, Eibe: Classifier Chains for Multi-label Classification. In: , 335--359, 2011.
+ * <p/>
+ <!-- globalinfo-end -->
+ *
+ <!-- technical-bibtex-start -->
+ * BibTeX:
+ * <pre>
+ * &#64;inproceedings{Read2011,
+ *    author = {Read, Jesse and Pfahringer, Bernhard and Holmes, Geoff and Frank, Eibe},
+ *    journal = {Machine Learning},
+ *    number = {3},
+ *    pages = {335--359},
+ *    title = {Classifier Chains for Multi-label Classification},
+ *    volume = {85},
+ *    year = {2011}
+ * }
+ * </pre>
+ * <p/>
+ <!-- technical-bibtex-end -->
  *
  * @author Eleftherios Spyromitros-Xioufis ( espyromi@csd.auth.gr )
  * @author Konstantinos Sechidis (sechidis@csd.auth.gr)
  * @author Grigorios Tsoumakas (greg@csd.auth.gr)
+ * @version 2012.02.27
  */
 public class ClassifierChain extends TransformationBasedMultiLabelLearner {
 
@@ -54,35 +75,31 @@ public class ClassifierChain extends TransformationBasedMultiLabelLearner {
     private int[] chain;
 
     /**
-     * Returns a string describing classifier.
-     * @return a description suitable for
-     * displaying in the explorer/experimenter gui
+     * Returns a string describing the classifier.
+     *
+     * @return a string description of the classifier 
      */
+    @Override
     public String globalInfo() {
-
-        return "Class implementing the Classifier Chains for Multi-label Classification algorithm." + "\n\n" + "For more information, see\n\n" + getTechnicalInformation().toString();
+        return "Class implementing the Classifier Chain (CC) algorithm." 
+                + "\n\n" + "For more information, see\n\n" 
+                + getTechnicalInformation().toString();
     }
 
-    /**
-     * Returns an instance of a TechnicalInformation object, containing detailed
-     * information about the technical background of this class, e.g., paper
-     * reference or book this class is based on.
-     *
-     * @return the technical information about this class
-     */
     @Override
     public TechnicalInformation getTechnicalInformation() {
         TechnicalInformation result;
-
         result = new TechnicalInformation(Type.INPROCEEDINGS);
         result.setValue(Field.AUTHOR, "Read, Jesse and Pfahringer, Bernhard and Holmes, Geoff and Frank, Eibe");
         result.setValue(Field.TITLE, "Classifier Chains for Multi-label Classification");
-        result.setValue(Field.VOLUME, "Proceedings of ECML/PKDD 2009");
-        result.setValue(Field.YEAR, "2009");
-        result.setValue(Field.PAGES, "254--269");
-        result.setValue(Field.ADDRESS, "Bled, Slovenia");
+        result.setValue(Field.VOLUME, "85");
+        result.setValue(Field.NUMBER, "3");
+        result.setValue(Field.YEAR, "2011");
+        result.setValue(Field.PAGES, "335--359");
+        result.setValue(Field.JOURNAL, "Machine Learning");
         return result;
     }
+
     /**
      * The ensemble of binary relevance models. These are Weka
      * FilteredClassifier objects, where the filter corresponds to removing all
@@ -90,13 +107,20 @@ public class ClassifierChain extends TransformationBasedMultiLabelLearner {
      * model.
      */
     protected FilteredClassifier[] ensemble;
-
+    
+    /**
+     * Creates a new instance using J48 as the underlying classifier
+     */
+    public ClassifierChain() {
+        super(new J48());
+    }
+    
     /**
      * Creates a new instance
      *
-     * @param classifier  the base-level classification algorithm that will be
+     * @param classifier the base-level classification algorithm that will be
      * used for training each of the binary models
-     * @param aChain 
+     * @param aChain
      */
     public ClassifierChain(Classifier classifier, int[] aChain) {
         super(classifier);
@@ -106,7 +130,7 @@ public class ClassifierChain extends TransformationBasedMultiLabelLearner {
     /**
      * Creates a new instance
      *
-     * @param classifier  the base-level classification algorithm that will be
+     * @param classifier the base-level classification algorithm that will be
      * used for training each of the binary models
      */
     public ClassifierChain(Classifier classifier) {
@@ -159,7 +183,7 @@ public class ClassifierChain extends TransformationBasedMultiLabelLearner {
 
         Instance tempInstance = DataUtils.createInstance(instance, instance.weight(), instance.toDoubleArray());
         for (int counter = 0; counter < numLabels; counter++) {
-            double distribution[] = new double[2];
+            double distribution[];
             try {
                 distribution = ensemble[counter].distributionForInstance(tempInstance);
             } catch (Exception e) {

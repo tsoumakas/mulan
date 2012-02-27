@@ -16,33 +16,33 @@
 
 /*
  *    IncludeLabelsClassifier.java
- *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
  */
 package mulan.classifier.transformation;
 
-import mulan.classifier.*;
+import mulan.classifier.MultiLabelOutput;
 import mulan.data.MultiLabelInstances;
-import mulan.transformations.PT6Transformation;
+import mulan.transformations.IncludeLabelsTransformation;
 import weka.classifiers.Classifier;
 import weka.core.Instance;
 import weka.core.Instances;
 
 /**
- * A multilabel classifier based on Problem Transformation 6.
+ * A multilabel classifier based on the include labels transformation.
  * The multiple label attributes are mapped to two attributes:
  * a) one nominal attribute containing the class
  * b) one binary attribute containing whether it is true.
  *
  * @author Robert Friberg
  * @author Grigorios Tsoumakas
- * @version $Revision: 0.04 $
+ * @version 2012.02.27
  */
 public class IncludeLabelsClassifier extends TransformationBasedMultiLabelLearner {
 
     /**
      * The transformation used by the classifier
      */
-    private PT6Transformation pt6Trans;
+    private IncludeLabelsTransformation pt6Trans;
 
     /**
      * A dataset with the format needed by the base classifier.
@@ -65,7 +65,7 @@ public class IncludeLabelsClassifier extends TransformationBasedMultiLabelLearne
     public void buildInternal(MultiLabelInstances mlData) throws Exception {
         //Do the transformation
         //and generate the classifier
-        pt6Trans = new PT6Transformation();
+        pt6Trans = new IncludeLabelsTransformation();
         debug("Transforming the dataset");
         transformed = pt6Trans.transformInstances(mlData);
         debug("Building the base-level classifier");
@@ -96,4 +96,3 @@ public class IncludeLabelsClassifier extends TransformationBasedMultiLabelLearne
         return mlo;
     }
 }
-

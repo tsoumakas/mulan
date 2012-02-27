@@ -16,26 +16,15 @@
 
 /*
  *    ConverterLibSVM.java
- *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
  */
 package mulan.data;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.StringTokenizer;
-
-import weka.core.Attribute;
-import weka.core.DenseInstance;
-import weka.core.Instance;
-import weka.core.Instances;
-import weka.core.SparseInstance;
-import weka.core.Utils;
+import weka.core.*;
 
 /**
  * Class that converts LibSVM multi-label data sets to Mulan compatible format <p>
@@ -239,4 +228,3 @@ public class ConverterLibSVM {
         }
     }
 }
-
