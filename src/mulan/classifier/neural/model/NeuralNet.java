@@ -16,7 +16,7 @@
 
 /*
  *    NeuralNet.java
- *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
  */
 package mulan.classifier.neural.model;
 
@@ -34,6 +34,7 @@ import java.util.List;
  * equal to 0 and use linear activation function.
  * 
  * @author Jozef Vilcek
+ * @version 2012.02.27
  */
 public interface NeuralNet {
 

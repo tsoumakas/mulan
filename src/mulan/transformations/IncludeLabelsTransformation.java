@@ -41,7 +41,7 @@ public class IncludeLabelsTransformation implements Serializable {
     /**
      * 
      * @param mlData
-     * @return
+     * @return transformed instances
      * @throws Exception
      */
     public Instances transformInstances(MultiLabelInstances mlData) throws Exception {

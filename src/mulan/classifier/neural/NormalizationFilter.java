@@ -15,15 +15,14 @@
  */
 
 /*
- *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    NormalizationFilter.java
+ *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
  */
-
 package mulan.classifier.neural;
 
 import java.io.Serializable;
 import java.util.Hashtable;
 import java.util.Set;
-
 import mulan.data.MultiLabelInstances;
 import weka.core.Attribute;
 import weka.core.Instance;
@@ -38,6 +37,7 @@ import weka.experiment.Stats;
  * data set the {@link NormalizationFilter} was initialized from. 
  * 
  * @author Jozef Vilcek
+ * @version 2012.02.27
  */
 public class NormalizationFilter implements Serializable {
 
@@ -129,4 +129,3 @@ public class NormalizationFilter implements Serializable {
         }
     }
 }
-	

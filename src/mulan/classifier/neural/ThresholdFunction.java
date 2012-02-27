@@ -16,13 +16,12 @@
 
 /*
  *    ThresholdFunction.java
- *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
  */
 package mulan.classifier.neural;
 
 import java.io.Serializable;
 import java.util.Arrays;
-
 import weka.core.Utils;
 import weka.core.matrix.Matrix;
 
@@ -30,6 +29,7 @@ import weka.core.matrix.Matrix;
  * Implementation of a threshold function. 
  *  
  * @author Jozef Vilcek
+ * @version 2012.02.27
  */
 public class ThresholdFunction implements Serializable {
 
@@ -153,5 +153,3 @@ public class ThresholdFunction implements Serializable {
         return Arrays.copyOf(parameters, parameters.length);
     }
 }
-	
-

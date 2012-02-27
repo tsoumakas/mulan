@@ -16,13 +16,12 @@
 
 /*
  *    BPMLLAlgorithm.java
- *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
  */
 package mulan.classifier.neural;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import mulan.classifier.neural.model.ActivationFunction;
 import mulan.classifier.neural.model.NeuralNet;
 import mulan.classifier.neural.model.Neuron;
@@ -37,6 +36,7 @@ import mulan.classifier.neural.model.Neuron;
  * and text categorization. IEEE Transactions on Knowledge and Data Engineering 18 (2006) 1338-1351
  * 
  * @author Jozef Vilcek
+ * @version 2012.02.27
  * @see NeuralNet
  */
 public class BPMLLAlgorithm {

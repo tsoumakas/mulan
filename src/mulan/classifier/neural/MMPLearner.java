@@ -16,7 +16,7 @@
 
 /*
  *    MMPLearner.java
- *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
  *
  */
 package mulan.classifier.neural;
@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
-
 import mulan.classifier.InvalidDataException;
 import mulan.classifier.MultiLabelLearnerBase;
 import mulan.classifier.MultiLabelOutput;
@@ -34,6 +33,7 @@ import mulan.classifier.neural.model.Neuron;
 import mulan.core.ArgumentNullException;
 import mulan.core.WekaException;
 import mulan.data.MultiLabelInstances;
+import mulan.evaluation.loss.RankingLoss;
 import mulan.evaluation.loss.RankingLossFunction;
 import weka.core.Attribute;
 import weka.core.Instance;
@@ -48,11 +48,23 @@ import weka.filters.unsupervised.attribute.NominalToBinary;
  * Implementation of Multiclass Multilabel Perceptrons learner. For more information refer
  * to technical paper describing the learner.
  * 
- * <!-- technical-bibtex-start -->
- * 
- * <!-- technical-bibtex-end -->
+ <!-- technical-bibtex-start -->
+ * BibTeX:
+ * <pre>
+ * &#64;article{KobyCrammer2003,
+ *    author = {Koby Crammer, Yoram Singer},
+ *    journal = {Journal of Machine Learning Research},
+ *    pages = {1025-1058},
+ *    title = {A Family of Additive Online Algorithms for Category Ranking.},
+ *    volume = {3(6)},
+ *    year = {2003}
+ * }
+ * </pre>
+ * <p/>
+ <!-- technical-bibtex-end -->
  * 
  * @author Jozef Vilcek
+ * @version 2012.02.27
  */
 public class MMPLearner extends MultiLabelLearnerBase {
 
@@ -89,6 +101,13 @@ public class MMPLearner extends MultiLabelLearnerBase {
     private boolean isInitialized = false;
     private final Long randomnessSeed;
 
+    /**
+     * Default constructor using RankingLoss and uniform update
+     */
+    public MMPLearner() {
+        this(new RankingLoss(), MMPUpdateRuleType.UniformUpdate);
+    }
+    
     /**
      * Creates a new instance of {@link MMPLearner}.
      *
@@ -247,7 +266,7 @@ public class MMPLearner extends MultiLabelLearnerBase {
         technicalInfo.setValue(Field.TITLE, "A Family of Additive Online Algorithms for Category Ranking.");
         technicalInfo.setValue(Field.JOURNAL, "Journal of Machine Learning Research");
         technicalInfo.setValue(Field.VOLUME, "3(6)");
-        technicalInfo.setValue(Field.PAGES, "1025�1058");
+        technicalInfo.setValue(Field.PAGES, "1025-1058");
         return technicalInfo;
     }
 

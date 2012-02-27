@@ -16,7 +16,7 @@
 
 /*
  *    MMPUpdateRuleType.java
- *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
  */
 package mulan.classifier.neural;
 
@@ -25,6 +25,7 @@ package mulan.classifier.neural;
  * {@link MMPLearner} to update its model in learning phase.
  * 
  * @author Jozef Vilcek
+ * @version 2012.02.27
  */
 public enum MMPUpdateRuleType {
 

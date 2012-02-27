@@ -16,15 +16,8 @@
 
 /*
  *    ConditionalDependenceIdentifier.java
- *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
  */
 package mulan.data;
-
-import weka.classifiers.AbstractClassifier;
-import weka.classifiers.Classifier;
-import weka.classifiers.meta.FilteredClassifier;
-import weka.core.Instances;
-import weka.filters.unsupervised.attribute.Remove;
 
 import java.io.Serializable;
 import java.util.Arrays;
@@ -33,6 +26,11 @@ import java.util.HashMap;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import weka.classifiers.AbstractClassifier;
+import weka.classifiers.Classifier;
+import weka.classifiers.meta.FilteredClassifier;
+import weka.core.Instances;
+import weka.filters.unsupervised.attribute.Remove;
 
 /**
  * A class for identification of conditional dependence between each pair of labels. The conditional dependence between each pair of labels

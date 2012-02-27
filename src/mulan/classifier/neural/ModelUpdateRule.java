@@ -16,7 +16,7 @@
 
 /*
  *    ModelUpdateRule.java
- *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
  */
 package mulan.classifier.neural;
 
@@ -27,6 +27,7 @@ import java.util.Map;
  * example in learning phase and perform an update of a model when necessary.
  * 
  * @author Jozef Vilcek
+ * @version 2012.02.27
  */
 /* REMARK: This might be generalized to the all learners, if distinguish between model and learner will be made in design of the learners  */
 public interface ModelUpdateRule {

@@ -16,7 +16,7 @@
 
 /*
  *    ActivationLinear.java
- *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
  */
 package mulan.classifier.neural.model;
 
@@ -26,6 +26,7 @@ package mulan.classifier.neural.model;
  * as a place holders for input pattern and forwards them for processing. 
  * 
  * @author Jozef Vilcek
+ * @version 2012.02.27
  */
 public class ActivationLinear extends ActivationFunction {
 

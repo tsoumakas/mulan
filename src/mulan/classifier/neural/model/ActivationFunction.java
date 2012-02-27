@@ -16,7 +16,7 @@
 
 /*
  *    ActivationFunction.java
- *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
  */
 package mulan.classifier.neural.model;
 
@@ -29,6 +29,7 @@ import java.io.Serializable;
  * Depending on learning algorithm, derivation of activation function might be necessary.
  * 
  * @author Jozef Vilcek
+ * @version 2012.02.27
  */
 public abstract class ActivationFunction implements Serializable {
 
@@ -62,5 +63,3 @@ public abstract class ActivationFunction implements Serializable {
      */
     public abstract double getMin();
 }
-	
-
