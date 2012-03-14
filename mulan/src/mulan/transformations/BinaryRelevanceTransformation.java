@@ -21,88 +21,114 @@
 package mulan.transformations;
 
 import java.io.Serializable;
-
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import mulan.data.DataUtils;
+import mulan.data.MultiLabelInstances;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.filters.Filter;
+import weka.filters.unsupervised.attribute.Add;
 import weka.filters.unsupervised.attribute.Remove;
 
 /**
  * Class that implements the binary relevance transformation
- * 
+ *
  * @author Grigorios Tsoumakas
- * @version 2012.02.02
+ * @version 2012.03.10
  */
 public class BinaryRelevanceTransformation implements Serializable {
 
-    int numOfLabels;
+    private MultiLabelInstances data;
+    private Instances shell;
+    private Remove remove;
+    private Add add;
 
     /**
      * Constructor
-     * 
+     *
      * @param num the number of labels
      */
-    public BinaryRelevanceTransformation(int num) {
-        numOfLabels = num;
+    public BinaryRelevanceTransformation(MultiLabelInstances data) {
+        try {
+            this.data = data;
+            remove = new Remove();
+            int[] labelIndices = data.getLabelIndices();
+            int[] indices = new int[labelIndices.length];
+            System.arraycopy(labelIndices, 0, indices, 0, labelIndices.length);
+            remove.setAttributeIndicesArray(indices);
+            remove.setInvertSelection(false);
+            remove.setInputFormat(data.getDataSet());
+            shell = Filter.useFilter(data.getDataSet(), remove);
+            add = new Add();
+            add.setAttributeIndex("last");
+            add.setNominalLabels("0,1");
+            add.setAttributeName("BinaryRelevanceLabel");
+            add.setInputFormat(shell);
+            shell = Filter.useFilter(shell, add);
+            shell.setClassIndex(shell.numAttributes() - 1);
+        } catch (Exception ex) {
+            Logger.getLogger(BinaryRelevanceTransformation.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
      * Remove all label attributes except labelToKeep
-     * @param instance 
-     * @param labelToKeep 
+     *
+     * @param instance
+     * @param labelToKeep
      * @return transformed Instance
      */
     public Instance transformInstance(Instance instance, int labelToKeep) {
-        Instance newInstance = DataUtils.createInstance(instance, instance.numAttributes());
-        newInstance.setDataset(null);
-        int numPredictors = instance.numAttributes() - numOfLabels;
-        int skipLabel = 0;
-        for (int labelIndex = 0; labelIndex < numOfLabels; labelIndex++) {
-            if (labelIndex == labelToKeep) {
-                skipLabel++;
-                continue;
-            }
-            newInstance.deleteAttributeAt(numPredictors + skipLabel);
+        Instance transformedInstance;
+        remove.input(instance);
+        transformedInstance = remove.output();
+        add.input(transformedInstance);
+        transformedInstance = add.output();
+        transformedInstance.setDataset(shell);
+
+        int[] labelIndices = data.getLabelIndices();
+        if (data.getDataSet().attribute(labelIndices[labelToKeep]).value(0).equals("1")) {
+            transformedInstance.setValue(shell.numAttributes() - 1, 1 - instance.value(labelIndices[labelToKeep]));
+        } else {
+            transformedInstance.setValue(shell.numAttributes() - 1, instance.value(labelIndices[labelToKeep]));
         }
-        return newInstance;
+        return transformedInstance;
     }
 
-    /**
-     * Remove all label attributes except labelToKeep
-     * @param train 
-     * @param labelToKeep 
-     * @return transformed Instances object
-     * @throws Exception 
-     */
-    public Instances transformInstances(Instances train, int labelToKeep) throws Exception {
-        // Indices of attributes to remove
-        int indices[] = new int[numOfLabels - 1];
-
-        int k = 0;
-        for (int labelIndex = 0; labelIndex < numOfLabels; labelIndex++) {
-            if (labelIndex != labelToKeep) {
-                indices[k] = train.numAttributes() - numOfLabels + labelIndex;
-                k++;
+/**
+ * Remove all label attributes except labelToKeep
+ *
+ * @param train
+ * @param labelToKeep
+ * @return transformed Instances object
+ * @throws Exception
+ */
+public Instances transformInstances(int labelToKeep) throws Exception {
+        boolean order10 = false;
+        int[] labelIndices = data.getLabelIndices();
+        if (data.getDataSet().attribute(labelIndices[labelToKeep]).value(0).equals("1")) {
+            order10 = true;
+        }
+        for (int j = 0; j < shell.numInstances(); j++) {
+            if (order10) {
+                shell.instance(j).setValue(shell.numAttributes() - 1, 1 - data.getDataSet().instance(j).value(labelIndices[labelToKeep]));
+            } else {
+                shell.instance(j).setValue(shell.numAttributes() - 1, data.getDataSet().instance(j).value(labelIndices[labelToKeep]));
             }
         }
 
-        Remove remove = new Remove();
-        remove.setAttributeIndicesArray(indices);
-        remove.setInputFormat(train);
-        remove.setInvertSelection(true);
-        Instances result = Filter.useFilter(train, remove);
-        result.setClassIndex(result.numAttributes() - 1);
-        return result;
+        return shell;
     }
 
     /**
      * Remove all label attributes except that at indexOfLabelToKeep
-     * @param train 
-     * @param labelIndices 
-     * @param indexToKeep 
+     *
+     * @param train
+     * @param labelIndices
+     * @param indexToKeep
      * @return transformed Instances object
-     * @throws Exception 
+     * @throws Exception
      */
     public static Instances transformInstances(Instances train, int[] labelIndices, int indexToKeep) throws Exception {
         int numLabels = labelIndices.length;
@@ -130,9 +156,10 @@ public class BinaryRelevanceTransformation implements Serializable {
 
     /**
      * Remove all label attributes except label at position indexToKeep
-     * @param instance 
-     * @param labelIndices 
-     * @param indexToKeep 
+     *
+     * @param instance
+     * @param labelIndices
+     * @param indexToKeep
      * @return transformed Instance
      */
     public static Instance transformInstance(Instance instance, int[] labelIndices, int indexToKeep) {

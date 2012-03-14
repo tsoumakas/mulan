@@ -22,34 +22,32 @@ package mulan.classifier.transformation;
 
 import mulan.classifier.MultiLabelOutput;
 import mulan.data.MultiLabelInstances;
+import mulan.transformations.BinaryRelevanceTransformation;
 import weka.classifiers.AbstractClassifier;
 import weka.classifiers.Classifier;
-import weka.classifiers.meta.FilteredClassifier;
-import weka.core.Attribute;
 import weka.core.Instance;
 import weka.core.Instances;
-import weka.filters.unsupervised.attribute.Remove;
 
 /**
  *
  * @author Robert Friberg
  * @author Grigorios Tsoumakas
- * @version $Revision: 0.06$
+ * @version 2012.03.14
  */
 public class BinaryRelevance extends TransformationBasedMultiLabelLearner {
 
     /**
      * The ensemble of binary relevance models. These are Weka
-     * FilteredClassifier objects, where the filter corresponds to removing all
-     * label apart from the one that serves as a target for the corresponding
-     * model.
+     * Classifier objects.
      */
-    protected FilteredClassifier[] ensemble;
+    protected Classifier[] ensemble;
     /**
      * The correspondence between ensemble models and labels
      */
     private String[] correspondence;
 
+    private BinaryRelevanceTransformation brt;
+    
     /**
      * Creates a new instance
      *
@@ -61,57 +59,43 @@ public class BinaryRelevance extends TransformationBasedMultiLabelLearner {
     }
 
     protected void buildInternal(MultiLabelInstances train) throws Exception {
-        numLabels = train.getNumLabels();
-        ensemble = new FilteredClassifier[numLabels];
+        ensemble = new Classifier[numLabels];
+
         correspondence = new String[numLabels];
-        Instances trainingData = train.getDataSet();
-        for (int i = 0; i < numLabels; i++) {
-            ensemble[i] = new FilteredClassifier();
-            ensemble[i].setClassifier(AbstractClassifier.makeCopy(baseClassifier));
-
-            // Indices of attributes to remove
-            int[] indicesToRemove = new int[numLabels - 1];
-            int counter2 = 0;
-            for (int counter1 = 0; counter1 < numLabels; counter1++) {
-                if (labelIndices[counter1] != labelIndices[i]) {
-                    indicesToRemove[counter2] = labelIndices[counter1];
-                    counter2++;
-                }
-            }
-
-            Remove remove = new Remove();
-            remove.setAttributeIndicesArray(indicesToRemove);
-            remove.setInputFormat(trainingData);
-            remove.setInvertSelection(false);
-            ensemble[i].setFilter(remove);
-
-            trainingData.setClassIndex(labelIndices[i]);
-            correspondence[i] = trainingData.classAttribute().name();
+        for (int i=0; i<numLabels; i++)
+            correspondence[i] = train.getDataSet().attribute(labelIndices[i]).name();
+        
+        brt = new BinaryRelevanceTransformation(train);
+                       
+        for (int i = 0; i < numLabels; i++) {            
+            ensemble[i] = AbstractClassifier.makeCopy(baseClassifier);                  
+            Instances shell = brt.transformInstances(i);            
             debug("Bulding model " + (i + 1) + "/" + numLabels);
-            ensemble[i].buildClassifier(trainingData);
+            ensemble[i].buildClassifier(shell);
         }
     }
 
-    protected MultiLabelOutput makePredictionInternal(Instance instance) throws Exception {
+    protected MultiLabelOutput makePredictionInternal(Instance instance) {
         boolean[] bipartition = new boolean[numLabels];
         double[] confidences = new double[numLabels];
 
+        
         for (int counter = 0; counter < numLabels; counter++) {
+            Instance transformedInstance = brt.transformInstance(instance, counter);
             double distribution[];
             try {
-                distribution = ensemble[counter].distributionForInstance(instance);
+                distribution = ensemble[counter].distributionForInstance(transformedInstance);
             } catch (Exception e) {
                 System.out.println(e);
                 return null;
             }
             int maxIndex = (distribution[0] > distribution[1]) ? 0 : 1;
-
+            
             // Ensure correct predictions both for class values {0,1} and {1,0}
-            Attribute classAttribute = ensemble[counter].getFilter().getOutputFormat().classAttribute();
-            bipartition[counter] = (classAttribute.value(maxIndex).equals("1")) ? true : false;
+            bipartition[counter] = (maxIndex == 1) ? true : false;
 
             // The confidence of the label being equal to 1
-            confidences[counter] = distribution[classAttribute.indexOfValue("1")];
+            confidences[counter] = distribution[1];
         }
 
         MultiLabelOutput mlo = new MultiLabelOutput(bipartition, confidences);
@@ -127,10 +111,9 @@ public class BinaryRelevance extends TransformationBasedMultiLabelLearner {
     public Classifier getModel(String labelName) {
         for (int i = 0; i < numLabels; i++) {
             if (correspondence[i].equals(labelName)) {
-                return ensemble[i].getClassifier();
+                return ensemble[i];
             }
         }
         return null;
     }
-
 }
