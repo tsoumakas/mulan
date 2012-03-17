@@ -20,19 +20,8 @@
  */
 package mulan.data;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
+import java.io.*;
+import java.util.*;
 import mulan.core.ArgumentNullException;
 import mulan.core.MulanRuntimeException;
 import weka.core.Attribute;
@@ -54,7 +43,7 @@ import weka.core.Instances;
  * 
  * @author Jozef Vilcek
  */
-public class MultiLabelInstances {
+public class MultiLabelInstances implements Serializable {
 
     private Instances dataSet;
     private final LabelsMetaData labelsMetaData;
