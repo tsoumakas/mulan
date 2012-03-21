@@ -16,7 +16,7 @@
 
 /*
  *    MultiLabelKNN.java
- *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
  */
 package mulan.classifier.lazy;
 
@@ -29,90 +29,100 @@ import weka.core.neighboursearch.LinearNNSearch;
 
 /**
  * Superclass of all KNN based multi-label algorithms
- * 
- * @author Eleftherios Spyromitros-Xioufis ( espyromi@csd.auth.gr )
- * 
+ *
+ * @author Eleftherios Spyromitros-Xioufis
+ * @author Grigorios Tsoumakas
  */
 @SuppressWarnings("serial")
 public abstract class MultiLabelKNN extends MultiLabelLearnerBase {
 
-	/** Whether the neighbors should be distance-weighted. */
-	protected int distanceWeighting;
-	/** no weighting. */
-	public static final int WEIGHT_NONE = 1;
-	/** weight by 1/distance. */
-	public static final int WEIGHT_INVERSE = 2;
-	/** weight by 1-distance. */
-	public static final int WEIGHT_SIMILARITY = 4;
-	// TODO weight each neighbor's vote according to the inverse square of its distance
-	/**
-	 * Number of neighbors used in the k-nearest neighbor algorithm
-	 */
-	protected int numOfNeighbors;
-	/**
-	 * Class implementing the brute force search algorithm for nearest neighbor search. Default
-	 * value is true.
-	 */
-	protected LinearNNSearch lnn = null;
-	/**
-	 * Implementing Euclidean distance (or similarity) function.
-	 */
-	protected DistanceFunction dfunc = null;
+    /**
+     * Whether the neighbors should be distance-weighted.
+     */
+    protected int distanceWeighting;
+    /**
+     * no weighting.
+     */
+    public static final int WEIGHT_NONE = 1;
+    /**
+     * weight by 1/distance.
+     */
+    public static final int WEIGHT_INVERSE = 2;
+    /**
+     * weight by 1-distance.
+     */
+    public static final int WEIGHT_SIMILARITY = 4;
+    // TODO weight each neighbor's vote according to the inverse square of its distance
+    /**
+     * Number of neighbors used in the k-nearest neighbor algorithm
+     */
+    protected int numOfNeighbors;
+    /**
+     * Class implementing the brute force search algorithm for nearest neighbor
+     * search. Default value is true.
+     */
+    protected LinearNNSearch lnn = null;
+    /**
+     * Implementing Euclidean distance (or similarity) function.
+     */
+    protected DistanceFunction dfunc = null;
 
-	public void setDfunc(DistanceFunction dfunc) {
-		this.dfunc = dfunc;
-	}
+    public void setDfunc(DistanceFunction dfunc) {
+        this.dfunc = dfunc;
+    }
+    /**
+     * The training instances
+     */
+    protected Instances train;
 
-	/**
-	 * The training instances
-	 */
-	protected Instances train;
+    /**
+     * The default constructor
+     */
+    public MultiLabelKNN() {
+        this.numOfNeighbors = 10;
+        dfunc = new EuclideanDistance();
+    }
 
-	/**
-	 * The default constructor
-	 */
-	public MultiLabelKNN() {
-		this.numOfNeighbors = 10;
-		dfunc = new EuclideanDistance();
-	}
+    /**
+     * Initializes the number of neighbors
+     *
+     * @param numOfNeighbors the number of neighbors
+     */
+    public MultiLabelKNN(int numOfNeighbors) {
+        this.numOfNeighbors = numOfNeighbors;
+        dfunc = new EuclideanDistance();
+    }
 
-	/**
-	 * Initializes the number of neighbors
-	 * 
-	 * @param numOfNeighbors the number of neighbors
-	 */
-	public MultiLabelKNN(int numOfNeighbors) {
-		this.numOfNeighbors = numOfNeighbors;
-		dfunc = new EuclideanDistance();
-	}
+    protected void buildInternal(MultiLabelInstances trainSet) throws Exception {
+        if (trainSet.getNumInstances() < numOfNeighbors) {
+            throw new IllegalArgumentException("The number of training instances is less than the number of requested nearest neighbours");
+        }
+        train = new Instances(trainSet.getDataSet());
 
-	protected void buildInternal(MultiLabelInstances trainSet) throws Exception {
-		train = new Instances(trainSet.getDataSet());
+        // label attributes don't influence distance estimation
+        String labelIndicesString = "";
+        for (int i = 0; i < numLabels - 1; i++) {
+            labelIndicesString += (labelIndices[i] + 1) + ",";
+        }
+        labelIndicesString += (labelIndices[numLabels - 1] + 1);
+        dfunc.setAttributeIndices(labelIndicesString);
+        dfunc.setInvertSelection(true);
 
-		// label attributes don't influence distance estimation
-		String labelIndicesString = "";
-		for (int i = 0; i < numLabels - 1; i++) {
-			labelIndicesString += (labelIndices[i] + 1) + ",";
-		}
-		labelIndicesString += (labelIndices[numLabels - 1] + 1);
-		dfunc.setAttributeIndices(labelIndicesString);
-		dfunc.setInvertSelection(true);
+        lnn = new LinearNNSearch();
+        lnn.setDistanceFunction(dfunc);
+        lnn.setInstances(train);
+        lnn.setMeasurePerformance(false);
+    }
 
-		lnn = new LinearNNSearch();
-		lnn.setDistanceFunction(dfunc);
-		lnn.setInstances(train);
-		lnn.setMeasurePerformance(false);
-	}
+    @Override
+    public boolean isUpdatable() {
+        return true;
+    }
 
-	@Override
-	public boolean isUpdatable() {
-		return true;
-	}
-
-	/**
-	 * @param distanceWeighting the distanceWeighting to set
-	 */
-	public void setDistanceWeighting(int distanceWeighting) {
-		this.distanceWeighting = distanceWeighting;
-	}
+    /**
+     * @param distanceWeighting the distanceWeighting to set
+     */
+    public void setDistanceWeighting(int distanceWeighting) {
+        this.distanceWeighting = distanceWeighting;
+    }
 }
