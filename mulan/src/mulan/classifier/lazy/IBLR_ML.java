@@ -16,7 +16,7 @@
 
 /*
  *    IBLR_ML.java
- *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
  */
 package mulan.classifier.lazy;
 
@@ -26,26 +26,22 @@ import mulan.data.DataUtils;
 import mulan.data.MultiLabelInstances;
 import weka.classifiers.Classifier;
 import weka.classifiers.functions.Logistic;
-import weka.core.Attribute;
-import weka.core.Instance;
-import weka.core.Instances;
-import weka.core.TechnicalInformation;
-import weka.core.Utils;
 import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
+import weka.core.*;
 
 /**
  * 
- * <!-- globalinfo-start -->
- * This class is a re-implementation of the "IBLR-ML" and "IBLR-ML+" methods for the MULAN package.<br/>
+ <!-- globalinfo-start -->
+ * This class is an implementation of the "IBLR-ML" and "IBLR-ML+" methods for the MULAN package.<br/>
  * <br/>
  * For more information, see<br/>
  * <br/>
  * Weiwei Cheng, Eyke Hullermeier (2009). Combining instance-based learning and logistic regression for multilabel classification . Machine Learning. 76(2-3):211-225.
  * <p/>
- * <!-- globalinfo-end -->
+ <!-- globalinfo-end -->
  * 
- * <!-- technical-bibtex-start -->
+ <!-- technical-bibtex-start -->
  * BibTeX:
  * <pre>
  * &#64;article{Cheng2009,
@@ -62,10 +58,12 @@ import weka.core.TechnicalInformation.Type;
  * </pre>
  * <p/>
  * <!-- technical-bibtex-end -->
- * 
+ *
+ *
  * @author Weiwei Cheng
- * @author Eleftherios Spyromitros-Xioufis ( espyromi@csd.auth.gr )
- * 
+ * @author Eleftherios Spyromitros-Xioufis
+ * @author Grigorios Tsoumakas
+ * @version 2010.12.29
  */
 public class IBLR_ML extends MultiLabelKNN {
 
@@ -73,26 +71,37 @@ public class IBLR_ML extends MultiLabelKNN {
     /**
      * For each label we create a corresponding binary classifier.
      */
-    Classifier[] classifier;
+    private Classifier[] classifier;
     /**
-     * By default, IBLR-ML is used. One can change to IBLR-ML+ with
-     * {@link #setAddFeatures}
+     * By default, IBLR-ML is used. One can change to IBLR-ML+ through the 
+     * constructor
      */
-    boolean addFeatures = false;
+    private boolean addFeatures = false;
 
     /**
      * Default constructor uses 10 NN
      */
     public IBLR_ML() {
-        super(10);
     }
 
     /**
-     * @param numNeighbors
-     *            the number of nearest neighbors considered
+     * Constructor that sets the number of neighbors
+     *
+     * @param numNeighbors the number of nearest neighbors considered
      */
     public IBLR_ML(int numNeighbors) {
         super(numNeighbors);
+    }
+
+    /**
+     * Full constructor
+     *
+     * @param numNeighbors the number of nearest neighbors considered
+     * @param addFeatures when true, IBLR-ML+ is used
+     */
+    public IBLR_ML(int numNeighbors, boolean addFeatures) {
+        super(numNeighbors);
+        this.addFeatures = addFeatures;
     }
 
     /**
@@ -102,16 +111,7 @@ public class IBLR_ML extends MultiLabelKNN {
      *         explorer/experimenter gui
      */
     public String globalInfo() {
-
-        return "This class is a re-implementation of the \"IBLR-ML\" and \"IBLR-ML+\" methods for the MULAN package." + "\n\n" + "For more information, see\n\n" + getTechnicalInformation().toString();
-    }
-
-    /**
-     *
-     * @param addFeatures
-     */
-    public void setAddFeatures(boolean addFeatures) {
-        this.addFeatures = addFeatures;
+        return "This class is an implementation of the \"IBLR-ML\" and \"IBLR-ML+\" methods for the MULAN package." + "\n\n" + "For more information, see\n\n" + getTechnicalInformation().toString();
     }
 
     @Override
@@ -144,7 +144,11 @@ public class IBLR_ML extends MultiLabelKNN {
             trainingDataForLabel[i].setClassIndex(trainingDataForLabel[i].numAttributes() - 1);
         }
 
+        if (this.getDebug())
+            debug("Creating meta-instances");
         for (int i = 0; i < train.numInstances(); i++) {
+            if (this.getDebug() & (i+1) % 100 == 0)
+                debug("Creating meta-instances " + (i+1) + "/" + train.numInstances());
 
             Instances knn = new Instances(lnn.kNearestNeighbours(train.instance(i), numOfNeighbors));
             /*
@@ -174,15 +178,9 @@ public class IBLR_ML extends MultiLabelKNN {
                 for (int m = 0; m < featureIndices.length; m++) {
                     attvalue[m] = train.instance(i).value(featureIndices[m]);
                 }
-                // Copy the label confidences as additional features
-                for (int m = 0; m < confidences.length; m++) {
-                    attvalue[train.numAttributes() - numLabels + m] = confidences[m];
-                }
+                System.arraycopy(confidences, 0, attvalue, train.numAttributes() - numLabels, confidences.length);
             } else {
-                // Copy the label confidences as features
-                for (int m = 0; m < confidences.length; m++) {
-                    attvalue[m] = confidences[m];
-                }
+                System.arraycopy(confidences, 0, attvalue, 0, confidences.length);
             }
 
             // Add the class labels and finish the new training data
@@ -203,6 +201,8 @@ public class IBLR_ML extends MultiLabelKNN {
 
         // for every label create a corresponding classifier.
         for (int i = 0; i < numLabels; i++) {
+            if (this.getDebug())
+                debug("Builing classifier " + (i+1) + "/" + numLabels);
             classifier[i] = new Logistic();
             classifier[i].buildClassifier(trainingDataForLabel[i]);
         }
@@ -245,15 +245,9 @@ public class IBLR_ML extends MultiLabelKNN {
             for (int m = 0; m < featureIndices.length; m++) {
                 attvalue[m] = instance.value(featureIndices[m]);
             }
-            // Copy the label confidences as additional features
-            for (int m = 0; m < confidences.length; m++) {
-                attvalue[train.numAttributes() - numLabels + m] = confidences[m];
-            }
+            System.arraycopy(confidences, 0, attvalue, train.numAttributes() - numLabels, confidences.length);
         } else {
-            // Copy the label confidences as additional features
-            for (int m = 0; m < confidences.length; m++) {
-                attvalue[m] = confidences[m];
-            }
+            System.arraycopy(confidences, 0, attvalue, 0, confidences.length);
         }
 
         // Add the class labels and finish the new training data
@@ -277,12 +271,9 @@ public class IBLR_ML extends MultiLabelKNN {
     @Override
     public TechnicalInformation getTechnicalInformation() {
         TechnicalInformation result;
-
         result = new TechnicalInformation(Type.ARTICLE);
         result.setValue(Field.AUTHOR, "Weiwei Cheng and Eyke Hullermeier");
-        result.setValue(
-                Field.TITLE,
-                "Combining instance-based learning and logistic regression for multilabel classification ");
+        result.setValue(Field.TITLE, "Combining instance-based learning and logistic regression for multilabel classification");
         result.setValue(Field.JOURNAL, "Machine Learning");
         result.setValue(Field.VOLUME, "76");
         result.setValue(Field.NUMBER, "2-3");
@@ -290,7 +281,6 @@ public class IBLR_ML extends MultiLabelKNN {
         result.setValue(Field.ISSN, "0885-6125");
         result.setValue(Field.PAGES, "211-225");
         result.setValue(Field.PUBLISHER, "Springer Netherlands");
-
         return result;
     }
 }
