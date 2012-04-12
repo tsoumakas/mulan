@@ -16,7 +16,7 @@
 
 /*
  *    MultiLabelLearner.java
- *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
  */
 package mulan.classifier;
 
@@ -78,4 +78,11 @@ public interface MultiLabelLearner {
      */
     public MultiLabelOutput makePrediction(Instance instance)
             throws Exception, InvalidDataException, ModelInitializationException;
+
+    /**
+     * Sets whether debugging information should be output by the model
+     * 
+     * @param debug
+     */
+    public void setDebug(boolean debug);
 }
