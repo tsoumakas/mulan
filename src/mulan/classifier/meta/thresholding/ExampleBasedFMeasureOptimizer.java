@@ -15,7 +15,7 @@
  */
 
 /*
- *    ApproximateExampleBasedFMeasureOptimizer.java
+ *    ExampleBasedFMeasureOptimizer.java
  *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
  */
 package mulan.classifier.meta.thresholding;
@@ -33,7 +33,7 @@ import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
 
 /**
- * This class transforms the marginal probabilities estimated for each label by
+ * This class takes the marginal probabilities estimated for each label by
  * a multi-label learner and transforms them into a bipartition which is
  * approximately optimal for example-based FMeasure. This optimizer assumes
  * independence of the target variables (labels) and the optimal solution always
@@ -42,7 +42,7 @@ import weka.core.TechnicalInformation.Type;
  * @author Eleftherios Spyromitros-Xioufis ( espyromi@csd.auth.gr )
  * 
  */
-public class ApproximateExampleBasedFMeasureOptimizer extends MultiLabelMetaLearner {
+public class ExampleBasedFMeasureOptimizer extends MultiLabelMetaLearner {
 
 	/**
 	 * The supplied multi-label learner should be able to output marginal
@@ -50,7 +50,7 @@ public class ApproximateExampleBasedFMeasureOptimizer extends MultiLabelMetaLear
 	 * 
 	 * @param baseLearner
 	 */
-	public ApproximateExampleBasedFMeasureOptimizer(MultiLabelLearner baseLearner) {
+	public ExampleBasedFMeasureOptimizer(MultiLabelLearner baseLearner) {
 		super(baseLearner);
 	}
 
