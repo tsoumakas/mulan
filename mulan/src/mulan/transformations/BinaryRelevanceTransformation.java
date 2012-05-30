@@ -96,29 +96,30 @@ public class BinaryRelevanceTransformation implements Serializable {
         return transformedInstance;
     }
 
-/**
- * Remove all label attributes except labelToKeep
- *
- * @param train
- * @param labelToKeep
- * @return transformed Instances object
- * @throws Exception
- */
-public Instances transformInstances(int labelToKeep) throws Exception {
+    /**
+     * Remove all label attributes except labelToKeep
+     *
+     * @param train
+     * @param labelToKeep
+     * @return transformed Instances object
+     * @throws Exception
+     */
+    public Instances transformInstances(int labelToKeep) throws Exception {
+        Instances shellCopy = new Instances(this.shell);
         boolean order10 = false;
         int[] labelIndices = data.getLabelIndices();
         if (data.getDataSet().attribute(labelIndices[labelToKeep]).value(0).equals("1")) {
             order10 = true;
         }
-        for (int j = 0; j < shell.numInstances(); j++) {
+        for (int j = 0; j < shellCopy.numInstances(); j++) {
             if (order10) {
-                shell.instance(j).setValue(shell.numAttributes() - 1, 1 - data.getDataSet().instance(j).value(labelIndices[labelToKeep]));
+                shellCopy.instance(j).setValue(shellCopy.numAttributes() - 1, 1 - data.getDataSet().instance(j).value(labelIndices[labelToKeep]));
             } else {
-                shell.instance(j).setValue(shell.numAttributes() - 1, data.getDataSet().instance(j).value(labelIndices[labelToKeep]));
+                shellCopy.instance(j).setValue(shellCopy.numAttributes() - 1, data.getDataSet().instance(j).value(labelIndices[labelToKeep]));
             }
         }
 
-        return shell;
+        return shellCopy;
     }
 
     /**
