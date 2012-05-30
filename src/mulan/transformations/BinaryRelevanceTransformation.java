@@ -35,7 +35,7 @@ import weka.filters.unsupervised.attribute.Remove;
  * Class that implements the binary relevance transformation
  *
  * @author Grigorios Tsoumakas
- * @version 2012.03.10
+ * @version 2012.05.30
  */
 public class BinaryRelevanceTransformation implements Serializable {
 
