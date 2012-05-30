@@ -31,7 +31,7 @@ import weka.core.Instances;
  * Ranker, initialized so as to neglect the labels.
  *
  * @author Grigorios Tsoumakas
- * @version 10 August 2010
+ * @version 2012.05.30
  */
 public class Ranker {
 
@@ -48,6 +48,12 @@ public class Ranker {
     public int[] search(AttributeEvaluator attributeEval, MultiLabelInstances mlData) throws Exception {
         Instances data = RemoveAllLabels.transformInstances(mlData);
         weka.attributeSelection.Ranker wekaRanker = new weka.attributeSelection.Ranker();
-        return wekaRanker.search((ASEvaluation) attributeEval, data);
+        int[] indices = wekaRanker.search((ASEvaluation) attributeEval, data);
+        // convert these to feature indices
+        int[] featureIndices = mlData.getFeatureIndices();
+        int[] finalIndices = new int[indices.length];
+        for (int i=0; i<indices.length; i++)
+            finalIndices[i] = featureIndices[indices[i]];
+        return finalIndices;
     }
 }
