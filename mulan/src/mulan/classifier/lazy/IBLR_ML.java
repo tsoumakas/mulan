@@ -31,13 +31,12 @@ import weka.core.TechnicalInformation.Type;
 import weka.core.*;
 
 /**
- * 
  <!-- globalinfo-start -->
  * This class is an implementation of the "IBLR-ML" and "IBLR-ML+" methods for the MULAN package.<br/>
  * <br/>
  * For more information, see<br/>
  * <br/>
- * Weiwei Cheng, Eyke Hullermeier (2009). Combining instance-based learning and logistic regression for multilabel classification . Machine Learning. 76(2-3):211-225.
+ * Weiwei Cheng, Eyke Hullermeier (2009). Combining instance-based learning and logistic regression for multilabel classification. Machine Learning. 76(2-3):211-225.
  * <p/>
  <!-- globalinfo-end -->
  * 
@@ -50,15 +49,14 @@ import weka.core.*;
  *    number = {2-3},
  *    pages = {211-225},
  *    publisher = {Springer Netherlands},
- *    title = {Combining instance-based learning and logistic regression for multilabel classification },
+ *    title = {Combining instance-based learning and logistic regression for multilabel classification},
  *    volume = {76},
  *    year = {2009},
  *    ISSN = {0885-6125}
  * }
  * </pre>
  * <p/>
- * <!-- technical-bibtex-end -->
- *
+ <!-- technical-bibtex-end -->
  *
  * @author Weiwei Cheng
  * @author Eleftherios Spyromitros-Xioufis
@@ -104,12 +102,6 @@ public class IBLR_ML extends MultiLabelKNN {
         this.addFeatures = addFeatures;
     }
 
-    /**
-     * Returns a string describing classifier.
-     *
-     * @return a description suitable for displaying in a future
-     *         explorer/experimenter gui
-     */
     public String globalInfo() {
         return "This class is an implementation of the \"IBLR-ML\" and \"IBLR-ML+\" methods for the MULAN package." + "\n\n" + "For more information, see\n\n" + getTechnicalInformation().toString();
     }
@@ -261,13 +253,6 @@ public class IBLR_ML extends MultiLabelKNN {
         return mlo;
     }
 
-    /**
-     * Returns an instance of a TechnicalInformation object, containing detailed
-     * information about the technical background of this class, e.g., paper
-     * reference or book this class is based on.
-     *
-     * @return the technical information about this class
-     */
     @Override
     public TechnicalInformation getTechnicalInformation() {
         TechnicalInformation result;

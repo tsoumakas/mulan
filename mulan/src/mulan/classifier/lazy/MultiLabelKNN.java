@@ -67,6 +67,10 @@ public abstract class MultiLabelKNN extends MultiLabelLearnerBase {
      */
     protected DistanceFunction dfunc = null;
 
+    /**
+     * Sets a distance function
+     * @param dfunc the distance function
+     */
     public void setDfunc(DistanceFunction dfunc) {
         this.dfunc = dfunc;
     }
