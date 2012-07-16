@@ -16,44 +16,49 @@
 
 /*
  *    HOMER.java
- *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
  */
 package mulan.classifier.meta;
 
 import java.util.Set;
 import mulan.classifier.MultiLabelLearner;
 import mulan.classifier.MultiLabelOutput;
-import mulan.data.MultiLabelInstances;
-import mulan.data.DataUtils;
 import mulan.classifier.meta.HierarchyBuilder.Method;
+import mulan.classifier.transformation.BinaryRelevance;
+import mulan.data.DataUtils;
 import mulan.data.LabelsMetaData;
+import mulan.data.MultiLabelInstances;
+import weka.classifiers.trees.J48;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.TechnicalInformation;
-import weka.core.TechnicalInformation.*;
+import weka.core.TechnicalInformation.Field;
+import weka.core.TechnicalInformation.Type;
 
 /**
- * <!-- globalinfo-start -->
+ <!-- globalinfo-start -->
+ * Class implementing the Hiearachy Of Multi-labEl leaRners algorithm. For more information, see<br/>
+ * <br/>
+ * Grigorios Tsoumakas, Ioannis Katakis, Ioannis Vlahavas: Effective and Efficient Multilabel Classification in Domains with Large Number of Labels. In: Proc. ECML/PKDD 2008 Workshop on Mining Multidimensional Data (MMD'08), 2008.
+ * <p/>
+ <!-- globalinfo-end -->
  *
+ <!-- technical-bibtex-start -->
+ * BibTeX:
  * <pre>
- * Class implementing the HOMER algorithm
+ * &#64;inproceedings{Tsoumakas2008,
+ *    author = {Grigorios Tsoumakas and Ioannis Katakis and Ioannis Vlahavas},
+ *    booktitle = {Proc. ECML/PKDD 2008 Workshop on Mining Multidimensional Data (MMD'08)},
+ *    title = {Effective and Efficient Multilabel Classification in Domains with Large Number of Labels},
+ *    year = {2008},
+ *    location = {Antwerp, Belgium}
+ * }
  * </pre>
- *
- * For more information:
- *
- * <pre>
- * G. Tsoumakas, I. Katakis, I. Vlahavas, "Effective and Efficient Multilabel
- * Classification in Domains with Large Number of Labels", Proc. ECML/PKDD 2008
- * Workshop on Mining Multidimensional Data (MMD'08), Antwerp, Belgium, 2008.
- * </pre>
- *f
- * <!-- globalinfo-end -->
- *
- * <!-- technical-bibtex-start --> BibTeX:
- * 
- * <!-- technical-bibtex-end -->
+ * <p/>
+ <!-- technical-bibtex-end -->
  *
  * @author Grigorios Tsoumakas
+ * @version 2012.02.27
  */
 public class HOMER extends MultiLabelMetaLearner {
 
@@ -65,6 +70,23 @@ public class HOMER extends MultiLabelMetaLearner {
     private MultiLabelInstances m;
     private int numMetaLabels;
 
+    /**
+     * Default constructor
+     */
+    public HOMER() {
+        super(new BinaryRelevance(new J48()));
+        method = HierarchyBuilder.Method.BalancedClustering;
+        numClusters = 3;
+    }
+
+    /**
+     * Creates a new instance based on given multi-label learner, number of 
+     * children and partitioning method
+     * 
+     * @param mll multi-label learner
+     * @param clusters number of partitions
+     * @param method partitioning method
+     */
     public HOMER(MultiLabelLearner mll, int clusters, Method method) {
         super(mll);
         this.method = method;
@@ -126,15 +148,39 @@ public class HOMER extends MultiLabelMetaLearner {
     }
 
     //spark temporary edit for complexity measures   
+    
+    
+    /**
+     * Returns the number of nodes
+     * 
+     * @return number of nodes
+     */
     public long getNoNodes() {
         return hmc.getNoNodes();
     }
 
+    /**
+     * Returns the number of classifier evaluations
+     * 
+     * @return number of classifier evaluations
+     */
     public long getNoClassifierEvals() {
         return hmc.getNoClassifierEvals();
     }
 
+    /**
+     * Returns the total number of instances used for training
+     * 
+     * @return total number of instances used for training
+     */
     public long getTotalUsedTrainInsts() {
         return hmc.getTotalUsedTrainInsts();
+    }
+
+    @Override
+    public String globalInfo() {
+        return "Class implementing the Hiearachy Of Multi-labEl leaRners " +
+               "algorithm. For more information, see\n\n"
+                + getTechnicalInformation().toString();
     }
 }

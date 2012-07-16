@@ -16,18 +16,14 @@
 
 /*
  *    HierarchyBuilder.java
- *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
  */
 package mulan.classifier.meta;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -71,6 +67,12 @@ public class HierarchyBuilder implements Serializable {
     private Document labelsXMLDoc;
     private Method method;
 
+    /**
+     * Constructs a new istance based on given number of partitions and method
+     * 
+     * @param partitions the number of partitions
+     * @param method the partitioning method
+     */
     public HierarchyBuilder(int partitions, Method method) {
         numPartitions = partitions;
         this.method = method;
@@ -135,7 +137,7 @@ public class HierarchyBuilder implements Serializable {
 
         LabelsMetaDataImpl metaData = new LabelsMetaDataImpl();
         for (int i = 0; i < numPartitions; i++) {
-            if (childrenLabels[i].size() == 0) {
+            if (childrenLabels[i].isEmpty()) {
                 continue;
             }
             if (childrenLabels[i].size() == 1) {
@@ -152,6 +154,15 @@ public class HierarchyBuilder implements Serializable {
         return metaData;
     }
 
+    /**
+     * Builds the hierarchy and constructs auxiliary files
+     * 
+     * @param mlData the flat training data
+     * @param arffName the name of the hierachical data
+     * @param xmlName the filename for the hirearchy
+     * @return the hierarchical data
+     * @throws Exception 
+     */
     public MultiLabelInstances buildHierarchyAndSaveFiles(MultiLabelInstances mlData, String arffName, String xmlName) throws Exception {
         MultiLabelInstances newData = buildHierarchy(mlData);
         saveToArffFile(newData.getDataSet(), new File(arffName));
@@ -191,7 +202,7 @@ public class HierarchyBuilder implements Serializable {
         }
 
         for (int i = 0; i < numPartitions; i++) {
-            if (childrenLabels[i].size() == 0) {
+            if (childrenLabels[i].isEmpty()) {
                 continue;
             }
             if (childrenLabels[i].size() == 1) {
@@ -220,12 +231,19 @@ public class HierarchyBuilder implements Serializable {
             Attribute att = new Attribute("instance" + (i + 1));
             attInfo.add(att);
         }
-        System.out.println("constructing instances");
+        System.out.println(new Date() + " constructing instances");
         Instances transposed = new Instances("transposed", attInfo, 0);
+        int[] labelIndices = mlData.getLabelIndices();
         for (int i = 0; i < labels.size(); i++) {
+            int index = -1;
+            for (int k=0; k<labelIndices.length; k++) {
+                if (mlData.getDataSet().attribute(labelIndices[k]).name().equals(labels.get(i))) {
+                    index = labelIndices[k];
+                }
+            }
             double[] values = new double[numInstances];
             for (int j = 0; j < numInstances; j++) {
-                values[j] = mlData.getDataSet().instance(j).value(mlData.getDataSet().attribute(labels.get(i)));
+                values[j] = mlData.getDataSet().instance(j).value(index);
             }
             Instance newInstance = DataUtils.createInstance(mlData.getDataSet().instance(0), 1, values);
             transposed.add(newInstance);
@@ -408,10 +426,15 @@ public class HierarchyBuilder implements Serializable {
         }
     }
 
+    /**
+     * The different types of distributing labels to children nodes
+     */
     public enum Method {
-
+        /** random balanced distribution of labels */
         Random,
+        /** distribution based on label similarity */ 
         Clustering,
+        /** balanced distribution based on label similarity */
         BalancedClustering
     }
 }

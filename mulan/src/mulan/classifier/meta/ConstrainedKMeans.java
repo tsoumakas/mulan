@@ -16,90 +16,78 @@
 
 /*
  *    ConstrainedKMeans.java
- *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
  */
 package mulan.classifier.meta;
 
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Random;
-import java.util.Vector;
-
+import java.util.*;
 import weka.classifiers.rules.DecisionTableHashKey;
 import weka.clusterers.NumberOfClustersRequestable;
 import weka.clusterers.RandomizableClusterer;
-import weka.clusterers.SimpleKMeans;
-import weka.core.Attribute;
-import weka.core.Capabilities;
-import weka.core.DenseInstance;
-import weka.core.Instance;
-import weka.core.Instances;
-import weka.core.Option;
-import weka.core.Utils;
-import weka.core.WeightedInstancesHandler;
 import weka.core.Capabilities.Capability;
+import weka.core.*;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.ReplaceMissingValues;
 
 /**
-<!-- globalinfo-start -->
- * Cluster data using the k means algorithm
- * <p/>
-<!-- globalinfo-end -->
+ <!-- globalinfo-start --> 
+ * Cluster data using the constrained k means algorithm <p/>
+ <!-- globalinfo-end -->
  *
-<!-- options-start -->
- * Valid options are: <p/>
  *
- * <pre> -N &lt;num&gt;
- *  number of clusters.
- *  (default 2).</pre>
- *
- * <pre> -S &lt;num&gt;
- *  Random number seed.
- *  (default 10)</pre>
- *
-<!-- options-end -->
- *
- * @author Mark Hall (mhall@cs.waikato.ac.nz)
- * @author Eibe Frank (eibe@cs.waikato.ac.nz)
- * @version $Revision: 1.29 $
+ * @author Mark Hall
+ * @author Eibe Frank
+ * @author Grigorios Tsoumakas
+ * @version 2012.07.16
  * @see RandomizableClusterer
  */
 public class ConstrainedKMeans extends RandomizableClusterer implements NumberOfClustersRequestable, WeightedInstancesHandler {
 
-    /** for serialization **/
+    /**
+     * for serialization 
+     */
     static final long serialVersionUID = -3235809600124455376L;
     private ArrayList[] bucket;
     private int bucketSize;
     private int maxIterations;
 
-    @Override
-    public String getRevision() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
+    /**
+     * Class for representing an instance inside a bucket
+     */
     static public class bucketInstance implements Comparable {
 
         double[] distances;
         double distance;
 
-        public bucketInstance() {
-        }
-
+        /**
+         * Sets the distances to other instances
+         * @param x distances
+         */
         public void setDistances(double[] x) {
             distances = new double[x.length];
             System.arraycopy(x, 0, distances, 0, x.length);
         }
 
+        /**
+         * 
+         * @param x
+         */
         public void setDistance(double x) {
             distance = x;
         }
 
+        /**
+         * 
+         * @return
+         */
         public double[] getDistances() {
             return distances;
         }
 
+        /**
+         * 
+         * @return
+         */
         public double getDistance() {
             return distance;
         }
@@ -168,17 +156,18 @@ public class ConstrainedKMeans extends RandomizableClusterer implements NumberOf
 
     /**
      * Returns a string describing this clusterer
-     * @return a description of the evaluator suitable for
-     * displaying in the explorer/experimenter gui
+     *
+     * @return a description of the evaluator suitable for displaying in the
+     * explorer/experimenter gui
      */
     public String globalInfo() {
-        return "Cluster data using the k means algorithm";
+        return "Cluster data using the constrained k means algorithm";
     }
 
     /**
      * Returns default capabilities of the clusterer.
      *
-     * @return      the capabilities of this clusterer
+     * @return the capabilities of this clusterer
      */
     @Override
     public Capabilities getCapabilities() {
@@ -194,17 +183,20 @@ public class ConstrainedKMeans extends RandomizableClusterer implements NumberOf
         return result;
     }
 
+    /**
+     * 
+     * @param x
+     */
     public void setMaxIterations(int x) {
         maxIterations = x;
     }
 
     /**
-     * Generates a clusterer. Has to initialize all fields of the clusterer
-     * that are not being set via options.
+     * Generates a clusterer. Has to initialize all fields of the clusterer that
+     * are not being set via options.
      *
      * @param data set of instances serving as training data
-     * @throws Exception if the clusterer has not been
-     * generated successfully
+     * @throws Exception if the clusterer has not been generated successfully
      */
     public void buildClusterer(Instances data) throws Exception {
         for (int i = 0; i < m_NumClusters; i++) {
@@ -367,9 +359,10 @@ public class ConstrainedKMeans extends RandomizableClusterer implements NumberOf
             bucket[bestCluster].add(j, ci);
             //*/
 
-            /* simple insert
-            bucket[closestBucket].add(ci);
-            //*/
+            /*
+             * simple insert bucket[closestBucket].add(ci);
+            //
+             */
 
             if (bucket[bestCluster].size() > bucketSize) {
                 //System.out.println("removing an instance");
@@ -391,10 +384,9 @@ public class ConstrainedKMeans extends RandomizableClusterer implements NumberOf
      * Classifies a given instance.
      *
      * @param instance the instance to be assigned to a cluster
-     * @return the number of the assigned cluster as an interger
-     * if the class is enumerated, otherwise the predicted value
-     * @throws Exception if instance could not be classified
-     * successfully
+     * @return the number of the assigned cluster as an interger if the class is
+     * enumerated, otherwise the predicted value
+     * @throws Exception if instance could not be classified successfully
      */
     @Override
     public int clusterInstance(Instance instance) throws Exception {
@@ -427,12 +419,11 @@ public class ConstrainedKMeans extends RandomizableClusterer implements NumberOf
             } else {
                 secondI = second.index(p2);
             }
-            /*      if (firstI == m_ClusterCentroids.classIndex()) {
-            p1++; continue;
-            }
-            if (secondI == m_ClusterCentroids.classIndex()) {
-            p2++; continue;
-            } */
+            /*
+             * if (firstI == m_ClusterCentroids.classIndex()) { p1++; continue;
+             * } if (secondI == m_ClusterCentroids.classIndex()) { p2++;
+             * continue; }
+             */
             double diff;
             if (firstI == secondI) {
                 diff = difference(firstI,
@@ -456,8 +447,7 @@ public class ConstrainedKMeans extends RandomizableClusterer implements NumberOf
     }
 
     /**
-     * Computes the difference between two given attribute
-     * values.
+     * Computes the difference between two given attribute values.
      *
      * @param index the attribute index
      * @param val1 the first value
@@ -469,9 +459,9 @@ public class ConstrainedKMeans extends RandomizableClusterer implements NumberOf
         switch (m_ClusterCentroids.attribute(index).type()) {
             case Attribute.NOMINAL:
                 // If attribute is nominal
-                if (Utils.isMissingValue(val1) ||
-                		Utils.isMissingValue(val2) ||
-                        ((int) val1 != (int) val2)) {
+                if (Utils.isMissingValue(val1)
+                        || Utils.isMissingValue(val2)
+                        || ((int) val1 != (int) val2)) {
                     return 1;
                 } else {
                     return 0;
@@ -479,10 +469,10 @@ public class ConstrainedKMeans extends RandomizableClusterer implements NumberOf
             case Attribute.NUMERIC:
 
                 // If attribute is numeric
-                if (Utils.isMissingValue(val1) ||
-                		Utils.isMissingValue(val2)) {
-                    if (Utils.isMissingValue(val1) &&
-                    		Utils.isMissingValue(val2)) {
+                if (Utils.isMissingValue(val1)
+                        || Utils.isMissingValue(val2)) {
+                    if (Utils.isMissingValue(val1)
+                            && Utils.isMissingValue(val2)) {
                         return 1;
                     } else {
                         double diff;
@@ -521,8 +511,8 @@ public class ConstrainedKMeans extends RandomizableClusterer implements NumberOf
     }
 
     /**
-     * Updates the minimum and maximum values for all the attributes
-     * based on a new instance.
+     * Updates the minimum and maximum values for all the attributes based on a
+     * new instance.
      *
      * @param instance the new instance
      */
@@ -579,8 +569,9 @@ public class ConstrainedKMeans extends RandomizableClusterer implements NumberOf
 
     /**
      * Returns the tip text for this property
-     * @return tip text for this property suitable for
-     * displaying in the explorer/experimenter gui
+     *
+     * @return tip text for this property suitable for displaying in the
+     * explorer/experimenter gui
      */
     public String numClustersTipText() {
         return "set number of clusters";
@@ -610,10 +601,11 @@ public class ConstrainedKMeans extends RandomizableClusterer implements NumberOf
     }
 
     /**
-     * Parses a given list of options. <p/>
+     * Parses a given list of options.
+     * <p/>
      *
-    <!-- options-start -->
-     * Valid options are: <p/>
+     * <!-- options-start --> Valid options are:
+     * <p/>
      *
      * <pre> -N &lt;num&gt;
      *  number of clusters.
@@ -623,7 +615,7 @@ public class ConstrainedKMeans extends RandomizableClusterer implements NumberOf
      *  Random number seed.
      *  (default 10)</pre>
      *
-    <!-- options-end -->
+     * <!-- options-end -->
      *
      * @param options the list of options as an array of strings
      * @throws Exception if an option is not supported
@@ -675,8 +667,8 @@ public class ConstrainedKMeans extends RandomizableClusterer implements NumberOf
         for (int i = 0; i < m_NumClusters; i++) {
             for (int j = 0; j < m_ClusterCentroids.numAttributes(); j++) {
                 if (m_ClusterCentroids.attribute(j).isNumeric()) {
-                    double width = Math.log(Math.abs(m_ClusterCentroids.instance(i).value(j))) /
-                            Math.log(10.0);
+                    double width = Math.log(Math.abs(m_ClusterCentroids.instance(i).value(j)))
+                            / Math.log(10.0);
                     width += 1.0;
                     if ((int) width > maxWidth) {
                         maxWidth = (int) width;
@@ -684,35 +676,35 @@ public class ConstrainedKMeans extends RandomizableClusterer implements NumberOf
                 }
             }
         }
-        StringBuffer temp = new StringBuffer();
+        StringBuilder temp = new StringBuilder();
         String naString = "N/A";
         for (int i = 0; i < maxWidth + 2; i++) {
             naString += " ";
         }
         temp.append("\nkMeans\n======\n");
-        temp.append("\nNumber of iterations: " + m_Iterations + "\n");
-        temp.append("Within cluster sum of squared errors: " + Utils.sum(m_squaredErrors));
+        temp.append("\nNumber of iterations: ").append(m_Iterations).append("\n");
+        temp.append("Within cluster sum of squared errors: ").append(Utils.sum(m_squaredErrors));
 
         temp.append("\n\nCluster centroids:\n");
         for (int i = 0; i < m_NumClusters; i++) {
-            temp.append("\nCluster " + i + "\n\t");
+            temp.append("\nCluster ").append(i).append("\n\t");
             temp.append("Mean/Mode: ");
             for (int j = 0; j < m_ClusterCentroids.numAttributes(); j++) {
                 if (m_ClusterCentroids.attribute(j).isNominal()) {
-                    temp.append(" " + m_ClusterCentroids.attribute(j).
+                    temp.append(" ").append(m_ClusterCentroids.attribute(j).
                             value((int) m_ClusterCentroids.instance(i).value(j)));
                 } else {
-                    temp.append(" " + Utils.doubleToString(m_ClusterCentroids.instance(i).value(j),
+                    temp.append(" ").append(Utils.doubleToString(m_ClusterCentroids.instance(i).value(j),
                             maxWidth + 5, 4));
                 }
             }
             temp.append("\n\tStd Devs:  ");
             for (int j = 0; j < m_ClusterStdDevs.numAttributes(); j++) {
                 if (m_ClusterStdDevs.attribute(j).isNumeric()) {
-                    temp.append(" " + Utils.doubleToString(m_ClusterStdDevs.instance(i).value(j),
+                    temp.append(" ").append(Utils.doubleToString(m_ClusterStdDevs.instance(i).value(j),
                             maxWidth + 5, 4));
                 } else {
-                    temp.append(" " + naString);
+                    temp.append(" ").append(naString);
                 }
             }
         }
@@ -723,7 +715,7 @@ public class ConstrainedKMeans extends RandomizableClusterer implements NumberOf
     /**
      * Gets the the cluster centroids
      *
-     * @return        the cluster centroids
+     * @return the cluster centroids
      */
     public Instances getClusterCentroids() {
         return m_ClusterCentroids;
@@ -732,8 +724,7 @@ public class ConstrainedKMeans extends RandomizableClusterer implements NumberOf
     /**
      * Gets the standard deviations of the numeric attributes in each cluster
      *
-     * @return        the standard deviations of the numeric attributes
-     *             in each cluster
+     * @return the standard deviations of the numeric attributes in each cluster
      */
     public Instances getClusterStandardDevs() {
         return m_ClusterStdDevs;
@@ -743,7 +734,7 @@ public class ConstrainedKMeans extends RandomizableClusterer implements NumberOf
      * Returns for each cluster the frequency counts for the values of each
      * nominal attribute
      *
-     * @return        the counts
+     * @return the counts
      */
     public int[][][] getClusterNominalCounts() {
         return m_ClusterNominalCounts;
@@ -752,7 +743,7 @@ public class ConstrainedKMeans extends RandomizableClusterer implements NumberOf
     /**
      * Gets the squared error for all clusters
      *
-     * @return        the squared error
+     * @return the squared error
      */
     public double getSquaredError() {
         return Utils.sum(m_squaredErrors);
@@ -761,19 +752,9 @@ public class ConstrainedKMeans extends RandomizableClusterer implements NumberOf
     /**
      * Gets the number of instances in each cluster
      *
-     * @return        The number of instances in each cluster
+     * @return The number of instances in each cluster
      */
     public int[] getClusterSizes() {
         return m_ClusterSizes;
-    }
-
-    /**
-     * Main method for testing this class.
-     *
-     * @param argv should contain the following arguments: <p>
-     * -t training file [-N number of clusters]
-     */
-    public static void main(String[] argv) {
-        runClusterer(new SimpleKMeans(), argv);
     }
 }
