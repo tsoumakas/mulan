@@ -16,12 +16,11 @@
 
 /*
  *    BRkNN.java
- *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
  */
 package mulan.classifier.lazy;
 
 import java.util.ArrayList;
-
 import java.util.Random;
 import mulan.classifier.MultiLabelOutput;
 import mulan.core.Util;
@@ -30,58 +29,44 @@ import weka.classifiers.lazy.IBk;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.TechnicalInformation;
-import weka.core.Utils;
 import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
+import weka.core.Utils;
 
 /**
- * Simple BR implementation of the KNN algorithm <!-- globalinfo-start -->
+ <!-- globalinfo-start -->
+ * Simple BR implementation of the KNN algorithm.For more information, see<br/>
+ * <br/>
+ * Eleftherios Spyromitros, Grigorios Tsoumakas, Ioannis Vlahavas: An Empirical Study of Lazy Multilabel Classification Algorithms. In: Proc. 5th Hellenic Conference on Artificial Intelligence (SETN 2008), 2008.
+ * <p/>
+ <!-- globalinfo-end -->
  * 
+ <!-- technical-bibtex-start -->
+ * BibTeX:
  * <pre>
- * Class implementing the base BRkNN algorithm and its 2 extensions BRkNN-a and BRkNN-b.
- * </pre>
- * 
- * For more information:
- * 
- * <pre>
- * E. Spyromitros, G. Tsoumakas, I. Vlahavas, An Empirical Study of Lazy Multilabel Classification Algorithms,
- * Proc. 5th Hellenic Conference on Artificial Intelligence (SETN 2008), Springer, Syros, Greece, 2008.
- * http://mlkd.csd.auth.gr/multilabel.html
- * </pre>
- * 
- * <!-- globalinfo-end -->
- * 
- * <!-- technical-bibtex-start --> BibTeX:
- * 
- * <pre>
- * &#064;inproceedings{1428385,
- *    author = {Spyromitros, Eleftherios and Tsoumakas, Grigorios and Vlahavas, Ioannis},
+ * &#64;inproceedings{EleftheriosSpyromitros2008,
+ *    author = {Eleftherios Spyromitros, Grigorios Tsoumakas, Ioannis Vlahavas},
+ *    booktitle = {Proc. 5th Hellenic Conference on Artificial Intelligence (SETN 2008)},
  *    title = {An Empirical Study of Lazy Multilabel Classification Algorithms},
- *    booktitle = {SETN '08: Proceedings of the 5th Hellenic conference on Artificial Intelligence},
  *    year = {2008},
- *    isbn = {978-3-540-87880-3},
- *    pages = {401--406},
- *    doi = {http://dx.doi.org/10.1007/978-3-540-87881-0_40},
- *    publisher = {Springer-Verlag},
- *    address = {Berlin, Heidelberg},
+ *    location = {Syros, Greece}
  * }
- * 
  * </pre>
+ * <p/>
+ <!-- technical-bibtex-end -->
  * 
- * <!-- technical-bibtex-end -->
- * 
- * @author Eleftherios Spyromitros-Xioufis ( espyromi@csd.auth.gr )
- * 
+ * @author Eleftherios Spyromitros-Xioufis 
+ * @author Grigorios Tsoumakas
+ * @version 2010.12.29
  */
-@SuppressWarnings("serial")
 public class BRkNN extends MultiLabelKNN {
 
-    Random random;
+    private Random random;
     /**
      * Stores the average number of labels among the knn for each instance Used
      * in BRkNN-b extension
      */
-    int avgPredictedLabels;
+    private int avgPredictedLabels;
     /**
      * The value of kNN provided by the user. This may differ from
      * numOfNeighbors if cross-validation is being used.
@@ -116,7 +101,14 @@ public class BRkNN extends MultiLabelKNN {
     private ExtensionType extension = ExtensionType.NONE;
 
     /**
-     * The default constructor
+     * Default constructor
+     */
+    public BRkNN() {
+        this(10, ExtensionType.NONE);
+    }
+    
+    /**
+     * A constructor that sets the number of neighbors
      *
      * @param numOfNeighbors
      */
@@ -129,35 +121,21 @@ public class BRkNN extends MultiLabelKNN {
      *
      * @param numOfNeighbors
      * @param ext the extension to use (see {@link ExtensionType})
-     *
      */
     public BRkNN(int numOfNeighbors, ExtensionType ext) {
         super(numOfNeighbors);
         random = new Random(1);
         extension = ext;
-        distanceWeighting = WEIGHT_NONE; // weight none
     }
 
-    /**
-     * Returns an instance of a TechnicalInformation object, containing detailed
-     * information about the technical background of this class, e.g., paper
-     * reference or book this class is based on.
-     *
-     * @return the technical information about this class
-     */
     @Override
     public TechnicalInformation getTechnicalInformation() {
-        TechnicalInformation result = new TechnicalInformation(
-                Type.INPROCEEDINGS);
-        result.setValue(Field.AUTHOR,
-                "Eleftherios Spyromitros, Grigorios Tsoumakas, Ioannis Vlahavas");
-        result.setValue(Field.TITLE,
-                "An Empirical Study of Lazy Multilabel Classification Algorithms");
-        result.setValue(Field.BOOKTITLE,
-                "Proc. 5th Hellenic Conference on Artificial Intelligence (SETN 2008)");
+        TechnicalInformation result = new TechnicalInformation(Type.INPROCEEDINGS);
+        result.setValue(Field.AUTHOR, "Eleftherios Spyromitros, Grigorios Tsoumakas, Ioannis Vlahavas");
+        result.setValue(Field.TITLE, "An Empirical Study of Lazy Multilabel Classification Algorithms");
+        result.setValue(Field.BOOKTITLE, "Proc. 5th Hellenic Conference on Artificial Intelligence (SETN 2008)");
         result.setValue(Field.LOCATION, "Syros, Greece");
         result.setValue(Field.YEAR, "2008");
-
         return result;
     }
 
@@ -185,7 +163,7 @@ public class BRkNN extends MultiLabelKNN {
      *
      * @throws Exception
      */
-    protected void crossValidate() throws Exception {
+    private void crossValidate() throws Exception {
         try {
             // the performance for each different k
             double[] hammingLoss = new double[cvMaxK];
@@ -324,7 +302,7 @@ public class BRkNN extends MultiLabelKNN {
      * @return the confidences of the labels
      */
     private double[] getConfidences(Instances neighbours, double[] distances) {
-        double total = 0, weight;
+        double total, weight;
         double neighborLabels = 0;
         double[] confidences = new double[numLabels];
 
@@ -339,18 +317,7 @@ public class BRkNN extends MultiLabelKNN {
             Instance current = neighbours.instance(i);
             distances[i] = distances[i] * distances[i];
             distances[i] = Math.sqrt(distances[i] / (train.numAttributes() - numLabels));
-            switch (distanceWeighting) {
-                case WEIGHT_INVERSE:
-                    weight = 1.0 / (distances[i] + 0.001); // to avoid division by
-                    // zero
-                    break;
-                case WEIGHT_SIMILARITY:
-                    weight = 1.0 - distances[i];
-                    break;
-                default: // WEIGHT_NONE:
-                    weight = 1.0;
-                    break;
-            }
+            weight = 1.0;
             weight *= current.weight();
 
             for (int j = 0; j < numLabels; j++) {
@@ -447,4 +414,11 @@ public class BRkNN extends MultiLabelKNN {
     public void setCvMaxK(int cvMaxK) {
         this.cvMaxK = cvMaxK;
     }
+
+    public String globalInfo() {
+        return "Simple BR implementation of the KNN algorithm." +
+               "For more information, see\n\n" + 
+                getTechnicalInformation().toString();
+    }
+
 }
