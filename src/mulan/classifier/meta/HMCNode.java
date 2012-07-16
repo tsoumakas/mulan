@@ -16,7 +16,7 @@
 
 /*
  *    HMCNode.java
- *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
  */
 package mulan.classifier.meta;
 
@@ -40,16 +40,33 @@ public class HMCNode extends MultiLabelMetaLearner {
     private String nodeName;
     private HashSet<HMCNode> children = null;
     private Instances header;
-
+    
+    /**
+     * Returns the label indices
+     * 
+     * @return label indices
+     */
     public int[] getLabelIndices() {
         return labelIndices;
     }
 
+    /**
+     * Creates a new instance with the given name and learner
+     * 
+     * @param name name of the node
+     * @param mlc learner
+     * @throws Exception 
+     */
     public HMCNode(String name, MultiLabelLearner mlc) throws Exception {
         super(mlc);
         nodeName = name;
     }
 
+    /**
+     * Returns the header information
+     * 
+     * @return header
+     */
     public Instances getHeader() {
         return header;
     }
@@ -64,6 +81,11 @@ public class HMCNode extends MultiLabelMetaLearner {
         return baseLearner.makePrediction(instance);
     }
 
+    /**
+     * Checks whether the node has children
+     * 
+     * @return whether the node has children
+     */
     public boolean hasChildren() {
         if (children != null) {
             return true;
@@ -72,14 +94,29 @@ public class HMCNode extends MultiLabelMetaLearner {
         }
     }
 
+    /**
+     * Returns the number of children 
+     * 
+     * @return number of children
+     */
     public int getNumChildren() {
         return children.size();
     }
 
+    /**
+     * Returns the children of the current node
+     * 
+     * @return a set of nodes
+     */
     public HashSet<HMCNode> getChildren() {
         return children;
     }
 
+    /**
+     * Returns a list of all children labels
+     * 
+     * @return list of children labels
+     */
     public ArrayList<String> getChildrenLabels() {
         ArrayList<String> childrenLabels = new ArrayList<String>();
         for (HMCNode child : getChildren()) {
@@ -88,6 +125,11 @@ public class HMCNode extends MultiLabelMetaLearner {
         return childrenLabels;
     }
 
+    /**
+     * Returns all descendant labels
+     * 
+     * @return a list of descendant labels
+     */
     public ArrayList<String> getDescendantLabels() {
         ArrayList<String> descendantLabels = new ArrayList<String>();
         if (getChildren() != null) {
@@ -111,6 +153,11 @@ public class HMCNode extends MultiLabelMetaLearner {
         children.add(child);
     }
 
+    /**
+     * Returns the name of a node
+     * 
+     * @return name of the node
+     */
     public String getName() {
         return nodeName;
     }
@@ -118,5 +165,12 @@ public class HMCNode extends MultiLabelMetaLearner {
     @Override
     public TechnicalInformation getTechnicalInformation() {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public String globalInfo() {
+        return "Class implementing a node in the Hierarchy Of Multi-labEl " +
+               "leaRners algorithm. For more information, see\n\n"
+                + getTechnicalInformation().toString();
     }
 }

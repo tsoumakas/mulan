@@ -16,24 +16,19 @@
 
 /*
  *    HMC.java
- *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
  */
 package mulan.classifier.meta;
 
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
 import mulan.classifier.MultiLabelLearner;
 import mulan.classifier.MultiLabelOutput;
-import mulan.data.InvalidDataFormatException;
-import mulan.data.LabelNode;
-import mulan.data.LabelNodeImpl;
-import mulan.data.LabelsMetaData;
-import mulan.data.LabelsMetaDataImpl;
-import mulan.data.MultiLabelInstances;
-import mulan.data.DataUtils;
+import mulan.classifier.transformation.BinaryRelevance;
+import mulan.data.*;
 import mulan.transformations.RemoveAllLabels;
+import weka.classifiers.trees.J48;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.TechnicalInformation;
@@ -43,17 +38,31 @@ import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.Remove;
 
 /**
- * Class that implements a Hierarchical Multilabel classifier (HMC).
- * HMC classifier takes as parameter any kind of multilabel classifier and
- * builds a hierarchy. Any node of hierarchy is a classifier and is trained
- * separately. The root classifier is trained on all data and as getting down
- * the hierarchy tree the data is adjusted properly to each node. Firstly,
- * instances that do not belong to the node are removed and then attributes that
- * are unnecessary are removed also.
+ *
+ <!-- globalinfo-start -->
+ * Class that implements a Hierarchical Multilabel classifier (HMC). HMC classifier takes as parameter any kind of multilabel classifier and builds a hierarchy. Any node of hierarchy is a classifier and is trained separately. The root classifier is trained on all data and as getting down the hierarchy tree the data is adjusted properly to each node. Firstly, instances that do not belong to the node are removed and then attributes that are unnecessary are removed also. For more information, see<br/>
+ * <br/>
+ * Grigorios Tsoumakas, Ioannis Katakis, Ioannis Vlahavas: Effective and Efficient Multilabel Classification in Domains with Large Number of Labels. In: Proc. ECML/PKDD 2008 Workshop on Mining Multidimensional Data (MMD'08), 2008.
+ * <p/>
+ <!-- globalinfo-end -->
+ *
+ <!-- technical-bibtex-start -->
+ * BibTeX:
+ * <pre>
+ * &#64;inproceedings{Tsoumakas2008,
+ *    author = {Grigorios Tsoumakas and Ioannis Katakis and Ioannis Vlahavas},
+ *    booktitle = {Proc. ECML/PKDD 2008 Workshop on Mining Multidimensional Data (MMD'08)},
+ *    title = {Effective and Efficient Multilabel Classification in Domains with Large Number of Labels},
+ *    year = {2008},
+ *    location = {Antwerp, Belgium}
+ * }
+ * </pre>
+ * <p/>
+ <!-- technical-bibtex-end -->
  *
  * @author George Saridis
  * @author Grigorios Tsoumakas
- * @version 0.2
+ * @version 2012.07.16
  */
 public class HMC extends MultiLabelMetaLearner {
 
@@ -64,7 +73,19 @@ public class HMC extends MultiLabelMetaLearner {
     private long NoClassifierEvals = 0;
     private long TotalUsedTrainInsts = 0;
 
-    public HMC(MultiLabelLearner baseLearner) throws Exception {
+    /**
+     * Default constructor
+     */
+    public HMC() {
+        this(new BinaryRelevance(new J48()));
+    }
+    
+    /**
+     * Constructs a new instance
+     * 
+     * @param baseLearner the multi-label learner at each node
+     */
+    public HMC(MultiLabelLearner baseLearner) {
         super(baseLearner);
     }
 
@@ -84,7 +105,7 @@ public class HMC extends MultiLabelMetaLearner {
 
         //debug("Preparing node data");
         Set<String> childrenLabels = new HashSet<String>();
-        Set<String> currentlyAvailableLabels = new HashSet<String>();
+        Set<String> currentlyAvailableLabels;
         if (metaLabel.equals("root")) {
             for (LabelNode child : originalMetaData.getRootLabels()) {
                 childrenLabels.add(child.getName());
@@ -275,6 +296,7 @@ public class HMC extends MultiLabelMetaLearner {
      *
      * @param mlData the instances from which the attributes will be removed
      * @param currentLabel the name of the node whose children will be kept as attributes
+     * @param keepSubTree whether to keep the subtree
      * @return MultiLabelInstances
      * @throws mulan.data.InvalidDataFormatException
      */
@@ -346,15 +368,47 @@ public class HMC extends MultiLabelMetaLearner {
     }
     //spark temporary edit
 
+    /**
+     * Returns the number of nodes
+     * 
+     * @return number of nodes
+     */
     public long getNoNodes() {
         return NoNodes;
     }
 
+    /**
+     * Reurns number of classifier evaluations
+     * 
+     * @return number of classifier evaluations
+     */
     public long getNoClassifierEvals() {
         return NoClassifierEvals;
     }
 
+    /**
+     * Returns number of total instances used
+     * 
+     * @return total instances used
+     */
     public long getTotalUsedTrainInsts() {
         return TotalUsedTrainInsts;
     }
+    
+    public String globalInfo() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Class that implements a Hierarchical Multilabel classifier");
+        sb.append(" (HMC). HMC classifier takes as parameter any kind of ");
+        sb.append("multilabel classifier and builds a hierarchy. Any node of ");
+        sb.append("hierarchy is a classifier and is trained separately. The ");
+        sb.append("root classifier is trained on all data and as getting down");
+        sb.append(" the hierarchy tree the data is adjusted properly to each ");
+        sb.append("node. Firstly, instances that do not belong to the node ");
+        sb.append("are removed and then attributes that are unnecessary are ");
+        sb.append("removed also. For more information, see\n\n");
+        sb.append(getTechnicalInformation()); 
+        return sb.toString();
+    }
+    
+    
 }

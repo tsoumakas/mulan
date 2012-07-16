@@ -16,7 +16,7 @@
 
 /*
  *    RAkELd.java
- *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2011 Aristotle University of Thessaloniki, Greece
  */
 package mulan.classifier.meta;
 
@@ -27,7 +27,9 @@ import java.util.Collections;
 import java.util.Random;
 import mulan.classifier.MultiLabelLearner;
 import mulan.classifier.MultiLabelOutput;
+import mulan.classifier.transformation.BinaryRelevance;
 import mulan.data.MultiLabelInstances;
+import weka.classifiers.trees.J48;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.TechnicalInformation;
@@ -38,30 +40,32 @@ import weka.filters.unsupervised.attribute.Remove;
 
 /**
  *
- * <!-- globalinfo-start -->
+ <!-- globalinfo-start -->
+ * Class implementing a generalized version of the RAkEL-d (RAndom k-labELsets) algorithm with disjoint labelsets. For more information, see<br/>
+ * <br/>
+ * Grigorios Tsoumakas, Ioannis Katakis, Ioannis Vlahavas (2011). Random k-Labelsets for Multi-Label Classification. IEEE Transactions on Knowledge and Data Engineering. 23(7):1079-1089.
+ * <p/>
+ <!-- globalinfo-end -->
  *
+ <!-- technical-bibtex-start -->
+ * BibTeX:
  * <pre>
- * Class implementing a generalized version of the RAkEL_d (RAndom k Disjoint labELsets) algorithm.
+ * &#64;article{Tsoumakas2011,
+ *    author = {Grigorios Tsoumakas and Ioannis Katakis and Ioannis Vlahavas},
+ *    journal = {IEEE Transactions on Knowledge and Data Engineering},
+ *    number = {7},
+ *    pages = {1079-1089},
+ *    title = {Random k-Labelsets for Multi-Label Classification},
+ *    volume = {23},
+ *    year = {2011}
+ * }
  * </pre>
+ * <p/>
+ <!-- technical-bibtex-end -->
  *
- * For more information:
- *
- * <pre>
- * Publication Info
- * 
- * </pre>
- *
- * <!-- globalinfo-end -->
- *
- * <!-- technical-bibtex-start --> BibTeX:
- *
- * <pre>
- * bibtex info
- * </pre>
- *
- * <p/> <!-- technical-bibtex-end -->
- *
- * @version $Revision: 0.04 $
+ * @author Ioannis Katakis
+ * @author Grigorios Tsoumakas
+ * @version 2012.07.16
  */
 @SuppressWarnings("serial")
 public class RAkELd extends MultiLabelMetaLearner {
@@ -82,7 +86,7 @@ public class RAkELd extends MultiLabelMetaLearner {
     ArrayList<Integer> listOfLabels;
     //R_d]
     MultiLabelLearner[] subsetClassifiers;
-    protected Remove[] remove;
+    private Remove[] remove;
 
     /**
      * Returns an instance of a TechnicalInformation object, containing
@@ -94,26 +98,40 @@ public class RAkELd extends MultiLabelMetaLearner {
     @Override
     public TechnicalInformation getTechnicalInformation() {
         TechnicalInformation result = new TechnicalInformation(Type.ARTICLE);
-        result.setValue(Field.AUTHOR, "");
-        result.setValue(Field.TITLE, "");
-        result.setValue(Field.JOURNAL, "");
-        result.setValue(Field.PAGES, "");
-        result.setValue(Field.VOLUME, "");
-        result.setValue(Field.NUMBER, "");
-        result.setValue(Field.YEAR, "");
-
+        result.setValue(Field.AUTHOR, "Grigorios Tsoumakas and Ioannis Katakis and Ioannis Vlahavas");
+        result.setValue(Field.TITLE, "Random k-Labelsets for Multi-Label Classification");
+        result.setValue(Field.JOURNAL, "IEEE Transactions on Knowledge and Data Engineering");
+        result.setValue(Field.PAGES, "1079-1089");
+        result.setValue(Field.VOLUME, "23");
+        result.setValue(Field.NUMBER, "7");
+        result.setValue(Field.YEAR, "2011");
         return result;
     }
 
-    public RAkELd() throws Exception {
-        rnd = new Random();
+    /**
+     * Default constructor
+     */
+    public RAkELd() {
+        this(new BinaryRelevance(new J48()));
     }
 
+    /**
+     * Construct a new instance based on the given multi-label learner
+     * 
+     * @param baseLearner a multi-label learner
+     */
     public RAkELd(MultiLabelLearner baseLearner) {
         super(baseLearner);
         rnd = new Random();
     }
 
+    /**
+     * Constructs a new instance based on the given multi-label learner and 
+     * size of subset
+     * 
+     * @param baseLearner the multi-label learner
+     * @param subset the size of the subset
+     */
     public RAkELd(MultiLabelLearner baseLearner, int subset) {
         super(baseLearner);
         rnd = new Random();
@@ -121,15 +139,28 @@ public class RAkELd extends MultiLabelMetaLearner {
         //Todo: Check if subset <= numLabels, if not throw exception
     }
 
+    /**
+     * Sets the seed for random number generation
+     * 
+     * @param x the seed
+     */
     public void setSeed(int x) {
         seed = x;
         rnd = new Random(seed);
     }
 
+    /**
+     * Sets the size of the subsets
+     * @param size size of subsets
+     */
     public void setSizeOfSubset(int size) {
         sizeOfSubset = size;
     }
 
+    /**
+     * Returns the size of the subsets
+     * @return the size of the subsets
+     */
     public int getSizeOfSubset() {
         return sizeOfSubset;
     }
@@ -169,6 +200,13 @@ public class RAkELd extends MultiLabelMetaLearner {
         }
     }
 
+    /**
+     * Updates the current ensemble by training a specific classifier
+     * 
+     * @param mlTrainData the training data
+     * @param model the model to train
+     * @throws Exception
+     */
     public void updateClassifier(MultiLabelInstances mlTrainData, int model) throws Exception {
         Instances trainData = mlTrainData.getDataSet();
 
@@ -240,9 +278,17 @@ public class RAkELd extends MultiLabelMetaLearner {
         MultiLabelOutput mlo = new MultiLabelOutput(labels, confidences);
         return mlo;
     }
+
+    /**
+     * Returns a string describing classifier
+     * @return a description suitable for displaying 
+     */
+    public String globalInfo() {
+
+        return "Class implementing a generalized version of the RAkEL-d "
+                + "(RAndom k-labELsets) algorithm with disjoint labelsets. "
+                + "For more information, see\n\n"
+                + getTechnicalInformation().toString();
+    }
+
 }
-
-
-       
-
-
