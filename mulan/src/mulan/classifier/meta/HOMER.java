@@ -177,7 +177,6 @@ public class HOMER extends MultiLabelMetaLearner {
         return hmc.getTotalUsedTrainInsts();
     }
 
-    @Override
     public String globalInfo() {
         return "Class implementing the Hiearachy Of Multi-labEl leaRners " +
                "algorithm. For more information, see\n\n"

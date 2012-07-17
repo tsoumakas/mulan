@@ -167,7 +167,6 @@ public class HMCNode extends MultiLabelMetaLearner {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override
     public String globalInfo() {
         return "Class implementing a node in the Hierarchy Of Multi-labEl " +
                "leaRners algorithm. For more information, see\n\n"
