@@ -42,7 +42,8 @@ public class MicroPrecision extends LabelBasedPrecision {
     public double getValue() {
         double tp = Utils.sum(truePositives);
         double fp = Utils.sum(falsePositives);
-        return tp / (tp + fp);
+        double fn = Utils.sum(falseNegatives);
+        return InformationRetrievalMeasures.precision(tp, fp, fn);
     }
 
     public String getName() {

@@ -20,41 +20,29 @@
  */
 package mulan.evaluation.measure;
 
-import mulan.core.MulanRuntimeException;
-
 /**
  * Implementation of the macro-averaged recall measure.
  *
  * @author Grigorios Tsoumakas
- * @version 2011.09.06
+ * @version 2012.05.29
  */
 public class MacroSpecificity extends LabelBasedSpecificity {
-
-    private boolean strict;
 
     /**
      * Constructs a new object with given number of labels and strictness
      *
      * @param numOfLabels the number of labels
-     * @param isStrict when false, divisions-by-zero are ignored
      */
-    public MacroSpecificity(int numOfLabels, boolean isStrict) {
+    public MacroSpecificity(int numOfLabels) {
         super(numOfLabels);
-        strict = isStrict;
     }
 
     public double getValue() {
         double sum = 0;
         int count = 0;
         for (int labelIndex = 0; labelIndex < numOfLabels; labelIndex++) {
-            if (trueNegatives[labelIndex] + falsePositives[labelIndex] == 0) {
-                if (strict) {
-                    throw new MulanRuntimeException("None example actually positive");
-                } 
-            } else {
-                sum += trueNegatives[labelIndex] / (trueNegatives[labelIndex] + falsePositives[labelIndex]);
-                count++;
-            }
+            sum += InformationRetrievalMeasures.specificity(trueNegatives[labelIndex], falsePositives[labelIndex], falseNegatives[labelIndex]);
+            count++;
         }
         return sum / count;
     }

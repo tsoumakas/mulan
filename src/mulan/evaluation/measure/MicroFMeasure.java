@@ -26,17 +26,17 @@ import weka.core.Utils;
  * Implementation of the micro-averaged precision measure.
  *
  * @author Grigorios Tsoumakas
- * @version 2010.12.31
+ * @version 2012.05.29
  */
 public class MicroFMeasure extends LabelBasedFMeasure {
 
     /**
-     * Constructs a new object with given number of labels
+     * Constructs a new object with given number of labels and beta=1
      *
      * @param numOfLabels the number of labels
      */
     public MicroFMeasure(int numOfLabels) {
-        super(numOfLabels);
+        this(numOfLabels, 1);
     }
 
     /**
@@ -53,8 +53,7 @@ public class MicroFMeasure extends LabelBasedFMeasure {
         double tp = Utils.sum(truePositives);
         double fp = Utils.sum(falsePositives);
         double fn = Utils.sum(falseNegatives);
-
-        return FMeasure.compute(tp, fp, fn, beta);
+        return InformationRetrievalMeasures.fMeasure(tp, fp, fn, beta);
     }
 
     public String getName() {

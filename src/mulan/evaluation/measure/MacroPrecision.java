@@ -30,31 +30,21 @@ import mulan.core.MulanRuntimeException;
  */
 public class MacroPrecision extends LabelBasedPrecision {
 
-    private boolean strict;
-
     /**
      * Constructs a new object with given number of labels
      *
      * @param numOfLabels the number of labels
-     * @param isStrict when false, divisions-by-zero are ignored
      */
-    public MacroPrecision(int numOfLabels, boolean isStrict) {
+    public MacroPrecision(int numOfLabels) {
         super(numOfLabels);
-        strict = isStrict;
     }
 
     public double getValue() {
         double sum = 0;
         int count = 0;
         for (int labelIndex = 0; labelIndex < numOfLabels; labelIndex++) {
-            if (truePositives[labelIndex] + falsePositives[labelIndex] == 0) {
-                if (strict) {
-                    throw new MulanRuntimeException("None example predicted positive");
-                }
-            } else {
-                sum += truePositives[labelIndex] / (truePositives[labelIndex] + falsePositives[labelIndex]);
-                count++;
-            }
+            sum += InformationRetrievalMeasures.precision(truePositives[labelIndex], falsePositives[labelIndex], falseNegatives[labelIndex]);
+            count++;
         }
         return sum / count;
     }

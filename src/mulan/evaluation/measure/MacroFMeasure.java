@@ -20,39 +20,31 @@
  */
 package mulan.evaluation.measure;
 
-import mulan.core.MulanRuntimeException;
-
 /**
  * Implementation of the macro-averaged f measure.
  *
  * @author Grigorios Tsoumakas
- * @version 2010.12.31
+ * @version 2012.05.29
  */
 public class MacroFMeasure extends LabelBasedFMeasure {
 
-    private boolean strict;
-
     /**
-     * Constructs a new object with given number of labels and strictness
+     * Constructs a new object with given number of labels and beta=1
      *
      * @param numOfLabels the number of labels
-     * @param isStrict when false, divisions-by-zero are ignored
      */
-    public MacroFMeasure(int numOfLabels, boolean isStrict) {
-        super(numOfLabels);
-        strict = isStrict;
+    public MacroFMeasure(int numOfLabels) {
+        this(numOfLabels, 1);
     }
 
     /**
      * Full constructor
      *
      * @param numOfLabels the number of labels
-     * @param isStrict when false, divisions-by-zero are ignored
      * @param beta controls the combination of precision and recall
      */
-    public MacroFMeasure(int numOfLabels, boolean isStrict, double beta) {
+    public MacroFMeasure(int numOfLabels, double beta) {
         super(numOfLabels, beta);
-        strict = isStrict;
     }
 
     public String getName() {
@@ -63,21 +55,10 @@ public class MacroFMeasure extends LabelBasedFMeasure {
         double sum = 0;
         int count = 0;
         for (int labelIndex = 0; labelIndex < numOfLabels; labelIndex++) {
-            if (strict) {
-                sum += FMeasure.compute(truePositives[labelIndex],
-                                        falsePositives[labelIndex],
-                                        falseNegatives[labelIndex], beta);
-                count++;
-            } else {
-                try {
-                sum += FMeasure.compute(truePositives[labelIndex],
-                                        falsePositives[labelIndex],
-                                        falseNegatives[labelIndex], beta);
-                    count++;
-                } catch (MulanRuntimeException e) {
-                    continue;
-                }
-            }
+            sum += InformationRetrievalMeasures.fMeasure(truePositives[labelIndex],
+                    falsePositives[labelIndex],
+                    falseNegatives[labelIndex], beta);
+            count++;
         }
         return sum / count;
     }

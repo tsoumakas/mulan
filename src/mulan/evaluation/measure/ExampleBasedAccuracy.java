@@ -22,32 +22,27 @@ package mulan.evaluation.measure;
 
 /**
  * Implementation of the example-based accuracy measure.
- * 
+ *
  * @author Grigorios Tsoumakas
  * @version 2010.11.05
  */
 public class ExampleBasedAccuracy extends ExampleBasedBipartitionMeasureBase {
 
-    private final boolean strict;
     private final double forgivenessRate;
 
     /**
      * Constructs a new object
-     *
-     * @param strict when false, divisions by zero are ignored
      */
-    public ExampleBasedAccuracy(boolean strict) {
-        this(strict, 1.0);
+    public ExampleBasedAccuracy() {
+        this(1.0);
     }
 
     /**
      * Constructs a new object
      *
-     * @param strict when false, divisions by zero are ignored
      * @param aForgivenessRate the forgiveness rate
      */
-    public ExampleBasedAccuracy(boolean strict, double aForgivenessRate) {
-        this.strict = strict;
+    public ExampleBasedAccuracy(double aForgivenessRate) {
         forgivenessRate = aForgivenessRate;
     }
 
@@ -72,10 +67,11 @@ public class ExampleBasedAccuracy extends ExampleBasedBipartitionMeasureBase {
             }
         }
 
-        if (union == 0 && strict == false)
-            return;
-
-        sum += Math.pow(intersection / union, forgivenessRate);
+        if (union == 0) {
+            sum += Math.pow(1, forgivenessRate);
+        } else {
+            sum += Math.pow(intersection / union, forgivenessRate);
+        }
         count++;
     }
 }
