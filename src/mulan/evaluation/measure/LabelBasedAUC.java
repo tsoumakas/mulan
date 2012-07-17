@@ -21,13 +21,15 @@
 package mulan.evaluation.measure;
 
 import weka.classifiers.evaluation.NominalPrediction;
+import weka.classifiers.evaluation.ThresholdCurve;
 import weka.core.FastVector;
+import weka.core.Instances;
 
 /**
  * Implementation of the label-based macro precision measure.
  * 
  * @author Grigorios Tsoumakas
- * @version 2010.12.04
+ * @version 2012.07.17
  */
 public abstract class LabelBasedAUC extends ConfidenceMeasureBase {
 
@@ -63,6 +65,12 @@ public abstract class LabelBasedAUC extends ConfidenceMeasureBase {
         return 1;
     }
 
+    public double getValue(int labelIndex) {
+        ThresholdCurve tc = new ThresholdCurve();
+        Instances result = tc.getCurve(m_Predictions[labelIndex], 1);
+        return ThresholdCurve.getROCArea(result);  
+    }
+    
     protected void updateConfidence(double[] confidences, boolean[] truth) {
         for (int labelIndex = 0; labelIndex < numOfLabels; labelIndex++) {
 
