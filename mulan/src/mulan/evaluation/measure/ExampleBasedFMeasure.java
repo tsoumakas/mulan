@@ -20,36 +20,30 @@
  */
 package mulan.evaluation.measure;
 
-import mulan.core.MulanRuntimeException;
-
 /**
  * Implementation of the example-based F measure.
- * 
+ *
  * @author Grigorios Tsoumakas
- * @version 2010.12.31
+ * @version 2012.05.29
  */
 public class ExampleBasedFMeasure extends ExampleBasedBipartitionMeasureBase {
 
     private final double beta;
-    private final boolean strict;
 
     /**
      * Creates a new object
      *
-     * @param strict when false, divisions-by-zero are ignored
      */
-    public ExampleBasedFMeasure(boolean strict) {
-        this(strict, 1.0);
+    public ExampleBasedFMeasure() {
+        this(1.0);
     }
 
     /**
      * Creates a new object
      *
-     * @param strict when false, divisions-by-zero are ignored
      * @param beta the beta parameter for precision and recall combination
      */
-    public ExampleBasedFMeasure(boolean strict, double beta) {
-        this.strict = strict;
+    public ExampleBasedFMeasure(double beta) {
         this.beta = beta;
     }
 
@@ -78,16 +72,7 @@ public class ExampleBasedFMeasure extends ExampleBasedBipartitionMeasureBase {
             }
         }
 
-        if (strict) {
-            sum += FMeasure.compute(tp, fp, fn, beta);
-            count++;
-        } else {
-            try {
-                sum += FMeasure.compute(tp, fp, fn, beta);
-                count++;
-            } catch (MulanRuntimeException e) {
-                return;
-            }
-        }
+        sum += InformationRetrievalMeasures.fMeasure(tp, fp, fn, beta);
+        count++;
     }
 }

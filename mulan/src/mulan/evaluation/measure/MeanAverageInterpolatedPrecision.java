@@ -37,7 +37,7 @@ public class MeanAverageInterpolatedPrecision extends LabelBasedAveragePrecision
     private double[][] precision;//gia kathe label to precision gia kathe record tou test arff 
     private double[][] recall;//gia kathe label to recall gia kathe record tou test arff
     private double[][] interpolatedPrecision;//gia kathe label to interpolated precision gia kathe recall level
-    protected double[] averageInterpolatedPrecision;//gia kathe label o mesos oros twn interpolated
+    private double[] averageInterpolatedPrecision;//gia kathe label o mesos oros twn interpolated
     private double[] recallLevel;//pinakas me ta recall levels edw einai deka 
 
     /**
@@ -57,7 +57,17 @@ public class MeanAverageInterpolatedPrecision extends LabelBasedAveragePrecision
         return "Mean Average Interpolated Precision";
     }
 
-    protected void calculateAverageInterpolatedPrecisions() {
+    /**
+     * Returns the average interpolated precision of a label
+     *
+     * @param labelIndex the index of a label
+     * @return the average interpolated precision of the given label
+     */
+    public double getAverageInterpolatedPrecision(int labelIndex) {
+        return averageInterpolatedPrecision[labelIndex];
+    }
+
+    private void calculateAverageInterpolatedPrecisions() {
         recallLevel = new double[recallLevels];
         for (int j = 0; j < recallLevels; j++) {
             recallLevel[j] = (double) j / (recallLevels - 1);
@@ -106,9 +116,9 @@ public class MeanAverageInterpolatedPrecision extends LabelBasedAveragePrecision
                 sum += interpolatedPrecision[i][labelIndex];
             }
             averageInterpolatedPrecision[labelIndex] = sum / recallLevel.length;
-        }        
+        }
     }
-    
+
     @Override
     public double getValue() {
         calculateAverageInterpolatedPrecisions();

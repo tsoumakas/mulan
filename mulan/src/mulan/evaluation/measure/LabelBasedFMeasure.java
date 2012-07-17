@@ -22,7 +22,7 @@ package mulan.evaluation.measure;
 
 /**
  * Base implementation of the label-based macro/micro f-measures.
- * 
+ *
  * @author Grigorios Tsoumakas
  * @version 2010.12.31
  */
@@ -57,20 +57,15 @@ public abstract class LabelBasedFMeasure extends LabelBasedBipartitionMeasureBas
         return 1;
     }
 
-    protected void updateBipartition(boolean[] bipartition, boolean[] truth) {
-        for (int labelIndex = 0; labelIndex < numOfLabels; labelIndex++) {
-            boolean actual = truth[labelIndex];
-            boolean predicted = bipartition[labelIndex];
-
-            if (actual && predicted) {
-                truePositives[labelIndex]++;
-            }
-            if (!actual && predicted) {
-                falsePositives[labelIndex]++;
-            }
-            if (actual && !predicted) {
-                falseNegatives[labelIndex]++;
-            }
-        }
+    /**
+     * Returns the F-Measure for a label
+     *
+     * @param labelIndex the index of a label (starting from 0)
+     * @return the F-Measure for the given label
+     */
+    public double getValue(int labelIndex) {
+        return InformationRetrievalMeasures.fMeasure(truePositives[labelIndex],
+                falsePositives[labelIndex],
+                falseNegatives[labelIndex], beta);
     }
 }

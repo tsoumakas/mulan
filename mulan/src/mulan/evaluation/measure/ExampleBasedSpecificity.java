@@ -22,13 +22,11 @@ package mulan.evaluation.measure;
 
 /**
  * Implementation of the example-based recall measure.
- * 
+ *
  * @author Grigorios Tsoumakas
- * @version 2011.09.06
+ * @version 2012.05.29
  */
 public class ExampleBasedSpecificity extends ExampleBasedBipartitionMeasureBase {
-
-    private final boolean strict;
 
     public String getName() {
         return "Example-Based Specificity";
@@ -38,32 +36,26 @@ public class ExampleBasedSpecificity extends ExampleBasedBipartitionMeasureBase 
         return 1;
     }
 
-    /**
-     * Creates a new object
-     *
-     * @param strict when false, divisions-by-zero are ignored
-     */
-    public ExampleBasedSpecificity(boolean strict) {
-        this.strict = strict;
-    }
-
     @Override
     protected void updateBipartition(boolean[] bipartition, boolean[] truth) {
         double tn = 0;
-        double negatives = 0;
+        double fp = 0;
+        double fn = 0;
         for (int i = 0; i < truth.length; i++) {
             if (!truth[i]) {
-                negatives++;
                 if (!bipartition[i]) {
                     tn++;
+                } else {
+                    fp++;
+                }
+            } else {
+                if (!bipartition[i]) {
+                    fn++;
                 }
             }
         }
 
-        if (negatives == 0 && strict == false)
-            return;
-
-        sum += tn / negatives;
+        sum += InformationRetrievalMeasures.specificity(tn, fp, fn);
         count++;
     }
 }

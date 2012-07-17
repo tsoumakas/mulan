@@ -22,13 +22,11 @@ package mulan.evaluation.measure;
 
 /**
  * Implementation of the example-based precision measure.
- * 
+ *
  * @author Grigorios Tsoumakas
- * @version 2010.11.05
+ * @version 2012.05.29
  */
 public class ExampleBasedPrecision extends ExampleBasedBipartitionMeasureBase {
-
-    private final boolean strict;
 
     public String getName() {
         return "Example-Based Precision";
@@ -38,32 +36,25 @@ public class ExampleBasedPrecision extends ExampleBasedBipartitionMeasureBase {
         return 1;
     }
 
-    /**
-     * Creates a new object
-     *
-     * @param strict when false, divisions-by-zero are ignored
-     */
-    public ExampleBasedPrecision(boolean strict) {
-        this.strict = strict;
-    }
-
     @Override
     protected void updateBipartition(boolean[] bipartition, boolean[] truth) {
-        double intersection = 0;
-        double predicted = 0;
+        double tp = 0;
+        double fp = 0;
+        double fn = 0;
         for (int i = 0; i < truth.length; i++) {
             if (bipartition[i]) {
-                predicted++;
                 if (truth[i]) {
-                    intersection++;
+                    tp++;
+                } else {
+                    fp++;
+                }
+            } else {
+                if (truth[i]) {
+                    fn++;
                 }
             }
         }
-        if (predicted == 0 && strict == false)
-            return;
-
-        sum += intersection / predicted;
+        sum += InformationRetrievalMeasures.precision(tp, fp, fn);
         count++;
     }
-
 }

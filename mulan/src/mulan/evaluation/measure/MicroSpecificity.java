@@ -26,7 +26,7 @@ import weka.core.Utils;
  * Implementation of the micro-averaged recall measure.
  *
  * @author Grigorios Tsoumakas
- * @version 2011.09.06
+ * @version 2012.05.29
  */
 public class MicroSpecificity extends LabelBasedSpecificity {
 
@@ -42,7 +42,8 @@ public class MicroSpecificity extends LabelBasedSpecificity {
     public double getValue() {
         double tn = Utils.sum(trueNegatives);
         double fp = Utils.sum(falsePositives);
-        return tn / (tn + fp);
+        double fn = Utils.sum(falseNegatives);
+        return InformationRetrievalMeasures.specificity(tn, fp, fn);
     }
 
     public String getName() {

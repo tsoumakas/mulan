@@ -26,8 +26,15 @@ package mulan.evaluation.measure;
  * @author Fragkiskos Chatziasimidis
  * @author John Panagos
  * @version 2012.05.24
- */public class GeometricMeanAverageInterpolatedPrecision extends MeanAverageInterpolatedPrecision {
+ */
+public class GeometricMeanAverageInterpolatedPrecision extends MeanAverageInterpolatedPrecision {
 
+    /**
+     * Creates a new object
+     *
+     * @param numOfLabels the number of labels
+     * @param recallLevels the number of recall levels
+     */
     public GeometricMeanAverageInterpolatedPrecision(int numOfLabels, int recallLevels) {
         super(numOfLabels, recallLevels);
     }
@@ -39,10 +46,10 @@ package mulan.evaluation.measure;
 
     @Override
     public double getValue() {
-        calculateAverageInterpolatedPrecisions();
+        super.getValue();
         double productAvgPre = 1;
         for (int labelIndex = 0; labelIndex < numOfLabels; labelIndex++) {
-            productAvgPre = productAvgPre * averageInterpolatedPrecision[labelIndex];
+            productAvgPre = productAvgPre * getAverageInterpolatedPrecision(labelIndex);
         }
         return Math.pow(productAvgPre, 1.0 / numOfLabels);
     }

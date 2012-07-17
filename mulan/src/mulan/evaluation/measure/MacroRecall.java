@@ -26,35 +26,25 @@ import mulan.core.MulanRuntimeException;
  * Implementation of the macro-averaged recall measure.
  *
  * @author Grigorios Tsoumakas
- * @version 2010.11.05
+ * @version 2012.05.29
  */
 public class MacroRecall extends LabelBasedRecall {
 
-    private boolean strict;
-
     /**
-     * Constructs a new object with given number of labels and strictness
+     * Constructs a new object with given number of labels
      *
      * @param numOfLabels the number of labels
-     * @param isStrict when false, divisions-by-zero are ignored
      */
-    public MacroRecall(int numOfLabels, boolean isStrict) {
+    public MacroRecall(int numOfLabels) {
         super(numOfLabels);
-        strict = isStrict;
     }
 
     public double getValue() {
         double sum = 0;
         int count = 0;
         for (int labelIndex = 0; labelIndex < numOfLabels; labelIndex++) {
-            if (truePositives[labelIndex] + falseNegatives[labelIndex] == 0) {
-                if (strict) {
-                    throw new MulanRuntimeException("None example actually positive");
-                } 
-            } else {
-                sum += truePositives[labelIndex] / (truePositives[labelIndex] + falseNegatives[labelIndex]);
-                count++;
-            }
+            sum += InformationRetrievalMeasures.recall(truePositives[labelIndex], falsePositives[labelIndex], falseNegatives[labelIndex]);
+            count++;
         }
         return sum / count;
     }

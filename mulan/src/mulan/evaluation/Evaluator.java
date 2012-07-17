@@ -89,7 +89,7 @@ public class Evaluator {
 
         int numLabels = data.getNumLabels();
         int[] labelIndices = data.getLabelIndices();
-        boolean[] trueLabels = new boolean[numLabels];
+        boolean[] trueLabels;
         Set<Measure> failed = new HashSet<Measure>();
         Instances testData = data.getDataSet();
         int numInstances = testData.numInstances();
@@ -170,21 +170,21 @@ public class Evaluator {
                 // add example-based measures
                 measures.add(new HammingLoss());
                 measures.add(new SubsetAccuracy());
-                measures.add(new ExampleBasedPrecision(strict));
-                measures.add(new ExampleBasedRecall(strict));
-                measures.add(new ExampleBasedFMeasure(strict));
-                measures.add(new ExampleBasedAccuracy(strict));
-                measures.add(new ExampleBasedSpecificity(strict));
+                measures.add(new ExampleBasedPrecision());
+                measures.add(new ExampleBasedRecall());
+                measures.add(new ExampleBasedFMeasure());
+                measures.add(new ExampleBasedAccuracy());
+                measures.add(new ExampleBasedSpecificity());
                 // add label-based measures
                 int numOfLabels = data.getNumLabels();
                 measures.add(new MicroPrecision(numOfLabels));
                 measures.add(new MicroRecall(numOfLabels));
                 measures.add(new MicroFMeasure(numOfLabels));
                 measures.add(new MicroSpecificity(numOfLabels));
-                measures.add(new MacroPrecision(numOfLabels, strict));
-                measures.add(new MacroRecall(numOfLabels, strict));
-                measures.add(new MacroFMeasure(numOfLabels, strict));
-                measures.add(new MacroSpecificity(numOfLabels, strict));
+                measures.add(new MacroPrecision(numOfLabels));
+                measures.add(new MacroRecall(numOfLabels));
+                measures.add(new MacroFMeasure(numOfLabels));
+                measures.add(new MacroSpecificity(numOfLabels));
             }
             // add ranking-based measures if applicable
             if (prediction.hasRanking()) {
@@ -200,6 +200,9 @@ public class Evaluator {
             if (prediction.hasConfidences()) {
                 int numOfLabels = data.getNumLabels();
                 measures.add(new MeanAveragePrecision(numOfLabels));
+                measures.add(new GeometricMeanAveragePrecision(numOfLabels));
+                measures.add(new MeanAverageInterpolatedPrecision(numOfLabels, 10));
+                measures.add(new GeometricMeanAverageInterpolatedPrecision(numOfLabels, 10));
                 measures.add(new MicroAUC(numOfLabels));
                 measures.add(new MacroAUC(numOfLabels));
             }
