@@ -39,6 +39,13 @@ import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
 
 /**
+ <!-- globalinfo-start -->
+ * Class that learns to predict a different threshold per exampleFor more information, see<br/>
+ * <br/>
+ * Elisseeff, Andre, Weston, Jason: A kernel method for multi-labelled classification. In: Proceedings of NIPS 14, 2002.
+ * <p/>
+ <!-- globalinfo-end -->
+ *
  <!-- technical-bibtex-start -->
  * BibTeX:
  * <pre>
@@ -122,6 +129,7 @@ public class ThresholdPrediction extends Meta {
             MultiLabelInstances mlTest;
             if (kFoldsCV == 1) {
                 tempLearner = baseLearner;
+                tempLearner.build(trainingData);
                 mlTest = trainingData;
             } else {
                 Instances train = trainingData.getDataSet().trainCV(kFoldsCV, k);
@@ -150,7 +158,7 @@ public class ThresholdPrediction extends Meta {
                     trueLabels[i] = classValue.equals("1");
                 }
 
-                MultiLabelOutput mlo = baseLearner.makePrediction(mlTest.getDataSet().instance(instanceIndex));
+                MultiLabelOutput mlo = tempLearner.makePrediction(mlTest.getDataSet().instance(instanceIndex));
                 double[] arrayOfScores = mlo.getConfidences();
                 ArrayList<Double> list = new ArrayList();
                 for (int i = 0; i < numLabels; i++) {
@@ -194,5 +202,12 @@ public class ThresholdPrediction extends Meta {
         result.setValue(Field.BOOKTITLE, "Proceedings of NIPS 14");
         result.setValue(Field.YEAR, "2002");
         return result;
+    }
+
+    @Override
+    public String globalInfo() {
+        return "Class that learns to predict a different threshold per example" 
+             + "For more information, see\n\n"
+             + getTechnicalInformation().toString();
     }
 }
