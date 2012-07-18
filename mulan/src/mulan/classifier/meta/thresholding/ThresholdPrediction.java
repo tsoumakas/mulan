@@ -204,7 +204,6 @@ public class ThresholdPrediction extends Meta {
         return result;
     }
 
-    @Override
     public String globalInfo() {
         return "Class that learns to predict a different threshold per example" 
              + "For more information, see\n\n"
