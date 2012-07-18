@@ -30,10 +30,10 @@ import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.ReplaceMissingValues;
 
 /**
- <!-- globalinfo-start --> 
- * Cluster data using the constrained k means algorithm <p/>
+ <!-- globalinfo-start -->
+ * Cluster data using the constrained k means algorithm
+ * <p/>
  <!-- globalinfo-end -->
- *
  *
  * @author Mark Hall
  * @author Eibe Frank
@@ -598,62 +598,6 @@ public class ConstrainedKMeans extends RandomizableClusterer implements NumberOf
      */
     public int getNumClusters() {
         return m_NumClusters;
-    }
-
-    /**
-     * Parses a given list of options.
-     * <p/>
-     *
-     * <!-- options-start --> Valid options are:
-     * <p/>
-     *
-     * <pre> -N &lt;num&gt;
-     *  number of clusters.
-     *  (default 2).</pre>
-     *
-     * <pre> -S &lt;num&gt;
-     *  Random number seed.
-     *  (default 10)</pre>
-     *
-     * <!-- options-end -->
-     *
-     * @param options the list of options as an array of strings
-     * @throws Exception if an option is not supported
-     */
-    @Override
-    public void setOptions(String[] options)
-            throws Exception {
-
-        String optionString = Utils.getOption('N', options);
-
-        if (optionString.length() != 0) {
-            setNumClusters(Integer.parseInt(optionString));
-        }
-        super.setOptions(options);
-    }
-
-    /**
-     * Gets the current settings of SimpleKMeans
-     *
-     * @return an array of strings suitable for passing to setOptions()
-     */
-    @Override
-    public String[] getOptions() {
-        int i;
-        Vector result;
-        String[] options;
-
-        result = new Vector();
-
-        result.add("-N");
-        result.add("" + getNumClusters());
-
-        options = super.getOptions();
-        for (i = 0; i < options.length; i++) {
-            result.add(options[i]);
-        }
-
-        return (String[]) result.toArray(new String[result.size()]);
     }
 
     /**
