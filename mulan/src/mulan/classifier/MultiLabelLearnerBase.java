@@ -16,20 +16,15 @@
 
 /*
  *    MultiLabelLearnerBase.java
- *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
  */
 package mulan.classifier;
 
 import java.io.Serializable;
 import java.util.Date;
-
 import mulan.core.ArgumentNullException;
 import mulan.data.MultiLabelInstances;
-import weka.core.Instance;
-import weka.core.Instances;
-import weka.core.SerializedObject;
-import weka.core.TechnicalInformation;
-import weka.core.TechnicalInformationHandler;
+import weka.core.*;
 
 /**
  * Common root base class for all multi-label learner types.
@@ -38,6 +33,7 @@ import weka.core.TechnicalInformationHandler;
  * @author Robert Friberg
  * @author Jozef Vilcek
  * @author Grigorios Tsoumakas
+ * @version 2010.12.27
  */
 public abstract class MultiLabelLearnerBase
         implements TechnicalInformationHandler, MultiLabelLearner, Serializable {
@@ -60,14 +56,8 @@ public abstract class MultiLabelLearnerBase
      * {@link Instances} object of the training data in increasing order.
      */
     protected int[] featureIndices;
+    /** Whether debugging is on/off */
     private boolean isDebug = false;
-
-    /**
-     * Gets the {@link TechnicalInformation} for the current learner type.
-     *
-     * @return technical information
-     */
-    public abstract TechnicalInformation getTechnicalInformation();
 
     public boolean isUpdatable() {
         /** as default learners are assumed not to be updatable */
@@ -128,6 +118,7 @@ public abstract class MultiLabelLearnerBase
      * @param instance the data instance to predict on
      * @throws Exception if an error occurs while making the prediction.
      * @throws InvalidDataException if specified instance data is invalid and can not be processed by the learner
+     * @return the output of the learner for the given instance
      */
     protected abstract MultiLabelOutput makePredictionInternal(Instance instance) throws Exception, InvalidDataException;
 
@@ -165,4 +156,22 @@ public abstract class MultiLabelLearnerBase
     public MultiLabelLearner makeCopy() throws Exception {
         return (MultiLabelLearner) new SerializedObject(this).getObject();
     }
+
+
+    /**
+     * Returns an instance of a TechnicalInformation object, containing detailed
+     * information about the technical background of this class, e.g., paper
+     * reference or book this class is based on.
+     *
+     * @return the technical information about this class
+     */
+    abstract public TechnicalInformation getTechnicalInformation();    
+    
+    
+    /**
+     * Returns a string describing the multi-label learner.
+     *
+     * @return a description suitable for displaying in a future gui
+     */
+    abstract public String globalInfo(); 
 }

@@ -162,7 +162,6 @@ public class HMCNode extends MultiLabelMetaLearner {
         return nodeName;
     }
 
-    @Override
     public TechnicalInformation getTechnicalInformation() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
