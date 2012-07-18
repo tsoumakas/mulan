@@ -461,6 +461,13 @@ public class Statistics implements Serializable, TechnicalInformationHandler {
         return labelsets.get(x);
     }
 
+    /**
+     * Returns an instance of a TechnicalInformation object, containing detailed
+     * information about the technical background of this class, e.g., paper
+     * reference or book this class is based on.
+     *
+     * @return the technical information about this class
+     */
     public TechnicalInformation getTechnicalInformation() {
         TechnicalInformation result = new TechnicalInformation(Type.INCOLLECTION);
         result.setValue(Field.AUTHOR, "Tsoumakas, Grigorios and Katakis, Ioannis and Vlahavas, Ioannis");
@@ -474,7 +481,11 @@ public class Statistics implements Serializable, TechnicalInformationHandler {
         return result;
     }
     
-    public String globalInfo() {
+    /**
+     * Returns a string describing this class.
+     *
+     * @return a description suitable for displaying in a future gui
+     */    public String globalInfo() {
         return "Class for calculating statistics of a multi-label dataset. "
                 + "For more information, see\n\n"
                 + getTechnicalInformation().toString();

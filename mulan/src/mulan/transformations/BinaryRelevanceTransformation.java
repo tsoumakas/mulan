@@ -47,7 +47,7 @@ public class BinaryRelevanceTransformation implements Serializable {
     /**
      * Constructor
      *
-     * @param num the number of labels
+     * @param data a multi-label dataset
      */
     public BinaryRelevanceTransformation(MultiLabelInstances data) {
         try {
@@ -99,7 +99,6 @@ public class BinaryRelevanceTransformation implements Serializable {
     /**
      * Remove all label attributes except labelToKeep
      *
-     * @param train
      * @param labelToKeep
      * @return transformed Instances object
      * @throws Exception

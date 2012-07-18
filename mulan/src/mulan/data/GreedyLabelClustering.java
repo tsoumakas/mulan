@@ -265,59 +265,115 @@ public class GreedyLabelClustering implements LabelClustering, Serializable {
 		return newClusters;
 	}
 
-	public int getNumFolds() {
+        /**
+         * 
+         * @return
+         */
+        public int getNumFolds() {
 		return numFolds;
 	}
 
-	public void setNumFolds(int numFolds) {
+        /**
+         * 
+         * @param numFolds
+         */
+        public void setNumFolds(int numFolds) {
 		this.numFolds = numFolds;
 	}
 
-	public Measure getMeasure() {
+        /**
+         * 
+         * @return
+         */
+        public Measure getMeasure() {
 		return measure;
 	}
 
-	public void setMeasure(Measure measure) {
+        /**
+         * 
+         * @param measure
+         */
+        public void setMeasure(Measure measure) {
 		this.measure = measure;
 	}
 
-	public int getAllowedNonImprovementSteps() {
+        /**
+         * 
+         * @return
+         */
+        public int getAllowedNonImprovementSteps() {
 		return allowedNonImprovementSteps;
 	}
 
-	public void setAllowedNonImprovementSteps(int allowedNonImprovementSteps) {
+        /**
+         * 
+         * @param allowedNonImprovementSteps
+         */
+        public void setAllowedNonImprovementSteps(int allowedNonImprovementSteps) {
 		this.allowedNonImprovementSteps = allowedNonImprovementSteps;
 	}
 
-	public double getCriticalValue() {
+        /**
+         * 
+         * @return
+         */
+        public double getCriticalValue() {
 		return criticalValue;
 	}
 
-	public void setCriticalValue(double criticalValue) {
+        /**
+         * 
+         * @param criticalValue
+         */
+        public void setCriticalValue(double criticalValue) {
 		this.criticalValue = criticalValue;
 	}
 
-	public Classifier getSingleLabelLearner() {
+        /**
+         * 
+         * @return
+         */
+        public Classifier getSingleLabelLearner() {
 		return singleLabelLearner;
 	}
 
-	public MultiLabelLearner getMultiLabelLearner() {
+        /**
+         * 
+         * @return
+         */
+        public MultiLabelLearner getMultiLabelLearner() {
 		return multiLabelLearner;
 	}
 
-	public boolean isUseSubsetLearnerCache() {
+        /**
+         * 
+         * @return
+         */
+        public boolean isUseSubsetLearnerCache() {
 		return useSubsetLearnerCache;
 	}
 
-	public void setUseSubsetLearnerCache(boolean useSubsetLearnerCache) {
+        /**
+         * 
+         * @param useSubsetLearnerCache
+         */
+        public void setUseSubsetLearnerCache(boolean useSubsetLearnerCache) {
 		this.useSubsetLearnerCache = useSubsetLearnerCache;
 	}
 
-	public boolean isInternalSubsetLearnerDebug() {
+        /**
+         * 
+         * @return
+         */
+        public boolean isInternalSubsetLearnerDebug() {
 		return internalSubsetLearnerDebug;
 	}
 
-	public void setInternalSubsetLearnerDebug(boolean internalSubsetLearnerDebug) {
+        /**
+         * 
+         * @param internalSubsetLearnerDebug
+         */
+        public void setInternalSubsetLearnerDebug(boolean internalSubsetLearnerDebug) {
 		this.internalSubsetLearnerDebug = internalSubsetLearnerDebug;
 	}
 }

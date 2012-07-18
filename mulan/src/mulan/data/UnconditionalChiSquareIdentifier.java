@@ -79,6 +79,10 @@ public class UnconditionalChiSquareIdentifier implements LabelPairsDependenceIde
         return pairs;
     }
 
+    /**
+     * 
+     * @param criticalValue
+     */
     public void setCriticalValue(double criticalValue) {
         this.criticalValue = criticalValue;
     }

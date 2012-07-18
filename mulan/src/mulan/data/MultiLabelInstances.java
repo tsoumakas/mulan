@@ -638,6 +638,11 @@ public class MultiLabelInstances implements Serializable {
         return counter + 1;
     }
 
+    /**
+     * Returns the depth of the labels
+     * 
+     * @return the depth of the labels
+     */
     public int[] getLabelDepthIndices() {
         int[] labelDepthIndices = new int[labelsMetaData.getNumLabels()];
         int numAttributes = dataSet.numAttributes();

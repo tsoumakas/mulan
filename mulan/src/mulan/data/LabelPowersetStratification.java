@@ -40,6 +40,13 @@ public class LabelPowersetStratification implements Stratification, TechnicalInf
 
     private int seed;
 
+    /**
+     * Returns an instance of a TechnicalInformation object, containing detailed
+     * information about the technical background of this class, e.g., paper
+     * reference or book this class is based on.
+     *
+     * @return the technical information about this class
+     */
     public TechnicalInformation getTechnicalInformation() {
         TechnicalInformation result;
 
@@ -58,10 +65,18 @@ public class LabelPowersetStratification implements Stratification, TechnicalInf
         return result;
     }
     
+    /**
+     * Default constructor
+     */
     public LabelPowersetStratification() {
         seed = 0;
     }
     
+    /**
+     * Constructor setting the random seed
+     * 
+     * @param aSeed 
+     */    
     public LabelPowersetStratification(int aSeed) {
         seed = aSeed;
     }

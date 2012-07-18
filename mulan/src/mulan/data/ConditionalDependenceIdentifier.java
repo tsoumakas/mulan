@@ -296,6 +296,10 @@ public class ConditionalDependenceIdentifier implements LabelPairsDependenceIden
         return dataset;
     }
 
+    /**
+     * 
+     * @param criticalValue
+     */
     public void setCriticalValue(double criticalValue) {
         this.criticalValue = criticalValue;
     }
@@ -304,18 +308,34 @@ public class ConditionalDependenceIdentifier implements LabelPairsDependenceIden
         return criticalValue;
     }
 
+    /**
+     * 
+     * @return
+     */
     public int getSeed() {
         return seed;
     }
 
+    /**
+     * 
+     * @param seed
+     */
     public void setSeed(int seed) {
         this.seed = seed;
     }
 
+    /**
+     * 
+     * @return
+     */
     public int getNumFolds() {
         return numFolds;
     }
 
+    /**
+     * 
+     * @param numFolds
+     */
     public void setNumFolds(int numFolds) {
         this.numFolds = numFolds;
     }
