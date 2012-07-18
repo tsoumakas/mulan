@@ -26,116 +26,139 @@ import mulan.classifier.InvalidDataException;
 import mulan.classifier.MultiLabelLearner;
 import mulan.classifier.MultiLabelOutput;
 import mulan.classifier.meta.MultiLabelMetaLearner;
+import mulan.classifier.transformation.BinaryRelevance;
 import mulan.data.MultiLabelInstances;
+import weka.classifiers.trees.J48;
 import weka.core.Instance;
 import weka.core.TechnicalInformation;
 import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
 
 /**
- * This class takes the marginal probabilities estimated for each label by
- * a multi-label learner and transforms them into a bipartition which is
- * approximately optimal for example-based FMeasure. This optimizer assumes
- * independence of the target variables (labels) and the optimal solution always
- * contains the labels with the highest marginal probabilities.
- * 
- * @author Eleftherios Spyromitros-Xioufis ( espyromi@csd.auth.gr )
- * 
+ <!-- globalinfo-start -->
+ * This class takes the marginal probabilities estimated for each label by a multi-label learner and transforms them into a bipartition which is approximately optimal for example-based FMeasure. This optimizer assumes independence of the target variables (labels) and the optimal solution always contains the labels with the highest marginal probabilities. For more information, see<br/>
+ * <br/>
+ * David Lewis: Evaluating and optimizing autonomous text classification systems. In: Proceedings of the 18th annual international ACM SIGIR conference on Research and development in information retrieval (SIGIR 1995), 1995.
+ * <p/>
+ <!-- globalinfo-end -->
+ *
+ <!-- technical-bibtex-start -->
+ * BibTeX:
+ * <pre>
+ * &#64;inproceedings{Lewis1995,
+ *    author = {David Lewis},
+ *    booktitle = {Proceedings of the 18th annual international ACM SIGIR conference on Research and development in information retrieval (SIGIR 1995)},
+ *    title = {Evaluating and optimizing autonomous text classification systems},
+ *    year = {1995}
+ * }
+ * </pre>
+ * <p/>
+ <!-- technical-bibtex-end -->
+ *
+ * @author Eleftherios Spyromitros-Xioufis
+ * @version 2012.07.16
  */
 public class ExampleBasedFMeasureOptimizer extends MultiLabelMetaLearner {
 
-	/**
-	 * The supplied multi-label learner should be able to output marginal
-	 * probabilities.
-	 * 
-	 * @param baseLearner
-	 */
-	public ExampleBasedFMeasureOptimizer(MultiLabelLearner baseLearner) {
-		super(baseLearner);
-	}
+    /**
+     * The supplied multi-label learner should be able to output marginal
+     * probabilities.
+     *
+     * @param baseLearner
+     */
+    public ExampleBasedFMeasureOptimizer(MultiLabelLearner baseLearner) {
+        super(baseLearner);
+    }
 
-	@Override
-	protected void buildInternal(MultiLabelInstances trainingSet) throws Exception {
-		baseLearner.build(trainingSet);
-	}
+    /**
+     * Default constructor
+     */
+    public ExampleBasedFMeasureOptimizer() {
+        this(new BinaryRelevance(new J48()));
+    }
 
-	@Override
-	protected MultiLabelOutput makePredictionInternal(Instance instance) throws Exception,
-			InvalidDataException {
-		MultiLabelOutput mlo = baseLearner.makePrediction(instance);
-		double[] marginals = mlo.getConfidences();
-		boolean[] bipartition = bipartitionFromMarginals(marginals);
-		mlo = new MultiLabelOutput(bipartition, marginals);
-		return mlo;
-	}
+    @Override
+    protected void buildInternal(MultiLabelInstances trainingSet) throws Exception {
+        baseLearner.build(trainingSet);
+    }
 
-	/**
-	 * This method takes as input the marginal probabilities for each label and
-	 * returns a bipartition approximately optimized for example-based F-Measure
-	 * 
-	 * @param confidences
-	 * @return
-	 */
-	private boolean[] bipartitionFromMarginals(double[] confidences) {
-		boolean[] bipartition = new boolean[numLabels];
+    @Override
+    protected MultiLabelOutput makePredictionInternal(Instance instance) throws Exception,
+            InvalidDataException {
+        MultiLabelOutput mlo = baseLearner.makePrediction(instance);
+        double[] marginals = mlo.getConfidences();
+        boolean[] bipartition = bipartitionFromMarginals(marginals);
+        mlo = new MultiLabelOutput(bipartition, marginals);
+        return mlo;
+    }
 
-		int[] sortedIndices = weka.core.Utils.stableSort(confidences);
-		double[] sortedConfidences = Arrays.copyOfRange(confidences, 0, confidences.length);
-		Arrays.sort(sortedConfidences);
-		double BestF = 0;
-		double topN = 0;
-		for (int i = 0; i < numLabels; i++) {
-			double F = 0;
-			double nominator = 0;
-			double denom1 = 0;
-			double denom2 = 0;
-			for (int j = 0; j < numLabels; j++) {
-				double h;
-				if (j > i) {
-					h = 0;
-				} else {
-					h = 1;
-				}
-				nominator += sortedConfidences[numLabels - 1 - j] * h;
-				denom1 += sortedConfidences[numLabels - 1 - j];
-				denom2 += h;
-			}
-			F = (2 * nominator) / (denom1 + denom2);
-			if (F > BestF) {
-				BestF = F;
-				topN++;
-			}
-		}
+    /**
+     * This method takes as input the marginal probabilities for each label and
+     * returns a bipartition approximately optimized for example-based F-Measure
+     *
+     * @param confidences
+     * @return
+     */
+    private boolean[] bipartitionFromMarginals(double[] confidences) {
+        boolean[] bipartition = new boolean[numLabels];
 
-		if (topN == 0) {
-			// always output at least one label (the one with the highest
-			// marginal probability)
-			topN = 1;
-		}
-		for (int i = 0; i < topN; i++) {
-			bipartition[sortedIndices[numLabels - 1 - i]] = true;
-		}
-		return bipartition;
-	}
+        int[] sortedIndices = weka.core.Utils.stableSort(confidences);
+        double[] sortedConfidences = Arrays.copyOfRange(confidences, 0, confidences.length);
+        Arrays.sort(sortedConfidences);
+        double BestF = 0;
+        double topN = 0;
+        for (int i = 0; i < numLabels; i++) {
+            double nominator = 0;
+            double denom1 = 0;
+            double denom2 = 0;
+            for (int j = 0; j < numLabels; j++) {
+                double h;
+                if (j > i) {
+                    h = 0;
+                } else {
+                    h = 1;
+                }
+                nominator += sortedConfidences[numLabels - 1 - j] * h;
+                denom1 += sortedConfidences[numLabels - 1 - j];
+                denom2 += h;
+            }
+            double F = (2 * nominator) / (denom1 + denom2);
+            if (F > BestF) {
+                BestF = F;
+                topN++;
+            }
+        }
 
-	/**
-	 * Returns an instance of a TechnicalInformation object, containing detailed
-	 * information about the technical background of this class, e.g., paper
-	 * reference or book this class is based on.
-	 * 
-	 * @return the technical information about this class
-	 */
-	public TechnicalInformation getTechnicalInformation() {
-		TechnicalInformation result = new TechnicalInformation(Type.INPROCEEDINGS);
-		result.setValue(Field.AUTHOR, "David Lewis");
-		result.setValue(Field.TITLE, "Evaluating and optimizing autonomous text classification systems");
-		result
-				.setValue(
-						Field.BOOKTITLE,
-						"Proceedings of the 18th annual international ACM SIGIR conference on Research and development in information retrieval (SIGIR 1995)");
-		result.setValue(Field.YEAR, "1995");
+        if (topN == 0) {
+            // always output at least one label (the one with the highest
+            // marginal probability)
+            topN = 1;
+        }
+        for (int i = 0; i < topN; i++) {
+            bipartition[sortedIndices[numLabels - 1 - i]] = true;
+        }
+        return bipartition;
+    }
 
-		return result;
-	}
+    public TechnicalInformation getTechnicalInformation() {
+        TechnicalInformation result = new TechnicalInformation(Type.INPROCEEDINGS);
+        result.setValue(Field.AUTHOR, "David Lewis");
+        result.setValue(Field.TITLE, "Evaluating and optimizing autonomous text classification systems");
+        result.setValue(Field.BOOKTITLE, "Proceedings of the 18th annual international ACM SIGIR conference on Research and development in information retrieval (SIGIR 1995)");
+        result.setValue(Field.YEAR, "1995");
+        return result;
+    }
 
+    public String globalInfo() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("This class takes the marginal probabilities estimated for ");
+        sb.append("each label by a multi-label learner and transforms them ");
+        sb.append("into a bipartition which is approximately optimal for ");
+        sb.append("example-based FMeasure. This optimizer assumes ");
+        sb.append("independence of the target variables (labels) and the ");
+        sb.append("optimal solution always contains the labels with the ");
+        sb.append("highest marginal probabilities. For more information, ");
+        sb.append("see\n\n").append(getTechnicalInformation().toString());
+        return sb.toString();
+    }
 }

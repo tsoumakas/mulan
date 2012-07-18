@@ -37,17 +37,16 @@ import weka.core.Instances;
 public class BinaryRelevance extends TransformationBasedMultiLabelLearner {
 
     /**
-     * The ensemble of binary relevance models. These are Weka
-     * Classifier objects.
+     * The ensemble of binary relevance models. These are Weka Classifier
+     * objects.
      */
     protected Classifier[] ensemble;
     /**
      * The correspondence between ensemble models and labels
      */
     private String[] correspondence;
-
     private BinaryRelevanceTransformation brt;
-    
+
     /**
      * Creates a new instance
      *
@@ -62,14 +61,16 @@ public class BinaryRelevance extends TransformationBasedMultiLabelLearner {
         ensemble = new Classifier[numLabels];
 
         correspondence = new String[numLabels];
-        for (int i=0; i<numLabels; i++)
+        for (int i = 0; i < numLabels; i++) {
             correspondence[i] = train.getDataSet().attribute(labelIndices[i]).name();
-        
+        }
+
+        debug("preparing shell");
         brt = new BinaryRelevanceTransformation(train);
-                       
-        for (int i = 0; i < numLabels; i++) {            
-            ensemble[i] = AbstractClassifier.makeCopy(baseClassifier);                  
-            Instances shell = brt.transformInstances(i);            
+
+        for (int i = 0; i < numLabels; i++) {
+            ensemble[i] = AbstractClassifier.makeCopy(baseClassifier);
+            Instances shell = brt.transformInstances(i);
             debug("Bulding model " + (i + 1) + "/" + numLabels);
             ensemble[i].buildClassifier(shell);
         }
@@ -79,7 +80,7 @@ public class BinaryRelevance extends TransformationBasedMultiLabelLearner {
         boolean[] bipartition = new boolean[numLabels];
         double[] confidences = new double[numLabels];
 
-        
+
         for (int counter = 0; counter < numLabels; counter++) {
             Instance transformedInstance = brt.transformInstance(instance, counter);
             double distribution[];
@@ -90,7 +91,7 @@ public class BinaryRelevance extends TransformationBasedMultiLabelLearner {
                 return null;
             }
             int maxIndex = (distribution[0] > distribution[1]) ? 0 : 1;
-            
+
             // Ensure correct predictions both for class values {0,1} and {1,0}
             bipartition[counter] = (maxIndex == 1) ? true : false;
 

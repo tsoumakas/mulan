@@ -41,6 +41,13 @@ import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
 
 /**
+ <!-- globalinfo-start -->
+ * Class implementing the MetaLabeler algorithm. For more information, see<br/>
+ * <br/>
+ * Lei Tang, Sugu Rajan, Yijay K. Narayanan: Large scale multi-label classification via metalabeler. In: Proceedings of the 18th international conference on World wide web , 211-220, 2009.
+ * <p/>
+ <!-- globalinfo-end -->
+ * 
  <!-- technical-bibtex-start -->
  * BibTeX:
  * <pre>
@@ -63,7 +70,9 @@ import weka.core.TechnicalInformation.Type;
  */
 public class MetaLabeler extends Meta {
 
-    /** the type of the class*/
+    /**
+     * the type of the class
+     */
     private String classChoice;
 
     /**
@@ -72,7 +81,7 @@ public class MetaLabeler extends Meta {
     public MetaLabeler() {
         this(new BinaryRelevance(new J48()), new J48(), "Content-based", "Nominal-Class");
     }
-    
+
     /**
      * Constructor that initializes the learner
      *
@@ -110,7 +119,7 @@ public class MetaLabeler extends Meta {
     protected MultiLabelOutput makePredictionInternal(Instance instance) throws Exception {
         //System.out.println(instance);
         MultiLabelOutput mlo = baseLearner.makePrediction(instance);
-        int[] arrayOfRankink = new int[numLabels];
+        int[] arrayOfRankink;
         boolean[] predictedLabels = new boolean[numLabels];
         Instance modifiedIns = modifiedInstanceX(instance, metaDatasetChoice);
         //System.out.println(modifiedIns);
@@ -158,7 +167,7 @@ public class MetaLabeler extends Meta {
         classifierInstances = new Instances(classifierInstances, 0);
         Attribute target = null;
         if (classChoice.equals("Nominal-Class")) {
-            int countTrueLabels = 0;
+            int countTrueLabels;
             Set<Integer> treeSet = new TreeSet();
             for (int instanceIndex = 0; instanceIndex < trainingData.getDataSet().numInstances(); instanceIndex++) {
                 countTrueLabels = 0;
@@ -253,5 +262,11 @@ public class MetaLabeler extends Meta {
      */
     public void setFolds(int f) {
         kFoldsCV = f;
+    }
+
+    @Override
+    public String globalInfo() {
+        return "Class implementing the MetaLabeler algorithm. For more "
+                + "information, see\n\n" + getTechnicalInformation().toString();
     }
 }
