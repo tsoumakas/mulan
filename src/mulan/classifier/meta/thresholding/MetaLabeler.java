@@ -264,7 +264,6 @@ public class MetaLabeler extends Meta {
         kFoldsCV = f;
     }
 
-    @Override
     public String globalInfo() {
         return "Class implementing the MetaLabeler algorithm. For more "
                 + "information, see\n\n" + getTechnicalInformation().toString();

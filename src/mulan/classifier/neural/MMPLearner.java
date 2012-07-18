@@ -431,7 +431,6 @@ public class MMPLearner extends MultiLabelLearnerBase {
         return inputPattern;
     }
 
-    @Override
     public String globalInfo() {
         return "Implementation of Multiclass Multilabel Perceptrons learner." +
                " For more information, see\n\n"

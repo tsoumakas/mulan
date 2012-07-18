@@ -297,7 +297,6 @@ public class SCut extends MultiLabelMetaLearner {
         return final_mlo;
     }
 
-    @Override
     public String globalInfo() {
         return "Class that implements the SCut method (Score-based local "
                 + " optimization). It computes a separate threshold for each "

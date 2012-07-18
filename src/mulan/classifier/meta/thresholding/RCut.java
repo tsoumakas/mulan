@@ -259,7 +259,6 @@ public class RCut extends MultiLabelMetaLearner {
         baseLearner.setDebug(debug);
     }
 
-    @Override
     public String globalInfo() {
         return "Classs that implements RCut(Rank-based cut). It selects the k "
                 + "top ranked labels for each instance, where k is a parameter "
