@@ -47,18 +47,34 @@ public class LabelsPair implements Comparable, Serializable {
         score = aScore;
     }
 
+    /**
+     * 
+     * @return
+     */
     public int[] getPair() {
         return pair;
     }
 
+    /**
+     * 
+     * @param pair
+     */
     public void setPair(int[] pair) {
         this.pair = pair;
     }
 
+    /**
+     * 
+     * @return
+     */
     public Double getScore() {
         return score;
     }
 
+    /**
+     * 
+     * @param score
+     */
     public void setScore(Double score) {
         this.score = score;
     }

@@ -28,5 +28,12 @@ package mulan.data;
  */
 public interface Stratification {
     
+    /**
+     * Creates a number of folds via stratified sampling
+     * 
+     * @param data a multi-label dataset
+     * @param folds the number of folds to sample
+     * @return an array of multi-label datasets, one for each fold
+     */
     public MultiLabelInstances[] stratify(MultiLabelInstances data, int folds);
 }

@@ -37,7 +37,7 @@ import weka.core.TechnicalInformation.Type;
 
 /**
  <!-- globalinfo-start -->
- * Class implementing the Hiearachy Of Multi-labEl leaRners algorithm. For more information, see<br/>
+ * Class implementing the Hierarchy Of Multi-labEl leaRners algorithm. For more information, see<br/>
  * <br/>
  * Grigorios Tsoumakas, Ioannis Katakis, Ioannis Vlahavas: Effective and Efficient Multilabel Classification in Domains with Large Number of Labels. In: Proc. ECML/PKDD 2008 Workshop on Mining Multidimensional Data (MMD'08), 2008.
  * <p/>
@@ -178,7 +178,7 @@ public class HOMER extends MultiLabelMetaLearner {
     }
 
     public String globalInfo() {
-        return "Class implementing the Hiearachy Of Multi-labEl leaRners " +
+        return "Class implementing the Hierarchy Of Multi-labEl leaRners " +
                "algorithm. For more information, see\n\n"
                 + getTechnicalInformation().toString();
     }
