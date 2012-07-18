@@ -81,10 +81,20 @@ public class BinaryRelevanceAttributeEvaluator extends ASEvaluation implements A
             this.index = index;
         }
 
+        /**
+         * Returns the score of the attribute
+         * 
+         * @return score of the attribute
+         */
         public double getScore() {
             return score;
         }
 
+        /**
+         * Returns the index of the attribute
+         * 
+         * @return index of the attribute
+         */
         public int getIndex() {
             return index;
         }
@@ -429,11 +439,24 @@ public class BinaryRelevanceAttributeEvaluator extends ASEvaluation implements A
         return copy;
     }
 
+    /**
+     * Evaluates an attribute 
+     * 
+     * @param attribute the attribute index
+     * @return the evaluation
+     * @throws Exception
+     */
     @Override
     public double evaluateAttribute(int attribute) throws Exception {
         return scores[attribute];
     }
 
+    /**
+     * Not supported
+     * 
+     * @param data
+     * @throws Exception
+     */
     @Override
     public void buildEvaluator(Instances data) throws Exception {
         throw new UnsupportedOperationException("Not supported yet.");
