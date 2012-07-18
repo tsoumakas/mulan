@@ -36,33 +36,30 @@ import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
 
 /**
- * Class that implements the Multi Label Probabilistic Threshold Optimizer
- * (MLTPTO) as is described in:<br>
+ <!-- globalinfo-start -->
+ * Class that implements the Multi Label Probabilistic Threshold Optimizer (MLTPTO). For more information, see<br/>
+ * <br/>
+ * J.R. Quevedo, O. Luaces, A. Bahamonde (2012). Multilabel classifiers with a probabilistic thresholding strategy. Pattern Recognition. 45(2):876-883.
+ * <p/>
+ <!-- globalinfo-end -->
  *
- * J.R. Quevedo, O. Luaces and A. Bahamonde. <a
- * href="http://www.sciencedirect.com/science/article/pii/S0031320311003219"
- * target="blank"> Multilabel classifiers with a probabilistic thresholding
- * strategy </a>. Pattern Recognition, Vol 45(2), 876 - 883, 2012.<br>
- *
- * <br> BibTex citation:
- * <pre> &#064;article{JRQuevedo2012876,
- * title = "Multilabel classifiers with a probabilistic thresholding strategy",
- * journal = "Pattern Recognition",
- * volume = "45",
- * number = "2",
- * pages = "876 - 883",
- * year = "2012",
- * note = "",
- * issn = "0031-3203",
- * doi = "10.1016/j.patcog.2011.08.007",
- * url = "http://www.sciencedirect.com/science/article/pii/S0031320311003219",
- * author = "J.R. Quevedo and O. Luaces and A. Bahamonde",
- * keywords = "Multilabel classification",
- * keywords = "Thresholding strategies",
- * keywords = "Posterior probability",
- * keywords = "Expected loss"
+ <!-- technical-bibtex-start -->
+ * BibTeX:
+ * <pre>
+ * &#64;article{Quevedo2012,
+ *    author = {J.R. Quevedo and O. Luaces and A. Bahamonde},
+ *    journal = {Pattern Recognition},
+ *    number = {2},
+ *    pages = {876-883},
+ *    publisher = {Elsevier},
+ *    title = {Multilabel classifiers with a probabilistic thresholding strategy},
+ *    volume = {45},
+ *    year = {2012},
+ *    ISSN = {0031-3203}
  * }
  * </pre>
+ * <p/>
+ <!-- technical-bibtex-end -->
  *
  * @author D. Toimil, J. R. Quevedo, O. Luaces
  * @version 2012.02.02
@@ -77,7 +74,7 @@ public class MLPTO extends MultiLabelMetaLearner {
     public MLPTO() {
         this(new BinaryRelevance(new J48()), new HammingLoss());
     }
-    
+
     /**
      * @param baseLearner the underlying multi-label learner
      * @param EBBM the measure function to be optimized. The measure is
@@ -261,9 +258,6 @@ public class MLPTO extends MultiLabelMetaLearner {
         return orderedVector;
     }
 
-    /**
-     * Trains using the multi label base-learner.
-     */
     @Override
     protected void buildInternal(MultiLabelInstances trainingData) throws Exception {
         baseLearner.build(trainingData);
@@ -297,7 +291,6 @@ public class MLPTO extends MultiLabelMetaLearner {
         return newOutput;
     }
 
-    @Override
     public TechnicalInformation getTechnicalInformation() {
         TechnicalInformation result;
 
@@ -313,5 +306,11 @@ public class MLPTO extends MultiLabelMetaLearner {
         result.setValue(Field.PUBLISHER, "Elsevier");
 
         return result;
+    }
+
+    public String globalInfo() {
+        return "Class that implements the Multi Label Probabilistic Threshold "
+                + "Optimizer (MLTPTO). For more information, see\n\n"
+                + getTechnicalInformation().toString();
     }
 }

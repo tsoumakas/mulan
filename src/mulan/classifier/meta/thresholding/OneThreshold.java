@@ -42,7 +42,13 @@ import weka.core.TechnicalInformation.Type;
 import weka.core.Utils;
 
 /**
- *
+ <!-- globalinfo-start -->
+ * Class that estimates a single threshold for all labels and examples. For more information, see<br/>
+ * <br/>
+ * Read, Jesse, Pfahringer, Bernhard, Holmes, Geoff: Multi-label Classification Using Ensembles of Pruned Sets. In: Data Mining, 2008. ICDM '08. Eighth IEEE International Conference on, 995-1000, 2008.
+ * <p/>
+ <!-- globalinfo-end -->
+ * 
  <!-- technical-bibtex-start -->
  * BibTeX:
  * <pre>
@@ -255,5 +261,11 @@ public class OneThreshold extends MultiLabelMetaLearner {
      */
     public double getThreshold() {
         return threshold;
+    }
+
+    public String globalInfo() {
+        return "Class that estimates a single threshold for all labels and "
+             + "examples. For more information, see\n\n"
+             + getTechnicalInformation().toString();
     }
 }

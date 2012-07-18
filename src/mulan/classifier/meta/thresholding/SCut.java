@@ -41,24 +41,28 @@ import weka.core.TechnicalInformation.Type;
 import weka.core.Utils;
 
 /**
- * Class that implements the SCut method (Score-based local optimization).
- * It computes a separate threshold for each label based on improving a user defined
- * performance measure.
- *
- <!-- technical-bibtex-start -->
- * BibTeX:
- * <pre>
- * &#64;inproceedings{Yang2001,
- *    author = {Yiming Yang},
- *    booktitle = {Proceedings of the 24th annual international ACM SIGIR conference on Research and development in information retrieval},
- *    pages = {137 - 145},
- *    title = {A study of thresholding strategies for text categorization},
- *    year = {2001},
- *    location = {New Orleans, Louisiana, United States}
- * }
- * </pre>
+ <!-- globalinfo-start -->
+ * Class that implements the SCut method (Score-based local  optimization). It computes a separate threshold for each label based on improving a user defined performance measure.For more information, see<br/>
+ * <br/>
+ * Yiming Yang: A study of thresholding strategies for text categorization. In: Proceedings of the 24th annual international ACM SIGIR conference on Research and development in information retrieval, 137 - 145, 2001.
  * <p/>
- <!-- technical-bibtex-end -->
+ <!-- globalinfo-end -->
+ *
+ * 
+ * <!-- technical-bibtex-start -->
+ * * BibTeX:
+ * * <pre>
+ * * &#64;inproceedings{Yang2001,
+ * *    author = {Yiming Yang},
+ * *    booktitle = {Proceedings of the 24th annual international ACM SIGIR conference on Research and development in information retrieval},
+ * *    pages = {137 - 145},
+ * *    title = {A study of thresholding strategies for text categorization},
+ * *    year = {2001},
+ * *    location = {New Orleans, Louisiana, United States}
+ * * }
+ * * </pre>
+ * * <p/>
+ * <!-- technical-bibtex-end -->
  *
  * @author Marios Ioannou
  * @author George Sakkas
@@ -67,11 +71,17 @@ import weka.core.Utils;
  */
 public class SCut extends MultiLabelMetaLearner {
 
-    /** measure for auto-tuning the threshold */
+    /**
+     * measure for auto-tuning the threshold
+     */
     BipartitionMeasureBase measure;
-    /** the folds of the cv to evaluate different thresholds */
+    /**
+     * the folds of the cv to evaluate different thresholds
+     */
     int kFoldsCV;
-    /** one threshold for each label to consider relevant */
+    /**
+     * one threshold for each label to consider relevant
+     */
     double[] thresholds;
 
     /**
@@ -80,9 +90,10 @@ public class SCut extends MultiLabelMetaLearner {
     public SCut() {
         this(new BinaryRelevance(new J48()), new HammingLoss(), 3);
     }
-    
+
     /**
-     * Constructor that initializes the learner with a base algorithm , Measure and num of folds
+     * Constructor that initializes the learner with a base algorithm , Measure
+     * and num of folds
      *
      * @param baseLearner the underlying multi-label learner
      * @param measure
@@ -96,7 +107,7 @@ public class SCut extends MultiLabelMetaLearner {
 
     /**
      * Creates a new instance of SCut
-     * 
+     *
      * @param baseLearner the underlying multi-label learner
      * @param measure
      */
@@ -122,7 +133,7 @@ public class SCut extends MultiLabelMetaLearner {
      *
      * @param baseLearner the underlying multi-label learner
      * @param data the test data to evaluate different thresholds
-     * @return one threshold for each label 
+     * @return one threshold for each label
      * @throws Exception
      */
     private double[] computeThresholds(MultiLabelLearner learner, MultiLabelInstances data) throws Exception {
@@ -234,8 +245,8 @@ public class SCut extends MultiLabelMetaLearner {
         } else {
             thresholds = new double[numLabels];
             double[] foldThresholds;
-            for (int i = 0; i <
-                    kFoldsCV; i++) {
+            for (int i = 0; i
+                    < kFoldsCV; i++) {
                 //Split data to train and test sets
                 Instances train = trainingSet.getDataSet().trainCV(kFoldsCV, i);
                 MultiLabelInstances mlTrain = new MultiLabelInstances(train, trainingSet.getLabelsMetaData());
@@ -245,14 +256,14 @@ public class SCut extends MultiLabelMetaLearner {
                 learner.build(mlTrain);
                 foldThresholds =
                         computeThresholds(learner, mlTest);
-                for (int j = 0; j <
-                        numLabels; j++) {
+                for (int j = 0; j
+                        < numLabels; j++) {
                     thresholds[j] += foldThresholds[j];
                 }
 
             }
-            for (int j = 0; j <
-                    numLabels; j++) {
+            for (int j = 0; j
+                    < numLabels; j++) {
                 thresholds[j] /= kFoldsCV;
             }
 
@@ -272,8 +283,8 @@ public class SCut extends MultiLabelMetaLearner {
         //Confidences higher than threshold set it as true label
         if (m.hasConfidences()) {
             arrayOfConfidences = m.getConfidences();
-            for (int i = 0; i <
-                    numLabels; i++) {
+            for (int i = 0; i
+                    < numLabels; i++) {
                 if (arrayOfConfidences[i] >= thresholds[i]) {
                     predictedLabels[i] = true;
                 } else {
@@ -284,5 +295,14 @@ public class SCut extends MultiLabelMetaLearner {
         }
         MultiLabelOutput final_mlo = new MultiLabelOutput(predictedLabels, arrayOfConfidences);
         return final_mlo;
+    }
+
+    @Override
+    public String globalInfo() {
+        return "Class that implements the SCut method (Score-based local "
+                + " optimization). It computes a separate threshold for each "
+                + "label based on improving a user defined performance measure."
+                + "For more information, see\n\n"
+                + getTechnicalInformation().toString();
     }
 }

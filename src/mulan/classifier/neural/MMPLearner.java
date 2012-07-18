@@ -45,8 +45,12 @@ import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.NominalToBinary;
 
 /**
- * Implementation of Multiclass Multilabel Perceptrons learner. For more information refer
- * to technical paper describing the learner.
+ <!-- globalinfo-start -->
+ * Implementation of Multiclass Multilabel Perceptrons learner. For more information, see<br/>
+ * <br/>
+ * Koby Crammer, Yoram Singer (2003). A Family of Additive Online Algorithms for Category Ranking.. Journal of Machine Learning Research. 3(6):1025-1058.
+ * <p/>
+ <!-- globalinfo-end -->
  * 
  <!-- technical-bibtex-start -->
  * BibTeX:
@@ -366,7 +370,7 @@ public class MMPLearner extends MultiLabelLearnerBase {
         for (Attribute attribute : attributes) {
             if (!attribute.isNumeric()) {
                 if (attribute.isNominal()) {
-                    nominalAttrRange.append((attribute.index() + 1) + rangeDelimiter);
+                    nominalAttrRange.append(attribute.index() + 1).append(rangeDelimiter);
                 } else {
                     // fail check if any other attribute type than nominal or numeric is used
                     //return false;
@@ -425,5 +429,12 @@ public class MMPLearner extends MultiLabelLearnerBase {
         }
 
         return inputPattern;
+    }
+
+    @Override
+    public String globalInfo() {
+        return "Implementation of Multiclass Multilabel Perceptrons learner." +
+               " For more information, see\n\n"
+               + getTechnicalInformation().toString();
     }
 }

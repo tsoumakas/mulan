@@ -38,39 +38,45 @@ import weka.core.Instance;
 import weka.core.Instances;
 
 /**
- * Base class for instance-based prediction of a bipartition from
- * the labels' scores
+ * Base class for instance-based prediction of a bipartition from the labels'
+ * scores
  *
  * @author Marios Ioannou
  * @author George Sakkas
  * @author Grigorios Tsoumakas
  * @version 2010.12.14
  */
-
 public abstract class Meta extends MultiLabelMetaLearner {
-    /** the classifier to learn the number of top labels or the threshold */
+
+    /**
+     * the classifier to learn the number of top labels or the threshold
+     */
     protected Classifier classifier;
-
-    /** the training instances for the single-label model */
+    /**
+     * the training instances for the single-label model
+     */
     protected Instances classifierInstances;
-
-    /** the type for constructing the meta dataset*/
+    /**
+     * the type for constructing the meta dataset
+     */
     protected String metaDatasetChoice;
-
-    /**the number of folds for cross validation*/
+    /**
+     * the number of folds for cross validation
+     */
     protected int kFoldsCV;
-
-    /** clean multi-label learner for cross-validation  */
+    /**
+     * clean multi-label learner for cross-validation
+     */
     protected MultiLabelLearner foldLearner;
 
     /**
-     * Constructor that initializes the learner 
+     * Constructor that initializes the learner
      *
      * @param baseLearner the MultiLabelLearner
      * @param aClassifier the learner that will predict the number of relevant
-     *        labels or a threshold
+     * labels or a threshold
      * @param aMetaDatasetChoice what features to use for predicting the number
-     *        of relevant labels or a threshold
+     * of relevant labels or a threshold
      */
     public Meta(MultiLabelLearner baseLearner, Classifier aClassifier, String aMetaDatasetChoice) {
         super(baseLearner);
@@ -110,7 +116,6 @@ public abstract class Meta extends MultiLabelMetaLearner {
             Instance tempInstance = RemoveAllLabels.transformInstance(instance, labelIndices);
             modifiedIns = DataUtils.createInstance(tempInstance, tempInstance.weight(), tempInstance.toDoubleArray());
         } else if (xBased.compareTo("Score-Based") == 0) {
-            double[] arrayOfScores = new double[numLabels];
             try {
                 mlo = baseLearner.makePrediction(instance);
             } catch (InvalidDataException ex) {
@@ -120,7 +125,7 @@ public abstract class Meta extends MultiLabelMetaLearner {
             } catch (Exception ex) {
                 Logger.getLogger(Meta.class.getName()).log(Level.SEVERE, null, ex);
             }
-            arrayOfScores = mlo.getConfidences();
+            double[] arrayOfScores = mlo.getConfidences();
             modifiedIns = DataUtils.createInstance(instance, numLabels);
             for (int i = 0; i < numLabels; i++) {
                 modifiedIns.setValue(i, arrayOfScores[i]);
@@ -128,9 +133,8 @@ public abstract class Meta extends MultiLabelMetaLearner {
         } else {       //Rank-Based
             try {
                 //Rank-Based
-                double[] arrayOfScores = new double[numLabels];
                 mlo = baseLearner.makePrediction(instance);
-                arrayOfScores = mlo.getConfidences();
+                double[] arrayOfScores = mlo.getConfidences();
                 ArrayList<Double> list = new ArrayList();
                 for (int i = 0; i < numLabels; i++) {
                     list.add(arrayOfScores[i]);
@@ -153,7 +157,6 @@ public abstract class Meta extends MultiLabelMetaLearner {
         return modifiedIns;
     }
 
-
     /**
      * Prepares the instances for the predictor of labels/threshold
      *
@@ -171,7 +174,7 @@ public abstract class Meta extends MultiLabelMetaLearner {
             }
         } else {
             ArrayList<Attribute> atts = new ArrayList<Attribute>();
-            for (int i=0; i<numLabels; i++) {
+            for (int i = 0; i < numLabels; i++) {
                 atts.add(new Attribute("Label" + i));
             }
             temp = new Instances("threshold", atts, 0);
@@ -189,11 +192,12 @@ public abstract class Meta extends MultiLabelMetaLearner {
      * @throws Exception
      */
     protected void valuesX(MultiLabelLearner learner, Instance instance, double[] newValues, String xBased) throws Exception {
-        MultiLabelOutput mlo = null;
+        MultiLabelOutput mlo;
         if (metaDatasetChoice.compareTo("Content-Based") == 0) {
             double[] values = instance.toDoubleArray();
-            for (int i=0; i<featureIndices.length; i++) 
+            for (int i = 0; i < featureIndices.length; i++) {
                 newValues[i] = values[featureIndices[i]];
+            }
         } else if (metaDatasetChoice.compareTo("Score-Based") == 0) {
             mlo = learner.makePrediction(instance);
             double[] values = mlo.getConfidences();
@@ -216,17 +220,14 @@ public abstract class Meta extends MultiLabelMetaLearner {
 
     @Override
     protected void buildInternal(MultiLabelInstances trainingData) throws Exception {
-
-        // build the base multilabel learner from the original training data
-        baseLearner.build(trainingData);
-
+        debug("building meta-model");
         classifierInstances = transformData(trainingData);
-
-        // build the prediction model
         classifier.buildClassifier(classifierInstances);
-
         // keep just the header information
         classifierInstances = new Instances(classifierInstances, 0);
-    }
 
+        debug("building the multi-label classifier");
+        baseLearner.setDebug(getDebug());
+        baseLearner.build(trainingData);
+    }
 }

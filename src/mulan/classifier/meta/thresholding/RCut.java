@@ -41,8 +41,10 @@ import weka.core.TechnicalInformation.Type;
 import weka.core.Utils;
 
 /**
- * RCut(Rank-based cut): Selects the k top ranked labels for each instance,
- * where k is a parameter provided by the user or automatically tuned.
+ <!-- globalinfo-start -->
+ * Classs that implements RCut(Rank-based cut). It selects the k top ranked labels for each instance, where k is a parameter provided by the user or automatically tuned.Yiming Yang: A study of thresholding strategies for text categorization. In: Proceedings of the 24th annual international ACM SIGIR conference on Research and development in information retrieval, 137 - 145, 2001.
+ * <p/>
+ <!-- globalinfo-end -->
  *
  <!-- technical-bibtex-start -->
  * BibTeX:
@@ -66,19 +68,30 @@ import weka.core.Utils;
  */
 public class RCut extends MultiLabelMetaLearner {
 
-    /** the top t number of labels to consider relevant */
+    /**
+     * the top t number of labels to consider relevant
+     */
     private int t = 0;
-    /** measure for auto-tuning the threshold */
+    /**
+     * measure for auto-tuning the threshold
+     */
     private BipartitionMeasureBase measure;
-    /** the folds of the cv to evaluate different thresholds */
+    /**
+     * the folds of the cv to evaluate different thresholds
+     */
     private int folds;
-    /** copy of a clean multi-label learner to use at each fold */
+    /**
+     * copy of a clean multi-label learner to use at each fold
+     */
     private MultiLabelLearner foldLearner;
 
+    /**
+     * Default constructor
+     */
     public RCut() {
-        this (new BinaryRelevance(new J48()));
+        this(new BinaryRelevance(new J48()));
     }
-    
+
     /**
      * Creates a new instance of RCut
      *
@@ -244,5 +257,13 @@ public class RCut extends MultiLabelMetaLearner {
     public void setDebug(boolean debug) {
         super.setDebug(debug);
         baseLearner.setDebug(debug);
+    }
+
+    @Override
+    public String globalInfo() {
+        return "Classs that implements RCut(Rank-based cut). It selects the k "
+                + "top ranked labels for each instance, where k is a parameter "
+                + "provided by the user or automatically tuned."
+                + getTechnicalInformation().toString();
     }
 }

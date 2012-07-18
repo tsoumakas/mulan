@@ -25,9 +25,26 @@ import weka.core.TechnicalInformation;
 
 /**
  <!-- globalinfo-start -->
+ * Implementation of the AdaBoost.MH algorithm based on Weka's AdaBoostM1. For more information, see<br/>
+ * <br/>
+ * Robert E. Schapire, Yoram Singer (2000). BoosTexter: A boosting-based system for text categorization. Machine Learning. 39(2/3):135-168.
+ * <p/>
  <!-- globalinfo-end -->
  *
  <!-- technical-bibtex-start -->
+ * BibTeX:
+ * <pre>
+ * &#64;article{Schapire2000,
+ *    author = {Robert E. Schapire and Yoram Singer},
+ *    journal = {Machine Learning},
+ *    number = {2/3},
+ *    pages = {135-168},
+ *    title = {BoosTexter: A boosting-based system for text categorization},
+ *    volume = {39},
+ *    year = {2000}
+ * }
+ * </pre>
+ * <p/>
  <!-- technical-bibtex-end -->
  *
  * @author Grigorios Tsoumakas
@@ -67,8 +84,7 @@ public class AdaBoostMH extends IncludeLabelsClassifier {
     @Override
     public String globalInfo() {
         return "Implementation of the AdaBoost.MH algorithm based on Weka's "
-                + "AdaBoostM1. "
-                + "For more information, see\n\n"
+                + "AdaBoostM1. For more information, see\n\n"
                 + getTechnicalInformation().toString();
     }
 
