@@ -40,4 +40,16 @@ public abstract class LabelBasedRecall extends LabelBasedBipartitionMeasureBase 
     public double getIdealValue() {
         return 1;
     }
+    
+    /**
+     * Returns the recall for a label
+     *
+     * @param labelIndex the index of a label (starting from 0)
+     * @return the recall for the given label
+     */
+    public double getValue(int labelIndex) {
+        return InformationRetrievalMeasures.recall(truePositives[labelIndex],
+                falsePositives[labelIndex],
+                falseNegatives[labelIndex]);
+    }    
 }

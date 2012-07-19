@@ -40,4 +40,16 @@ public abstract class LabelBasedPrecision extends LabelBasedBipartitionMeasureBa
     public double getIdealValue() {
         return 1;
     }
+
+    /**
+     * Returns the precision for a label
+     *
+     * @param labelIndex the index of a label (starting from 0)
+     * @return the precision for the given label
+     */
+    public double getValue(int labelIndex) {
+        return InformationRetrievalMeasures.precision(truePositives[labelIndex],
+                falsePositives[labelIndex],
+                falseNegatives[labelIndex]);
+    }
 }
