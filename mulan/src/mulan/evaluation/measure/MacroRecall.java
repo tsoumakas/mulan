@@ -20,11 +20,9 @@
  */
 package mulan.evaluation.measure;
 
-import mulan.core.MulanRuntimeException;
-
 /**
  * Implementation of the macro-averaged recall measure.
- *
+ * 
  * @author Grigorios Tsoumakas
  * @version 2012.05.29
  */
@@ -32,7 +30,7 @@ public class MacroRecall extends LabelBasedRecall {
 
     /**
      * Constructs a new object with given number of labels
-     *
+     * 
      * @param numOfLabels the number of labels
      */
     public MacroRecall(int numOfLabels) {
