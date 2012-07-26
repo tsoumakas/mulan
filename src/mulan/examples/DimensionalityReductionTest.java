@@ -21,12 +21,10 @@
 package mulan.examples;
 
 import java.util.Arrays;
+
 import mulan.data.MultiLabelInstances;
 import mulan.dimensionalityReduction.BinaryRelevanceAttributeEvaluator;
-import mulan.dimensionalityReduction.MultiClassAttributeEvaluator;
 import mulan.dimensionalityReduction.Ranker;
-import mulan.transformations.multiclass.Copy;
-import mulan.transformations.multiclass.MultiClassTransformation;
 import weka.attributeSelection.ASEvaluation;
 import weka.attributeSelection.GainRatioAttributeEval;
 import weka.core.Instances;
@@ -36,7 +34,7 @@ import weka.filters.unsupervised.attribute.Remove;
 
 /**
  * Demonstrates the attribute selection capabilities of Mulan
- *
+ * 
  * @author Grigorios Tsoumakas
  * @version 2012.02.02
  */
@@ -44,10 +42,9 @@ public class DimensionalityReductionTest {
 
     /**
      * Executes this example
-     *
-     * @param args command-line arguments -path and -filestem, e.g.
-     * -path datasets/ -filestem emotions
-     * @throws Exception  
+     * 
+     * @param args command-line arguments -path and -filestem, e.g. -path datasets/ -filestem emotions
+     * @throws Exception
      */
     public static void main(String[] args) throws Exception {
         String path = Utils.getOption("path", args);
@@ -55,10 +52,10 @@ public class DimensionalityReductionTest {
         MultiLabelInstances mlData = new MultiLabelInstances(path + filestem + ".arff", path + filestem + ".xml");
 
         ASEvaluation ase = new GainRatioAttributeEval();
-        //LabelPowersetAttributeEvaluator ae = new LabelPowersetAttributeEvaluator(ase, mlData);
+        // LabelPowersetAttributeEvaluator ae = new LabelPowersetAttributeEvaluator(ase, mlData);
         BinaryRelevanceAttributeEvaluator ae = new BinaryRelevanceAttributeEvaluator(ase, mlData, "max", "dl", "eval");
-        //MultiClassTransformation mt = new Copy();
-        //MultiClassAttributeEvaluator ae = new MultiClassAttributeEvaluator(ase, mt, mlData);
+        // MultiClassTransformation mt = new Copy();
+        // MultiClassAttributeEvaluator ae = new MultiClassAttributeEvaluator(ase, mt, mlData);
 
         Ranker r = new Ranker();
         int[] result = r.search(ae, mlData);

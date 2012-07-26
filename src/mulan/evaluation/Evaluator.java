@@ -47,8 +47,6 @@ public class Evaluator {
 
     // seed for reproduction of cross-validation results
     private int seed = 1;
-    // when false divisions-by-zero are ignored in certain measures
-    private boolean strict = true;
 
     /**
      * Sets the seed for reproduction of cross-validation results
@@ -57,15 +55,6 @@ public class Evaluator {
      */
     public void setSeed(int aSeed) {
         seed = aSeed;
-    }
-
-    /**
-     * Controls how divisions-by-zero are handled
-     * 
-     * @param isStrict when false divisions-by-zero are ignored
-     */
-    public void setStrict(boolean isStrict) {
-        strict = isStrict;
     }
 
     /**
