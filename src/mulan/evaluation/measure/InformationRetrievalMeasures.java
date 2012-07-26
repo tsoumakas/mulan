@@ -64,7 +64,7 @@ public class InformationRetrievalMeasures {
      * @param tp true positives
      * @param fp false positives
      * @param fn false negatives
-     * @return the value of the f-measure
+     * @return the value of precision
      */
     public static double precision(double tp, double fp, double fn) {
         if (tp + fp + fn == 0) {
@@ -87,7 +87,7 @@ public class InformationRetrievalMeasures {
      * @param tp true positives
      * @param fp false positives
      * @param fn false negatives
-     * @return the value of the f-measure
+     * @return the value of recall
      */
     public static double recall(double tp, double fp, double fn) {
         if (tp + fp + fn == 0) {
@@ -110,7 +110,7 @@ public class InformationRetrievalMeasures {
      * @param tn true negatives
      * @param fp false positives
      * @param fn false negatives
-     * @return the value of the f-measure
+     * @return the value of specificity
      */
     public static double specificity(double tn, double fp, double fn) {
         if (tn + fp + fn == 0) {
