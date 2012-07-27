@@ -108,7 +108,7 @@ public class Evaluator {
             }
         }
 
-        return new Evaluation(measures);
+        return new Evaluation(measures, data);
     }
 
     private void checkLearner(MultiLabelLearner learner) {

@@ -15,30 +15,24 @@
  */
 
 /*
- *    LabelBasedPrecision.java
+ *    MacroAverageMeasure.java
  *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
  */
 package mulan.evaluation.measure;
 
 /**
- * Base implementation of the label-based macro/micro precision measures.
+ * Interface for macro average measures
  *
  * @author Grigorios Tsoumakas
- * @version 2010.11.05
+ * @version 2012.07.27
  */
-public abstract class LabelBasedPrecision extends LabelBasedBipartitionMeasureBase {
-
+public interface MacroAverageMeasure {
+    
     /**
-     * Constructs a new object with given number of labels
-     *
-     * @param numOfLabels the number of labels
+     * Returns the value of a macro average measure for a particular label
+     * 
+     * @param labelIndex the index of the label [0..numLabels-1]
+     * @return the value of a macro average measure for a particular label
      */
-    public LabelBasedPrecision(int numOfLabels) {
-        super(numOfLabels);
-    }
-
-    public double getIdealValue() {
-        return 1;
-    }
-
+    public double getValue(int labelIndex);
 }

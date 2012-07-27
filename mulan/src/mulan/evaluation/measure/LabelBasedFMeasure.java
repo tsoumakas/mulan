@@ -57,15 +57,4 @@ public abstract class LabelBasedFMeasure extends LabelBasedBipartitionMeasureBas
         return 1;
     }
 
-    /**
-     * Returns the F-Measure for a label
-     *
-     * @param labelIndex the index of a label (starting from 0)
-     * @return the F-Measure for the given label
-     */
-    public double getValue(int labelIndex) {
-        return InformationRetrievalMeasures.fMeasure(truePositives[labelIndex],
-                falsePositives[labelIndex],
-                falseNegatives[labelIndex], beta);
-    }
 }

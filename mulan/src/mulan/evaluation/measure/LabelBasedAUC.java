@@ -64,19 +64,7 @@ public abstract class LabelBasedAUC extends ConfidenceMeasureBase {
     public double getIdealValue() {
         return 1;
     }
-
-    /**
-     * Returns the AUC for a particular label
-     * 
-     * @param labelIndex the index of the label 
-     * @return the AUC for that label
-     */
-    public double getValue(int labelIndex) {
-        ThresholdCurve tc = new ThresholdCurve();
-        Instances result = tc.getCurve(m_Predictions[labelIndex], 1);
-        return ThresholdCurve.getROCArea(result);  
-    }
-    
+   
     protected void updateConfidence(double[] confidences, boolean[] truth) {
         for (int labelIndex = 0; labelIndex < numOfLabels; labelIndex++) {
 

@@ -116,6 +116,11 @@ public class MultipleEvaluation {
         evaluations.add(evaluation);
     }
 
+    /**
+     * Returns a string with the results of the evaluation
+     * 
+     * @return a string with the results of the evaluation
+     */
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

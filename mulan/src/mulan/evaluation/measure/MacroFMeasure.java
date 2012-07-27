@@ -26,7 +26,7 @@ package mulan.evaluation.measure;
  * @author Grigorios Tsoumakas
  * @version 2012.05.29
  */
-public class MacroFMeasure extends LabelBasedFMeasure {
+public class MacroFMeasure extends LabelBasedFMeasure implements MacroAverageMeasure {
 
     /**
      * Constructs a new object with given number of labels and beta=1
@@ -62,4 +62,17 @@ public class MacroFMeasure extends LabelBasedFMeasure {
         }
         return sum / count;
     }
+
+    /**
+     * Returns the F-Measure for a label
+     *
+     * @param labelIndex the index of a label (starting from 0)
+     * @return the F-Measure for the given label
+     */
+    public double getValue(int labelIndex) {
+        return InformationRetrievalMeasures.fMeasure(truePositives[labelIndex],
+                falsePositives[labelIndex],
+                falseNegatives[labelIndex], beta);
+    }
+
 }

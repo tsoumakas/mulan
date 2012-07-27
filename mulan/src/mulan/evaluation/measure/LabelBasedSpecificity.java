@@ -41,16 +41,4 @@ public abstract class LabelBasedSpecificity extends LabelBasedBipartitionMeasure
         return 1;
     }
 
-    /**
-     * Returns the specificity for a label
-     *
-     * @param labelIndex the index of a label (starting from 0)
-     * @return the specificity for the given label
-     */
-    public double getValue(int labelIndex) {
-        return InformationRetrievalMeasures.specificity(trueNegatives[labelIndex],
-                falsePositives[labelIndex],
-                falseNegatives[labelIndex]);
-    }
-
 }

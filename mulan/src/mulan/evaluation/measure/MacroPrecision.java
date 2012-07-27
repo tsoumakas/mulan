@@ -26,7 +26,7 @@ package mulan.evaluation.measure;
  * @author Grigorios Tsoumakas
  * @version 2010.11.05
  */
-public class MacroPrecision extends LabelBasedPrecision {
+public class MacroPrecision extends LabelBasedPrecision implements MacroAverageMeasure {
 
     /**
      * Constructs a new object with given number of labels
@@ -50,4 +50,17 @@ public class MacroPrecision extends LabelBasedPrecision {
     public String getName() {
         return "Macro-averaged Precision";
     }
+
+    /**
+     * Returns the precision for a label
+     *
+     * @param labelIndex the index of a label (starting from 0)
+     * @return the precision for the given label
+     */
+    public double getValue(int labelIndex) {
+        return InformationRetrievalMeasures.precision(truePositives[labelIndex],
+                falsePositives[labelIndex],
+                falseNegatives[labelIndex]);
+    }
+
 }
