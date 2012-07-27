@@ -279,7 +279,7 @@ public class Evaluator {
                 Logger.getLogger(Evaluator.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        MultipleEvaluation me = new MultipleEvaluation(evaluation);
+        MultipleEvaluation me = new MultipleEvaluation(evaluation, data);
         me.calculateStatistics();
         return me;
     }

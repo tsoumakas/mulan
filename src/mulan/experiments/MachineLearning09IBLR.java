@@ -72,8 +72,8 @@ public class MachineLearning09IBLR extends Experiment {
             measures.add(new RankingLoss());
             measures.add(new AveragePrecision());
 
-            MultipleEvaluation iblrmlResults = new MultipleEvaluation();
-            MultipleEvaluation iblrmlPlusResults = new MultipleEvaluation();
+            MultipleEvaluation iblrmlResults = new MultipleEvaluation(dataSet);
+            MultipleEvaluation iblrmlPlusResults = new MultipleEvaluation(dataSet);
 
             Random random = new Random(1);
 

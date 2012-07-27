@@ -75,7 +75,7 @@ public class ICDM08EnsembleOfPrunedSets extends Experiment {
 
             HashMap<String, MultipleEvaluation> result = new HashMap<String, MultipleEvaluation>();
             for (Measure m : evaluationMeasures) {
-                MultipleEvaluation me = new MultipleEvaluation();
+                MultipleEvaluation me = new MultipleEvaluation(dataSet);
                 result.put(m.getName(), me);
             }
 
