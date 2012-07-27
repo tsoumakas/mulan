@@ -22,6 +22,8 @@ package mulan.evaluation;
 
 import java.util.ArrayList;
 import java.util.List;
+import mulan.data.MultiLabelInstances;
+import mulan.evaluation.measure.MacroAverageMeasure;
 import mulan.evaluation.measure.Measure;
 
 /**
@@ -36,6 +38,7 @@ import mulan.evaluation.measure.Measure;
  */
 public class Evaluation {
 
+    private MultiLabelInstances data;
     private List<Measure> measures;
 
     /**
@@ -43,21 +46,35 @@ public class Evaluation {
      * are given as parameters
      *
      * @param someMeasures calculated measures
+     * @param data the evaluation data used for obtaining label names for per
+     * outputting per label values of macro average measures
      * @throws Exception
      */
-    public Evaluation(List<Measure> someMeasures) throws Exception {
+    public Evaluation(List<Measure> someMeasures, MultiLabelInstances data) throws Exception {
         measures = new ArrayList<Measure>();
         for (Measure m : someMeasures) {
             Measure newMeasure = m.makeCopy();
             measures.add(newMeasure);
         }
+        this.data = data;
     }
 
+    /**
+     * Returns a string with the results of the evaluation
+     * 
+     * @return a string with the results of the evaluation
+     */
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         for (Measure m : measures) {
             sb.append(m);
+            if (m instanceof MacroAverageMeasure) {
+                sb.append("\n");
+                for (int i=0; i<data.getNumLabels(); i++) {
+                    sb.append(data.getDataSet().attribute(data.getLabelIndices()[i]).name()).append(": ").append(((MacroAverageMeasure) m).getValue(i)).append(" ");
+                }
+            }
             sb.append("\n");
         }
         return sb.toString();

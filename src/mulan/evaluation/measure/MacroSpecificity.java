@@ -26,7 +26,7 @@ package mulan.evaluation.measure;
  * @author Grigorios Tsoumakas
  * @version 2012.05.29
  */
-public class MacroSpecificity extends LabelBasedSpecificity {
+public class MacroSpecificity extends LabelBasedSpecificity implements MacroAverageMeasure {
 
     /**
      * Constructs a new object with given number of labels and strictness
@@ -49,5 +49,17 @@ public class MacroSpecificity extends LabelBasedSpecificity {
 
     public String getName() {
         return "Macro-averaged Specificity";
+    }
+    
+    /**
+     * Returns the specificity for a label
+     *
+     * @param labelIndex the index of a label (starting from 0)
+     * @return the specificity for the given label
+     */
+    public double getValue(int labelIndex) {
+        return InformationRetrievalMeasures.specificity(trueNegatives[labelIndex],
+                falsePositives[labelIndex],
+                falseNegatives[labelIndex]);
     }
 }

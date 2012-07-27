@@ -41,6 +41,11 @@ public abstract class MeasureBase implements Measure, Serializable {
         updateInternal(prediction, truth);
     }
 
+    /**
+     * Returns a string with the value of a measure
+     *
+     * @return string representation of the value of a measure
+     */
     @Override
     public String toString() {
         double value = Double.NaN;
