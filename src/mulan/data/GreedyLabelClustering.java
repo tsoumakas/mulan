@@ -16,14 +16,12 @@
 
 /*
  *    GreedyLabelClustering.java
- *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
  */
 package mulan.data;
 
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.HashMap;
-
 import mulan.classifier.MultiLabelLearner;
 import mulan.classifier.meta.SubsetLearner;
 import mulan.evaluation.Evaluator;
@@ -42,7 +40,7 @@ import weka.classifiers.Classifier;
  * An SubsetLearner is build for each new partition and its accuracy is evaluated in terms of the
  * {@link #measure}. The process of grouping labels continues as long as the accuracy improves (or
  * at least is not reduced). A number of steps specified by {@link #allowedNonImprovementSteps}
- * without seeking any concomitant improvement in the accuracy is allowed. Such a “non-useful”
+ * without seeking any concomitant improvement in the accuracy is allowed. Such a ï¿½non-usefulï¿½
  * partitions are filtered out and the algorithm continues to evaluate subsequent pairs of dependent
  * labels until one of the stop conditions is reached. The possible stop conditions are: <br>
  * - no more label pairs to consider; <br>
@@ -267,59 +265,115 @@ public class GreedyLabelClustering implements LabelClustering, Serializable {
 		return newClusters;
 	}
 
-	public int getNumFolds() {
+        /**
+         * 
+         * @return
+         */
+        public int getNumFolds() {
 		return numFolds;
 	}
 
-	public void setNumFolds(int numFolds) {
+        /**
+         * 
+         * @param numFolds
+         */
+        public void setNumFolds(int numFolds) {
 		this.numFolds = numFolds;
 	}
 
-	public Measure getMeasure() {
+        /**
+         * 
+         * @return
+         */
+        public Measure getMeasure() {
 		return measure;
 	}
 
-	public void setMeasure(Measure measure) {
+        /**
+         * 
+         * @param measure
+         */
+        public void setMeasure(Measure measure) {
 		this.measure = measure;
 	}
 
-	public int getAllowedNonImprovementSteps() {
+        /**
+         * 
+         * @return
+         */
+        public int getAllowedNonImprovementSteps() {
 		return allowedNonImprovementSteps;
 	}
 
-	public void setAllowedNonImprovementSteps(int allowedNonImprovementSteps) {
+        /**
+         * 
+         * @param allowedNonImprovementSteps
+         */
+        public void setAllowedNonImprovementSteps(int allowedNonImprovementSteps) {
 		this.allowedNonImprovementSteps = allowedNonImprovementSteps;
 	}
 
-	public double getCriticalValue() {
+        /**
+         * 
+         * @return
+         */
+        public double getCriticalValue() {
 		return criticalValue;
 	}
 
-	public void setCriticalValue(double criticalValue) {
+        /**
+         * 
+         * @param criticalValue
+         */
+        public void setCriticalValue(double criticalValue) {
 		this.criticalValue = criticalValue;
 	}
 
-	public Classifier getSingleLabelLearner() {
+        /**
+         * 
+         * @return
+         */
+        public Classifier getSingleLabelLearner() {
 		return singleLabelLearner;
 	}
 
-	public MultiLabelLearner getMultiLabelLearner() {
+        /**
+         * 
+         * @return
+         */
+        public MultiLabelLearner getMultiLabelLearner() {
 		return multiLabelLearner;
 	}
 
-	public boolean isUseSubsetLearnerCache() {
+        /**
+         * 
+         * @return
+         */
+        public boolean isUseSubsetLearnerCache() {
 		return useSubsetLearnerCache;
 	}
 
-	public void setUseSubsetLearnerCache(boolean useSubsetLearnerCache) {
+        /**
+         * 
+         * @param useSubsetLearnerCache
+         */
+        public void setUseSubsetLearnerCache(boolean useSubsetLearnerCache) {
 		this.useSubsetLearnerCache = useSubsetLearnerCache;
 	}
 
-	public boolean isInternalSubsetLearnerDebug() {
+        /**
+         * 
+         * @return
+         */
+        public boolean isInternalSubsetLearnerDebug() {
 		return internalSubsetLearnerDebug;
 	}
 
-	public void setInternalSubsetLearnerDebug(boolean internalSubsetLearnerDebug) {
+        /**
+         * 
+         * @param internalSubsetLearnerDebug
+         */
+        public void setInternalSubsetLearnerDebug(boolean internalSubsetLearnerDebug) {
 		this.internalSubsetLearnerDebug = internalSubsetLearnerDebug;
 	}
 }

@@ -16,17 +16,11 @@
 
 /*
  *    BPMLL.java
- *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
  */
 package mulan.classifier.neural;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
-
+import java.util.*;
 import mulan.classifier.InvalidDataException;
 import mulan.classifier.MultiLabelLearnerBase;
 import mulan.classifier.MultiLabelOutput;
@@ -47,16 +41,29 @@ import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.NominalToBinary;
 
 /**
- * The implementation of Back-Propagation Multi-Label Learning (BPMLL) learner.
- * The learned model is stored in {@link NeuralNet} neural network. The models of the
- * learner is built by {@link BPMLLAlgorithm} from given training data set.
+ <!-- globalinfo-start -->
+ * The implementation of Back-Propagation Multi-Label Learning (BPMLL) learner. The learned model is stored in {&#64;link NeuralNet} neural network. The models of the learner built by {&#64;link BPMLLAlgorithm} from given training data set.
+ * <p/>
+ <!-- globalinfo-end -->
  *
- * <!-- technical-bibtex-start -->
+ <!-- technical-bibtex-start -->
+ * BibTeX:
+ * <pre>
+ * &#64;article{Zhang2006,
+ *    author = {Zhang, M.L., Zhou, Z.H.},
+ *    journal = {IEEE Transactions on Knowledge and Data Engineering},
+ *    pages = {1338-1351},
+ *    title = {Multi-label neural networks with applications to functional genomics and text categorization},
+ *    volume = {18},
+ *    year = {2006}
+ * }
+ * </pre>
+ * <p/>
+ <!-- technical-bibtex-end -->
  *
- * <!-- technical-bibtex-end -->
- *
- * @author Jozef Vilcek
  * @see BPMLLAlgorithm
+ * @author Jozef Vilcek
+ * @version 2012.02.27
  */
 public class BPMLL extends MultiLabelLearnerBase {
 
@@ -265,9 +272,15 @@ public class BPMLL extends MultiLabelLearnerBase {
         thresholdF = buildThresholdFunction(trainData);
     }
 
+    public String globalInfo() {
+        return "The implementation of Back-Propagation Multi-Label Learning "
+                + "(BPMLL) learner. The learned model is stored in "
+                + "{@link NeuralNet} neural network. The models of the learner "
+                + "built by {@link BPMLLAlgorithm} from given training data set.";
+    }
+    
     @Override
     public TechnicalInformation getTechnicalInformation() {
-
         TechnicalInformation technicalInfo = new TechnicalInformation(Type.ARTICLE);
         technicalInfo.setValue(Field.AUTHOR, "Zhang, M.L., Zhou, Z.H.");
         technicalInfo.setValue(Field.YEAR, "2006");

@@ -16,13 +16,13 @@
 
 /*
  *    StoringAndLoadingModels.java
- *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
  */
 package mulan.examples;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import mulan.classifier.MultiLabelLearner;
+
 import mulan.classifier.transformation.BinaryRelevance;
 import mulan.data.MultiLabelInstances;
 import mulan.evaluation.Evaluation;
@@ -33,12 +33,17 @@ import weka.core.Utils;
 
 /**
  * This example shows how you can store a learned model and load a stored model.
- *
+ * 
  * @author Grigorios Tsoumakas
- * @version 2010.12.15
+ * @version 2012.02.06
  */
 public class StoringAndLoadingModels {
 
+    /**
+     * Executes this example
+     * 
+     * @param args command-line arguments -train, -test -labels and -model, e.g. -train emotions-train.arff -test emotions-test.arff -labels emotions.xml -model model.dat
+     */
     public static void main(String[] args) {
         try {
             String trainingDataFilename = Utils.getOption("train", args);
@@ -56,10 +61,10 @@ public class StoringAndLoadingModels {
 
             System.out.println("Storing the model...");
             SerializationHelper.write(modelFilename, learner1);
-            
+
             System.out.println("Loading the model...");
             BinaryRelevance learner2;
-            learner2 = (BinaryRelevance) (MultiLabelLearner) SerializationHelper.read(modelFilename);
+            learner2 = (BinaryRelevance) SerializationHelper.read(modelFilename);
             Evaluator evaluator = new Evaluator();
             Evaluation evaluation;
             evaluation = evaluator.evaluate(learner2, testingData);

@@ -16,20 +16,11 @@
 
 /*
  *    LabelsBuilder.java
- *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
  */
 package mulan.data;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-
+import java.io.*;
 import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -38,9 +29,7 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.helpers.DefaultValidationEventHandler;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
-
 import mulan.core.ArgumentNullException;
-
 import org.xml.sax.SAXException;
 
 /**
@@ -48,6 +37,7 @@ import org.xml.sax.SAXException;
  * from specified XML file source. The builder ensures XML source validity against XML schema. 
  * 
  * @author Jozef Vilcek
+ * @version 2012.02.26
  */
 public final class LabelsBuilder {
 
@@ -65,8 +55,6 @@ public final class LabelsBuilder {
      * @throws ArgumentNullException if specified path to XML file is null
      * @throws IllegalArgumentException if file under specified path does not exists
      * @throws LabelsBuilderException if specified file can not be read/opened
-     * @throws LabelsBuilderException if any error occur when validating XML against
-     * 	schema or when creating labels data
      */
     public static LabelsMetaData createLabels(String xmlLabelsFilePath) throws LabelsBuilderException {
 
@@ -122,7 +110,7 @@ public final class LabelsBuilder {
 
             SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
             schemaFactory.setFeature(SCHEMA_FULL_CHECKING_FEATURE, false);
-            Schema schema = schemaFactory.newSchema(ClassLoader.getSystemResource(LABELS_SCHEMA_SOURCE));
+            Schema schema = schemaFactory.newSchema(LabelsBuilder.class.getClassLoader().getResource(LABELS_SCHEMA_SOURCE));
 
             JAXBContext context = JAXBContext.newInstance(LabelsMetaDataImpl.class, LabelNodeImpl.class);
             Unmarshaller unmarshaller = context.createUnmarshaller();
@@ -152,11 +140,7 @@ public final class LabelsBuilder {
      * @param labelsMetaData the meta-data which has to be dumped into the file
      * @param xmlDumpFilePath the path to the file where meta-data should be dumped
      * @throws LabelsBuilderException if specified file can not be read/opened
-     * @throws LabelsBuilderException if error occurs during the serialization of meta-data to
-     * 	the XML format of resulting XML is not valid against the schema
      * @throws ArgumentNullException if path to the file is not specified
-     * @throws ArgumentNullException if specified labels meta-data is null
-     * @throws LabelsBuilderException if underlying implementation of specified labels meta-data is not supported
      */
     public static void dumpLabels(LabelsMetaData labelsMetaData, String xmlDumpFilePath) throws LabelsBuilderException {
 
@@ -172,6 +156,7 @@ public final class LabelsBuilder {
                 xmlDumpFile.createNewFile();
             }
             fileOutStream = new BufferedOutputStream(new FileOutputStream(xmlDumpFile));
+            dumpLabels(labelsMetaData, fileOutStream);
         } catch (IOException exception) {
             if (!fileExists) {
                 xmlDumpFile.delete();
@@ -195,8 +180,6 @@ public final class LabelsBuilder {
      * @throws LabelsBuilderException if error occurs during the serialization of meta-data to
      * 	the XML format of resulting XML is not valid against the schema
      * @throws ArgumentNullException if specified output strema is null.
-     * @throws ArgumentNullException if specified labels meta-data is null
-     * @throws LabelsBuilderException if underlying implementation of specified labels meta-data is not supported
      */
     public static void dumpLabels(LabelsMetaData labelsMetaData, OutputStream outputStream) throws LabelsBuilderException {
 

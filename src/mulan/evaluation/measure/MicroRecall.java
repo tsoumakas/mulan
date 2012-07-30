@@ -16,7 +16,7 @@
 
 /*
  *    MicroRecall.java
- *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
  */
 package mulan.evaluation.measure;
 
@@ -26,7 +26,7 @@ import weka.core.Utils;
  * Implementation of the micro-averaged recall measure.
  *
  * @author Grigorios Tsoumakas
- * @version 2010.11.05
+ * @version 2012.05.29
  */
 public class MicroRecall extends LabelBasedRecall {
 
@@ -41,8 +41,9 @@ public class MicroRecall extends LabelBasedRecall {
 
     public double getValue() {
         double tp = Utils.sum(truePositives);
+        double fp = Utils.sum(falsePositives);
         double fn = Utils.sum(falseNegatives);
-        return tp / (tp + fn);
+        return InformationRetrievalMeasures.recall(tp, fp, fn);
     }
 
     public String getName() {

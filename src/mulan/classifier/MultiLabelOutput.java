@@ -16,7 +16,7 @@
 
 /*
  *    MultiLabelOutput.java
- *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
  */
 package mulan.classifier;
 
@@ -261,13 +261,18 @@ public class MultiLabelOutput {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         if (bipartition != null) {
-            sb.append("Bipartion: " + Arrays.toString(bipartition) + " ");
+            sb.append("Bipartion: ");
+            sb.append(Arrays.toString(bipartition));
+            sb.append(" ");
         }
         if (confidences != null) {
-            sb.append("Confidences: " + Arrays.toString(confidences) + " ");
+            sb.append("Confidences: ");
+            sb.append(Arrays.toString(confidences));
+            sb.append(" ");
         }
         if (ranking != null) {
-            sb.append("Ranking: " + Arrays.toString(ranking));
+            sb.append("Ranking: ");
+            sb.append(Arrays.toString(ranking));
         }
         return sb.toString();
     }

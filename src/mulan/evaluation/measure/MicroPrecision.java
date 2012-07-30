@@ -16,7 +16,7 @@
 
 /*
  *    MicroPrecision.java
- *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
  */
 package mulan.evaluation.measure;
 
@@ -42,7 +42,8 @@ public class MicroPrecision extends LabelBasedPrecision {
     public double getValue() {
         double tp = Utils.sum(truePositives);
         double fp = Utils.sum(falsePositives);
-        return tp / (tp + fp);
+        double fn = Utils.sum(falseNegatives);
+        return InformationRetrievalMeasures.precision(tp, fp, fn);
     }
 
     public String getName() {

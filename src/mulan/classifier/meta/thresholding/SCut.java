@@ -16,11 +16,10 @@
 
 /*
  *    SCut.java
- *    Copyright (C) 2009 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
  */
 package mulan.classifier.meta.thresholding;
 
-import mulan.classifier.meta.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -28,8 +27,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import mulan.classifier.MultiLabelLearner;
 import mulan.classifier.MultiLabelOutput;
+import mulan.classifier.meta.MultiLabelMetaLearner;
+import mulan.classifier.transformation.BinaryRelevance;
 import mulan.data.MultiLabelInstances;
 import mulan.evaluation.measure.BipartitionMeasureBase;
+import mulan.evaluation.measure.HammingLoss;
+import weka.classifiers.trees.J48;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.TechnicalInformation;
@@ -38,9 +41,28 @@ import weka.core.TechnicalInformation.Type;
 import weka.core.Utils;
 
 /**
- * Class that implements the SCut method (Score-based local optimization).
- * It computes a separate threshold for each label based on improving a user defined
- * performance measure.
+ <!-- globalinfo-start -->
+ * Class that implements the SCut method (Score-based local  optimization). It computes a separate threshold for each label based on improving a user defined performance measure.For more information, see<br/>
+ * <br/>
+ * Yiming Yang: A study of thresholding strategies for text categorization. In: Proceedings of the 24th annual international ACM SIGIR conference on Research and development in information retrieval, 137 - 145, 2001.
+ * <p/>
+ <!-- globalinfo-end -->
+ *
+ * 
+ * <!-- technical-bibtex-start -->
+ * * BibTeX:
+ * * <pre>
+ * * &#64;inproceedings{Yang2001,
+ * *    author = {Yiming Yang},
+ * *    booktitle = {Proceedings of the 24th annual international ACM SIGIR conference on Research and development in information retrieval},
+ * *    pages = {137 - 145},
+ * *    title = {A study of thresholding strategies for text categorization},
+ * *    year = {2001},
+ * *    location = {New Orleans, Louisiana, United States}
+ * * }
+ * * </pre>
+ * * <p/>
+ * <!-- technical-bibtex-end -->
  *
  * @author Marios Ioannou
  * @author George Sakkas
@@ -49,15 +71,29 @@ import weka.core.Utils;
  */
 public class SCut extends MultiLabelMetaLearner {
 
-    /** measure for auto-tuning the threshold */
+    /**
+     * measure for auto-tuning the threshold
+     */
     BipartitionMeasureBase measure;
-    /** the folds of the cv to evaluate different thresholds */
+    /**
+     * the folds of the cv to evaluate different thresholds
+     */
     int kFoldsCV;
-    /** one threshold for each label to consider relevant */
+    /**
+     * one threshold for each label to consider relevant
+     */
     double[] thresholds;
 
     /**
-     * Constructor that initializes the learner with a base algorithm , Measure and num of folds
+     * Default constructor
+     */
+    public SCut() {
+        this(new BinaryRelevance(new J48()), new HammingLoss(), 3);
+    }
+
+    /**
+     * Constructor that initializes the learner with a base algorithm , Measure
+     * and num of folds
      *
      * @param baseLearner the underlying multi-label learner
      * @param measure
@@ -71,7 +107,7 @@ public class SCut extends MultiLabelMetaLearner {
 
     /**
      * Creates a new instance of SCut
-     * 
+     *
      * @param baseLearner the underlying multi-label learner
      * @param measure
      */
@@ -97,7 +133,7 @@ public class SCut extends MultiLabelMetaLearner {
      *
      * @param baseLearner the underlying multi-label learner
      * @param data the test data to evaluate different thresholds
-     * @return one threshold for each label 
+     * @return one threshold for each label
      * @throws Exception
      */
     private double[] computeThresholds(MultiLabelLearner learner, MultiLabelInstances data) throws Exception {
@@ -209,8 +245,8 @@ public class SCut extends MultiLabelMetaLearner {
         } else {
             thresholds = new double[numLabels];
             double[] foldThresholds;
-            for (int i = 0; i <
-                    kFoldsCV; i++) {
+            for (int i = 0; i
+                    < kFoldsCV; i++) {
                 //Split data to train and test sets
                 Instances train = trainingSet.getDataSet().trainCV(kFoldsCV, i);
                 MultiLabelInstances mlTrain = new MultiLabelInstances(train, trainingSet.getLabelsMetaData());
@@ -220,14 +256,14 @@ public class SCut extends MultiLabelMetaLearner {
                 learner.build(mlTrain);
                 foldThresholds =
                         computeThresholds(learner, mlTest);
-                for (int j = 0; j <
-                        numLabels; j++) {
+                for (int j = 0; j
+                        < numLabels; j++) {
                     thresholds[j] += foldThresholds[j];
                 }
 
             }
-            for (int j = 0; j <
-                    numLabels; j++) {
+            for (int j = 0; j
+                    < numLabels; j++) {
                 thresholds[j] /= kFoldsCV;
             }
 
@@ -247,8 +283,8 @@ public class SCut extends MultiLabelMetaLearner {
         //Confidences higher than threshold set it as true label
         if (m.hasConfidences()) {
             arrayOfConfidences = m.getConfidences();
-            for (int i = 0; i <
-                    numLabels; i++) {
+            for (int i = 0; i
+                    < numLabels; i++) {
                 if (arrayOfConfidences[i] >= thresholds[i]) {
                     predictedLabels[i] = true;
                 } else {
@@ -259,5 +295,13 @@ public class SCut extends MultiLabelMetaLearner {
         }
         MultiLabelOutput final_mlo = new MultiLabelOutput(predictedLabels, arrayOfConfidences);
         return final_mlo;
+    }
+
+    public String globalInfo() {
+        return "Class that implements the SCut method (Score-based local "
+                + " optimization). It computes a separate threshold for each "
+                + "label based on improving a user defined performance measure."
+                + "For more information, see\n\n"
+                + getTechnicalInformation().toString();
     }
 }

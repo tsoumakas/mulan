@@ -1,10 +1,23 @@
-package mulan.data;
+/*
+ *    This program is free software; you can redistribute it and/or modify
+ *    it under the terms of the GNU General Public License as published by
+ *    the Free Software Foundation; either version 2 of the License, or
+ *    (at your option) any later version.
+ *
+ *    This program is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *    GNU General Public License for more details.
+ *
+ *    You should have received a copy of the GNU General Public License
+ *    along with this program; if not, write to the Free Software
+ *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
 
-import weka.classifiers.AbstractClassifier;
-import weka.classifiers.Classifier;
-import weka.classifiers.meta.FilteredClassifier;
-import weka.core.Instances;
-import weka.filters.unsupervised.attribute.Remove;
+/*
+ *    ConditionalDependenceIdentifier.java
+ */
+package mulan.data;
 
 import java.io.Serializable;
 import java.util.Arrays;
@@ -13,6 +26,11 @@ import java.util.HashMap;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import weka.classifiers.AbstractClassifier;
+import weka.classifiers.Classifier;
+import weka.classifiers.meta.FilteredClassifier;
+import weka.core.Instances;
+import weka.filters.unsupervised.attribute.Remove;
 
 /**
  * A class for identification of conditional dependence between each pair of labels. The conditional dependence between each pair of labels
@@ -278,6 +296,10 @@ public class ConditionalDependenceIdentifier implements LabelPairsDependenceIden
         return dataset;
     }
 
+    /**
+     * 
+     * @param criticalValue
+     */
     public void setCriticalValue(double criticalValue) {
         this.criticalValue = criticalValue;
     }
@@ -286,18 +308,34 @@ public class ConditionalDependenceIdentifier implements LabelPairsDependenceIden
         return criticalValue;
     }
 
+    /**
+     * 
+     * @return
+     */
     public int getSeed() {
         return seed;
     }
 
+    /**
+     * 
+     * @param seed
+     */
     public void setSeed(int seed) {
         this.seed = seed;
     }
 
+    /**
+     * 
+     * @return
+     */
     public int getNumFolds() {
         return numFolds;
     }
 
+    /**
+     * 
+     * @param numFolds
+     */
     public void setNumFolds(int numFolds) {
         this.numFolds = numFolds;
     }

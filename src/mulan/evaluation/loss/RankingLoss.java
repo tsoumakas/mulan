@@ -16,7 +16,7 @@
 
 /*
  *    RankingLoss.java
- *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
  */
 package mulan.evaluation.loss;
 
@@ -50,7 +50,7 @@ public class RankingLoss extends ErrorSetSize {
             }
         }
 
-        if (trueIndexes.size() != 0 && falseIndexes.size() != 0) {
+        if (!trueIndexes.isEmpty() && !falseIndexes.isEmpty()) {
             int rolp = 0; // reversed ordered label pairs
             for (int k : trueIndexes) {
                 for (int l : falseIndexes) {

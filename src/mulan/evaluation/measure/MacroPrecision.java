@@ -16,45 +16,33 @@
 
 /*
  *    MacroPrecision.java
- *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
  */
 package mulan.evaluation.measure;
 
-import mulan.core.MulanRuntimeException;
-
 /**
  * Implementation of the macro-averaged precision measure.
- *
+ * 
  * @author Grigorios Tsoumakas
  * @version 2010.11.05
  */
-public class MacroPrecision extends LabelBasedPrecision {
-
-    private boolean strict;
+public class MacroPrecision extends LabelBasedPrecision implements MacroAverageMeasure {
 
     /**
      * Constructs a new object with given number of labels
-     *
+     * 
      * @param numOfLabels the number of labels
-     * @param isStrict when false, divisions-by-zero are ignored
      */
-    public MacroPrecision(int numOfLabels, boolean isStrict) {
+    public MacroPrecision(int numOfLabels) {
         super(numOfLabels);
-        strict = isStrict;
     }
 
     public double getValue() {
         double sum = 0;
         int count = 0;
         for (int labelIndex = 0; labelIndex < numOfLabels; labelIndex++) {
-            if (truePositives[labelIndex] + falsePositives[labelIndex] == 0) {
-                if (strict) {
-                    throw new MulanRuntimeException("None example predicted positive");
-                }
-            } else {
-                sum += truePositives[labelIndex] / (truePositives[labelIndex] + falsePositives[labelIndex]);
-                count++;
-            }
+            sum += InformationRetrievalMeasures.precision(truePositives[labelIndex], falsePositives[labelIndex], falseNegatives[labelIndex]);
+            count++;
         }
         return sum / count;
     }
@@ -62,4 +50,17 @@ public class MacroPrecision extends LabelBasedPrecision {
     public String getName() {
         return "Macro-averaged Precision";
     }
+
+    /**
+     * Returns the precision for a label
+     *
+     * @param labelIndex the index of a label (starting from 0)
+     * @return the precision for the given label
+     */
+    public double getValue(int labelIndex) {
+        return InformationRetrievalMeasures.precision(truePositives[labelIndex],
+                falsePositives[labelIndex],
+                falseNegatives[labelIndex]);
+    }
+
 }

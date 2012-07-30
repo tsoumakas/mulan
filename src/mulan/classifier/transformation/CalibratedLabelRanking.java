@@ -16,64 +16,50 @@
 
 /*
  *    CalibratedLabelRanking.java
- *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
  */
 package mulan.classifier.transformation;
 
 import java.util.Arrays;
-
 import mulan.classifier.MultiLabelOutput;
 import mulan.data.MultiLabelInstances;
 import mulan.transformations.RemoveAllLabels;
 import weka.classifiers.AbstractClassifier;
 import weka.classifiers.Classifier;
-import weka.core.Attribute;
-import weka.core.DenseInstance;
-import weka.core.Instance;
-import weka.core.Instances;
-import weka.core.SparseInstance;
-import weka.core.Utils;
+import weka.classifiers.trees.J48;
+import weka.core.*;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.Reorder;
 
 /**
  *
- * <!-- globalinfo-start -->
+ <!-- globalinfo-start -->
+ * Class implementing the Calibrated Label Ranking (CLR) algorithm. For more information, see<br/>
+ * <br/>
+ * Fuernkranz, Johannes, Huellermeier, Eyke, Loza Mencia, Eneldo, Brinker, Klaus (2008). Multilabel classification via calibrated label ranking. Machine Learning. 73(2):133--153.
+ * <p/>
+ <!-- globalinfo-end -->
  *
+ <!-- technical-bibtex-start -->
+ * BibTeX:
  * <pre>
- * Class implementing the Calibrated Label Ranking algorithm.
- * </pre>
- *
- * For more information:
- *
- * <pre>
- * Fuernkranz, J., Huellermeier, E., Loza Mencia, E., and Brinker, K. (2008)
- * Multilabel classification via calibrated label ranking.
- * Machine Learning 73(2), 133-153
- * </pre>
- *
- * <!-- globalinfo-end -->
- *
- * <!-- technical-bibtex-start --> BibTeX:
- *
- * <pre>
- * &#064;article{furnkranze+etal:2008,
- *    author = {Fuernkranz, J. and Huellermeier, E. and Loza Mencia, E. and Brinker, K.},
- *    title = {Multilabel classification via calibrated label ranking},
+ * &#64;article{Fuernkranz2008,
+ *    author = {Fuernkranz, Johannes and Huellermeier, Eyke and Loza Mencia, Eneldo and Brinker, Klaus},
  *    journal = {Machine Learning},
- *    volume = {73},
  *    number = {2},
- *    year = {2008},
  *    pages = {133--153},
+ *    title = {Multilabel classification via calibrated label ranking},
+ *    volume = {73},
+ *    year = {2008}
  * }
  * </pre>
- *
- * <p/> <!-- technical-bibtex-end -->
+ * <p/>
+ <!-- technical-bibtex-end -->
  *
  * @author Elise Rairat
- * @author Grigorios Tsoumakas
  * @author Sang-Hyeun Park
- * @version $Revision: 1.0 $
+ * @author Grigorios Tsoumakas
+ * @version 2012.02.27
  */
 public class CalibratedLabelRanking extends TransformationBasedMultiLabelLearner {
 
@@ -92,6 +78,13 @@ public class CalibratedLabelRanking extends TransformationBasedMultiLabelLearner
     /** whether no data exist for one-vs-one learning */
     protected boolean[] nodata;
 
+    /**
+     * Default constructor using J48 as underlying classifier
+     */
+    public CalibratedLabelRanking() {
+        super(new J48());
+    }
+    
     /**
      * Constructor that initializes the learner with a base algorithm
      *
@@ -172,9 +165,7 @@ public class CalibratedLabelRanking extends TransformationBasedMultiLabelLearner
                 Reorder filter = new Reorder();
                 int numPredictors = trainingData.numAttributes() - numLabels;
                 int[] reorderedIndices = new int[numPredictors + 1];
-                for (int i = 0; i < numPredictors; i++) {
-                    reorderedIndices[i] = featureIndices[i];
-                }
+                System.arraycopy(featureIndices, 0, reorderedIndices, 0, numPredictors);
                 reorderedIndices[numPredictors] = labelIndices[label1];
                 filter.setAttributeIndicesArray(reorderedIndices);
                 filter.setInputFormat(dataOneVsOne);
@@ -234,7 +225,7 @@ public class CalibratedLabelRanking extends TransformationBasedMultiLabelLearner
         for (int label1 = 0; label1 < numLabels - 1; label1++) {
             for (int label2 = label1 + 1; label2 < numLabels; label2++) {
                 if (!nodata[counter]) {
-                    double distribution[] = new double[2];
+                    double distribution[];
                     try {
                         newInstance.setDataset(metaDataTest[counter]);
                         distribution = oneVsOneModels[counter].distributionForInstance(newInstance);
@@ -302,12 +293,12 @@ public class CalibratedLabelRanking extends TransformationBasedMultiLabelLearner
         int[] voteLabel = new int[numLabels];
         int[] played = new int[numLabels + 1];
         int[][] playedMatrix = new int[numLabels + 1][numLabels + 1];
-        int[] sortarr = new int[numLabels + 1];
+        int[] sortarr;
         double[] limits = new double[numLabels];
         boolean[] bipartition = new boolean[numLabels];
         double[] confidences = new double[numLabels];
         int voteVirtual = 0;
-        double limitVirtual = 0.0;
+        double limitVirtual;
         boolean allEqualClassesFound = false;
 
         // delete all labels and add a new atribute at the end
@@ -340,7 +331,7 @@ public class CalibratedLabelRanking extends TransformationBasedMultiLabelLearner
         boolean found = false;
         int pos = 0;
         int player1 = -1;
-        int player2 = -1;
+        int player2;
         while (!allEqualClassesFound && pos < numLabels) {
             while (!found) {
 
@@ -440,5 +431,32 @@ public class CalibratedLabelRanking extends TransformationBasedMultiLabelLearner
             temp += l2 - (l1 + 1);
             return temp;
         }
+    }
+
+    /**
+     * Returns a string describing the classifier.
+     *
+     * @return a string description of the classifier 
+     */
+    @Override
+    public String globalInfo() {
+        return "Class implementing the Calibrated Label Ranking (CLR) " + 
+               "algorithm. For more information, see\n\n" + 
+                getTechnicalInformation().toString();
+    }
+
+    @Override
+    public TechnicalInformation getTechnicalInformation() {
+        TechnicalInformation result;
+
+        result = new TechnicalInformation(TechnicalInformation.Type.ARTICLE);       
+        result.setValue(TechnicalInformation.Field.AUTHOR, "Fuernkranz, Johannes and Huellermeier, Eyke and Loza Mencia, Eneldo and Brinker, Klaus");
+        result.setValue(TechnicalInformation.Field.TITLE, "Multilabel classification via calibrated label ranking");
+        result.setValue(TechnicalInformation.Field.YEAR, "2008");
+        result.setValue(TechnicalInformation.Field.VOLUME, "73");
+        result.setValue(TechnicalInformation.Field.NUMBER, "2");
+        result.setValue(TechnicalInformation.Field.PAGES, "133--153");
+        result.setValue(TechnicalInformation.Field.JOURNAL, "Machine Learning");
+        return result;
     }
 }

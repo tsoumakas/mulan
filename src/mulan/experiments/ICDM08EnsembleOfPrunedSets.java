@@ -16,15 +16,10 @@
 
 /*
  *    ICDM08EnsembleOfPrunedSets.java
- *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
  */
 package mulan.experiments;
 
-/**
- * @author Emmanouela Stachtiari
- * @author Grigorios Tsoumakas
- * @version 2010.12.10
- */
 import java.util.HashMap;
 import java.util.LinkedList;
 
@@ -51,8 +46,9 @@ import weka.core.TechnicalInformation.Type;
 /**
  * Class replicating an experiment from a published paper
  *
+ * @author Emmanouela Stachtiari
  * @author Grigorios Tsoumakas
- * @version 2010.12.27
+ * @version 2012.07.18
  */
 public class ICDM08EnsembleOfPrunedSets extends Experiment {
 
@@ -73,13 +69,13 @@ public class ICDM08EnsembleOfPrunedSets extends Experiment {
             Evaluator evaluator;
 
             Measure[] evaluationMeasures = new Measure[2];
-            evaluationMeasures[0] = new ExampleBasedAccuracy(false);
+            evaluationMeasures[0] = new ExampleBasedAccuracy();
             evaluationMeasures[1] = new HammingLoss();
-            evaluationMeasures[2] = new ExampleBasedFMeasure(false);
+            evaluationMeasures[2] = new ExampleBasedFMeasure();
 
             HashMap<String, MultipleEvaluation> result = new HashMap<String, MultipleEvaluation>();
             for (Measure m : evaluationMeasures) {
-                MultipleEvaluation me = new MultipleEvaluation();
+                MultipleEvaluation me = new MultipleEvaluation(dataSet);
                 result.put(m.getName(), me);
             }
 
@@ -106,7 +102,7 @@ public class ICDM08EnsembleOfPrunedSets extends Experiment {
                     System.out.println("Searching parameters");
                     for (int p = 5; p > 1; p--) {
                         for (int b = 1; b < 4; b++) {
-                            MultipleEvaluation innerResult = null;
+                            MultipleEvaluation innerResult;
                             LinkedList<Measure> measures;
                             PrunedSets ps;
                             double diff;
@@ -179,7 +175,6 @@ public class ICDM08EnsembleOfPrunedSets extends Experiment {
         }
     }
 
-    @Override
     public TechnicalInformation getTechnicalInformation() {
         TechnicalInformation result = new TechnicalInformation(Type.CONFERENCE);
         result.setValue(Field.AUTHOR, "Read, Jesse");

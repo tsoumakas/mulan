@@ -16,17 +16,12 @@
 
 /*
  *    BasicNeuralNet.java
- *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
  */
 package mulan.classifier.neural.model;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
-
+import java.util.*;
 import mulan.core.ArgumentNullException;
 
 /**
@@ -38,6 +33,7 @@ import mulan.core.ArgumentNullException;
  * equal to 1, bias weight equal to 0 and use linear activation function.
  * 
  * @author Jozef Vilcek
+ * @version 2012.02.27
  */
 public class BasicNeuralNet implements NeuralNet, Serializable {
 

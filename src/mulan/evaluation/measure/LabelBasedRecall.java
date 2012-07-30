@@ -16,15 +16,15 @@
 
 /*
  *    LabelBasedRecall.java
- *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
  */
 package mulan.evaluation.measure;
 
 /**
  * Common class for the micro/macro label-based recall measures.
- * 
+ *
  * @author Grigorios Tsoumakas
- * @version 2010.12.10
+ * @version 2012.05.29
  */
 public abstract class LabelBasedRecall extends LabelBasedBipartitionMeasureBase {
 
@@ -40,18 +40,5 @@ public abstract class LabelBasedRecall extends LabelBasedBipartitionMeasureBase 
     public double getIdealValue() {
         return 1;
     }
-
-    protected void updateBipartition(boolean[] bipartition, boolean[] truth) {
-        for (int labelIndex = 0; labelIndex < numOfLabels; labelIndex++) {
-            boolean actual = truth[labelIndex];
-            boolean predicted = bipartition[labelIndex];
-
-            if (actual && predicted) {
-                truePositives[labelIndex]++;
-            }
-            if (actual && !predicted) {
-                falseNegatives[labelIndex]++;
-            }
-        }
-    }
+    
 }

@@ -16,7 +16,7 @@
 
 /*
  *    RAkEL.java
- *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
  */
 package mulan.classifier.meta;
 
@@ -25,7 +25,9 @@ import java.util.HashSet;
 import java.util.Random;
 import mulan.classifier.MultiLabelLearner;
 import mulan.classifier.MultiLabelOutput;
+import mulan.classifier.transformation.BinaryRelevance;
 import mulan.data.MultiLabelInstances;
+import weka.classifiers.trees.J48;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.TechnicalInformation;
@@ -35,41 +37,31 @@ import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.Remove;
 
 /**
+ <!-- globalinfo-start -->
+ * Class implementing a generalized version of the RAkEL (RAndom k-labELsets) algorithm. For more information, see<br/>
+ * <br/>
+ * Grigorios Tsoumakas, Ioannis Katakis, Ioannis Vlahavas (2011). Random k-Labelsets for Multi-Label Classification. IEEE Transactions on Knowledge and Data Engineering. 23(7):1079-1089.
+ * <p/>
+ <!-- globalinfo-end -->
  *
- * <!-- globalinfo-start -->
- *
+ <!-- technical-bibtex-start -->
+ * BibTeX:
  * <pre>
- * Class implementing a generalized version of the RAkEL (RAndom k-labELsets) algorithm.
- * </pre>
- *
- * For more information:
- *
- * <pre>
- * Tsoumakas, G, Vlahavas, I. (2007) Random k-Labelsets: An Ensemble Method
- * for Multilabel Classification", Proc. 18th European Conference on Machine
- * Learning (ECML 2007), pp. 406-417, Warsaw, Poland, 17-21 September 2007.
- * </pre>
- *
- * <!-- globalinfo-end -->
- *
- * <!-- technical-bibtex-start --> BibTeX:
- *
- * <pre>
- * &#064;inproceedings{tsoumakas+vlahavas:2007,
- *    author =    {Tsoumakas, G. and Vlahavas, I.},
- *    title =     {Random k-Labelsets: An Ensemble Method for Multilabel Classification},
- *    booktitle = {Proceedings of the 18th European Conference on Machine Learning (ECML 2007)},
- *    year =      {2007},
- *    pages =     {406--417},
- *    address =   {Warsaw, Poland},
- *    month =     {September 17-21},
+ * &#64;article{Tsoumakas2011,
+ *    author = {Grigorios Tsoumakas and Ioannis Katakis and Ioannis Vlahavas},
+ *    journal = {IEEE Transactions on Knowledge and Data Engineering},
+ *    number = {7},
+ *    pages = {1079-1089},
+ *    title = {Random k-Labelsets for Multi-Label Classification},
+ *    volume = {23},
+ *    year = {2011}
  * }
  * </pre>
- *
- * <p/> <!-- technical-bibtex-end -->
+ * <p/>
+ <!-- technical-bibtex-end -->
  *
  * @author Grigorios Tsoumakas
- * @version $Revision: 0.04 $
+ * @version 2012.1.27
  */
 @SuppressWarnings("serial")
 public class RAkEL extends MultiLabelMetaLearner {
@@ -86,7 +78,9 @@ public class RAkEL extends MultiLabelMetaLearner {
      * If true then the confidence of the base classifier to the decisions...
      */
     //private boolean useConfidences = true;
-    double[][] sumVotesIncremental; /* comment */
+    double[][] sumVotesIncremental; /*
+     * comment
+     */
 
     double[][] lengthVotesIncremental;
     double[] sumVotes;
@@ -97,73 +91,128 @@ public class RAkEL extends MultiLabelMetaLearner {
     int[][] classIndicesPerSubset;
     int[][] absoluteIndicesToRemove;
     MultiLabelLearner[] subsetClassifiers;
-    protected Remove[] remove;
+    private Remove[] remove;
     HashSet<String> combinations;
 
     /**
-     * Returns an instance of a TechnicalInformation object, containing
-     * detailed information about the technical background of this class,
-     * e.g., paper reference or book this class is based on.
+     * Returns an instance of a TechnicalInformation object, containing detailed
+     * information about the technical background of this class, e.g., paper
+     * reference or book this class is based on.
      *
      * @return the technical information about this class
      */
     @Override
     public TechnicalInformation getTechnicalInformation() {
-        TechnicalInformation result = new TechnicalInformation(Type.INPROCEEDINGS);
-        result.setValue(Field.AUTHOR, "Grigorios Tsoumakas, Ioannis Vlahavas");
-        result.setValue(Field.TITLE, "Random k-Labelsets: An Ensemble Method for Multilabel Classification");
-        result.setValue(Field.BOOKTITLE, "Proc. 18th European Conference on Machine Learning (ECML 2007)");
-        result.setValue(Field.PAGES, "406 - 417");
-        result.setValue(Field.LOCATION, "Warsaw, Poland");
-        result.setValue(Field.MONTH, "17-21 September");
-        result.setValue(Field.YEAR, "2007");
-
+        TechnicalInformation result = new TechnicalInformation(Type.ARTICLE);
+        result.setValue(Field.AUTHOR, "Grigorios Tsoumakas and Ioannis Katakis and Ioannis Vlahavas");
+        result.setValue(Field.TITLE, "Random k-Labelsets for Multi-Label Classification");
+        result.setValue(Field.JOURNAL, "IEEE Transactions on Knowledge and Data Engineering");
+        result.setValue(Field.PAGES, "1079-1089");
+        result.setValue(Field.VOLUME, "23");
+        result.setValue(Field.NUMBER, "7");
+        result.setValue(Field.YEAR, "2011");
         return result;
     }
 
-    public RAkEL(int models, int subset) throws Exception {
-        sizeOfSubset = subset;
-        setNumModels(models);
+    /**
+     * Default constructor
+     */
+    public RAkEL() {
+        this(new BinaryRelevance(new J48()));
     }
 
+    /**
+     * Creates an instance based on a given multi-label learner
+     * 
+     * @param baseLearner the multi-label learner
+     */
     public RAkEL(MultiLabelLearner baseLearner) {
         super(baseLearner);
     }
 
+    /**
+     * Creates an instance given a specific multi-label learner, number of 
+     * models and size of subsets
+     * 
+     * @param baseLearner a multi-label learner
+     * @param models a number of models
+     * @param subset a size of subsets
+     */
     public RAkEL(MultiLabelLearner baseLearner, int models, int subset) {
         super(baseLearner);
         sizeOfSubset = subset;
-        setNumModels(models);
+        numOfModels = models;
     }
 
+    /**
+     * Creates an instance given a specific multi-label learner, number of 
+     * models, size of subsets and threshold
+     * 
+     * @param baseLearner a multi-label learner
+     * @param models a number of models
+     * @param subset a size of subsets
+     * @param threshold a threshold
+     */
     public RAkEL(MultiLabelLearner baseLearner, int models, int subset, double threshold) {
         super(baseLearner);
         sizeOfSubset = subset;
-        setNumModels(models);
+        numOfModels = models;
         this.threshold = threshold;
     }
 
+    /**
+     * Sets the seed for random number generation
+     * 
+     * @param x the seed
+     */
     public void setSeed(int x) {
         seed = x;
     }
 
+    /**
+     * Sets the size of the subsets
+     * 
+     * @param size the size of the subsets
+     */
     public void setSizeOfSubset(int size) {
         sizeOfSubset = size;
         classIndicesPerSubset = new int[numOfModels][sizeOfSubset];
     }
 
+    /**
+     * Returns the size of the subsets
+     * 
+     * @return the size of the subsets
+     */
     public int getSizeOfSubset() {
         return sizeOfSubset;
     }
 
+    /**
+     * Sets the number of models
+     * 
+     * @param models number of models
+     */
     public void setNumModels(int models) {
         numOfModels = models;
     }
 
+    /**
+     * Returns the number of models
+     * 
+     * @return number of models
+     */
     public int getNumModels() {
         return numOfModels;
     }
 
+    /**
+     * The binomial function
+     * 
+     * @param n
+     * @param m
+     * @return
+     */
     public static int binomial(int n, int m) {
         int[] b = new int[n + 1];
         b[0] = 1;
@@ -183,6 +232,11 @@ public class RAkEL extends MultiLabelMetaLearner {
         // need a structure to hold different combinations
         combinations = new HashSet<String>();
         //MultiLabelInstances mlDataSet = trainData.clone();
+
+        // check whether sizeOfSubset is larger or equal compared to number of labels
+        if (sizeOfSubset >= numLabels) {
+            throw new IllegalArgumentException("Size of subsets should be less than the number of labels");
+        }
 
         // default number of models = twice the number of labels
         if (numOfModels == 0) {
@@ -282,5 +336,16 @@ public class RAkEL extends MultiLabelMetaLearner {
         // todo: optionally use confidence2 for ranking measures
         MultiLabelOutput mlo = new MultiLabelOutput(bipartition, confidence1);
         return mlo;
+    }
+
+    /**
+     * Returns a string describing classifier
+     *
+     * @return a description suitable for displaying
+     */
+    public String globalInfo() {
+        return "Class implementing a generalized version of the RAkEL "
+                + "(RAndom k-labELsets) algorithm. For more information, see\n\n"
+                + getTechnicalInformation().toString();
     }
 }

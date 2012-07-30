@@ -16,7 +16,7 @@
 
 /*
  *    MultiClassAttributeEvaluator.java
- *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
  */
 package mulan.dimensionalityReduction;
 
@@ -72,11 +72,24 @@ public class MultiClassAttributeEvaluator extends ASEvaluation implements Attrib
         }
     }
 
+    /**
+     * Evaluates an attribute 
+     * 
+     * @param attribute the attribute index
+     * @return the evaluation
+     * @throws Exception
+     */
     @Override
     public double evaluateAttribute(int attribute) throws Exception {
         return ((AttributeEvaluator) baseAttributeEvaluator).evaluateAttribute(attribute);
     }
 
+    /**
+     * Not supported
+     * 
+     * @param arg0
+     * @throws Exception
+     */
     @Override
     public void buildEvaluator(Instances arg0) throws Exception {
         throw new UnsupportedOperationException("Not supported yet.");

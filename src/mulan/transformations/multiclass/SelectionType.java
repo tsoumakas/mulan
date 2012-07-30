@@ -16,13 +16,14 @@
 
 /*
  *    SelectionType.java
- *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
  */
 package mulan.transformations.multiclass;
 
 /**
  *
- * @author greg
+ * @author Grigorios Tsoumakas
+ * @version 2012.02.02
  */
 public enum SelectionType {
 

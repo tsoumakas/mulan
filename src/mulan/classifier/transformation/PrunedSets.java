@@ -16,27 +16,46 @@
 
 /*
  *    PrunedSets.java
- *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
  */
 package mulan.classifier.transformation;
 
 import java.util.ArrayList;
-
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import mulan.data.LabelSet;
 import mulan.data.DataUtils;
+import mulan.data.LabelSet;
 import weka.classifiers.Classifier;
+import weka.classifiers.trees.J48;
 import weka.core.Instance;
 import weka.core.TechnicalInformation;
 import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
 
 /**
- * Class that implements the PrunedSets algorithm <p>
+ <!-- globalinfo-start -->
+ * Class implementing the Pruned Sets algorithm (PS). For more information, see<br/>
+ * <br/>
+ * Read, Jesse, Pfahringer, Bernhard, Holmes, Geoff: Multi-Label Classification using Ensembles of Pruned Sets. In: Proc. 8th IEEE International Conference on Data Mining (ICDM 2008), 995-1000, 2008.
+ * <p/>
+ <!-- globalinfo-end -->
+ *
+ <!-- technical-bibtex-start -->
+ * BibTeX:
+ * <pre>
+ * &#64;inproceedings{Read2008,
+ *    author = {Read, Jesse and Pfahringer, Bernhard and Holmes, Geoff},
+ *    booktitle = {Proc. 8th IEEE International Conference on Data Mining (ICDM 2008)},
+ *    pages = {995-1000},
+ *    title = {Multi-Label Classification using Ensembles of Pruned Sets},
+ *    year = {2008}
+ * }
+ * </pre>
+ * <p/>
+ <!-- technical-bibtex-end -->
  *
  * @author Grigorios Tsoumakas 
- * @version June 4, 2010
+ * @version 2012.02.27
  */
 public class PrunedSets extends LabelsetPruning {
 
@@ -59,6 +78,13 @@ public class PrunedSets extends LabelsetPruning {
     private int b;
 
     /**
+     * Default constructor
+     */
+    public PrunedSets() {
+        this(new J48(), 3, Strategy.A, 2);
+    }
+    
+    /**
      * Constructor that initializes learner with base algorithm, parameter p
      * and strategy for processing infrequent labelsets
      *
@@ -75,13 +101,6 @@ public class PrunedSets extends LabelsetPruning {
         setMakePredictionsBasedOnConfidences(false);
     }
 
-    /**
-     * Returns an instance of a TechnicalInformation object, containing
-     * detailed information about the technical background of this class,
-     * e.g., paper reference or book this class is based on.
-     *
-     * @return the technical information about this class
-     */
     @Override
     public TechnicalInformation getTechnicalInformation() {
         TechnicalInformation result = new TechnicalInformation(Type.INPROCEEDINGS);
@@ -93,6 +112,18 @@ public class PrunedSets extends LabelsetPruning {
         return result;
     }
 
+   /**
+     * Returns a string describing classifier
+     * @return a description suitable for displaying 
+     */
+    @Override
+    public String globalInfo() {
+
+        return "Class implementing the Pruned Sets algorithm (PS). " 
+                + "For more information, see\n\n"
+                + getTechnicalInformation().toString();
+    }    
+    
     @Override
     ArrayList<Instance> processRejected(LabelSet ls) {
         ArrayList<LabelSet> subsets = null;

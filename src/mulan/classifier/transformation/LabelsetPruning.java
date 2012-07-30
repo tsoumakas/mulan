@@ -16,14 +16,13 @@
 
 /*
  *    LabelsetPruning.java
- *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
  */
 package mulan.classifier.transformation;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-
 import mulan.data.LabelSet;
 import mulan.data.MultiLabelInstances;
 import weka.classifiers.Classifier;
@@ -34,7 +33,7 @@ import weka.core.Instances;
  * Common functionality class for the PPT and PS algorithms <p>
  *
  * @author Grigorios Tsoumakas 
- * @version June 4, 2010
+ * @version 2012.02.27
  */
 public abstract class LabelsetPruning extends LabelPowerset {
 

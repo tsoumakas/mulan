@@ -16,7 +16,7 @@
 
 /*
  *    LabelBasedBipartitionMeasureBase.java
- *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
  */
 package mulan.evaluation.measure;
 
@@ -24,19 +24,30 @@ package mulan.evaluation.measure;
  * Base class for label-based bipartition measures
  *
  * @author Grigorios Tsoumakas
- * @version 2010.12.03
+ * @version 2012.05.29
  */
 public abstract class LabelBasedBipartitionMeasureBase extends BipartitionMeasureBase {
-    
-    /** the number of labels */
-    protected int numOfLabels;
 
-    /** the number of false negative for each label */
+    /**
+     * the number of labels
+     */
+    protected int numOfLabels;
+    /**
+     * the number of false negative for each label
+     */
     protected double[] falseNegatives;
-    /** the number of true positives for each label */
+    /**
+     * the number of true positives for each label
+     */
     protected double[] truePositives;
-    /** the number of false positives for each label */
+    /**
+     * the number of false positives for each label
+     */
     protected double[] falsePositives;
+    /**
+     * the number of true negatives for each label
+     */
+    protected double[] trueNegatives;
 
     /**
      * Creates a new instance of this class
@@ -48,6 +59,28 @@ public abstract class LabelBasedBipartitionMeasureBase extends BipartitionMeasur
         falseNegatives = new double[numOfLabels];
         truePositives = new double[numOfLabels];
         falsePositives = new double[numOfLabels];
+        trueNegatives = new double[numOfLabels];
+    }
+
+    public void updateBipartition(boolean[] bipartition, boolean[] truth) {
+        for (int labelIndex = 0; labelIndex < numOfLabels; labelIndex++) {
+            boolean actual = truth[labelIndex];
+            boolean predicted = bipartition[labelIndex];
+
+            if (actual) {
+                if (predicted) {
+                    truePositives[labelIndex]++;
+                } else {
+                    falseNegatives[labelIndex]++;
+                }
+            } else {
+                if (predicted) {
+                    falsePositives[labelIndex]++;
+                } else {
+                    trueNegatives[labelIndex]++;
+                }
+            }
+        }
     }
 
     public void reset() {
@@ -55,6 +88,7 @@ public abstract class LabelBasedBipartitionMeasureBase extends BipartitionMeasur
             falseNegatives[labelIndex] = 0;
             truePositives[labelIndex] = 0;
             falsePositives[labelIndex] = 0;
+            trueNegatives[labelIndex] = 0;
         }
     }
 }

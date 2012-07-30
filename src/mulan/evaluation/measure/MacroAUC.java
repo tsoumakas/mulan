@@ -16,7 +16,7 @@
 
 /*
  *    MacroAUC.java
- *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
  */
 package mulan.evaluation.measure;
 
@@ -30,7 +30,7 @@ import weka.core.Utils;
  * @author Grigorios Tsoumakas
  * @version 2010.12.10
  */
-public class MacroAUC extends LabelBasedAUC {
+public class MacroAUC extends LabelBasedAUC implements MacroAverageMeasure {
 
     /**
      * Creates a new instance of this class
@@ -54,4 +54,17 @@ public class MacroAUC extends LabelBasedAUC {
         }
         return Utils.mean(labelAUC);
     }
+
+    /**
+     * Returns the AUC for a particular label
+     * 
+     * @param labelIndex the index of the label 
+     * @return the AUC for that label
+     */
+    public double getValue(int labelIndex) {
+        ThresholdCurve tc = new ThresholdCurve();
+        Instances result = tc.getCurve(m_Predictions[labelIndex], 1);
+        return ThresholdCurve.getROCArea(result);  
+    }
+
 }

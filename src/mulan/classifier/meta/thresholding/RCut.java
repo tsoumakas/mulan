@@ -16,78 +16,81 @@
 
 /*
  *    RCut.java
- *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
  */
 package mulan.classifier.meta.thresholding;
 
-import mulan.classifier.meta.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import mulan.classifier.*;
+import mulan.classifier.InvalidDataException;
+import mulan.classifier.MultiLabelLearner;
+import mulan.classifier.MultiLabelOutput;
+import mulan.classifier.meta.MultiLabelMetaLearner;
+import mulan.classifier.transformation.BinaryRelevance;
 import mulan.core.MulanRuntimeException;
 import mulan.data.InvalidDataFormatException;
 import mulan.data.LabelsMetaData;
 import mulan.data.MultiLabelInstances;
 import mulan.evaluation.measure.BipartitionMeasureBase;
-import weka.core.Utils;
+import weka.classifiers.trees.J48;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.TechnicalInformation;
 import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
+import weka.core.Utils;
 
 /**
- * RCut(Rank-based cut): Selects the k top ranked labels for each instance,
- * where k is a parameter provided by the user or automatically tuned.
+ <!-- globalinfo-start -->
+ * Classs that implements RCut(Rank-based cut). It selects the k top ranked labels for each instance, where k is a parameter provided by the user or automatically tuned.Yiming Yang: A study of thresholding strategies for text categorization. In: Proceedings of the 24th annual international ACM SIGIR conference on Research and development in information retrieval, 137 - 145, 2001.
+ * <p/>
+ <!-- globalinfo-end -->
+ *
+ <!-- technical-bibtex-start -->
+ * BibTeX:
+ * <pre>
+ * &#64;inproceedings{Yang2001,
+ *    author = {Yiming Yang},
+ *    booktitle = {Proceedings of the 24th annual international ACM SIGIR conference on Research and development in information retrieval},
+ *    pages = {137 - 145},
+ *    title = {A study of thresholding strategies for text categorization},
+ *    year = {2001},
+ *    location = {New Orleans, Louisiana, United States}
+ * }
+ * </pre>
+ * <p/>
+ <!-- technical-bibtex-end -->
  *
  * @author Marios Ioannou
  * @author George Sakkas
  * @author Grigorios Tsoumakas
  * @version 2010.12.14
  */
-/**
- *
- * <!-- globalinfo-start -->
- *
- * <pre>
- * Class that implements the rank-based thresholding strategy.
- * </pre>
- *
- * For more information:
- *
- * <pre>
- * Yang, Y.  (2001) A study of thresholding strategies for text categorization.
- * Proceedings of the 24th annual international ACM SIGIR conference on Research
- * and development in information retrieval, pp. 137-145.
- * </pre>
- *
- * <!-- globalinfo-end -->
- *
- * <!-- technical-bibtex-start --> BibTeX:
- *
- * <pre>
- * &#064;inproceedings{yang:2001,
- *    author = {Yang, Y.},
- *    title = {A study of thresholding strategies for text categorization},
- *    booktitle = {Proceedings of the 24th annual international ACM SIGIR conference on Research and development in information retrieval},
- *    year = {2001},
- *    pages = {137--145},
- * }
- * </pre>
- *
- * <p/> <!-- technical-bibtex-end -->
- *
- */
 public class RCut extends MultiLabelMetaLearner {
 
-    /** the top t number of labels to consider relevant */
+    /**
+     * the top t number of labels to consider relevant
+     */
     private int t = 0;
-    /** measure for auto-tuning the threshold */
+    /**
+     * measure for auto-tuning the threshold
+     */
     private BipartitionMeasureBase measure;
-    /** the folds of the cv to evaluate different thresholds */
+    /**
+     * the folds of the cv to evaluate different thresholds
+     */
     private int folds;
-    /** copy of a clean multi-label learner to use at each fold */
+    /**
+     * copy of a clean multi-label learner to use at each fold
+     */
     private MultiLabelLearner foldLearner;
+
+    /**
+     * Default constructor
+     */
+    public RCut() {
+        this(new BinaryRelevance(new J48()));
+    }
 
     /**
      * Creates a new instance of RCut
@@ -210,6 +213,7 @@ public class RCut extends MultiLabelMetaLearner {
         // by default set threshold equal to the rounded average cardinality
         if (measure == null) {
             t = (int) Math.round(trainingData.getCardinality());
+            t = 2;
         } else {
             // hold a reference to the trainingData in case of auto-tuning
             if (folds == 0) {
@@ -245,9 +249,20 @@ public class RCut extends MultiLabelMetaLearner {
             }
 
         }
-        MultiLabelOutput newOutput = new MultiLabelOutput(predictedLabels,
-                mlo.getConfidences());
+        MultiLabelOutput newOutput = new MultiLabelOutput(predictedLabels);
         return newOutput;
     }
-}
 
+    @Override
+    public void setDebug(boolean debug) {
+        super.setDebug(debug);
+        baseLearner.setDebug(debug);
+    }
+
+    public String globalInfo() {
+        return "Classs that implements RCut(Rank-based cut). It selects the k "
+                + "top ranked labels for each instance, where k is a parameter "
+                + "provided by the user or automatically tuned."
+                + getTechnicalInformation().toString();
+    }
+}

@@ -16,7 +16,7 @@
 
 /*
  *    Evaluator.java
- *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
  */
 package mulan.evaluation;
 
@@ -38,19 +38,18 @@ import weka.core.Instances;
 
 /**
  * Evaluator - responsible for generating evaluation data
+ * 
  * @author rofr
  * @author Grigorios Tsoumakas
- * @version 2010.11.06
+ * @version 2011.09.06
  */
 public class Evaluator {
 
     // seed for reproduction of cross-validation results
     private int seed = 1;
-    // when false divisions-by-zero are ignored in certain measures
-    private boolean strict = true;
 
     /**
-     * Sets the seed for reproduction of cross-validation results 
+     * Sets the seed for reproduction of cross-validation results
      * 
      * @param aSeed seed for reproduction of cross-validation results
      */
@@ -59,17 +58,8 @@ public class Evaluator {
     }
 
     /**
-     * Controls how divisions-by-zero are handled
-     *
-     * @param isStrict when false divisions-by-zero are ignored
-     */
-    public void setStrict(boolean isStrict) {
-        strict = isStrict;
-    }
-
-    /**
      * Evaluates a {@link MultiLabelLearner} on given test data set using specified evaluation measures
-     *
+     * 
      * @param learner the learner to be evaluated via cross-validation
      * @param data the data set for cross-validation
      * @param measures the evaluation measures to compute
@@ -89,7 +79,7 @@ public class Evaluator {
 
         int numLabels = data.getNumLabels();
         int[] labelIndices = data.getLabelIndices();
-        boolean[] trueLabels = new boolean[numLabels];
+        boolean[] trueLabels;
         Set<Measure> failed = new HashSet<Measure>();
         Instances testData = data.getDataSet();
         int numInstances = testData.numInstances();
@@ -98,7 +88,12 @@ public class Evaluator {
             if (data.hasMissingLabels(instance)) {
                 continue;
             }
-            MultiLabelOutput output = learner.makePrediction(instance);
+            Instance labelsMissing = (Instance) instance.copy();
+            labelsMissing.setDataset(instance.dataset());
+            for (int i = 0; i < data.getNumLabels(); i++) {
+                labelsMissing.setMissing(data.getLabelIndices()[i]);
+            }
+            MultiLabelOutput output = learner.makePrediction(labelsMissing);
             trueLabels = getTrueLabels(instance, numLabels, labelIndices);
             Iterator<Measure> it = measures.iterator();
             while (it.hasNext()) {
@@ -113,7 +108,7 @@ public class Evaluator {
             }
         }
 
-        return new Evaluation(measures);
+        return new Evaluation(measures, data);
     }
 
     private void checkLearner(MultiLabelLearner learner) {
@@ -142,7 +137,7 @@ public class Evaluator {
 
     /**
      * Evaluates a {@link MultiLabelLearner} on given test data set.
-     *
+     * 
      * @param learner the learner to be evaluated
      * @param data the data set for evaluation
      * @return the evaluation result
@@ -170,18 +165,21 @@ public class Evaluator {
                 // add example-based measures
                 measures.add(new HammingLoss());
                 measures.add(new SubsetAccuracy());
-                measures.add(new ExampleBasedPrecision(strict));
-                measures.add(new ExampleBasedRecall(strict));
-                measures.add(new ExampleBasedFMeasure(strict));
-                measures.add(new ExampleBasedAccuracy(strict));
+                measures.add(new ExampleBasedPrecision());
+                measures.add(new ExampleBasedRecall());
+                measures.add(new ExampleBasedFMeasure());
+                measures.add(new ExampleBasedAccuracy());
+                measures.add(new ExampleBasedSpecificity());
                 // add label-based measures
                 int numOfLabels = data.getNumLabels();
                 measures.add(new MicroPrecision(numOfLabels));
                 measures.add(new MicroRecall(numOfLabels));
                 measures.add(new MicroFMeasure(numOfLabels));
-                measures.add(new MacroPrecision(numOfLabels, strict));
-                measures.add(new MacroRecall(numOfLabels, strict));
-                measures.add(new MacroFMeasure(numOfLabels, strict));
+                measures.add(new MicroSpecificity(numOfLabels));
+                measures.add(new MacroPrecision(numOfLabels));
+                measures.add(new MacroRecall(numOfLabels));
+                measures.add(new MacroFMeasure(numOfLabels));
+                measures.add(new MacroSpecificity(numOfLabels));
             }
             // add ranking-based measures if applicable
             if (prediction.hasRanking()) {
@@ -197,6 +195,9 @@ public class Evaluator {
             if (prediction.hasConfidences()) {
                 int numOfLabels = data.getNumLabels();
                 measures.add(new MeanAveragePrecision(numOfLabels));
+                measures.add(new GeometricMeanAveragePrecision(numOfLabels));
+                measures.add(new MeanAverageInterpolatedPrecision(numOfLabels, 10));
+                measures.add(new GeometricMeanAverageInterpolatedPrecision(numOfLabels, 10));
                 measures.add(new MicroAUC(numOfLabels));
                 measures.add(new MacroAUC(numOfLabels));
             }
@@ -224,16 +225,14 @@ public class Evaluator {
     }
 
     /**
-     * Evaluates a {@link MultiLabelLearner} via cross-validation on given data 
-     * set with defined number of folds and seed.
-     *
+     * Evaluates a {@link MultiLabelLearner} via cross-validation on given data set with defined number of folds and seed.
+     * 
      * @param learner the learner to be evaluated via cross-validation
      * @param data the multi-label data set for cross-validation
-     * @param someFolds 
+     * @param someFolds
      * @return a {@link MultipleEvaluation} object holding the results
      */
-    public MultipleEvaluation crossValidate(MultiLabelLearner learner, MultiLabelInstances data, int someFolds)
-    {
+    public MultipleEvaluation crossValidate(MultiLabelLearner learner, MultiLabelInstances data, int someFolds) {
         checkLearner(learner);
         checkData(data);
         checkFolds(someFolds);
@@ -242,17 +241,15 @@ public class Evaluator {
     }
 
     /**
-     * Evaluates a {@link MultiLabelLearner} via cross-validation on given data
-     * set using given evaluation measures with defined number of folds and seed.
-     *
+     * Evaluates a {@link MultiLabelLearner} via cross-validation on given data set using given evaluation measures with defined number of folds and seed.
+     * 
      * @param learner the learner to be evaluated via cross-validation
      * @param data the multi-label data set for cross-validation
      * @param measures the evaluation measures to compute
-     * @param someFolds 
+     * @param someFolds
      * @return a {@link MultipleEvaluation} object holding the results
      */
-    public MultipleEvaluation crossValidate(MultiLabelLearner learner, MultiLabelInstances data, List<Measure> measures, int someFolds)
-    {
+    public MultipleEvaluation crossValidate(MultiLabelLearner learner, MultiLabelInstances data, List<Measure> measures, int someFolds) {
         checkLearner(learner);
         checkData(data);
         checkMeasures(measures);
@@ -282,7 +279,8 @@ public class Evaluator {
                 Logger.getLogger(Evaluator.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        return new MultipleEvaluation(evaluation);
+        MultipleEvaluation me = new MultipleEvaluation(evaluation, data);
+        me.calculateStatistics();
+        return me;
     }
 }
-

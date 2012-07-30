@@ -16,7 +16,7 @@
 
 /*
  *    LabelBasedAveragePrecision.java
- *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
  */
 package mulan.evaluation.measure;
 
@@ -26,7 +26,7 @@ import java.util.List;
 
 /**
  * 
- * @author Eleftherios Spyromitros Xioufis
+ * @author Eleftherios Spyromitros-Xioufis
  * @version 2010.12.04
  */
 public abstract class LabelBasedAveragePrecision extends ConfidenceMeasureBase {

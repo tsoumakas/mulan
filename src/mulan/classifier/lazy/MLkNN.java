@@ -16,7 +16,7 @@
 
 /*
  *    MLkNN.java
- *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
  */
 package mulan.classifier.lazy;
 
@@ -28,52 +28,41 @@ import mulan.data.MultiLabelInstances;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.TechnicalInformation;
-import weka.core.Utils;
 import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
+import weka.core.Utils;
 
 /**
- * 
- * <!-- globalinfo-start -->
- * 
+ <!-- globalinfo-start -->
+ * Class implementing the ML-kNN (Multi-Label k Nearest Neighbours) algorithm.<br/>
+ * <br/>
+ * For more information, see<br/>
+ * <br/>
+ * Min-Ling Zhang, Zhi-Hua Zhou (2007). ML-KNN: A lazy learning approach to multi-label learning. Pattern Recogn.. 40(7):2038--2048.
+ * <p/>
+ <!-- globalinfo-end -->
+ *
+ <!-- technical-bibtex-start -->
+ * BibTeX:
  * <pre>
- * Class implementing the ML-kNN (Multi-Label k Nearest Neighbours) algorithm.
- * The class is based on the pseudo-code made available by the authors,
- * except for the option to use <it>normalized</it> Euclidean distance as a
- * distance function.
- * </pre>
- * 
- * For more information:
- * 
- * <pre>
- * Zhang, M. and Zhou, Z. 2007. ML-KNN: A lazy learning approach to multi-label learning.
- * Pattern Recogn. 40, 7 (Jul. 2007), 2038-2048. DOI=http://dx.doi.org/10.1016/j.patcog.2006.12.019
- * </pre>
- * 
- * <!-- globalinfo-end -->
- * 
- * <!-- technical-bibtex-start -->
- * 
- * <pre>
- * &#064;article{zhang+zhou:2007,
- *    author = {Min-Ling Zhang and Zhi-Hua Zhou},
- *    title = {ML-KNN: A lazy learning approach to multi-label learning},
- *    journal = {Pattern Recogn.},
- *    volume = {40},
- *    number = {7},
- *    year = {2007},
- *    issn = {0031-3203},
- *    pages = {2038--2048},
- *    doi = {http://dx.doi.org/10.1016/j.patcog.2006.12.019},
- *    publisher = {Elsevier Science Inc.},
+ * &#64;article{Zhang2007,
  *    address = {New York, NY, USA},
+ *    author = {Min-Ling Zhang and Zhi-Hua Zhou},
+ *    journal = {Pattern Recogn.},
+ *    number = {7},
+ *    pages = {2038--2048},
+ *    publisher = {Elsevier Science Inc.},
+ *    title = {ML-KNN: A lazy learning approach to multi-label learning},
+ *    volume = {40},
+ *    year = {2007},
+ *    ISSN = {0031-3203}
  * }
  * </pre>
- * 
- * <!-- technical-bibtex-end -->
+ * <p/>
+ <!-- technical-bibtex-end -->
  *
- * @author Eleftherios Spyromitros-Xioufis ( espyromi@csd.auth.gr )
- * @version $Revision: 1.1 $ 
+ * @author Eleftherios Spyromitros-Xioufis
+ * @version 2012.07.16
  */
 @SuppressWarnings("serial")
 public class MLkNN extends MultiLabelKNN {
@@ -94,53 +83,37 @@ public class MLkNN extends MultiLabelKNN {
      */
     private double[] PriorNProbabilities;
     /**
-     * A table holding the probability for an instance to belong in each class<br>
-     * given that i:0..k of its neighbors belong to that class
+     * A table holding the probability for an instance to belong in each
+     * class<br> given that i:0..k of its neighbors belong to that class
      */
     private double[][] CondProbabilities;
     /**
      * A table holding the probability for an instance not to belong in each
-     * class<br>
-     * given that i:0..k of its neighbors belong to that class
+     * class<br> given that i:0..k of its neighbors belong to that class
      */
     private double[][] CondNProbabilities;
 
     /**
-     * @param numOfNeighbors :
-     *            the number of neighbors
-     * @param smooth :
-     *            the smoothing factor
+     * @param numOfNeighbors : the number of neighbors
+     * @param smooth : the smoothing factor
      */
     public MLkNN(int numOfNeighbors, double smooth) {
         super(numOfNeighbors);
         this.smooth = smooth;
     }
-    
+
     /**
-     * The default constructor 
+     * The default constructor
      */
     public MLkNN() {
-    	super();
-    	this.smooth = 1.0;
+        super();
+        this.smooth = 1.0;
     }
 
-    /**
-     * Returns a string describing classifier.
-     * @return a description suitable for
-     * displaying in the explorer/experimenter gui
-     */
     public String globalInfo() {
-
         return "Class implementing the ML-kNN (Multi-Label k Nearest Neighbours) algorithm." + "\n\n" + "For more information, see\n\n" + getTechnicalInformation().toString();
     }
 
-    /**
-     * Returns an instance of a TechnicalInformation object, containing detailed
-     * information about the technical background of this class, e.g., paper
-     * reference or book this class is based on.
-     *
-     * @return the technical information about this class
-     */
     @Override
     public TechnicalInformation getTechnicalInformation() {
         TechnicalInformation result;
@@ -187,7 +160,8 @@ public class MLkNN extends MultiLabelKNN {
     }
 
     /**
-     * Computing Prior and PriorN Probabilities for each class of the training set
+     * Computing Prior and PriorN Probabilities for each class of the training
+     * set
      */
     private void ComputePrior() {
         for (int i = 0; i < numLabels; i++) {

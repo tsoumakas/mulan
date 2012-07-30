@@ -16,7 +16,7 @@
 
 /*
  *    MetaLabeler.java
- *    Copyright (C) 2009 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
  */
 package mulan.classifier.meta.thresholding;
 
@@ -25,14 +25,14 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import mulan.classifier.MultiLabelLearner;
 import mulan.classifier.MultiLabelOutput;
+import mulan.classifier.transformation.BinaryRelevance;
 import mulan.data.DataUtils;
 import mulan.data.MultiLabelInstances;
 import mulan.transformations.RemoveAllLabels;
-
 import weka.classifiers.Classifier;
+import weka.classifiers.trees.J48;
 import weka.core.Attribute;
 import weka.core.Instance;
 import weka.core.Instances;
@@ -41,6 +41,27 @@ import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
 
 /**
+ <!-- globalinfo-start -->
+ * Class implementing the MetaLabeler algorithm. For more information, see<br/>
+ * <br/>
+ * Lei Tang, Sugu Rajan, Yijay K. Narayanan: Large scale multi-label classification via metalabeler. In: Proceedings of the 18th international conference on World wide web , 211-220, 2009.
+ * <p/>
+ <!-- globalinfo-end -->
+ * 
+ <!-- technical-bibtex-start -->
+ * BibTeX:
+ * <pre>
+ * &#64;inproceedings{Tang2009,
+ *    author = {Lei Tang and Sugu Rajan and Yijay K. Narayanan},
+ *    booktitle = {Proceedings of the 18th international conference on World wide web },
+ *    pages = {211-220},
+ *    title = {Large scale multi-label classification via metalabeler},
+ *    year = {2009},
+ *    location = {Madrid, Spain}
+ * }
+ * </pre>
+ * <p/>
+ <!-- technical-bibtex-end -->
  *
  * @author Marios Ioannou
  * @author George Sakkas
@@ -49,8 +70,17 @@ import weka.core.TechnicalInformation.Type;
  */
 public class MetaLabeler extends Meta {
 
-    /** the type of the class*/
+    /**
+     * the type of the class
+     */
     private String classChoice;
+
+    /**
+     * Default constructor
+     */
+    public MetaLabeler() {
+        this(new BinaryRelevance(new J48()), new J48(), "Content-based", "Nominal-Class");
+    }
 
     /**
      * Constructor that initializes the learner
@@ -89,7 +119,7 @@ public class MetaLabeler extends Meta {
     protected MultiLabelOutput makePredictionInternal(Instance instance) throws Exception {
         //System.out.println(instance);
         MultiLabelOutput mlo = baseLearner.makePrediction(instance);
-        int[] arrayOfRankink = new int[numLabels];
+        int[] arrayOfRankink;
         boolean[] predictedLabels = new boolean[numLabels];
         Instance modifiedIns = modifiedInstanceX(instance, metaDatasetChoice);
         //System.out.println(modifiedIns);
@@ -137,7 +167,7 @@ public class MetaLabeler extends Meta {
         classifierInstances = new Instances(classifierInstances, 0);
         Attribute target = null;
         if (classChoice.equals("Nominal-Class")) {
-            int countTrueLabels = 0;
+            int countTrueLabels;
             Set<Integer> treeSet = new TreeSet();
             for (int instanceIndex = 0; instanceIndex < trainingData.getDataSet().numInstances(); instanceIndex++) {
                 countTrueLabels = 0;
@@ -232,5 +262,10 @@ public class MetaLabeler extends Meta {
      */
     public void setFolds(int f) {
         kFoldsCV = f;
+    }
+
+    public String globalInfo() {
+        return "Class implementing the MetaLabeler algorithm. For more "
+                + "information, see\n\n" + getTechnicalInformation().toString();
     }
 }

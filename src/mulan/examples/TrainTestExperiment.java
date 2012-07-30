@@ -16,7 +16,7 @@
 
 /*
  *    TrainTestExperiment.java
- *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
  */
 package mulan.examples;
 
@@ -35,15 +35,21 @@ import weka.filters.unsupervised.instance.RemovePercentage;
  * Class demonstrating a simple train/test evaluation experiment
  *
  * @author Grigorios Tsoumakas
- * @version 2010.12.27
+ * @version 2012.02.06
  */
 public class TrainTestExperiment {
 
+    /**
+     * Executes this example
+     *
+     * @param args command-line arguments -path, -filestem and -percentage 
+     * (training set), e.g. -path dataset/ -filestem emotions -percentage 67
+     */
     public static void main(String[] args) {
         try {
-            String path = Utils.getOption("path", args); // e.g. -path dataset/
-            String filestem = Utils.getOption("filestem", args); // e.g. -filestem emotions
-            String percentage = Utils.getOption("percentage", args); // e.g. -percentage 50 (for 50%)
+            String path = Utils.getOption("path", args); 
+            String filestem = Utils.getOption("filestem", args); 
+            String percentage = Utils.getOption("percentage", args);  
 
             System.out.println("Loading the dataset");
             MultiLabelInstances mlDataSet = new MultiLabelInstances(path + filestem + ".arff", path + filestem + ".xml");

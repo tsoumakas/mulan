@@ -16,12 +16,15 @@
 
 /*
  *    MultipleEvaluation.java
- *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
  */
 package mulan.evaluation;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import mulan.data.MultiLabelInstances;
+import mulan.evaluation.measure.MacroAverageMeasure;
 import mulan.evaluation.measure.Measure;
 
 /**
@@ -33,29 +36,33 @@ import mulan.evaluation.measure.Measure;
  */
 public class MultipleEvaluation {
 
+    private MultiLabelInstances data;
     private ArrayList<Evaluation> evaluations;
     private HashMap<String, Double> mean;
     private HashMap<String, Double> standardDeviation;
+    private HashMap<String, Double[]> labelMean;
+    private HashMap<String, Double[]> labelStandardDeviation;
 
     /**
      * Constructs a new object
+     * @param data the evaluation data used for obtaining label names for per
+     * outputting per label values of macro average measures
      */
-    public MultipleEvaluation() {
+    public MultipleEvaluation(MultiLabelInstances data) {
         evaluations = new ArrayList<Evaluation>();
+        this.data = data;
     }
 
     /**
-     * Constructs a new object with given array of evaluations and calculates
-     * statistics
-     *
+     * Constructs a new object with given array of evaluations 
+     * @param data the evaluation data used for obtaining label names for per
+     * outputting per label values of macro average measures
      * @param someEvaluations
      */
-    public MultipleEvaluation(Evaluation[] someEvaluations) {
+    public MultipleEvaluation(Evaluation[] someEvaluations, MultiLabelInstances data) {
         evaluations = new ArrayList<Evaluation>();
-        for (Evaluation e : someEvaluations) {
-            evaluations.add(e);
-        }
-        calculateStatistics();
+        evaluations.addAll(Arrays.asList(someEvaluations));
+        this.data = data;
     }
 
     /**
@@ -64,6 +71,7 @@ public class MultipleEvaluation {
     public void calculateStatistics() {
         int size = evaluations.size();
         HashMap<String, Double> sums = new HashMap<String, Double>();
+        HashMap<String, Double[]> labelSums = new HashMap<String, Double[]>();
 
         // calculate sums of measures
         for (int i = 0; i < evaluations.size(); i++) {
@@ -78,16 +86,36 @@ public class MultipleEvaluation {
                 } else {
                     sums.put(m.getName(), value);
                 }
+                if (m instanceof MacroAverageMeasure) {
+                    Double[] v = new Double[data.getNumLabels()];
+                    for (int j=0; j<data.getNumLabels(); j++)
+                        v[j] = ((MacroAverageMeasure) m).getValue(j);
+                    if (labelSums.containsKey(m.getName())) {
+                        Double[] v_old = labelSums.get(m.getName());
+                        for (int j=0; j<data.getNumLabels(); j++)
+                            v[j] += v_old[j];                        
+                    } 
+                    labelSums.put(m.getName(), v);
+                }
             }
         }
         mean = new HashMap<String, Double>();
         for (String measureName : sums.keySet()) {
             mean.put(measureName, sums.get(measureName) / size);
         }
+        
+        labelMean = new HashMap<String, Double[]>();
+        for (String measureName : labelSums.keySet()) {
+            Double[] v = labelSums.get(measureName);
+            for (int j=0; j<data.getNumLabels(); j++)
+                v[j] = v[j] / size;
+            labelMean.put(measureName, v);
+        }
+        
 
         // calculate sums of squared differences from mean
         sums = new HashMap<String, Double>();
-
+        labelSums = new HashMap<String, Double[]>();
 
         for (int i = 0; i < evaluations.size(); i++) {
             for (Measure m : evaluations.get(i).getMeasures()) {
@@ -101,11 +129,31 @@ public class MultipleEvaluation {
                 } else {
                     sums.put(m.getName(), Math.pow(value - mean.get(m.getName()), 2));
                 }
+                if (m instanceof MacroAverageMeasure) {
+                    Double[] mean = labelMean.get(m.getName());
+                    Double[] v = new Double[data.getNumLabels()];
+                    for (int j=0; j<data.getNumLabels(); j++)
+                        v[j] = ((MacroAverageMeasure) m).getValue(j);
+                    if (labelSums.containsKey(m.getName())) {
+                        Double[] v_old = labelSums.get(m.getName());
+                        for (int j=0; j<data.getNumLabels(); j++)
+                            v[j] = Math.pow(v[j] - mean[j], 2) + v_old[j];                        
+                    } 
+                    labelSums.put(m.getName(), v);
+                }
             }
         }
         standardDeviation = new HashMap<String, Double>();
-        for (String measureName : sums.keySet()) {
+        for (String measureName : sums.keySet()) {            
             standardDeviation.put(measureName, Math.sqrt(sums.get(measureName) / size));
+        }
+        labelStandardDeviation = new HashMap<String, Double[]>();
+        for (String measureName : labelSums.keySet()) {
+            Double[] s = labelSums.get(measureName);
+            for (int j=0; j<data.getNumLabels(); j++) {
+                s[j] /= size;
+            }
+            labelStandardDeviation.put(measureName, s);
         }
     }
 
@@ -118,6 +166,11 @@ public class MultipleEvaluation {
         evaluations.add(evaluation);
     }
 
+    /**
+     * Returns a string with the results of the evaluation
+     * 
+     * @return a string with the results of the evaluation
+     */
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -129,6 +182,18 @@ public class MultipleEvaluation {
             sb.append("\u00B1");
             sb.append(String.format("%.4f", standardDeviation.get(measureName)));
             sb.append("\n");
+            if (m instanceof MacroAverageMeasure) {
+                Double[] v = labelMean.get(measureName);
+                Double[] s = labelStandardDeviation.get(measureName);
+                for (int i=0; i<data.getNumLabels(); i++) {
+                    sb.append(data.getDataSet().attribute(data.getLabelIndices()[i]).name()).append(": ");
+                    sb.append(String.format("%.4f", v[i]));
+                    sb.append("\u00B1");
+                    sb.append(String.format("%.4f", s[i]));
+                    sb.append(" ");
+                }
+                sb.append("\n");
+            }
         }
         return sb.toString();
     }

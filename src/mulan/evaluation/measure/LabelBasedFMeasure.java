@@ -16,19 +16,21 @@
 
 /*
  *    LabelBasedFMeasure.java
- *    Copyright (C) 2009-2011 Aristotle University of Thessaloniki, Greece
+ *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
  */
 package mulan.evaluation.measure;
 
 /**
  * Base implementation of the label-based macro/micro f-measures.
- * 
+ *
  * @author Grigorios Tsoumakas
  * @version 2010.12.31
  */
 public abstract class LabelBasedFMeasure extends LabelBasedBipartitionMeasureBase {
 
-    // the parameter for combining precision and recall
+    /**
+     * the parameter for combining precision and recall
+     */
     protected final double beta;
 
     /**
@@ -55,20 +57,4 @@ public abstract class LabelBasedFMeasure extends LabelBasedBipartitionMeasureBas
         return 1;
     }
 
-    protected void updateBipartition(boolean[] bipartition, boolean[] truth) {
-        for (int labelIndex = 0; labelIndex < numOfLabels; labelIndex++) {
-            boolean actual = truth[labelIndex];
-            boolean predicted = bipartition[labelIndex];
-
-            if (actual && predicted) {
-                truePositives[labelIndex]++;
-            }
-            if (!actual && predicted) {
-                falsePositives[labelIndex]++;
-            }
-            if (actual && !predicted) {
-                falseNegatives[labelIndex]++;
-            }
-        }
-    }
 }

@@ -16,45 +16,33 @@
 
 /*
  *    MacroRecall.java
- *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
  */
 package mulan.evaluation.measure;
 
-import mulan.core.MulanRuntimeException;
-
 /**
  * Implementation of the macro-averaged recall measure.
- *
+ * 
  * @author Grigorios Tsoumakas
- * @version 2010.11.05
+ * @version 2012.05.29
  */
-public class MacroRecall extends LabelBasedRecall {
-
-    private boolean strict;
+public class MacroRecall extends LabelBasedRecall implements MacroAverageMeasure {
 
     /**
-     * Constructs a new object with given number of labels and strictness
-     *
+     * Constructs a new object with given number of labels
+     * 
      * @param numOfLabels the number of labels
-     * @param isStrict when false, divisions-by-zero are ignored
      */
-    public MacroRecall(int numOfLabels, boolean isStrict) {
+    public MacroRecall(int numOfLabels) {
         super(numOfLabels);
-        strict = isStrict;
     }
 
     public double getValue() {
         double sum = 0;
         int count = 0;
         for (int labelIndex = 0; labelIndex < numOfLabels; labelIndex++) {
-            if (truePositives[labelIndex] + falseNegatives[labelIndex] == 0) {
-                if (strict) {
-                    throw new MulanRuntimeException("None example actually positive");
-                } 
-            } else {
-                sum += truePositives[labelIndex] / (truePositives[labelIndex] + falseNegatives[labelIndex]);
-                count++;
-            }
+            sum += InformationRetrievalMeasures.recall(truePositives[labelIndex], falsePositives[labelIndex], falseNegatives[labelIndex]);
+            count++;
         }
         return sum / count;
     }
@@ -62,4 +50,17 @@ public class MacroRecall extends LabelBasedRecall {
     public String getName() {
         return "Macro-averaged Recall";
     }
+    
+    /**
+     * Returns the recall for a label
+     *
+     * @param labelIndex the index of a label (starting from 0)
+     * @return the recall for the given label
+     */
+    public double getValue(int labelIndex) {
+        return InformationRetrievalMeasures.recall(truePositives[labelIndex],
+                falsePositives[labelIndex],
+                falseNegatives[labelIndex]);
+    }    
+    
 }

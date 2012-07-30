@@ -16,7 +16,6 @@
 
 /*
  *    LabelClustering.java
- *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
  */
 package mulan.data;
 

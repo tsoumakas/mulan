@@ -16,7 +16,7 @@
 
 /*
  *    ArgumentNullException.java
- *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
  */
 package mulan.core;
 
@@ -60,7 +60,7 @@ public class ArgumentNullException extends MulanRuntimeException {
         if (paramName != null && paramName.length() > 0) {
             StringBuilder message = new StringBuilder(super.getMessage());
             message.append(System.getProperty("line.separator"));
-            message.append("Parameter name: " + paramName);
+            message.append("Parameter name: ").append(paramName);
             return message.toString();
         } else {
             return super.getMessage();

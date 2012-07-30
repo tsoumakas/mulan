@@ -16,7 +16,7 @@
 
 /*
  *    ConverterCLUS.java
- *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
  */
 package mulan.data;
 
@@ -27,6 +27,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import weka.core.Attribute;
 import weka.core.DenseInstance;
 import weka.core.Instance;
@@ -42,6 +43,7 @@ import weka.core.Instances;
  *
  * @author George Saridis
  * @author Grigorios Tsoumakas
+ * @version 2012.02.06
  */
 public class ConverterCLUS {
 
@@ -88,9 +90,7 @@ public class ConverterCLUS {
                             ArrayList<String> nominalValues = new ArrayList<String>();
                             tokens[2].substring(1, tokens[2].length() - 1);
                             String[] nominalTokens = tokens[2].substring(1, tokens[2].length() - 1).split(",");
-                            for (int i = 0; i < nominalTokens.length; i++) {
-                                nominalValues.add(nominalTokens[i]);
-                            }
+                            nominalValues.addAll(Arrays.asList(nominalTokens));
                             att = new Attribute(tokens[1], nominalValues);
                         }
                         attInfo.add(att);

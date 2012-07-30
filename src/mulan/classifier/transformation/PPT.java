@@ -16,28 +16,47 @@
 
 /*
  *    PPT.java
- *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
  */
 package mulan.classifier.transformation;
 
 import java.util.ArrayList;
 import java.util.Collections;
-
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import mulan.data.LabelSet;
 import mulan.data.DataUtils;
+import mulan.data.LabelSet;
 import weka.classifiers.Classifier;
+import weka.classifiers.trees.J48;
 import weka.core.Instance;
 import weka.core.TechnicalInformation;
 import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
 
 /**
- * Class that implements the PPT algorithm <p>
+ <!-- globalinfo-start -->
+ * Class implementing the Pruned Problem Transformation algorithm (PPT) . For more information, see<br/>
+ * <br/>
+ * Read, Jesse: A Pruned Problem Transformation Method for Multi-label classification. In: Proc. 2008 New Zealand Computer Science Research Student Conference (NZCSRS 2008), 143-150, 2008.
+ * <p/>
+ <!-- globalinfo-end -->
+ *
+ <!-- technical-bibtex-start -->
+ * BibTeX:
+ * <pre>
+ * &#64;inproceedings{Read2008,
+ *    author = {Read, Jesse},
+ *    booktitle = {Proc. 2008 New Zealand Computer Science Research Student Conference (NZCSRS 2008)},
+ *    pages = {143-150},
+ *    title = {A Pruned Problem Transformation Method for Multi-label classification},
+ *    year = {2008}
+ * }
+ * </pre>
+ * <p/>
+ <!-- technical-bibtex-end -->
  *
  * @author Grigorios Tsoumakas 
- * @version June 4, 2010
+ * @version 2012.02.27
  */
 public class PPT extends LabelsetPruning {
 
@@ -57,6 +76,13 @@ public class PPT extends LabelsetPruning {
     private Strategy strategy;
 
     /**
+     * Default constructor
+     */
+    public PPT() {
+        this(new J48(), 3, Strategy.NO_INFORMATION_LOSS);
+    }
+    
+    /**
      * Constructor that initializes learner with base algorithm, parameter p
      * and strategy for processing infrequent labelsets
      *
@@ -72,13 +98,6 @@ public class PPT extends LabelsetPruning {
         threshold = 0.21;
     }
 
-    /**
-     * Returns an instance of a TechnicalInformation object, containing
-     * detailed information about the technical background of this class,
-     * e.g., paper reference or book this class is based on.
-     *
-     * @return the technical information about this class
-     */
     @Override
     public TechnicalInformation getTechnicalInformation() {
         TechnicalInformation result = new TechnicalInformation(Type.INPROCEEDINGS);
@@ -88,6 +107,18 @@ public class PPT extends LabelsetPruning {
         result.setValue(Field.BOOKTITLE, "Proc. 2008 New Zealand Computer Science Research Student Conference (NZCSRS 2008)");
         result.setValue(Field.YEAR, "2008");
         return result;
+    }
+
+   /**
+     * Returns a string describing classifier
+     * @return a description suitable for displaying 
+     */
+    @Override
+    public String globalInfo() {
+
+        return "Class implementing the Pruned Problem Transformation " 
+                + "algorithm (PPT) . For more information, see\n\n"
+                + getTechnicalInformation().toString();
     }
 
     @Override

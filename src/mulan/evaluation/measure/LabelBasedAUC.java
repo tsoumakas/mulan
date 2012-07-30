@@ -16,18 +16,20 @@
 
 /*
  *    LabelBasedAUC.java
- *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
  */
 package mulan.evaluation.measure;
 
 import weka.classifiers.evaluation.NominalPrediction;
+import weka.classifiers.evaluation.ThresholdCurve;
 import weka.core.FastVector;
+import weka.core.Instances;
 
 /**
  * Implementation of the label-based macro precision measure.
  * 
  * @author Grigorios Tsoumakas
- * @version 2010.12.04
+ * @version 2012.07.17
  */
 public abstract class LabelBasedAUC extends ConfidenceMeasureBase {
 
@@ -62,7 +64,7 @@ public abstract class LabelBasedAUC extends ConfidenceMeasureBase {
     public double getIdealValue() {
         return 1;
     }
-
+   
     protected void updateConfidence(double[] confidences, boolean[] truth) {
         for (int labelIndex = 0; labelIndex < numOfLabels; labelIndex++) {
 

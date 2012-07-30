@@ -16,7 +16,7 @@
 
 /*
  *    BinaryRelevanceAttributeEvaluator.java
- *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
  */
 package mulan.dimensionalityReduction;
 
@@ -32,15 +32,25 @@ import weka.core.Instances;
  */
 public class BinaryRelevanceAttributeEvaluator extends ASEvaluation implements AttributeEvaluator {
 
-    /** final scores for all attributes */
+    /**
+     * final scores for all attributes
+     */
     private double[] scores;
-    /** The number of labels */
+    /**
+     * The number of labels
+     */
     int numLabels;
-    /**combination approach mode*/
+    /**
+     * combination approach mode
+     */
     private String CombApprMode;
-    /**normalization mode*/
+    /**
+     * normalization mode
+     */
     private String NormMode;
-    /**attribute scoring based either on evaluation scores or ranking*/
+    /**
+     * attribute scoring based either on evaluation scores or ranking
+     */
     private String ScoreMode;
 
     /**
@@ -48,25 +58,40 @@ public class BinaryRelevanceAttributeEvaluator extends ASEvaluation implements A
      */
     public class Rank implements Comparable {
 
-        /**score of the attribute*/
+        /**
+         * score of the attribute
+         */
         private double score;
-        /**index of the attribute*/
+        /**
+         * index of the attribute
+         */
         private int index;
 
         /**
          * constructor
+         * 
          * @param score the score to be given
-         * @param index the index to  be given
+         * @param index the index to be given
          */
         public Rank(double score, int index) {
             this.score = score;
             this.index = index;
         }
 
+        /**
+         * Returns the score of the attribute
+         * 
+         * @return score of the attribute
+         */
         public double getScore() {
             return score;
         }
 
+        /**
+         * Returns the index of the attribute
+         * 
+         * @return index of the attribute
+         */
         public int getIndex() {
             return index;
         }
@@ -83,8 +108,8 @@ public class BinaryRelevanceAttributeEvaluator extends ASEvaluation implements A
     }
 
     /**
-     * @param ase 
-     * @param mlData 
+     * @param ase
+     * @param mlData
      * @param combapp combination approach mode ("max", "avg", "min")
      * @param norm normalization mode ("dl", "dm", "none")
      * @param mode scoring mode ("eval", "rank")
@@ -95,13 +120,16 @@ public class BinaryRelevanceAttributeEvaluator extends ASEvaluation implements A
         ScoreMode = mode;
 
         numLabels = mlData.getNumLabels();
-        int[] labelIndices = mlData.getLabelIndices();
         try {
             int numAttributes = mlData.getFeatureIndices().length;
             double[][] evaluations = new double[numLabels][numAttributes];
+
+            BinaryRelevanceTransformation brt = new BinaryRelevanceTransformation(mlData);
             for (int i = 0; i < numLabels; i++) {
+                System.out.println("" + (i + 1) + "/" + (numLabels + 1));
+
                 // create dataset
-                Instances labelInstances = BinaryRelevanceTransformation.transformInstances(mlData.getDataSet(), labelIndices, labelIndices[i]);
+                Instances labelInstances = brt.transformInstances(i);
 
                 // build evaluator
                 ase.buildEvaluator(labelInstances);
@@ -112,7 +140,7 @@ public class BinaryRelevanceAttributeEvaluator extends ASEvaluation implements A
                 }
             }
 
-            //scoring of features
+            // scoring of features
             scores = featureSelection(evaluations);
 
         } catch (Exception ex) {
@@ -122,21 +150,28 @@ public class BinaryRelevanceAttributeEvaluator extends ASEvaluation implements A
 
     /**
      * returns a ranking of attributes (where each attribute is represented by its index)
+     * 
      * @param scores the attributes' scorelist
      * @return an ascending ranking of the attributes, based on their scores
      */
     public int[] rankAsc(double scores[]) {
-        /*create a table to hold each attribute's score and index*/
+        /*
+         * create a table to hold each attribute's score and index
+         */
         Rank r[] = new Rank[scores.length];
 
         for (int i = 0; i < r.length; i++) {
             r[i] = new Rank(scores[i], i);
         }
 
-        /*sort the table, thus resulting in ascending, score-based ranking*/
+        /*
+         * sort the table, thus resulting in ascending, score-based ranking
+         */
         java.util.Arrays.sort(r);
 
-        /*create a ranking table containing only the attributes' indices*/
+        /*
+         * create a ranking table containing only the attributes' indices
+         */
         int ranking[] = new int[r.length];
 
         for (int i = 0; i < r.length; i++) {
@@ -148,6 +183,7 @@ public class BinaryRelevanceAttributeEvaluator extends ASEvaluation implements A
 
     /**
      * returns a ranking of attributes (where each attribute is represented by its index)
+     * 
      * @param scores the attributes' scorelist
      * @return a descending ranking of the attributes, based on their scores
      */
@@ -155,7 +191,9 @@ public class BinaryRelevanceAttributeEvaluator extends ASEvaluation implements A
         int ranking[] = rankAsc(scores);
         int decr[] = new int[ranking.length];
 
-        /*receive the indices in reverse order, thus resulting in descending ranking*/
+        /*
+         * receive the indices in reverse order, thus resulting in descending ranking
+         */
         for (int i = 0; i < decr.length; i++) {
             decr[i] = ranking[(ranking.length - 1) - i];
         }
@@ -165,6 +203,7 @@ public class BinaryRelevanceAttributeEvaluator extends ASEvaluation implements A
 
     /**
      * orders the ranking scores according to their attributes' original indices
+     * 
      * @param ranking a rank table
      * @return the order of the ranking scores
      */
@@ -180,6 +219,7 @@ public class BinaryRelevanceAttributeEvaluator extends ASEvaluation implements A
 
     /**
      * highest score combination approach
+     * 
      * @param scoreList all attributes' score lists
      * @param index the index of a specific attribute's score
      * @return the highest score achieved in any of the the input score lists
@@ -196,6 +236,7 @@ public class BinaryRelevanceAttributeEvaluator extends ASEvaluation implements A
 
     /**
      * lowest score combination approach
+     * 
      * @param scoreList all attributes' score lists
      * @param index the index of a specific attribute's score
      * @return the lowest score achieved in all of the input score lists
@@ -212,6 +253,7 @@ public class BinaryRelevanceAttributeEvaluator extends ASEvaluation implements A
 
     /**
      * average score combination approach
+     * 
      * @param scoreList all attributes' score lists
      * @param index the index of a specific attribute's score
      * @return the average score achieved in all the score lists
@@ -228,12 +270,13 @@ public class BinaryRelevanceAttributeEvaluator extends ASEvaluation implements A
 
     /**
      * performs attribute selection
+     * 
      * @param evaluations evaluation scores
      * @return an array of scores for all attributes
      * @throws Exception
      */
     private double[] featureSelection(double evaluations[][]) throws Exception {
-        //perform dm or dl
+        // perform dm or dl
         if (!NormMode.equalsIgnoreCase("none")) {
             if (NormMode.equalsIgnoreCase("dm")) {
                 for (int i = 0; i < evaluations.length; i++) {
@@ -246,12 +289,12 @@ public class BinaryRelevanceAttributeEvaluator extends ASEvaluation implements A
             }
         }
 
-        //to hold attributes' scores
+        // to hold attributes' scores
         double tempScores[][] = new double[numLabels][];
 
-        //rank based scoring of attributes
+        // rank based scoring of attributes
         if (ScoreMode.equalsIgnoreCase("rank")) {
-            //perform ranking
+            // perform ranking
             int ranks[][] = new int[numLabels][];
 
             for (int i = 0; i < evaluations.length; i++) {
@@ -259,7 +302,7 @@ public class BinaryRelevanceAttributeEvaluator extends ASEvaluation implements A
                 order(ranks[i]);
             }
 
-            //transform ranking into a score
+            // transform ranking into a score
             for (int i = 0; i < ranks.length; i++) {
                 tempScores[i] = new double[ranks[i].length];
 
@@ -267,42 +310,41 @@ public class BinaryRelevanceAttributeEvaluator extends ASEvaluation implements A
                     tempScores[i][j] = (ranks[i].length - 1) + ranks[i][j];
                 }
             }
-        } //evaluation score based scoring of attributes
+        } // evaluation score based scoring of attributes
         else if (ScoreMode.equalsIgnoreCase("eval")) {
-            //simply copy the evaluation scores
+            // simply copy the evaluation scores
             for (int i = 0; i < evaluations.length; i++) {
                 tempScores[i] = java.util.Arrays.copyOf(evaluations[i], evaluations[i].length);
             }
         }
 
-
-        //employ a combination approach method
+        // employ a combination approach method
         double combAppr[] = new double[tempScores[0].length];
 
-        if (CombApprMode.equalsIgnoreCase("max")) //highest
+        if (CombApprMode.equalsIgnoreCase("max")) // highest
         {
             for (int i = 0; i < combAppr.length; i++) {
                 combAppr[i] = highest(tempScores, i);
             }
-        } else if (CombApprMode.equalsIgnoreCase("min")) //lowest
+        } else if (CombApprMode.equalsIgnoreCase("min")) // lowest
         {
             for (int i = 0; i < combAppr.length; i++) {
                 combAppr[i] = lowest(tempScores, i);
             }
-        } else if (CombApprMode.equalsIgnoreCase("avg")) //average
+        } else if (CombApprMode.equalsIgnoreCase("avg")) // average
         {
             for (int i = 0; i < combAppr.length; i++) {
                 combAppr[i] = average(tempScores, i);
             }
         }
 
-
-        //return the scores for all attributes
+        // return the scores for all attributes
         return combAppr;
     }
 
     /**
      * calculates the norm of a vector
+     * 
      * @param vector a numeric array (as a vector)
      * @return the norm of the given vector
      */
@@ -318,17 +360,22 @@ public class BinaryRelevanceAttributeEvaluator extends ASEvaluation implements A
 
     /**
      * normalizes an array (in the range of [0,1])
+     * 
      * @param array a numeric array
      */
     public static void normalize(double array[]) {
-        /*find the largest element*/
+        /*
+         * find the largest element
+         */
         double max = array[0];
 
         for (int i = 1; i < array.length; i++) {
             max = (array[i] > max ? array[i] : max);
         }
 
-        /*normalize all elements*/
+        /*
+         * normalize all elements
+         */
         for (int j = 0; j < array.length; j++) {
             array[j] /= max;
         }
@@ -336,18 +383,25 @@ public class BinaryRelevanceAttributeEvaluator extends ASEvaluation implements A
 
     /**
      * divide by length (dl) normalization
+     * 
      * @param array a numeric array
      * @return a dl normalized copy of array
      */
     public static double[] dl(double array[]) {
-        /*a copy of the original array*/
+        /*
+         * a copy of the original array
+         */
         double copy[] = new double[array.length];
         copy = java.util.Arrays.copyOf(array, array.length);
 
-        /*calculate the norm*/
+        /*
+         * calculate the norm
+         */
         double norm = norm(copy);
 
-        /*divide each element by the norm*/
+        /*
+         * divide each element by the norm
+         */
         for (int i = 0; i < copy.length; i++) {
             copy[i] /= norm;
         }
@@ -357,25 +411,43 @@ public class BinaryRelevanceAttributeEvaluator extends ASEvaluation implements A
 
     /**
      * divide by maximum (dm) normalization
+     * 
      * @param array a numeric array
      * @return a dm normalized copy of array
      */
     public static double[] dm(double array[]) {
-        /*a copy of the original array*/
+        /*
+         * a copy of the original array
+         */
         double copy[] = new double[array.length];
         copy = java.util.Arrays.copyOf(array, array.length);
 
-        /*normalize the copy*/
+        /*
+         * normalize the copy
+         */
         normalize(copy);
 
         return copy;
     }
 
+    /**
+     * Evaluates an attribute
+     * 
+     * @param attribute the attribute index
+     * @return the evaluation
+     * @throws Exception
+     */
     @Override
     public double evaluateAttribute(int attribute) throws Exception {
         return scores[attribute];
     }
 
+    /**
+     * Not supported
+     * 
+     * @param data
+     * @throws Exception
+     */
     @Override
     public void buildEvaluator(Instances data) throws Exception {
         throw new UnsupportedOperationException("Not supported yet.");

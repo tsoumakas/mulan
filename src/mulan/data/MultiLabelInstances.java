@@ -16,23 +16,12 @@
 
 /*
  *    MultiLabelInstances.java
- *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
  */
 package mulan.data;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
+import java.io.*;
+import java.util.*;
 import mulan.core.ArgumentNullException;
 import mulan.core.MulanRuntimeException;
 import weka.core.Attribute;
@@ -54,7 +43,7 @@ import weka.core.Instances;
  * 
  * @author Jozef Vilcek
  */
-public class MultiLabelInstances {
+public class MultiLabelInstances implements Serializable {
 
     private Instances dataSet;
     private final LabelsMetaData labelsMetaData;
@@ -460,17 +449,18 @@ public class MultiLabelInstances {
         return aDataSet;
     }
 
-    private Instances loadInstances(InputStream stream) {
-        Instances aDataSet = null;
-        InputStreamReader streamReader = new InputStreamReader(stream);
-        try {
-            aDataSet = new Instances(streamReader);
-        } catch (IOException exception) {
-            throw new DataLoadException(
-                    String.format("Error creating Instances data from supplied Reader data source", exception));
-        }
-        return aDataSet;
-    }
+	private Instances loadInstances(InputStream stream) {
+		Instances aDataSet = null;
+		InputStreamReader streamReader = new InputStreamReader(stream);
+		try {
+			aDataSet = new Instances(streamReader);
+		} catch (IOException exception) {
+			throw new DataLoadException(String.format(
+					"Error creating Instances data from supplied Reader data source: "
+							+ exception.getMessage(), exception));
+		}
+		return aDataSet;
+	}
 
     private LabelsMetaData loadLabesMeta(String xmlLabelsDefFilePath) {
         LabelsMetaData labelsMeta = null;
@@ -567,7 +557,7 @@ public class MultiLabelInstances {
             }
         }
 
-        if (allowedValues.size() != 0) {
+        if (!allowedValues.isEmpty()) {
             return false;
         }
 
@@ -648,6 +638,11 @@ public class MultiLabelInstances {
         return counter + 1;
     }
 
+    /**
+     * Returns the depth of the labels
+     * 
+     * @return the depth of the labels
+     */
     public int[] getLabelDepthIndices() {
         int[] labelDepthIndices = new int[labelsMetaData.getNumLabels()];
         int numAttributes = dataSet.numAttributes();
@@ -685,7 +680,3 @@ public class MultiLabelInstances {
         return missing;
     }
 }
-
-
-
-

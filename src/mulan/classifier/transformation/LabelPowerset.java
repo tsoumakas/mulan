@@ -16,7 +16,7 @@
 
 /*
  *    LabelPowerset.java
- *    Copyright (C) 2009-2010 Aristotle University of Thessaloniki, Thessaloniki, Greece
+ *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
  */
 package mulan.classifier.transformation;
 
@@ -24,10 +24,9 @@ import java.util.Arrays;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import mulan.classifier.MultiLabelOutput;
-import mulan.data.LabelSet;
 import mulan.core.Util;
+import mulan.data.LabelSet;
 import mulan.data.MultiLabelInstances;
 import mulan.transformations.LabelPowersetTransformation;
 import weka.classifiers.Classifier;
@@ -39,7 +38,7 @@ import weka.core.Instances;
  *
  * @author Grigorios Tsoumakas 
  * @author Robert Friberg
- * @version $Revision: 0.05 $ 
+ * @version 2012.02.27
  */
 public class LabelPowerset extends TransformationBasedMultiLabelLearner {
 
@@ -218,4 +217,3 @@ public class LabelPowerset extends TransformationBasedMultiLabelLearner {
         return mlo;
     }
 }
-
