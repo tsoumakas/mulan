@@ -26,7 +26,7 @@ import java.util.List;
 
 /**
  * 
- * @author Eleftherios Spyromitros Xioufis
+ * @author Eleftherios Spyromitros-Xioufis
  * @version 2010.12.04
  */
 public abstract class LabelBasedAveragePrecision extends ConfidenceMeasureBase {

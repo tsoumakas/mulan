@@ -26,30 +26,28 @@ import weka.core.Utils;
 
 /**
  * Implementation of MAiP (Mean Average Interpolated Precision)
- *
+ * 
  * @author Fragkiskos Chatziasimidis
  * @author John Panagos
- * @version 2012.05.24
+ * @author Eleftherios Spyromitros-Xioufis
+ * @version 2012.07.28
  */
-public class MeanAverageInterpolatedPrecision extends LabelBasedAveragePrecision {
+public class MeanAverageInterpolatedPrecision extends LabelBasedAveragePrecision implements MacroAverageMeasure {
 
-    private int recallLevels;
-    private double[][] precision;//gia kathe label to precision gia kathe record tou test arff 
-    private double[][] recall;//gia kathe label to recall gia kathe record tou test arff
-    private double[][] interpolatedPrecision;//gia kathe label to interpolated precision gia kathe recall level
-    private double[] averageInterpolatedPrecision;//gia kathe label o mesos oros twn interpolated
-    private double[] recallLevel;//pinakas me ta recall levels edw einai deka 
+    /**
+     * The number of recall levels for which MeanAverageInterpolatedPrecision is calculated
+     */
+    private int numRecallLevels;
 
     /**
      * Constructor
-     *
+     * 
      * @param numOfLabels the number of labels
-     * @param recallLevels the number of standard recall levels uniformly
-     * distributed in [0,1]
+     * @param numRecallLevels the number of standard recall levels uniformly distributed in [0,1]
      */
-    public MeanAverageInterpolatedPrecision(int numOfLabels, int recallLevels) {
+    public MeanAverageInterpolatedPrecision(int numOfLabels, int numRecallLevels) {
         super(numOfLabels);
-        this.recallLevels = recallLevels;
+        this.numRecallLevels = numRecallLevels;
     }
 
     @Override
@@ -57,82 +55,56 @@ public class MeanAverageInterpolatedPrecision extends LabelBasedAveragePrecision
         return "Mean Average Interpolated Precision";
     }
 
-    /**
-     * Returns the average interpolated precision of a label
-     *
-     * @param labelIndex the index of a label
-     * @return the average interpolated precision of the given label
-     */
-    public double getAverageInterpolatedPrecision(int labelIndex) {
-        return averageInterpolatedPrecision[labelIndex];
-    }
-
-    private void calculateAverageInterpolatedPrecisions() {
-        recallLevel = new double[recallLevels];
-        for (int j = 0; j < recallLevels; j++) {
-            recallLevel[j] = (double) j / (recallLevels - 1);
-        }
-        //arxikopoiw tous pinakes
-        averageInterpolatedPrecision = new double[numOfLabels];
-        precision = new double[confact[1].size()][numOfLabels];
-        recall = new double[confact[1].size()][numOfLabels];
-        interpolatedPrecision = new double[recallLevel.length][numOfLabels];
-        for (int labelIndex = 0; labelIndex < numOfLabels; labelIndex++) {
-            Collections.sort(confact[labelIndex], Collections.reverseOrder());
-            double retrievedCounter = 0;
-            double relevantCounter = 0;
-            double totalRelevantCounter = 0;
-            //gia kathe label vriskoume to precision kai vriskoume kai to synoliko arithmo twn sxetikwn
-            for (int i = 0; i < confact[labelIndex].size(); i++) {
-                retrievedCounter++;
-                Boolean actual = confact[labelIndex].get(i).getActual();
-                if (actual) {
-                    relevantCounter++;
-
-                }
-                precision[i][labelIndex] = relevantCounter / retrievedCounter;
-                totalRelevantCounter = relevantCounter;
-                //System.out.println(labelIndex+"-----"+totalRelevantCounter+"-----"+i+" Precision:"+precision[i][labelIndex]);
-            }
-            //gia kathe label vriskoume ta recall
-            relevantCounter = 0;
-            for (int i = 0; i < confact[labelIndex].size(); i++) {
-                Boolean actual = confact[labelIndex].get(i).getActual();
-                if (actual) {
-                    relevantCounter++;
-                }
-                recall[i][labelIndex] = relevantCounter / totalRelevantCounter;
-                //System.out.println(i+" Label index:"+labelIndex+"Precision:"+precision[i][labelIndex]+" recall:"+recall[i][labelIndex]);
-            }
-
-        }
-        for (int labelIndex = 0; labelIndex < numOfLabels; labelIndex++) {
-            int pos;
-            double sum = 0;
-            for (int i = 0; i < recallLevel.length; i++) {
-                pos = this.FindRecallPosition(i, labelIndex);
-                interpolatedPrecision[i][labelIndex] = this.maxPrecision(pos, labelIndex);
-                //System.out.println("recall level"+i+"Label index"+labelIndex+"Interpolated Precision"+interpolatedPrecision[i][labelIndex]);
-                sum += interpolatedPrecision[i][labelIndex];
-            }
-            averageInterpolatedPrecision[labelIndex] = sum / recallLevel.length;
-        }
-    }
-
     @Override
     public double getValue() {
-        calculateAverageInterpolatedPrecisions();
-        return Utils.mean(averageInterpolatedPrecision);
+        double miap = 0;
+        for (int labelIndex = 0; labelIndex < numOfLabels; labelIndex++) {
+            miap += getValue(labelIndex);
+        }
+        return miap /= numOfLabels;
     }
 
     /**
      * Returns the average interpolated precision for a label
-     *
+     * 
      * @param labelIndex the index of a label (starting from 0)
      * @return the average interpolated precision for the given label
      */
     public double getValue(int labelIndex) {
-        return averageInterpolatedPrecision[labelIndex];
+        double[] precisions = new double[confact[labelIndex].size()];
+        double[] recalls = new double[confact[labelIndex].size()];
+        double[] interpolatedPrecision = new double[numRecallLevels];
+        Collections.sort(confact[labelIndex], Collections.reverseOrder());
+        double retrievedCounter = 0;
+        double relevantCounter = 0;
+        double totalRelevantCounter = 0;
+        // calculate precision in all positions and count the total number of relevant instances
+        for (int i = 0; i < confact[labelIndex].size(); i++) {
+            retrievedCounter++;
+            Boolean actual = confact[labelIndex].get(i).getActual();
+            if (actual) {
+                relevantCounter++;
+            }
+            precisions[i] = relevantCounter / retrievedCounter;
+            totalRelevantCounter = relevantCounter;
+        }
+        // calculate recall in all positions
+        relevantCounter = 0;
+        for (int i = 0; i < confact[labelIndex].size(); i++) {
+            Boolean actual = confact[labelIndex].get(i).getActual();
+            if (actual) {
+                relevantCounter++;
+            }
+            recalls[i] = relevantCounter / totalRelevantCounter;
+        }
+        for (int i = 0; i < numRecallLevels; i++) {
+            double recallLevel = (double) i / (numRecallLevels - 1);
+            int pos = findRecallPosition(recallLevel, recalls);
+            interpolatedPrecision[i] = highestPrecisionAfterPos(pos, precisions);
+        }
+        double averageInterpolatedPrecision = Utils.mean(interpolatedPrecision);
+
+        return averageInterpolatedPrecision;
     }
 
     @Override
@@ -140,31 +112,37 @@ public class MeanAverageInterpolatedPrecision extends LabelBasedAveragePrecision
         return 1;
     }
 
-    private double maxPrecision(int pos, int LabelIndex) {
-        double maxPrecision = precision[pos][LabelIndex];
-
-        for (int i = pos + 1; i < precision.length; i++) {
-
-
-            if (precision[i][LabelIndex] > maxPrecision) {
-                maxPrecision = precision[i][LabelIndex];
+    /**
+     * Finds the highest precision after the given position in the list of retrieved instances.
+     * 
+     * @param pos
+     * @param precisions
+     * @return
+     */
+    private double highestPrecisionAfterPos(int pos, double[] precisions) {
+        double maxPrecision = precisions[pos];
+        for (int i = pos + 1; i < precisions.length; i++) {
+            if (precisions[i] > maxPrecision) {
+                maxPrecision = precisions[i];
             }
         }
         return maxPrecision;
     }
 
-    private int FindRecallPosition(int Level, int labelIndex) {
+    /**
+     * Finds the position in the list of retrieved instances where recall becomes equal to the given value
+     * 
+     * @param recallLevel
+     * @param recalls
+     * @return
+     */
+    private int findRecallPosition(double recallLevel, double[] recalls) {
         int pos = -1;
-        int i = 0;
-        boolean done = false;
-        while (!done && i < recall.length) {
-            if (recall[i][labelIndex] >= recallLevel[Level]) {
-                done = true;
+        for (int i = 0; i < recalls.length; i++) {
+            if (recalls[i] >= recallLevel) {
                 pos = i;
-            } else {
-                i++;
+                break;
             }
-
         }
         return pos;
     }
