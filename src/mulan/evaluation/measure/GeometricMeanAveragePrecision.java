@@ -20,21 +20,17 @@
  */
 package mulan.evaluation.measure;
 
-import java.util.Collections;
-
 /**
  * Implementation of GMAP (Geometric Mean Average Precision)
- *
- * @author Eleftherios Spyromitros Xioufis
+ * 
+ * @author Eleftherios Spyromitros-Xioufis
  * @version 2010.12.10
  */
-public class GeometricMeanAveragePrecision extends LabelBasedAveragePrecision {
-
-    private double[] AveragePrecision;
+public class GeometricMeanAveragePrecision extends MeanAveragePrecision {
 
     /**
      * Creates a new instance of this class
-     *
+     * 
      * @param numOfLabels the number of labels
      */
     public GeometricMeanAveragePrecision(int numOfLabels) {
@@ -48,27 +44,11 @@ public class GeometricMeanAveragePrecision extends LabelBasedAveragePrecision {
 
     @Override
     public double getValue() {
-        AveragePrecision = new double[numOfLabels];
-        double productAvgPre = 1;
+        double product = 1;
         for (int labelIndex = 0; labelIndex < numOfLabels; labelIndex++) {
-            AveragePrecision[labelIndex] = 0;
-            Collections.sort(confact[labelIndex], Collections.reverseOrder());
-            double retrievedCounter = 0;
-            double relevantCounter = 0;
-
-            for (int i = 0; i < confact[labelIndex].size(); i++) {
-                retrievedCounter++;
-                Boolean actual = confact[labelIndex].get(i).getActual();
-                if (actual) {
-                    relevantCounter++;
-                    AveragePrecision[labelIndex] += relevantCounter / retrievedCounter;
-                }
-            }
-            AveragePrecision[labelIndex] /= relevantCounter;
-            productAvgPre = productAvgPre * AveragePrecision[labelIndex];
+            product = product * getValue(labelIndex);
         }
-
-        return Math.pow(productAvgPre, 1.0 / numOfLabels);
+        return Math.pow(product, 1.0 / numOfLabels);
     }
 
     @Override
