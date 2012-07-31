@@ -1,12 +1,14 @@
-Mulan's 1.3.0 release contains:
+Mulan's 1.4.0 release contains:
 
 A jar file with Mulan classes (mulan.jar)
-A jar file with Weka classes, upon which Mulan is built (weka.jar)
+A jar file with Weka classes, upon which Mulan is built (weka-3.7.6.jar)
 A jar file with Mulan sources (mulan-src.jar)
 A folder with the API reference documentation for offline inspection (apidoc/)
 A folder with a sample dataset (data/)
-A change log file with changes from the previous Mulan version (changelog-1.3.0)
-This readme file (readme)
+A change log file with changes from previous Mulan versions (changelog.txt)
+A license file (license.txt)
+An xml build file (build.xml)
+This readme file (readme.txt)
 
 To get started with Mulan please refer to our online documentation:
 http://mulan.sourceforge.net/starting.html

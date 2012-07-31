@@ -77,14 +77,14 @@
         <java-data xmlns="http://www.netbeans.org/ns/freeform-project-java/2">
             <compilation-unit>
                 <package-root>src</package-root>
-                <classpath mode="compile">lib/weka.jar</classpath>
-                <source-level>1.5</source-level>
+                <classpath mode="compile">lib/weka-3.7.6.jar</classpath>
+                <source-level>1.6</source-level>
             </compilation-unit>
             <compilation-unit>
                 <package-root>test</package-root>
                 <unit-tests/>
-                <classpath mode="compile">lib/weka.jar;lib/test/junit-4.5.jar;target/classes</classpath>
-                <source-level>1.5</source-level>
+                <classpath mode="compile">lib/weka-3.7.6.jar;lib/test/junit-4.10.jar;target/classes</classpath>
+                <source-level>1.6</source-level>
             </compilation-unit>
         </java-data>
     </configuration>

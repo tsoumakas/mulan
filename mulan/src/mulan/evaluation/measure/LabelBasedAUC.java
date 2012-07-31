@@ -21,9 +21,7 @@
 package mulan.evaluation.measure;
 
 import weka.classifiers.evaluation.NominalPrediction;
-import weka.classifiers.evaluation.ThresholdCurve;
 import weka.core.FastVector;
-import weka.core.Instances;
 
 /**
  * Implementation of the label-based macro precision measure.

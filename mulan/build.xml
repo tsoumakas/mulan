@@ -12,19 +12,19 @@
 	<property name="target.junit.reports.dir" value="${target.dir}/test-reports" description="Directory for generated xml tests reports." />
 	<property name="target.junit.summary.dir" value="${target.dir}/test-summary" description="Directory for generated tests summary report in htlm format." />
 
-	<property name="coverage.enabled" value="true" description="Enables/disables the converage generation while runing unit-tests." />
+	<property name="coverage.enabled" value="false" description="Enables/disables the converage generation while runing unit-tests." />
 	<property name="target.coverage.instrumented.dir" value="${target.dir}/coverage-instrumented" description="Directory where cobertura place instrumented files necessary for coverage tracking."/>
 	<property name="target.coverage.report.dir" value="${target.dir}/coverage-reports" description="Directory for generated coverage reports." />
 
 	<property name="test.includes" value="mulan/**/*Test*" description="Default pattern used to identify tests implementation." />
 
 	<property name="mulan.title" value="Mulan - A Java library for multi-label learning" />
-	<property name="mulan.version" value="1.3.0" />
-	<property name="weka.version" value="3.7.3" />
+	<property name="mulan.version" value="1.4.0" />
+	<property name="weka.version" value="3.7.6" />
 
 	<path id="dependency.libs.path">
 		<fileset dir="${lib.dir}">
-			<include name="weka.jar" />
+			<include name="weka-${weka.version}.jar" />
 		</fileset>
 	</path>
 	
@@ -45,7 +45,7 @@
 
 	<target name="build" description="Builds the source code.">
 		<mkdir dir="${target.classes.dir}" />
-		<javac source="1.5" target="1.5" 
+		<javac source="1.6" target="1.6" 
 			   deprecation="true" debug="true" optimize="false" 
 			   srcdir="${src.dir}" 
 			   destdir="${target.classes.dir}">
@@ -60,7 +60,7 @@
 
 	<target name="build-test" depends="build" description="Builds tests classes.">
 		<mkdir dir="${target.testclasses.dir}" />
-		<javac source="1.5" target="1.5" 
+		<javac source="1.6" target="1.6" 
 			   deprecation="true" debug="true" optimize="false" 
 			   srcdir="${test.dir}" 
 			   destdir="${target.testclasses.dir}">
@@ -70,7 +70,7 @@
 		</javac>
 	</target>
 
-	<target name="package" depends="test,javadoc" description="Creates all distribution packages, such as jar archives." >
+	<target name="package" depends="javadoc" description="Creates all distribution packages, such as jar archives." >
 		<mkdir dir="${dist.dir}" />
 		<jar jarfile="${dist.dir}/mulan-src.jar" basedir="${src.dir}">
 			<metainf file="license.txt"/>
@@ -91,10 +91,11 @@
 		<zip destfile="${dist.dir}/mulan-${mulan.version}.zip" >
 			<zipfileset prefix="mulan-${mulan.version}" dir="${basedir}" includes="${javadoc.dir}/**, data/*.*" />
 			<zipfileset prefix="mulan-${mulan.version}" dir="${dist.dir}" includes="*.jar" />
-			<zipfileset prefix="mulan-${mulan.version}" file="${lib.dir}/weka.jar" />
+			<zipfileset prefix="mulan-${mulan.version}" file="${lib.dir}/weka-${weka.version}.jar" />
 			<zipfileset prefix="mulan-${mulan.version}" file="license.txt"/>
-			<zipfileset prefix="mulan-${mulan.version}" file="readme"/>
-			<zipfileset prefix="mulan-${mulan.version}" file="changelog-1.3.0"/>
+			<zipfileset prefix="mulan-${mulan.version}" file="readme.txt"/>
+			<zipfileset prefix="mulan-${mulan.version}" file="changelog.txt"/>
+			<zipfileset prefix="mulan-${mulan.version}" file="build.xml"/>
 		</zip> 
 	</target>
 
@@ -169,7 +170,7 @@
 			doctitle="Mulan ${mulan.version}" windowtitle="Mulan" failonerror="yes">
 			<classpath refid="dependency.libs.path" />
 			<excludepackage name="mulan.examples"/>
-			<link href="http://java.sun.com/j2se/1.5.0/docs/api/" />
+			<link href="http://java.sun.com/j2se/1.6.0/docs/api/" />
 			<link href="http://weka.sourceforge.net/doc.dev/" />
 		</javadoc>
 	</target>

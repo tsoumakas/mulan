@@ -1,0 +1,69 @@
+=== Changes in version 1.4.0 (2012-07-31) ===
+Learners
+-BinaryRelevance.java: improved data handling that avoids copying the entire input space, leading to important speedups in case of large datasets and very large number of labels.
+-RAkEL.java: updated technical information, added a check for the case where the number of labels is less or equal than the size of the subset.
+-MultiLabelKNN.java: now checks whether the number of instances is less than the number of requested nearest neighbors. 
+-Addition of AdaBoostMH.java, an explicit implementation of AdaBoost.MH as combination of AdaBoostM1 and IncludeLabelsClassifier.
+-Addition of MLPTO.java, the Multi Label Probabilistic Threshold Optimizer (MLTPTO) thresholding technique.
+-Addition of ApproximateExampleBasedFMeasureOptimizer.java, an approximate method for the maximization of example-based F-measure. 
+
+Measures/Evaluation
+-Addition of Specificity measure (example-based, micro/macro label-based)
+-Addition of Mean Average Interpolated Precision (MAiP), Geometric Mean Average Precision (GMAP), Geometric Mean Average Interpolated Precision (GMAiP).
+-New methods for stratified multi-label evaluation.
+-Added support for outputting per label results for all measures that implement the MacroAverageMeasure interface. 
+-Simplifying the "strictness" issue of information retrieval measures, by adopting specific assumptions (outlined in the new class InformationRetrievalMeasures.java) to handle special cases, instead of the less clear and useful solution of outputting NaN and the less realistic solution or ignoring special cases. 
+
+Bug fixes
+-Bug fix in LabelsBuilder.java.
+-Bug fix in Ranker.java.
+-Bug-fix in ThresholdPrediction.java.
+-Fix for bug occurring when loading the XSD for mulan data outside the command-line environment (e.g. web applications).
+-Javadoc comment updates.
+
+API changes
+-Upgrade to Java 1.6
+-Upgrade to JUnit 4.10
+-Upgrade to Weka 3.7.6.
+
+Miscellaneous
+-Meaningful messages are now shown when a DataLoadException is thrown.
+-PT6(PT6Transformation.java): renamed to IncludeLabelsTransformation.java.
+-MultiLabelInstances now support serialization, as needed by the improved binary relevance transformation.
+-BinaryRelevanceAttributeEvaluator.java: updated according to latest BR improvements.
+
+=== Changes in version 1.3.0 (2011-05-26) ===
+Learners
+-New algorithms added in the meta package.
+-EnsembleOfClassifierChains: The final confidences can now be computed not only by averaging votes, but also by averaging confidences. The option of sampling with replacement was added.
+-MMP: updated with loss functions. Added possibility to specify number of training epochs for MMPLearner.
+-BinaryRelevance: Added method to get the model built for a label.
+-Update to the lazy package: Euclidean is still the default distance function, the option to use a different distance function is given.
+
+Measures
+-Introduced loss functions package.
+-Refurbished the measures package so that the measure hierarchy has cleaner semantics and takes loss functions into consideration.
+-Strict/nostrict evaluation (handles divisions by zero differently).
+-Uniform calculation of f-measure for all related measures.
+
+Bug fixes
+-Bug fix in the dimensionality reduction package.
+-Bug fix in CalibratedLabelRanking class.
+-Updated design and bug fixes in thresholding strategies.
+-Fixed defect in MMPUniformUpdateRule.
+-Bug fix in the getPriors method.
+-Javadoc comment updates.
+
+API changes
+-Upgrade to Weka 3.7.3.
+
+Experiments
+-Experiment from ICTAI 2010 paper added.
+
+Examples
+-Simplified source examples for consistency with the online documentation.
+-Added an example that shows storing/loading a multi-label model.
+
+Unit Tests
+-HOMER and HMC tests added.
+-MetaLabeler and ThresholdPrediction test updated.
