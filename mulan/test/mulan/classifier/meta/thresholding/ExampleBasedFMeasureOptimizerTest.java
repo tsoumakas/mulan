@@ -15,17 +15,23 @@
  */
 
 /*
- *    LabelPowerSetTest.java
+ *    ExampleBasedFMeasureOptimizerTest.java
  *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
  */
-package mulan.classifier.transformation;
+package mulan.classifier.meta.thresholding;
 
-import weka.classifiers.trees.J48;
+import mulan.classifier.meta.MultiLabelMetaLearnerTest;
 
-public class LabelPowerSetTest extends TransformationBasedMultiLabelLearnerTest {
+/**
+ * Unit test routines for {@link ExampleBasedFMeasureOptimizer}.
+ * 
+ * @author Eleftherios Spyromitros-Xioufis
+ */
+public class ExampleBasedFMeasureOptimizerTest extends MultiLabelMetaLearnerTest {
 
     @Override
-    public void setUp() {
-        learner = new LabelPowerset(new J48());
+    public void setUp() throws Exception {
+        learner = new ExampleBasedFMeasureOptimizer();
     }
+
 }
