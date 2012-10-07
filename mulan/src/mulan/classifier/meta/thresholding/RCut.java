@@ -32,6 +32,7 @@ import mulan.data.InvalidDataFormatException;
 import mulan.data.LabelsMetaData;
 import mulan.data.MultiLabelInstances;
 import mulan.evaluation.measure.BipartitionMeasureBase;
+import mulan.evaluation.measure.Measure;
 import weka.classifiers.trees.J48;
 import weka.core.Instance;
 import weka.core.Instances;
@@ -172,7 +173,11 @@ public class RCut extends MultiLabelMetaLearner {
      */
     private double[] computeThreshold(MultiLabelLearner learner, MultiLabelInstances data, BipartitionMeasureBase measure) throws Exception {
         double[] diff = new double[numLabels + 1];
-        measure.reset();
+        Measure[] measures = new Measure[numLabels + 1];
+        for (int i=0; i<numLabels+1; i++) {
+            measures[i] = measure.makeCopy();
+        }
+               
         for (int j = 0; j < data.getNumInstances(); j++) {
             Instance instance = data.getDataSet().instance(j);
 
@@ -197,10 +202,15 @@ public class RCut extends MultiLabelMetaLearner {
                         bipartition[k] = true;
                     }
                 }
-                // this doesn't work with label-based measures
-//                diff[threshold] += Math.abs(measure.getIdealValue() - measure.updateBipartition(bipartition, trueLabels));
+                mlo = new MultiLabelOutput(bipartition);
+                measures[threshold].update(mlo, trueLabels);
             }
         }
+        
+        for (int i=0; i<numLabels+1; i++) {
+            diff[i] = Math.abs(measures[i].getIdealValue()-measures[i].getValue());
+        }
+            
         return diff;
     }
 
@@ -213,7 +223,6 @@ public class RCut extends MultiLabelMetaLearner {
         // by default set threshold equal to the rounded average cardinality
         if (measure == null) {
             t = (int) Math.round(trainingData.getCardinality());
-            t = 2;
         } else {
             // hold a reference to the trainingData in case of auto-tuning
             if (folds == 0) {
@@ -222,6 +231,7 @@ public class RCut extends MultiLabelMetaLearner {
             } else {
                 autoTuneThreshold(trainingData, measure, folds);
             }
+            System.out.println("t: " + t);
         }
     }
 
