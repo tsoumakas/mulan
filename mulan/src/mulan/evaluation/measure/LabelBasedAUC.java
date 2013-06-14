@@ -13,11 +13,6 @@
  *    along with this program; if not, write to the Free Software
  *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-
-/*
- *    LabelBasedAUC.java
- *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
- */
 package mulan.evaluation.measure;
 
 import weka.classifiers.evaluation.NominalPrediction;
@@ -52,6 +47,7 @@ public abstract class LabelBasedAUC extends ConfidenceMeasureBase {
         all_Predictions = new FastVector();
     }
 
+    @Override
     public void reset() {
         for (int labelIndex = 0; labelIndex < numOfLabels; labelIndex++) {
             m_Predictions[labelIndex] = new FastVector();
@@ -59,10 +55,12 @@ public abstract class LabelBasedAUC extends ConfidenceMeasureBase {
         all_Predictions = new FastVector();
     }
 
+    @Override
     public double getIdealValue() {
         return 1;
     }
    
+    @Override
     protected void updateConfidence(double[] confidences, boolean[] truth) {
         for (int labelIndex = 0; labelIndex < numOfLabels; labelIndex++) {
 

@@ -13,11 +13,6 @@
  *    along with this program; if not, write to the Free Software
  *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-
-/*
- *    LossBasedBipartitionMeasureBase.java
- *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
- */
 package mulan.evaluation.measure;
 
 import mulan.evaluation.loss.BipartitionLossFunction;
@@ -47,10 +42,12 @@ public abstract class LossBasedBipartitionMeasureBase extends ExampleBasedBipart
         count++;
     }
 
+    @Override
     public String getName() {
         return loss.getName();
     }
 
+    @Override
     public double getIdealValue() {
         return 0;
     }

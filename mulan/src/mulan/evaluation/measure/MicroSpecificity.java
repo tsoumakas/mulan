@@ -13,11 +13,6 @@
  *    along with this program; if not, write to the Free Software
  *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-
-/*
- *    MicroSpecificity.java
- *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
- */
 package mulan.evaluation.measure;
 
 import weka.core.Utils;
@@ -39,6 +34,7 @@ public class MicroSpecificity extends LabelBasedSpecificity {
         super(numOfLabels);
     }
 
+    @Override
     public double getValue() {
         double tn = Utils.sum(trueNegatives);
         double fp = Utils.sum(falsePositives);
@@ -46,6 +42,7 @@ public class MicroSpecificity extends LabelBasedSpecificity {
         return InformationRetrievalMeasures.specificity(tn, fp, fn);
     }
 
+    @Override
     public String getName() {
         return "Micro-averaged Specificity";
     }

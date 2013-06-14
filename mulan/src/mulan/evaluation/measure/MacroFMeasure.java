@@ -13,11 +13,6 @@
  *    along with this program; if not, write to the Free Software
  *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-
-/*
- *    MacroFMeasure.java
- *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
- */
 package mulan.evaluation.measure;
 
 /**
@@ -47,10 +42,12 @@ public class MacroFMeasure extends LabelBasedFMeasure implements MacroAverageMea
         super(numOfLabels, beta);
     }
 
+    @Override
     public String getName() {
         return "Macro-averaged F-Measure";
     }
 
+    @Override
     public double getValue() {
         double sum = 0;
         int count = 0;
@@ -69,6 +66,7 @@ public class MacroFMeasure extends LabelBasedFMeasure implements MacroAverageMea
      * @param labelIndex the index of a label (starting from 0)
      * @return the F-Measure for the given label
      */
+    @Override
     public double getValue(int labelIndex) {
         return InformationRetrievalMeasures.fMeasure(truePositives[labelIndex],
                 falsePositives[labelIndex],

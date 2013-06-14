@@ -13,11 +13,6 @@
  *    along with this program; if not, write to the Free Software
  *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-
-/*
- *    Coverage.java
- *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
- */
 package mulan.evaluation.measure;
 
 /**
@@ -28,6 +23,7 @@ package mulan.evaluation.measure;
  */
 public class Coverage extends RankingMeasureBase {
 
+    @Override
     public String getName() {
         return "Coverage";
     }
@@ -37,6 +33,7 @@ public class Coverage extends RankingMeasureBase {
         return 1;
     }
 
+    @Override
     protected void updateRanking(int[] ranking, boolean[] trueLabels) {
         int howDeep = 0;
         int numLabels = trueLabels.length;

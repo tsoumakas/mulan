@@ -13,11 +13,6 @@
  *    along with this program; if not, write to the Free Software
  *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-
-/*
- *    LabelBasedAveragePrecision.java
- *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
- */
 package mulan.evaluation.measure;
 
 import java.io.Serializable;
@@ -45,10 +40,11 @@ public abstract class LabelBasedAveragePrecision extends ConfidenceMeasureBase {
         this.numOfLabels = numOfLabels;
         confact = new ArrayList[numOfLabels];
         for (int labelIndex = 0; labelIndex < numOfLabels; labelIndex++) {
-            confact[labelIndex] = new ArrayList<ConfidenceActual>();
+            confact[labelIndex] = new ArrayList<>();
         }
     }
 
+    @Override
     protected void updateConfidence(double[] confidences, boolean[] truth) {
         for (int labelIndex = 0; labelIndex < numOfLabels; labelIndex++) {
             boolean actual = truth[labelIndex];
@@ -61,6 +57,7 @@ public abstract class LabelBasedAveragePrecision extends ConfidenceMeasureBase {
         }
     }
 
+    @Override
     public void reset() {
         for (int labelIndex = 0; labelIndex < numOfLabels; labelIndex++) {
             confact[labelIndex].clear();

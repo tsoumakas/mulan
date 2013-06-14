@@ -13,11 +13,6 @@
  *    along with this program; if not, write to the Free Software
  *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-
-/*
- *    ExampleBasedRecall.java
- *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
- */
 package mulan.evaluation.measure;
 
 /**
@@ -28,6 +23,7 @@ package mulan.evaluation.measure;
  */
 public class ExampleBasedRecall extends ExampleBasedBipartitionMeasureBase {
 
+    @Override
     public String getName() {
         return "Example-Based Recall";
     }
@@ -54,6 +50,7 @@ public class ExampleBasedRecall extends ExampleBasedBipartitionMeasureBase {
         count++;
     }
 
+    @Override
     public double getIdealValue() {
         return 1;
     }

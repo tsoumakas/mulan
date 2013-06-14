@@ -13,11 +13,6 @@
  *    along with this program; if not, write to the Free Software
  *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-
-/*
- *    LabelBasedBipartitionMeasureBase.java
- *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
- */
 package mulan.evaluation.measure;
 
 /**
@@ -62,6 +57,7 @@ public abstract class LabelBasedBipartitionMeasureBase extends BipartitionMeasur
         trueNegatives = new double[numOfLabels];
     }
 
+    @Override
     public void updateBipartition(boolean[] bipartition, boolean[] truth) {
         for (int labelIndex = 0; labelIndex < numOfLabels; labelIndex++) {
             boolean actual = truth[labelIndex];
@@ -83,6 +79,7 @@ public abstract class LabelBasedBipartitionMeasureBase extends BipartitionMeasur
         }
     }
 
+    @Override
     public void reset() {
         for (int labelIndex = 0; labelIndex < numOfLabels; labelIndex++) {
             falseNegatives[labelIndex] = 0;

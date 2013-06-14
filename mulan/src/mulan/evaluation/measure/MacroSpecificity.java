@@ -13,11 +13,6 @@
  *    along with this program; if not, write to the Free Software
  *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-
-/*
- *    MacroSpecificity.java
- *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
- */
 package mulan.evaluation.measure;
 
 /**
@@ -37,6 +32,7 @@ public class MacroSpecificity extends LabelBasedSpecificity implements MacroAver
         super(numOfLabels);
     }
 
+    @Override
     public double getValue() {
         double sum = 0;
         int count = 0;
@@ -47,6 +43,7 @@ public class MacroSpecificity extends LabelBasedSpecificity implements MacroAver
         return sum / count;
     }
 
+    @Override
     public String getName() {
         return "Macro-averaged Specificity";
     }
@@ -57,6 +54,7 @@ public class MacroSpecificity extends LabelBasedSpecificity implements MacroAver
      * @param labelIndex the index of a label (starting from 0)
      * @return the specificity for the given label
      */
+    @Override
     public double getValue(int labelIndex) {
         return InformationRetrievalMeasures.specificity(trueNegatives[labelIndex],
                 falsePositives[labelIndex],

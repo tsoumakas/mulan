@@ -13,11 +13,6 @@
  *    along with this program; if not, write to the Free Software
  *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-
-/*
- *    ExampleBasedBipartitionMeasureBase.java
- *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
- */
 package mulan.evaluation.measure;
 
 /**
@@ -37,11 +32,13 @@ public abstract class ExampleBasedBipartitionMeasureBase extends BipartitionMeas
      */
     protected int count;
 
+    @Override
     public void reset() {
         sum = 0;
         count = 0;
     }
 
+    @Override
     public double getValue() {
         return sum / count;
     }

@@ -13,11 +13,6 @@
  *    along with this program; if not, write to the Free Software
  *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-
-/*
- *    MacroAUC.java
- *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
- */
 package mulan.evaluation.measure;
 
 import weka.classifiers.evaluation.ThresholdCurve;
@@ -41,10 +36,12 @@ public class MacroAUC extends LabelBasedAUC implements MacroAverageMeasure {
         super(numOfLabels);
     }
 
+    @Override
     public String getName() {
         return "Macro-averaged AUC";
     }
 
+    @Override
     public double getValue() {
         double[] labelAUC = new double[numOfLabels];
         for (int i = 0; i < numOfLabels; i++) {
@@ -61,6 +58,7 @@ public class MacroAUC extends LabelBasedAUC implements MacroAverageMeasure {
      * @param labelIndex the index of the label 
      * @return the AUC for that label
      */
+    @Override
     public double getValue(int labelIndex) {
         ThresholdCurve tc = new ThresholdCurve();
         Instances result = tc.getCurve(m_Predictions[labelIndex], 1);

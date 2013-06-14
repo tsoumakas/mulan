@@ -13,11 +13,6 @@
  *    along with this program; if not, write to the Free Software
  *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-
-/*
- *    ExampleBasedSpecificity.java
- *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
- */
 package mulan.evaluation.measure;
 
 /**
@@ -28,10 +23,12 @@ package mulan.evaluation.measure;
  */
 public class ExampleBasedSpecificity extends ExampleBasedBipartitionMeasureBase {
 
+    @Override
     public String getName() {
         return "Example-Based Specificity";
     }
 
+    @Override
     public double getIdealValue() {
         return 1;
     }

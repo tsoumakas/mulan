@@ -13,11 +13,6 @@
  *    along with this program; if not, write to the Free Software
  *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-
-/*
- *    MeasureBase.java
- *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
- */
 package mulan.evaluation.measure;
 
 import java.io.Serializable;
@@ -31,6 +26,7 @@ import weka.core.SerializedObject;
  */
 public abstract class MeasureBase implements Measure, Serializable {
 
+    @Override
     public final void update(MultiLabelOutput prediction, boolean[] truth) {
         if (prediction == null) {
             throw new ArgumentNullException("Prediction is null");
@@ -64,6 +60,7 @@ public abstract class MeasureBase implements Measure, Serializable {
      */
     protected abstract void updateInternal(MultiLabelOutput prediction, boolean[] truth);
 
+    @Override
     public Measure makeCopy() throws Exception {
         return (Measure) new SerializedObject(this).getObject();
     }

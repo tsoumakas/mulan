@@ -13,11 +13,6 @@
  *    along with this program; if not, write to the Free Software
  *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-
-/*
- *    MicroAUC.java
- *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
- */
 package mulan.evaluation.measure;
 
 import weka.classifiers.evaluation.ThresholdCurve;
@@ -39,10 +34,12 @@ public class MicroAUC extends LabelBasedAUC {
         super(numOfLabels);
     }
 
+    @Override
     public String getName() {
         return "Micro-averaged AUC";
     }
 
+    @Override
     public double getValue() {
         ThresholdCurve tc = new ThresholdCurve();
         Instances result = tc.getCurve(all_Predictions, 1);

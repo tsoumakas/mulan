@@ -13,11 +13,6 @@
  *    along with this program; if not, write to the Free Software
  *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-
-/*
- *    MicroFMeasure.java
- *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
- */
 package mulan.evaluation.measure;
 
 import weka.core.Utils;
@@ -49,6 +44,7 @@ public class MicroFMeasure extends LabelBasedFMeasure {
         super(numOfLabels, beta);
     }
 
+    @Override
     public double getValue() {
         double tp = Utils.sum(truePositives);
         double fp = Utils.sum(falsePositives);
@@ -56,6 +52,7 @@ public class MicroFMeasure extends LabelBasedFMeasure {
         return InformationRetrievalMeasures.fMeasure(tp, fp, fn, beta);
     }
 
+    @Override
     public String getName() {
         return "Micro-averaged F-Measure";
     }
