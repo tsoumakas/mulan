@@ -13,11 +13,6 @@
  *    along with this program; if not, write to the Free Software
  *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-
-/*
- *    LabelsetPruning.java
- *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
- */
 package mulan.classifier.transformation;
 
 import java.util.ArrayList;
@@ -30,22 +25,29 @@ import weka.core.Instance;
 import weka.core.Instances;
 
 /**
- * Common functionality class for the PPT and PS algorithms <p>
+ * <p>Common functionality class for the PPT and PS algorithms.</p>
  *
- * @author Grigorios Tsoumakas 
+ * @author Grigorios Tsoumakas
  * @version 2012.02.27
  */
 public abstract class LabelsetPruning extends LabelPowerset {
 
-    /** labelsets and a list with the corresponding instances */
+    /**
+     * labelsets and a list with the corresponding instances
+     */
     HashMap<LabelSet, ArrayList<Instance>> ListInstancePerLabel;
-    /** parameter for the threshold of number of occurences of a labelset */
+    /**
+     * parameter for the threshold of number of occurences of a labelset
+     */
     protected int p;
-    /** format of the data */
+    /**
+     * format of the data
+     */
     Instances format;
 
     /**
-     * Constructor that initializes learner with base algorithm and main parameter
+     * Constructor that initializes learner with base algorithm and main
+     * parameter
      *
      * @param classifier base single-label classification algorithm
      * @param aP number of instances required for a labelset to be included.

@@ -77,7 +77,7 @@ public class TrainTestExperiment {
             BinaryRelevance br = new BinaryRelevance(brClassifier);
             br.setDebug(true);
             br.build(train);
-            results = eval.evaluate(br, test);
+            results = eval.evaluate(br, test, train);
             System.out.println(results);
         } catch (Exception e) {
             e.printStackTrace();

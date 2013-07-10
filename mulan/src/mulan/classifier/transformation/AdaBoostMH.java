@@ -13,42 +13,18 @@
  *    along with this program; if not, write to the Free Software
  *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-
-/*
- *    AdaBoostMH.java
- *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
- */
 package mulan.classifier.transformation;
 
 import weka.classifiers.meta.AdaBoostM1;
-import weka.core.TechnicalInformation;
 
 /**
- <!-- globalinfo-start -->
- * Implementation of the AdaBoost.MH algorithm based on Weka's AdaBoostM1. For more information, see<br/>
- * <br/>
- * Robert E. Schapire, Yoram Singer (2000). BoosTexter: A boosting-based system for text categorization. Machine Learning. 39(2/3):135-168.
- * <p/>
- <!-- globalinfo-end -->
- *
- <!-- technical-bibtex-start -->
- * BibTeX:
- * <pre>
- * &#64;article{Schapire2000,
- *    author = {Robert E. Schapire and Yoram Singer},
- *    journal = {Machine Learning},
- *    number = {2/3},
- *    pages = {135-168},
- *    title = {BoosTexter: A boosting-based system for text categorization},
- *    volume = {39},
- *    year = {2000}
- * }
- * </pre>
- * <p/>
- <!-- technical-bibtex-end -->
+ * <p>Implementation of the AdaBoost.MH algorithm based on Weka's AdaBoostM1.
+ * </p><p>For more information, see <em>Schapire, R.E.; Singer, Y. (2000).
+ * BoosTexter: A boosting-based system for text categorization. Machine
+ * Learning. 39(2/3):135-168.</em> </p>
  *
  * @author Grigorios Tsoumakas
- * @version 2012.02.27
+ * @version 2013.01.22
  */
 public class AdaBoostMH extends IncludeLabelsClassifier {
 
@@ -58,34 +34,4 @@ public class AdaBoostMH extends IncludeLabelsClassifier {
     public AdaBoostMH() {
         super(new AdaBoostM1());
     }
-
-    @Override
-    public TechnicalInformation getTechnicalInformation() {
-        TechnicalInformation result;
-
-        result = new TechnicalInformation(TechnicalInformation.Type.ARTICLE);
-        result.setValue(TechnicalInformation.Field.AUTHOR,
-                "Robert E. Schapire and Yoram Singer");
-        result.setValue(TechnicalInformation.Field.TITLE,
-                "BoosTexter: A boosting-based system for text categorization");
-        result.setValue(TechnicalInformation.Field.JOURNAL, "Machine Learning");
-        result.setValue(TechnicalInformation.Field.YEAR, "2000");
-        result.setValue(TechnicalInformation.Field.PAGES, "135-168");
-        result.setValue(TechnicalInformation.Field.VOLUME, "39");
-        result.setValue(TechnicalInformation.Field.NUMBER, "2/3");
-        return result;
-    }
-
-    /**
-     * Returns a string describing the classifier.
-     *
-     * @return a string description of the classifier
-     */
-    @Override
-    public String globalInfo() {
-        return "Implementation of the AdaBoost.MH algorithm based on Weka's "
-                + "AdaBoostM1. For more information, see\n\n"
-                + getTechnicalInformation().toString();
-    }
-
 }

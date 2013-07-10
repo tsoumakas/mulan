@@ -27,6 +27,7 @@ import mulan.classifier.MultiLabelOutput;
 import mulan.classifier.meta.MultiLabelMetaLearner;
 import mulan.classifier.transformation.BinaryRelevance;
 import mulan.data.MultiLabelInstances;
+import mulan.evaluation.GroundTruth;
 import mulan.evaluation.measure.ExampleBasedBipartitionMeasureBase;
 import mulan.evaluation.measure.HammingLoss;
 import weka.classifiers.trees.J48;
@@ -208,7 +209,7 @@ public class MLPTO extends MultiLabelMetaLearner {
 
         // Creates a MultiLabelOutput in order to use update methodand then getVaule
         mulan.classifier.MultiLabelOutput MLO = new mulan.classifier.MultiLabelOutput(bipartition);
-        EBBM.update(MLO, truth);
+        EBBM.update(MLO, new GroundTruth(truth));
         double val = EBBM.getValue();
         EBBM.reset();
         return val;

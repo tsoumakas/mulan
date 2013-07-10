@@ -30,6 +30,7 @@ import mulan.core.ArgumentNullException;
  * a ranking of labels, or an array of confidence values for each label.
  *
  * @author Grigorios Tsoumakas
+ * @author Eleftherios Spyromitros-Xioufis
  */
 public class MultiLabelOutput {
 
@@ -39,6 +40,8 @@ public class MultiLabelOutput {
     private int[] ranking;
     /** the probability of each label being positive */
     private double[] confidences;
+    /** the predicted values for continuous target variables (regression) */
+    private double[] pValues;
 
     /**
      * Creates a new instance of {@link MultiLabelOutput}.
@@ -121,6 +124,21 @@ public class MultiLabelOutput {
         confidences = Arrays.copyOf(someConfidences, someConfidences.length);
         ranking = ranksFromValues(someConfidences);
     }
+    
+    /**
+     * Creates a new instance of {@link MultiLabelOutput}.
+     * 
+     * @param pValues predicted values for continuous targets
+     * @param isRegression this argument is just used to make the signature of this constructor
+     *            different from {@link #MultiLabelOutput(double[])}
+     * @throws ArgumentNullException if pValues is null.
+     */
+    public MultiLabelOutput(double[] pValues, boolean isRegression) {
+        if (pValues == null) {
+            throw new ArgumentNullException("pValues");
+        }
+        this.pValues = Arrays.copyOf(pValues, pValues.length);
+    }
 
     /**
      * Gets bipartition of labels. 
@@ -168,6 +186,22 @@ public class MultiLabelOutput {
      */
     public boolean hasConfidences() {
         return (confidences != null);
+    }
+    
+    /**
+     * Gets predicted values of continuous targets.
+     * @return the predicted values
+     */
+    public double[] getPvalues() {
+        return pValues;
+    }
+
+    /**
+     * Determines whether the {@link MultiLabelOutput} has predicted values of continuous targets.
+     * @return <code>true</code> if has pValues; otherwise <code>false</code>
+     */
+    public boolean hasPvalues() {
+        return (pValues != null);
     }
 
     /**
@@ -253,6 +287,25 @@ public class MultiLabelOutput {
                 }
             }
         }
+        
+        //check predicted values
+        if (pValues == null) {
+            if (((MultiLabelOutput) mlo).pValues != null) {
+                return false;
+            }
+        }
+        if (pValues != null) {
+            if (((MultiLabelOutput) mlo).pValues == null) {
+                return false;
+            } else {
+                double[] pval = ((MultiLabelOutput) mlo).getPvalues();
+                for (int i = 0; i < pValues.length; i++) {
+                    if (!weka.core.Utils.eq(pValues[i], pval[i])) {
+                        return false;
+                    }
+                }
+            }
+        }
 
         return true;
     }
@@ -274,6 +327,10 @@ public class MultiLabelOutput {
             sb.append("Ranking: ");
             sb.append(Arrays.toString(ranking));
         }
+        if (ranking != null) {
+            sb.append("Predicted values: ");
+            sb.append(Arrays.toString(pValues));
+        }
         return sb.toString();
     }
 
@@ -283,6 +340,7 @@ public class MultiLabelOutput {
         hash = 89 * hash + Arrays.hashCode(this.bipartition);
         hash = 89 * hash + Arrays.hashCode(this.ranking);
         hash = 89 * hash + Arrays.hashCode(this.confidences);
+        hash = 89 * hash + Arrays.hashCode(this.pValues);
         return hash;
     }
 }

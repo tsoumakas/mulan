@@ -13,11 +13,6 @@
  *    along with this program; if not, write to the Free Software
  *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-
-/*
- *    TransformationBasedMultiLabelLearner.java
- *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
- */
 package mulan.classifier.transformation;
 
 import mulan.classifier.MultiLabelLearnerBase;
@@ -28,11 +23,7 @@ import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
 
 /**
- <!-- globalinfo-start -->
- <!-- globalinfo-end -->
- *
- <!-- technical-bibtex-start -->
- <!-- technical-bibtex-end -->
+ * Base class for multi-label learners that are based on data transformation
  *
  * @author Robert Friberg
  * @author Jozef Vilcek
@@ -49,8 +40,7 @@ public abstract class TransformationBasedMultiLabelLearner extends MultiLabelLea
 
     /**
      * Creates a new instance of {@link TransformationBasedMultiLabelLearner}
-     * with default
-     * {@link J48} base classifier.
+     * with default {@link J48} base classifier.
      */
     public TransformationBasedMultiLabelLearner() {
         this(new J48());
@@ -96,7 +86,7 @@ public abstract class TransformationBasedMultiLabelLearner extends MultiLabelLea
         result.setValue(Field.YEAR, "2010");
         return result;
     }
-    
+
     /**
      * Returns a string describing the classifier.
      *

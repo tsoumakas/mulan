@@ -23,7 +23,7 @@ import mulan.core.ArgumentNullException;
  * @author Grigorios Tsoumakas
  * @version 2010.12.03
  */
-public abstract class RankingMeasureBase extends MeasureBase {
+public abstract class RankingMeasureBase extends ClassificationMeasureBase {
     /**
      * The current sum of the measure
      */

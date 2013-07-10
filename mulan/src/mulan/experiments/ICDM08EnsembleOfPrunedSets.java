@@ -159,7 +159,7 @@ public class ICDM08EnsembleOfPrunedSets extends Experiment {
                         ot.build(multiTrain);
                         System.out.println("Best threshold: " + ot.getThreshold());
                         evaluator = new Evaluator();
-                        Evaluation e = evaluator.evaluate(ot, multiTest);
+                        Evaluation e = evaluator.evaluate(ot, multiTest, multiTrain);
                         System.out.println(e.toCSV());
                         result.get(m.getName()).addEvaluation(e);
                     }

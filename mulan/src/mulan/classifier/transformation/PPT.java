@@ -13,11 +13,6 @@
  *    along with this program; if not, write to the Free Software
  *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-
-/*
- *    PPT.java
- *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
- */
 package mulan.classifier.transformation;
 
 import java.util.ArrayList;
@@ -34,33 +29,20 @@ import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
 
 /**
- <!-- globalinfo-start -->
- * Class implementing the Pruned Problem Transformation algorithm (PPT) . For more information, see<br/>
- * <br/>
- * Read, Jesse: A Pruned Problem Transformation Method for Multi-label classification. In: Proc. 2008 New Zealand Computer Science Research Student Conference (NZCSRS 2008), 143-150, 2008.
- * <p/>
- <!-- globalinfo-end -->
- *
- <!-- technical-bibtex-start -->
- * BibTeX:
- * <pre>
- * &#64;inproceedings{Read2008,
- *    author = {Read, Jesse},
- *    booktitle = {Proc. 2008 New Zealand Computer Science Research Student Conference (NZCSRS 2008)},
- *    pages = {143-150},
- *    title = {A Pruned Problem Transformation Method for Multi-label classification},
- *    year = {2008}
- * }
- * </pre>
- * <p/>
- <!-- technical-bibtex-end -->
- *
- * @author Grigorios Tsoumakas 
+ * <p>Implementation of the Pruned Problem Transformation algorithm (PPT).</p>
+ * <p>For more information, see <em> Read, J. (2008) A Pruned Problem
+ * Transformation Method for Multi-label classification. In: Proc. 2008 New
+ * Zealand Computer Science Research Student Conference (NZCSRS 2008), pp.
+ * 143-150.</em></p> 
+ * 
+ * @author Grigorios Tsoumakas
  * @version 2012.02.27
  */
 public class PPT extends LabelsetPruning {
 
-    /** strategies for processing infrequent labelsets*/
+    /**
+     * strategies for processing infrequent labelsets
+     */
     public enum Strategy {
 
         /**
@@ -72,7 +54,9 @@ public class PPT extends LabelsetPruning {
          */
         NO_INFORMATION_LOSS;
     };
-    /** strategy for processing infrequent labelsets */
+    /**
+     * strategy for processing infrequent labelsets
+     */
     private Strategy strategy;
 
     /**
@@ -81,10 +65,10 @@ public class PPT extends LabelsetPruning {
     public PPT() {
         this(new J48(), 3, Strategy.NO_INFORMATION_LOSS);
     }
-    
+
     /**
-     * Constructor that initializes learner with base algorithm, parameter p
-     * and strategy for processing infrequent labelsets
+     * Constructor that initializes learner with base algorithm, parameter p and
+     * strategy for processing infrequent labelsets
      *
      * @param classifier base single-label classification algorithm
      * @param p number of instances required for a labelset to be included.
@@ -109,14 +93,15 @@ public class PPT extends LabelsetPruning {
         return result;
     }
 
-   /**
+    /**
      * Returns a string describing classifier
-     * @return a description suitable for displaying 
+     *
+     * @return a description suitable for displaying
      */
     @Override
     public String globalInfo() {
 
-        return "Class implementing the Pruned Problem Transformation " 
+        return "Class implementing the Pruned Problem Transformation "
                 + "algorithm (PPT) . For more information, see\n\n"
                 + getTechnicalInformation().toString();
     }

@@ -89,7 +89,7 @@ public class SubsetLearnerExamples {
                 s1 = System.currentTimeMillis();
                 learner.build(train);
                 s2 = System.currentTimeMillis();
-                results = eval.evaluate(learner, test);
+                results = eval.evaluate(learner, test, train);
                 s3 = System.currentTimeMillis();
                 trainTime = s2 - s1;
                 testTime = s3 - s2;
@@ -109,7 +109,7 @@ public class SubsetLearnerExamples {
                 s1 = System.currentTimeMillis();
                 learner.build(train);
                 s2 = System.currentTimeMillis();
-                results = eval.evaluate(learner, test);
+                results = eval.evaluate(learner, test, train);
                 s3 = System.currentTimeMillis();
                 trainTime = s2 - s1;
                 testTime = s3 - s2;
@@ -128,7 +128,7 @@ public class SubsetLearnerExamples {
                 s1 = System.currentTimeMillis();
                 learner.build(train);
                 s2 = System.currentTimeMillis();
-                results = eval.evaluate(learner, test);
+                results = eval.evaluate(learner, test, train);
                 s3 = System.currentTimeMillis();
                 trainTime = s2 - s1;
                 testTime = s3 - s2;
@@ -152,7 +152,7 @@ public class SubsetLearnerExamples {
                 learner.build(train);
                 s2 = System.currentTimeMillis();
                 System.out.println("Evaluation started. ");
-                results = eval.evaluate(learner, test);
+                results = eval.evaluate(learner, test, train);
                 s3 = System.currentTimeMillis();
                 trainTime = s2 - s1;
                 testTime = s3 - s2;
@@ -172,7 +172,7 @@ public class SubsetLearnerExamples {
                 s1 = System.currentTimeMillis();
                 learner.build(train);
                 s2 = System.currentTimeMillis();
-                results = eval.evaluate(learner, test);
+                results = eval.evaluate(learner, test, train);
                 s3 = System.currentTimeMillis();
                 trainTime = s2 - s1;
                 testTime = s3 - s2;

@@ -93,7 +93,7 @@ public class MachineLearning09IBLR extends Experiment {
                     IBLR_ML iblrml = new IBLR_ML();
                     iblrml.build(multiTrain);
                     evaluator = new Evaluator();
-                    Evaluation e1 = evaluator.evaluate(iblrml, multiTest,
+                    Evaluation e1 = evaluator.evaluate(iblrml, multiTest, multiTrain,
                             measures);
                     System.out.println(e1.toCSV());
                     iblrmlResults.addEvaluation(e1);
@@ -120,7 +120,7 @@ public class MachineLearning09IBLR extends Experiment {
                     IBLR_ML iblrmlplus = new IBLR_ML(10, true);
                     iblrmlplus.build(multiTrain);
                     evaluator = new Evaluator();
-                    Evaluation e2 = evaluator.evaluate(iblrmlplus, multiTest,
+                    Evaluation e2 = evaluator.evaluate(iblrmlplus, multiTest, multiTrain,
                             measures);
                     System.out.println(e2.toCSV());
                     iblrmlPlusResults.addEvaluation(e2);

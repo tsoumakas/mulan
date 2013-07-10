@@ -16,6 +16,7 @@
 package mulan.evaluation.measure;
 
 import mulan.classifier.MultiLabelOutput;
+import mulan.evaluation.GroundTruth;
 
 /**
  * Interface for a measure, used to evaluate the performance of a multi-label learner
@@ -56,10 +57,10 @@ public interface Measure {
      * a measure is	returned and result is added to the cumulated measure value.
      *
      * @param prediction the prediction for which measure has to be computed
-     * @param truth the true labels bipartition for given prediction
+     * @param truth ground truth for given prediction
      * @see Measure#getValue()
      */
-    void update(MultiLabelOutput prediction, boolean[] truth);
+    void update(MultiLabelOutput prediction, GroundTruth truth);
 
     /**
      * Creates a deep copy of the given measure using serialization.

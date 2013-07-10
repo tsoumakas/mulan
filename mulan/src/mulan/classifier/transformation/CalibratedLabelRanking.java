@@ -13,25 +13,25 @@
  *    along with this program; if not, write to the Free Software
  *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-
-/*
- *    CalibratedLabelRanking.java
- *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
- */
 package mulan.classifier.transformation;
 
 import java.util.Arrays;
 import mulan.classifier.MultiLabelOutput;
-import mulan.data.MultiLabelInstances;
 import mulan.transformations.RemoveAllLabels;
 import weka.classifiers.AbstractClassifier;
 import weka.classifiers.Classifier;
-import weka.classifiers.trees.J48;
 import weka.core.*;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.Reorder;
 
 /**
+<<<<<<< .working
+=======
+ * <p>Implementation of the Calibrated Label Ranking (CLR) algorithm.</p>
+ * <p>For more information, see <em> F&uuml;rnkranz, J.; H&uuml;llermeier, E.; Loza
+ * Menc&iacute;a, E.; Brinker, K. (2008) Multilabel classification via calibrated label
+ * ranking. Machine Learning. 73(2):133-153.</em></p>
+>>>>>>> .merge-right.r698
  *
  <!-- globalinfo-start -->
  * Class implementing the Calibrated Label Ranking (CLR) algorithm. For more information, see<br/>
@@ -61,8 +61,13 @@ import weka.filters.unsupervised.attribute.Reorder;
  * @author Grigorios Tsoumakas
  * @version 2012.02.27
  */
+<<<<<<< .working
 public class CalibratedLabelRanking extends TransformationBasedMultiLabelLearner {
+=======
+public class CalibratedLabelRanking extends BinaryAndPairwise {
+>>>>>>> .merge-right.r698
 
+<<<<<<< .working
     /** array holding the one vs one models */
     protected Classifier[] oneVsOneModels;
     /** number of one vs one models */
@@ -72,13 +77,19 @@ public class CalibratedLabelRanking extends TransformationBasedMultiLabelLearner
     /** headers of the training sets of the one vs one models */
     protected Instances[] metaDataTest;
     /** binary relevance models for the virtual label */
-    protected BinaryRelevance virtualLabelModels;
+=======
+    /**
+     * whether to consider soft or binary outputs
+     */
+>>>>>>> .merge-right.r698
+    private boolean soft;
     /** whether to use standard voting or the fast qweighted algorithm */
     private boolean useStandardVoting = true;
     /** whether no data exist for one-vs-one learning */
     protected boolean[] nodata;
 
     /**
+<<<<<<< .working
      * Default constructor using J48 as underlying classifier
      */
     public CalibratedLabelRanking() {
@@ -86,12 +97,25 @@ public class CalibratedLabelRanking extends TransformationBasedMultiLabelLearner
     }
     
     /**
+=======
+>>>>>>> .merge-right.r698
      * Constructor that initializes the learner with a base algorithm
      *
      * @param classifier the binary classification algorithm to use
      */
     public CalibratedLabelRanking(Classifier classifier) {
         super(classifier);
+        soft = false;
+    }
+
+    /**
+     * Sets whether to consider the outputs as soft [0..1] or hard {0,1}
+     *
+     * @param value <code>true</code> for setting soft outputs and
+     * <code>false</code> for hard outputs
+     */
+    public void setSoft(boolean value) {
+        soft = value;
     }
 
     /**
@@ -112,6 +136,7 @@ public class CalibratedLabelRanking extends TransformationBasedMultiLabelLearner
         return useStandardVoting;
     }
 
+<<<<<<< .working
     @Override
     protected void buildInternal(MultiLabelInstances trainingSet) throws Exception {
         // Virtual label models
@@ -186,6 +211,8 @@ public class CalibratedLabelRanking extends TransformationBasedMultiLabelLearner
         }
     }
 
+=======
+>>>>>>> .merge-right.r698
     /**
      * This method does a prediction for an instance with the values of label missing
      * Temporary included to switch between standard voting and qweighted multilabel voting
@@ -197,7 +224,11 @@ public class CalibratedLabelRanking extends TransformationBasedMultiLabelLearner
         if (useStandardVoting) {
             return makePredictionStandard(instance);
         } else {
-            return makePredictionQW(instance);
+            if (!soft) {
+                return makePredictionQW(instance);
+            } else {
+                return makePredictionQWSoft(instance);
+            }
         }
     }
 
@@ -208,12 +239,20 @@ public class CalibratedLabelRanking extends TransformationBasedMultiLabelLearner
      * @throws java.lang.Exception
      */
     public MultiLabelOutput makePredictionStandard(Instance instance) throws Exception {
+<<<<<<< .working
         boolean[] bipartition = new boolean[numLabels];
         double[] confidences = new double[numLabels];
         int[] voteLabel = new int[numLabels + 1];
+=======
+        double[] scores = getOneVsOneModels().calculateScores(instance);
+>>>>>>> .merge-right.r698
 
+<<<<<<< .working
         //System.out.println("Instance:" + instance.toString());
 
+=======
+>>>>>>> .merge-right.r698
+<<<<<<< .working
         // delete all labels and add a new atribute at the end
         Instance newInstance = RemoveAllLabels.transformInstance(instance, labelIndices);
         newInstance.insertAttributeAt(newInstance.numAttributes());
@@ -242,10 +281,22 @@ public class CalibratedLabelRanking extends TransformationBasedMultiLabelLearner
                     } else {
                         voteLabel[label2]++;
                     }
+=======
+        double scoreVirtual = 0;
+        MultiLabelOutput virtualMLO = getOneVsRestModels().makePrediction(instance);
+        if (!soft) {
+            boolean[] virtualBipartition = virtualMLO.getBipartition();
+            for (int i = 0; i < numLabels; i++) {
+                if (virtualBipartition[i]) {
+                    scores[i]++;
+                } else {
+                    scoreVirtual++;
+>>>>>>> .merge-right.r698
                 }
 
                 counter++;
             }
+<<<<<<< .working
 
         }
 
@@ -257,6 +308,13 @@ public class CalibratedLabelRanking extends TransformationBasedMultiLabelLearner
                 voteLabel[i]++;
             } else {
                 voteVirtual++;
+=======
+        } else {
+            double[] virtualScores = virtualMLO.getConfidences();
+            for (int i = 0; i < numLabels; i++) {
+                scores[i] += virtualScores[i];
+                scoreVirtual += (1 - virtualScores[i]);
+>>>>>>> .merge-right.r698
             }
         }
 
@@ -309,7 +367,7 @@ public class CalibratedLabelRanking extends TransformationBasedMultiLabelLearner
         Arrays.fill(voteLabel, 0);
 
         // evaluate all classifiers of the calibrated label beforehand, #numLabels 1 vs. A evaluations
-        MultiLabelOutput virtualMLO = virtualLabelModels.makePrediction(instance);
+        MultiLabelOutput virtualMLO = getOneVsRestModels().makePrediction(instance);
         boolean[] virtualBipartition = virtualMLO.getBipartition();
         for (int i = 0; i < numLabels; i++) {
             if (virtualBipartition[i]) {
@@ -326,6 +384,10 @@ public class CalibratedLabelRanking extends TransformationBasedMultiLabelLearner
         limitVirtual = numLabels - voteVirtual;
         played[numLabels] = numLabels;
 
+<<<<<<< .working
+=======
+        Instance transformed = getOneVsOneModels().getTransformation().transformInstance(instance);
+>>>>>>> .merge-right.r698
         // apply QWeighted iteratively to estimate all relevant labels until the
         // calibrated label is found
         boolean found = false;
@@ -355,8 +417,12 @@ public class CalibratedLabelRanking extends TransformationBasedMultiLabelLearner
 
                     // play found Pairing and update stats
                     int modelIndex = getRRClassifierIndex(player1, player2);
+<<<<<<< .working
                     newInstance.setDataset(metaDataTest[modelIndex]);
                     double[] distribution = oneVsOneModels[modelIndex].distributionForInstance(newInstance);
+=======
+                    double[] distribution = getOneVsOneModels().getModel(modelIndex).distributionForInstance(transformed);
+>>>>>>> .merge-right.r698
                     int maxIndex = (distribution[0] > distribution[1]) ? 0 : 1;
 
                     // Ensure correct predictions both for class values {0,1} and {1,0}
@@ -411,8 +477,141 @@ public class CalibratedLabelRanking extends TransformationBasedMultiLabelLearner
     }
 
     /**
+<<<<<<< .working
      * a function to get the classifier index for label1 vs label2 (single Round-Robin)
      * in the array of classifiers, oneVsOneModels
+=======
+     * This method does a prediction for an instance with the values of label
+     * missing according to QWeighted algorithm for Multilabel Classification
+     * (QCMLPP2), which is described in : Loza Mencia, E., Park, S.-H., and
+     * Fuernkranz, J. (2009) Efficient voting prediction for pairwise multilabel
+     * classification. In Proceedings of 17th European Symposium on Artificial
+     * Neural Networks (ESANN 2009), Bruges (Belgium), April 2009
+     *
+     * This method reduces the number of classifier evaluations and guarantees
+     * the same Multilabel Output as ordinary Voting. But: the estimated
+     * confidences are only approximated. Therefore, ranking-based performances
+     * are worse than ordinary voting.
+     *
+     * @param instance
+     * @return prediction
+     * @throws java.lang.Exception
+     */
+    public MultiLabelOutput makePredictionQWSoft(Instance instance) throws Exception {
+        double[] voteLabel = new double[numLabels];
+        int[] played = new int[numLabels + 1];
+        int[][] playedMatrix = new int[numLabels + 1][numLabels + 1];
+        int[] sortarr;
+        double[] limits = new double[numLabels];
+        boolean[] bipartition = new boolean[numLabels];
+        double[] confidences = new double[numLabels];
+        double voteVirtual = 0;
+        double limitVirtual;
+        boolean allEqualClassesFound = false;
+
+        // evaluate all classifiers of the calibrated label beforehand, #numLabels 1 vs. A evaluations
+        MultiLabelOutput virtualMLO = getOneVsRestModels().makePrediction(instance);
+        double[] virtualScores = virtualMLO.getConfidences();
+        //boolean[] virtualBipartition = virtualMLO.getBipartition();
+        for (int i = 0; i < numLabels; i++) {
+            voteLabel[i] += virtualScores[i];
+            voteVirtual += (1 - virtualScores[i]);
+
+            played[i]++;
+            playedMatrix[i][numLabels] = 1;
+            playedMatrix[numLabels][i] = 1;
+            limits[i] = played[i] - voteLabel[i];
+        }
+        limitVirtual = numLabels - voteVirtual;
+        played[numLabels] = numLabels;
+
+        Instance transformed = getOneVsOneModels().getTransformation().transformInstance(instance);
+        // apply QWeighted iteratively to estimate all relevant labels until the
+        // calibrated label is found
+        boolean found = false;
+        int pos = 0;
+        int player1 = -1;
+        int player2;
+        while (!allEqualClassesFound && pos < numLabels) {
+            while (!found) {
+
+                // opponent selection process: pair best against second best w.r.t. to number of "lost games"
+                // player1 = pick player with min(limits[player]) && player isn't ranked
+                sortarr = Utils.sort(limits);
+                player1 = sortarr[0];
+                player2 = -1;
+                int i = 1;
+
+                // can we found unplayed matches of player1 ?
+                if (played[player1] < numLabels) {
+                    // search for best opponent
+                    while (player2 == -1 && i < sortarr.length) {
+                        // already played ??
+                        if (playedMatrix[player1][sortarr[i]] == 0) {
+                            player2 = sortarr[i];
+                        }
+                        i++;
+                    }
+
+                    // play found Pairing and update stats
+                    int modelIndex = getRRClassifierIndex(player1, player2);
+                    double[] distribution = getOneVsOneModels().getModel(modelIndex).distributionForInstance(transformed);
+
+                    if (player1 > player2) {
+                        voteLabel[player1] += distribution[0];
+                        voteLabel[player2] += distribution[1];
+                    } else {
+                        voteLabel[player1] += distribution[1];
+                        voteLabel[player2] += distribution[0];
+                    }
+
+                    // update stats
+                    played[player1]++;
+                    played[player2]++;
+                    playedMatrix[player1][player2] = 1;
+                    playedMatrix[player2][player1] = 1;
+                    limits[player1] = played[player1] - voteLabel[player1];
+                    limits[player2] = played[player2] - voteLabel[player2];
+                } // full played, there are no opponents left
+                else {
+                    found = true;
+                }
+            }
+
+            //arrange already as relevant validated labels at the end of possible opponents
+            limits[player1] = Double.MAX_VALUE;
+
+            //check for possible labels, which can still gain greater or equal votes as the calibrated label
+            allEqualClassesFound = true;
+            for (int i = 0; i < numLabels; i++) {
+                if (limits[i] <= limitVirtual) {
+                    allEqualClassesFound = false;
+                }
+            }
+
+            // search for next relevant label
+            found = false;
+            pos++;
+        }
+
+        //Generate Multilabel Output
+        for (int i = 0; i < numLabels; i++) {
+            if (voteLabel[i] >= voteVirtual) {
+                bipartition[i] = true;
+            } else {
+                bipartition[i] = false;
+            }
+            confidences[i] = 1.0 * voteLabel[i] / numLabels;
+        }
+        MultiLabelOutput mlo = new MultiLabelOutput(bipartition, confidences);
+        return mlo;
+    }
+
+    /**
+     * a function to get the classifier index for label1 vs label2 (single
+     * Round-Robin) in the array of classifiers, oneVsOneModels
+     *
+>>>>>>> .merge-right.r698
      * @param label1
      * @param label2
      * @return index of classifier (label1 vs label2)
@@ -432,7 +631,6 @@ public class CalibratedLabelRanking extends TransformationBasedMultiLabelLearner
             return temp;
         }
     }
-
     /**
      * Returns a string describing the classifier.
      *

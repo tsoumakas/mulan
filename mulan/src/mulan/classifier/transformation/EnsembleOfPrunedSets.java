@@ -13,11 +13,6 @@
  *    along with this program; if not, write to the Free Software
  *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-
-/*
- *    EnsembleOfPrunedSets.java
- *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
- */
 package mulan.classifier.transformation;
 
 import java.util.Random;
@@ -31,33 +26,14 @@ import weka.classifiers.Classifier;
 import weka.classifiers.trees.J48;
 import weka.core.Instance;
 import weka.core.Instances;
-import weka.core.TechnicalInformation;
-import weka.core.TechnicalInformation.Field;
-import weka.core.TechnicalInformation.Type;
 import weka.filters.Filter;
 import weka.filters.unsupervised.instance.RemovePercentage;
 
 /**
- <!-- globalinfo-start -->
- * Class implementing the Ensemble of Pruned Sets algorithm(EPS) . For more information, see<br/>
- * <br/>
- * Read, Jesse, Pfahringer, Bernhard, Holmes, Geoff: Multi-label Classification using Ensembles of Pruned Sets. In: ICDM'08: Eighth IEEE International Conference on Data Mining, 995-1000, 2008.
- * <p/>
- <!-- globalinfo-end -->
- *
- <!-- technical-bibtex-start -->
- * BibTeX:
- * <pre>
- * &#64;conference{Read2008,
- *    author = {Read, Jesse and Pfahringer, Bernhard and Holmes, Geoff},
- *    booktitle = {ICDM'08: Eighth IEEE International Conference on Data Mining},
- *    pages = {995-1000},
- *    title = {Multi-label Classification using Ensembles of Pruned Sets},
- *    year = {2008}
- * }
- * </pre>
- * <p/>
- <!-- technical-bibtex-end -->
+ * <p>Implementation of the Ensemble of Pruned Sets (EPS) algorithm.</p> <p>For
+ * more information, see <em>Read, J.; Pfahringer, B.; Holmes, G. (2008)
+ * Multi-label Classification using Ensembles of Pruned Sets. In: ICDM'08:
+ * Eighth IEEE International Conference on Data Mining, 995-1000.</em></p>
  *
  * @author Emmanouela Stachtiari
  * @author Grigorios Tsoumakas
@@ -65,24 +41,34 @@ import weka.filters.unsupervised.instance.RemovePercentage;
  */
 public class EnsembleOfPrunedSets extends TransformationBasedMultiLabelLearner {
 
-    /** Parameter for the threshold of discretization of prediction output */
+    /**
+     * Parameter for the threshold of discretization of prediction output
+     */
     protected double threshold;
-    /** Parameter for the number of models that constitute the ensemble*/
+    /**
+     * Parameter for the number of models that constitute the ensemble
+     */
     protected int numOfModels;
-    /** Percentage of data */
+    /**
+     * Percentage of data
+     */
     protected double percentage;
-    /** The models in the ensemble */
+    /**
+     * The models in the ensemble
+     */
     protected PrunedSets[] ensemble;
-    /** Random number generator */
+    /**
+     * Random number generator
+     */
     protected Random rand;
 
     /**
      * Creates a new instance with default values
      */
     public EnsembleOfPrunedSets() {
-        this(66,10,0.5,2,PrunedSets.Strategy.A,3,new J48());
+        this(66, 10, 0.5, 2, PrunedSets.Strategy.A, 3, new J48());
     }
-    
+
     /**
      * @param aNumOfModels the number of models in the ensemble
      * @param aStrategy pruned sets strategy
@@ -125,30 +111,6 @@ public class EnsembleOfPrunedSets extends TransformationBasedMultiLabelLearner {
         }
     }
 
-    @Override
-    public TechnicalInformation getTechnicalInformation() {
-        TechnicalInformation result = new TechnicalInformation(Type.CONFERENCE);
-        result.setValue(Field.AUTHOR, "Read, Jesse and Pfahringer, Bernhard and Holmes, Geoff");
-        result.setValue(Field.TITLE, "Multi-label Classification using Ensembles of Pruned Sets");
-        result.setValue(Field.PAGES, "995-1000");
-        result.setValue(Field.BOOKTITLE, "ICDM'08: Eighth IEEE International Conference on Data Mining");
-        result.setValue(Field.YEAR, "2008");
-
-        return result;
-    }
-
-   /**
-     * Returns a string describing classifier
-     * @return a description suitable for displaying 
-     */
-    public String globalInfo() {
-
-        return "Class implementing the Ensemble of Pruned Sets algorithm"
-                + "(EPS) . For more information, see\n\n"
-                + getTechnicalInformation().toString();
-    }
-    
-    
     @Override
     protected MultiLabelOutput makePredictionInternal(Instance instance)
             throws Exception, InvalidDataException {

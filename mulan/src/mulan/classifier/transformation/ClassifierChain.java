@@ -13,11 +13,6 @@
  *    along with this program; if not, write to the Free Software
  *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-
-/*
- *    ClassifierChain.java
- *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
- */
 package mulan.classifier.transformation;
 
 import mulan.classifier.MultiLabelOutput;
@@ -30,41 +25,17 @@ import weka.classifiers.trees.J48;
 import weka.core.Attribute;
 import weka.core.Instance;
 import weka.core.Instances;
-import weka.core.TechnicalInformation;
-import weka.core.TechnicalInformation.Field;
-import weka.core.TechnicalInformation.Type;
 import weka.filters.unsupervised.attribute.Remove;
 
 /**
+ * <p>Implementation of the Classifier Chain (CC) algorithm.</p> <p>For more
+ * information, see <em>Read, J.; Pfahringer, B.; Holmes, G.; Frank, E.
+ * (2011) Classifier Chains for Multi-label Classification. Machine Learning.
+ * 85(3):335-359.</em></p>
  *
- <!-- globalinfo-start -->
- * Class implementing the Classifier Chain (CC) algorithm.<br/>
- * <br/>
- * For more information, see<br/>
- * <br/>
- * Read, Jesse, Pfahringer, Bernhard, Holmes, Geoff, Frank, Eibe: Classifier Chains for Multi-label Classification. In: , 335--359, 2011.
- * <p/>
- <!-- globalinfo-end -->
- *
- <!-- technical-bibtex-start -->
- * BibTeX:
- * <pre>
- * &#64;inproceedings{Read2011,
- *    author = {Read, Jesse and Pfahringer, Bernhard and Holmes, Geoff and Frank, Eibe},
- *    journal = {Machine Learning},
- *    number = {3},
- *    pages = {335--359},
- *    title = {Classifier Chains for Multi-label Classification},
- *    volume = {85},
- *    year = {2011}
- * }
- * </pre>
- * <p/>
- <!-- technical-bibtex-end -->
- *
- * @author Eleftherios Spyromitros-Xioufis ( espyromi@csd.auth.gr )
- * @author Konstantinos Sechidis (sechidis@csd.auth.gr)
- * @author Grigorios Tsoumakas (greg@csd.auth.gr)
+ * @author Eleftherios Spyromitros-Xioufis
+ * @author Konstantinos Sechidis
+ * @author Grigorios Tsoumakas
  * @version 2012.02.27
  */
 public class ClassifierChain extends TransformationBasedMultiLabelLearner {
@@ -73,33 +44,6 @@ public class ClassifierChain extends TransformationBasedMultiLabelLearner {
      * The new chain ordering of the label indices
      */
     private int[] chain;
-
-    /**
-     * Returns a string describing the classifier.
-     *
-     * @return a string description of the classifier 
-     */
-    @Override
-    public String globalInfo() {
-        return "Class implementing the Classifier Chain (CC) algorithm." 
-                + "\n\n" + "For more information, see\n\n" 
-                + getTechnicalInformation().toString();
-    }
-
-    @Override
-    public TechnicalInformation getTechnicalInformation() {
-        TechnicalInformation result;
-        result = new TechnicalInformation(Type.INPROCEEDINGS);
-        result.setValue(Field.AUTHOR, "Read, Jesse and Pfahringer, Bernhard and Holmes, Geoff and Frank, Eibe");
-        result.setValue(Field.TITLE, "Classifier Chains for Multi-label Classification");
-        result.setValue(Field.VOLUME, "85");
-        result.setValue(Field.NUMBER, "3");
-        result.setValue(Field.YEAR, "2011");
-        result.setValue(Field.PAGES, "335--359");
-        result.setValue(Field.JOURNAL, "Machine Learning");
-        return result;
-    }
-
     /**
      * The ensemble of binary relevance models. These are Weka
      * FilteredClassifier objects, where the filter corresponds to removing all
@@ -107,20 +51,20 @@ public class ClassifierChain extends TransformationBasedMultiLabelLearner {
      * model.
      */
     protected FilteredClassifier[] ensemble;
-    
+
     /**
      * Creates a new instance using J48 as the underlying classifier
      */
     public ClassifierChain() {
         super(new J48());
     }
-    
+
     /**
      * Creates a new instance
      *
      * @param classifier the base-level classification algorithm that will be
      * used for training each of the binary models
-     * @param aChain
+     * @param aChain contains the order of the label indexes [0..numLabels-1] 
      */
     public ClassifierChain(Classifier classifier, int[] aChain) {
         super(classifier);
@@ -144,7 +88,6 @@ public class ClassifierChain extends TransformationBasedMultiLabelLearner {
                 chain[i] = i;
             }
         }
-
 
         Instances trainDataset;
         numLabels = train.getNumLabels();

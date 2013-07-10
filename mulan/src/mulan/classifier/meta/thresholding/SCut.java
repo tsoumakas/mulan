@@ -30,6 +30,7 @@ import mulan.classifier.MultiLabelOutput;
 import mulan.classifier.meta.MultiLabelMetaLearner;
 import mulan.classifier.transformation.BinaryRelevance;
 import mulan.data.MultiLabelInstances;
+import mulan.evaluation.GroundTruth;
 import mulan.evaluation.measure.BipartitionMeasureBase;
 import mulan.evaluation.measure.HammingLoss;
 import weka.classifiers.trees.J48;
@@ -131,7 +132,7 @@ public class SCut extends MultiLabelMetaLearner {
     /**
      * Evaluates the performance of different threshold values for each label
      *
-     * @param baseLearner the underlying multi-label learner
+     * @param baseRegressor the underlying multi-label learner
      * @param data the test data to evaluate different thresholds
      * @return one threshold for each label
      * @throws Exception
@@ -202,7 +203,7 @@ public class SCut extends MultiLabelMetaLearner {
                             predictedLabels[x] = (arraysOfConfidences[k][x] >= currentThresholds[x]);
                         }
                         MultiLabelOutput temp = new MultiLabelOutput(predictedLabels);
-                        measureForThreshold[l].update(temp, trueLabels[k]);
+                        measureForThreshold[l].update(temp, new GroundTruth(trueLabels[k]));
                     }
                     score += measureForThreshold[l].getValue();
                 }

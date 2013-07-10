@@ -23,7 +23,7 @@ import mulan.core.ArgumentNullException;
  * @author Grigorios Tsoumakas
  * @version 2010.11.01
  */
-public abstract class BipartitionMeasureBase extends MeasureBase {
+public abstract class BipartitionMeasureBase extends ClassificationMeasureBase {
 
     protected void updateInternal(MultiLabelOutput prediction, boolean[] truth) {
         boolean[] bipartition = prediction.getBipartition();

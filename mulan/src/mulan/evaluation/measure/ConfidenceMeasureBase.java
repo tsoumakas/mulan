@@ -23,7 +23,7 @@ import mulan.core.ArgumentNullException;
  * @author Grigorios Tsoumakas
  * @version 2010.12.04
  */
-public abstract class ConfidenceMeasureBase extends MeasureBase {
+public abstract class ConfidenceMeasureBase extends ClassificationMeasureBase {
 
     @Override
     protected void updateInternal(MultiLabelOutput prediction, boolean[] truth) {

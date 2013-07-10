@@ -67,7 +67,7 @@ public class StoringAndLoadingModels {
             learner2 = (BinaryRelevance) SerializationHelper.read(modelFilename);
             Evaluator evaluator = new Evaluator();
             Evaluation evaluation;
-            evaluation = evaluator.evaluate(learner2, testingData);
+            evaluation = evaluator.evaluate(learner2, testingData, trainingData);
             System.out.println(evaluation);
         } catch (Exception ex) {
             Logger.getLogger(StoringAndLoadingModels.class.getName()).log(Level.SEVERE, null, ex);

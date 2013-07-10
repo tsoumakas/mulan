@@ -14,10 +14,6 @@
  *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-/*
- *    BinaryRelevanceTransformation.java
- *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
- */
 package mulan.transformations;
 
 import java.io.Serializable;

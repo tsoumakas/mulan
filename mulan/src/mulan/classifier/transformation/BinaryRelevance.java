@@ -13,11 +13,6 @@
  *    along with this program; if not, write to the Free Software
  *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-
-/*
- *    BinaryRelevance.java
- *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
- */
 package mulan.classifier.transformation;
 
 import mulan.classifier.MultiLabelOutput;
@@ -29,6 +24,7 @@ import weka.core.Instance;
 import weka.core.Instances;
 
 /**
+ * <p>Algorithm that builds one binary model per label.</p>
  *
  * @author Robert Friberg
  * @author Grigorios Tsoumakas

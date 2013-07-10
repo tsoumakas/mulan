@@ -33,7 +33,7 @@ import weka.core.*;
  * @author Robert Friberg
  * @author Jozef Vilcek
  * @author Grigorios Tsoumakas
- * @version 2010.12.27
+ * @version 2012.11.24
  */
 public abstract class MultiLabelLearnerBase
         implements TechnicalInformationHandler, MultiLabelLearner, Serializable {
@@ -51,6 +51,13 @@ public abstract class MultiLabelLearnerBase
      * in the {@link MultiLabelOutput} object.
      */
     protected int[] labelIndices;
+    /**
+     * An array containing the names of the label attributes within the
+     * {@link Instances} object of the training data in increasing order. The same
+     * order will be followed in the arrays of predictions given by each learner
+     * in the {@link MultiLabelOutput} object.
+     */
+    protected String[] labelNames;
     /**
      * An array containing the indexes of the feature attributes within the
      * {@link Instances} object of the training data in increasing order.
@@ -73,6 +80,7 @@ public abstract class MultiLabelLearnerBase
 
         numLabels = trainingSet.getNumLabels();
         labelIndices = trainingSet.getLabelIndices();
+        labelNames = trainingSet.getLabelNames();
         featureIndices = trainingSet.getFeatureIndices();
 
         buildInternal(trainingSet);
@@ -167,11 +175,4 @@ public abstract class MultiLabelLearnerBase
      */
     abstract public TechnicalInformation getTechnicalInformation();    
     
-    
-    /**
-     * Returns a string describing the multi-label learner.
-     *
-     * @return a description suitable for displaying in a future gui
-     */
-    abstract public String globalInfo(); 
 }

@@ -13,23 +13,16 @@
  *    along with this program; if not, write to the Free Software
  *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-
-/*
- *    CalibratedLabelRankingTest.java
- *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
- */
 package mulan.classifier.transformation;
 
 import weka.classifiers.Classifier;
 import weka.classifiers.bayes.NaiveBayes;
 
-public class CalibratedLabelRankingTest extends
-		TransformationBasedMultiLabelLearnerTest {
+public class CalibratedLabelRankingTest extends TransformationBasedMultiLabelLearnerTest {
 
-	@Override
-	public void setUp() {
-		Classifier baseClassifier = new NaiveBayes();
-		learner = new  CalibratedLabelRanking(baseClassifier);
-	}
-
+    @Override
+    public void setUp() {
+        Classifier baseClassifier = new NaiveBayes();
+        learner = new CalibratedLabelRanking(baseClassifier);
+    }
 }

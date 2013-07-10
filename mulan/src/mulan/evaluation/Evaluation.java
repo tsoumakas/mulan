@@ -42,12 +42,12 @@ public class Evaluation {
     private List<Measure> measures;
 
     /**
-     * Creates a new evaluation object by deep copying the measure objects that
-     * are given as parameters
-     *
+     * Creates a new evaluation object by deep copying the measure objects that are given as
+     * parameters
+     * 
      * @param someMeasures calculated measures
-     * @param data the evaluation data used for obtaining label names for per
-     * outputting per label values of macro average measures
+     * @param data the evaluation data used for obtaining label names for outputting per label
+     *            values of macro averaged measures
      * @throws Exception
      */
     public Evaluation(List<Measure> someMeasures, MultiLabelInstances data) throws Exception {
@@ -71,8 +71,11 @@ public class Evaluation {
             sb.append(m);
             if (m instanceof MacroAverageMeasure) {
                 sb.append("\n");
-                for (int i=0; i<data.getNumLabels(); i++) {
-                    sb.append(data.getDataSet().attribute(data.getLabelIndices()[i]).name()).append(": ").append(((MacroAverageMeasure) m).getValue(i)).append(" ");
+                for (int i = 0; i < data.getNumLabels(); i++) {
+                    sb.append(data.getDataSet().attribute(data.getLabelIndices()[i]).name());
+                    sb.append(": ");
+                    sb.append(String.format("%.4f", ((MacroAverageMeasure) m).getValue(i)));
+                    sb.append(" ");
                 }
             }
             sb.append("\n");

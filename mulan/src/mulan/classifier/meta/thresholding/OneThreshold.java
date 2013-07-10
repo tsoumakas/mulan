@@ -31,6 +31,7 @@ import mulan.classifier.transformation.BinaryRelevance;
 import mulan.core.MulanRuntimeException;
 import mulan.data.LabelsMetaData;
 import mulan.data.MultiLabelInstances;
+import mulan.evaluation.GroundTruth;
 import mulan.evaluation.measure.BipartitionMeasureBase;
 import mulan.evaluation.measure.HammingLoss;
 import weka.classifiers.trees.J48;
@@ -169,7 +170,7 @@ public class OneThreshold extends MultiLabelMetaLearner {
                 }
                 try {
                     MultiLabelOutput temp = new MultiLabelOutput(bipartition);
-                    measureForThreshold[counter].update(temp, trueLabels);
+                    measureForThreshold[counter].update(temp, new GroundTruth(trueLabels));
                 } catch (MulanRuntimeException e) {
                     thresholdHasProblem[counter] = true;
                 }

@@ -13,11 +13,6 @@
  *    along with this program; if not, write to the Free Software
  *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-
-/*
- *    TransformationBasedMultiLabelLearnerTest.java
- *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
- */
 package mulan.classifier.transformation;
 
 import org.junit.Before;
@@ -27,16 +22,15 @@ import mulan.classifier.MultiLabelLearnerBase;
 import mulan.classifier.MultiLabelLearnerTestBase;
 
 @Ignore
-public abstract class TransformationBasedMultiLabelLearnerTest extends
-		MultiLabelLearnerTestBase {
+public abstract class TransformationBasedMultiLabelLearnerTest extends MultiLabelLearnerTestBase {
 
-	protected TransformationBasedMultiLabelLearner learner;
-	
-	@Override
-	protected MultiLabelLearnerBase getLearner() {
-		return learner;
-	}
-	
-	@Before
-	abstract public void setUp () throws Exception;
+    protected TransformationBasedMultiLabelLearner learner;
+
+    @Override
+    protected MultiLabelLearnerBase getLearner() {
+        return learner;
+    }
+
+    @Before
+    abstract public void setUp() throws Exception;
 }

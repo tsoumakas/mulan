@@ -13,11 +13,6 @@
  *    along with this program; if not, write to the Free Software
  *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-
-/*
- *    MultiClassLearner.java
- *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
- */
 package mulan.classifier.transformation;
 
 import mulan.classifier.MultiLabelOutput;
@@ -29,6 +24,15 @@ import weka.core.Instance;
 import weka.core.Instances;
 
 /**
+ * <p>Class enabling a number of simple transformations of a multi-label task to
+ * a multi-class task (labels become class values).</p> <p>For more information,
+ * see <ul><em><li>Boutell, M.; Luo, J.; Shen, X.; Brown, C. (2004) Learning
+ * multi-label scene classification. Pattern Recognition 37:1757-1771</li>
+ * <li>Chen, W.; Yan, J.; Zhang, B.; Chen, Z.; Yang, Q. (2007) Document
+ * transformation for multi-label feature selection in text categorization. In:
+ * Proc. 7th IEEE International Conference on Data Mining, Los Alamitos, CA,
+ * USA, IEEE Computer Society, pp. 451-456</li></em></ul></p>
+ *
  * @author Stavros Mpakirtzoglou
  * @author Grigorios Tsoumakas
  * @version 2012.02.27

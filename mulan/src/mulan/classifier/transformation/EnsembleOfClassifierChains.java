@@ -13,11 +13,6 @@
  *    along with this program; if not, write to the Free Software
  *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-
-/*
- *    EnsembleOfClassifierChains.java
- *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
- */
 package mulan.classifier.transformation;
 
 import java.util.Arrays;
@@ -29,40 +24,18 @@ import weka.classifiers.Classifier;
 import weka.classifiers.trees.J48;
 import weka.core.Instance;
 import weka.core.Instances;
-import weka.core.TechnicalInformation;
-import weka.core.TechnicalInformation.Field;
-import weka.core.TechnicalInformation.Type;
 import weka.filters.Filter;
 import weka.filters.unsupervised.instance.RemovePercentage;
 
 /**
+ * <p>Implementation of the Ensemble of Classifier Chains(ECC) algorithm.</p>
+ * <p>For more information, see <em>Read, J.; Pfahringer, B.; Holmes, G., Frank,
+ * E. (2011) Classifier Chains for Multi-label Classification. Machine Learning.
+ * 85(3):335-359.</em></p>
  *
- <!-- globalinfo-start -->
- * Class implementing the Ensemble of Classifier Chains(ECC) algorithm. For more information, see<br/>
- * <br/>
- * Read, Jesse, Pfahringer, Bernhard, Holmes, Geoff, Frank, Eibe: Classifier Chains for Multi-label Classification. In: , 335--359, 2011.
- * <p/>
- <!-- globalinfo-end -->
- * 
- <!-- technical-bibtex-start -->
- * BibTeX:
- * <pre>
- * &#64;inproceedings{Read2011,
- *    author = {Read, Jesse and Pfahringer, Bernhard and Holmes, Geoff and Frank, Eibe},
- *    journal = {Machine Learning},
- *    number = {3},
- *    pages = {335--359},
- *    title = {Classifier Chains for Multi-label Classification},
- *    volume = {85},
- *    year = {2011}
- * }
- * </pre>
- * <p/>
- <!-- technical-bibtex-end -->
- *
- * @author Eleftherios Spyromitros-Xioufis ( espyromi@csd.auth.gr )
- * @author Konstantinos Sechidis (sechidis@csd.auth.gr)
- * @author Grigorios Tsoumakas (greg@csd.auth.gr)
+ * @author Eleftherios Spyromitros-Xioufis
+ * @author Konstantinos Sechidis
+ * @author Grigorios Tsoumakas
  * @version 2012.02.27
  */
 public class EnsembleOfClassifierChains extends TransformationBasedMultiLabelLearner {
@@ -97,7 +70,7 @@ public class EnsembleOfClassifierChains extends TransformationBasedMultiLabelLea
 
     /**
      * Returns the size of each bag sample, as a percentage of the training size
-     * 
+     *
      * @return the size of each bag sample, as a percentage of the training size
      */
     public int getBagSizePercent() {
@@ -106,9 +79,9 @@ public class EnsembleOfClassifierChains extends TransformationBasedMultiLabelLea
 
     /**
      * Sets the size of each bag sample, as a percentage of the training size
-     * 
-     * @param bagSizePercent the size of each bag sample, as a percentage of 
-     * the training size
+     *
+     * @param bagSizePercent the size of each bag sample, as a percentage of the
+     * training size
      */
     public void setBagSizePercent(int bagSizePercent) {
         BagSizePercent = bagSizePercent;
@@ -116,7 +89,7 @@ public class EnsembleOfClassifierChains extends TransformationBasedMultiLabelLea
 
     /**
      * Returns the sampling percentage
-     * 
+     *
      * @return the sampling percentage
      */
     public double getSamplingPercentage() {
@@ -125,27 +98,25 @@ public class EnsembleOfClassifierChains extends TransformationBasedMultiLabelLea
 
     /**
      * Sets the sampling percentage
-     * 
+     *
      * @param samplingPercentage the sampling percentage
      */
     public void setSamplingPercentage(double samplingPercentage) {
         this.samplingPercentage = samplingPercentage;
     }
-    
     /**
      * The size of each sample, as a percentage of the training size Used when
      * useSamplingWithReplacement is false
      */
     protected double samplingPercentage = 67;
 
-    
     /**
      * Default constructor
      */
     public EnsembleOfClassifierChains() {
         this(new J48(), 10, true, true);
     }
-    
+
     /**
      * Creates a new object
      *
@@ -162,33 +133,6 @@ public class EnsembleOfClassifierChains extends TransformationBasedMultiLabelLea
         useSamplingWithReplacement = doUseSamplingWithReplacement;
         ensemble = new ClassifierChain[aNumOfModels];
         rand = new Random(1);
-    }
-
-    /**
-     * Returns a string describing classifier.
-     *
-     * @return a description suitable for displaying in the
-     * explorer/experimenter gui
-     */
-    @Override
-    public String globalInfo() {
-        return "Class implementing the Ensemble of Classifier Chains"
-                + "(ECC) algorithm. For more information, see\n\n"
-                + getTechnicalInformation().toString();
-    }
-
-    @Override
-    public TechnicalInformation getTechnicalInformation() {
-        TechnicalInformation result;
-        result = new TechnicalInformation(Type.INPROCEEDINGS);
-        result.setValue(Field.AUTHOR, "Read, Jesse and Pfahringer, Bernhard and Holmes, Geoff and Frank, Eibe");
-        result.setValue(Field.TITLE, "Classifier Chains for Multi-label Classification");
-        result.setValue(Field.VOLUME, "85");
-        result.setValue(Field.NUMBER, "3");
-        result.setValue(Field.YEAR, "2011");
-        result.setValue(Field.PAGES, "335--359");
-        result.setValue(Field.JOURNAL, "Machine Learning");
-        return result;
     }
 
     @Override

@@ -14,10 +14,6 @@
  *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-/*
- *    LabelPowersetTransformation.java
- *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
- */
 package mulan.transformations;
 
 import java.io.Serializable;
@@ -35,7 +31,7 @@ import weka.core.Instances;
  *
  * @author Stavros Mpakirtzoglou
  * @author Grigorios Tsoumakas
- * @version 2012.02.02
+ * @version 2013.4.17
  */
 public class LabelPowersetTransformation implements Serializable {
 
@@ -84,7 +80,7 @@ public class LabelPowersetTransformation implements Serializable {
         for (LabelSet subset : labelSets) {
             classValues.add(subset.toBitString());
         }
-        Attribute newClass = new Attribute("class", classValues);
+        Attribute newClass = new Attribute("LP_Class_" + Integer.toHexString((int) Math.random()*Integer.MAX_VALUE), classValues);
 
         // remove all labels
         newData = RemoveAllLabels.transformInstances(data, labelIndices);

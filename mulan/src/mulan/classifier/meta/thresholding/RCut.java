@@ -31,6 +31,7 @@ import mulan.core.MulanRuntimeException;
 import mulan.data.InvalidDataFormatException;
 import mulan.data.LabelsMetaData;
 import mulan.data.MultiLabelInstances;
+import mulan.evaluation.GroundTruth;
 import mulan.evaluation.measure.BipartitionMeasureBase;
 import mulan.evaluation.measure.Measure;
 import weka.classifiers.trees.J48;
@@ -203,7 +204,7 @@ public class RCut extends MultiLabelMetaLearner {
                     }
                 }
                 mlo = new MultiLabelOutput(bipartition);
-                measures[threshold].update(mlo, trueLabels);
+                measures[threshold].update(mlo, new GroundTruth(trueLabels));
             }
         }
         

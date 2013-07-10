@@ -13,72 +13,48 @@
  *    along with this program; if not, write to the Free Software
  *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-
-/*
- *    MultiLabelStacking.java
- *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
- */
 package mulan.classifier.transformation;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import mulan.classifier.MultiLabelOutput;
-import mulan.data.DataUtils;
-import mulan.data.MultiLabelInstances;
+import mulan.data.*;
 import mulan.data.Statistics;
 import mulan.transformations.BinaryRelevanceTransformation;
-import weka.attributeSelection.ASEvaluation;
-import weka.attributeSelection.AttributeSelection;
-import weka.attributeSelection.Ranker;
+import weka.attributeSelection.*;
 import weka.classifiers.AbstractClassifier;
 import weka.classifiers.Classifier;
 import weka.classifiers.lazy.IBk;
 import weka.classifiers.meta.FilteredClassifier;
 import weka.classifiers.trees.J48;
-import weka.core.TechnicalInformation.Field;
-import weka.core.TechnicalInformation.Type;
-import weka.core.*;
+import weka.core.Attribute;
+import weka.core.EuclideanDistance;
+import weka.core.Instance;
+import weka.core.Instances;
+import weka.core.Utils;
 import weka.core.neighboursearch.LinearNNSearch;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.Remove;
 
 /**
- <!-- globalinfo-start -->
- * This class is an implementation of the (BR)^2 or Multi-Label stacking method.<br/>
- * <br/>
- * For more information, see<br/>
- * <br/>
- * Grigorios Tsoumakas, Anastasios Dimou, Eleftherios Spyromitros, Vasileios Mezaris, Ioannis Kompatsiaris, Ioannis Vlahavas: Correlation-Based Pruning of Stacked Binary Relevance Models for Multi-Label Learning. In: Proc. ECML/PKDD 2009 Workshop on Learning from Multi-Label Data (MLD'09), 101-116, 2009.
- * <p/>
- <!-- globalinfo-end -->
+ * <p>Implementation of the (BR)^2 or Multi-Label stacking method.</p> <p>For
+ * more information, see <em> Tsoumakas, G.; Dimou, A.; Spyromitros-Xioufis, E.;
+ * Mezaris, V.; Kompatsiaris, I.; Vlahavas, I. (2009) Correlation-Based Pruning
+ * of Stacked Binary Relevance Models for Multi-Label Learning. In: Proc.
+ * ECML/PKDD 2009 Workshop on Learning from Multi-Label Data (MLD'09), pp.
+ * 101-116.</em></p>
  *
- <!-- technical-bibtex-start -->
- * BibTeX:
- * <pre>
- * &#64;inproceedings{GrigoriosTsoumakas2009,
- *    author = {Grigorios Tsoumakas, Anastasios Dimou, Eleftherios Spyromitros, Vasileios Mezaris, Ioannis Kompatsiaris, Ioannis Vlahavas},
- *    booktitle = {Proc. ECML/PKDD 2009 Workshop on Learning from Multi-Label Data (MLD'09)},
- *    pages = {101-116},
- *    title = {Correlation-Based Pruning of Stacked Binary Relevance Models for Multi-Label Learning},
- *    year = {2009},
- *    location = {Bled, Slovenia}
- * }
- * </pre>
- * <p/>
- <!-- technical-bibtex-end -->
- *
- * @author Eleftherios Spyromitros-Xioufis (espyromi@csd.auth.gr)
+ * @author Eleftherios Spyromitros-Xioufis
  * @version 2012.02.07
  */
-public class MultiLabelStacking extends TransformationBasedMultiLabelLearner
-        implements Serializable {
+public class MultiLabelStacking extends TransformationBasedMultiLabelLearner {
 
     private static final long serialVersionUID = 1L;
     /**
@@ -141,9 +117,9 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner
      */
     private double metaPercentage;
     /**
-     * The number of labels that will be used for training the meta-level
-     * classifiers. The value is derived by metaPercentage and used only
-     * internally
+     * The number of labels that will be used for training the
+     * meta-level classifiers. The value is derived by metaPercentage and used
+     * only internally 
      */
     private int topkCorrelated;
     /**
@@ -157,8 +133,8 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner
      */
     private ASEvaluation eval;
     /**
-     * Class implementing the brute force search algorithm for nearest neighbor
-     * search. Used only in case of a kNN baseClassifier
+     * Class implementing the brute force search algorithm for
+     * nearest neighbor search. Used only in case of a kNN baseClassifier
      */
     private LinearNNSearch lnn = null;
     /**
@@ -166,36 +142,6 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner
      * then the buildInternal method doesn't build anything.
      */
     private boolean partialBuild;
-
-    /**
-     * Returns a string describing the classifier.
-     *
-     * @return a string description of the classifier
-     */
-    public String globalInfo() {
-
-        return "This class is an implementation of the (BR)^2 or Multi-Label stacking method." + "\n\n" + "For more information, see\n\n" + getTechnicalInformation().toString();
-    }
-
-    @Override
-    public TechnicalInformation getTechnicalInformation() {
-        TechnicalInformation result;
-
-        result = new TechnicalInformation(Type.INPROCEEDINGS);
-        result.setValue(
-                Field.AUTHOR,
-                "Grigorios Tsoumakas, Anastasios Dimou, Eleftherios Spyromitros, Vasileios Mezaris, Ioannis Kompatsiaris, Ioannis Vlahavas");
-        result.setValue(
-                Field.TITLE,
-                "Correlation-Based Pruning of Stacked Binary Relevance Models for Multi-Label Learning");
-        result.setValue(Field.BOOKTITLE,
-                "Proc. ECML/PKDD 2009 Workshop on Learning from Multi-Label Data (MLD'09)");
-        result.setValue(Field.YEAR, "2009");
-        result.setValue(Field.PAGES, "101-116");
-        result.setValue(Field.LOCATION, "Bled, Slovenia");
-
-        return result;
-    }
 
     /**
      * An empty constructor
@@ -210,15 +156,14 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner
      * @param baseClassifier the classifier used in the base-level
      * @param metaClassifier the classifier used in the meta-level
      */
-    public MultiLabelStacking(Classifier baseClassifier,
-            Classifier metaClassifier) {
+    public MultiLabelStacking(Classifier baseClassifier, Classifier metaClassifier) {
         super(baseClassifier);
         this.metaClassifier = metaClassifier;
         this.numFolds = 10; // 10 folds by default
         metaPercentage = 1.0; // use 100% of the labels in the meta-level
         eval = null; // no feature selection by default
         normalize = false; // no normalization performed
-        includeAttrs = false; // original attributes are not included
+        includeAttrs = true; // original attributes are included in the meta level by default
         partialBuild = false;
     }
 
@@ -234,8 +179,7 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner
             buildBaseLevel(dataSet);
         }
 
-        initializeMetaLevel(dataSet, metaClassifier, includeAttrs,
-                metaPercentage, eval);
+        initializeMetaLevel(dataSet, metaClassifier, metaPercentage, eval);
 
         buildMetaLevel();
     }
@@ -246,19 +190,16 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner
      *
      * @param dataSet
      * @param metaClassifier
-     * @param includeAttrs
      * @param metaPercentage
      * @param eval
      * @throws Exception
      */
-    public void initializeMetaLevel(MultiLabelInstances dataSet,
-            Classifier metaClassifier, boolean includeAttrs,
-            double metaPercentage, ASEvaluation eval) throws Exception {
+    private void initializeMetaLevel(MultiLabelInstances dataSet, Classifier metaClassifier, double metaPercentage,
+            ASEvaluation eval) throws Exception {
         this.metaClassifier = metaClassifier;
         metaLevelEnsemble = AbstractClassifier.makeCopies(metaClassifier, numLabels);
         metaLevelData = new Instances[numLabels];
         metaLevelFilteredEnsemble = new FilteredClassifier[numLabels];
-        this.includeAttrs = includeAttrs;
         // calculate the number of correlated labels that corresponds to the
         // given percentage
         topkCorrelated = (int) Math.floor(metaPercentage * numLabels);
@@ -272,8 +213,7 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner
                 Statistics phi = new Statistics();
                 phi.calculatePhi(dataSet);
                 for (int i = 0; i < numLabels; i++) {
-                    selectedAttributes[i] = phi.topPhiCorrelatedLabels(i,
-                            topkCorrelated);
+                    selectedAttributes[i] = phi.topPhiCorrelatedLabels(i, topkCorrelated);
                 }
             } else {// apply feature selection
                 AttributeSelection attsel = new AttributeSelection();
@@ -291,20 +231,16 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner
                     }
                     attributes.add(train.attribute(labelIndices[i]).copy("meta"));
 
-                    Instances iporesult = new Instances("Meta format",
-                            attributes, 0);
+                    Instances iporesult = new Instances("Meta format", attributes, 0);
                     iporesult.setClassIndex(numLabels);
                     for (int k = 0; k < train.numInstances(); k++) {
                         double[] values = new double[numLabels + 1];
                         for (int m = 0; m < numLabels; m++) {
-                            values[m] = Double.parseDouble(train.attribute(
-                                    labelIndices[m]).value(
-                                    (int) train.instance(k).value(
-                                    labelIndices[m])));
+                            values[m] = Double.parseDouble(train.attribute(labelIndices[m]).value(
+                                    (int) train.instance(k).value(labelIndices[m])));
                         }
                         values[numLabels] = Double.parseDouble(train.attribute(labelIndices[i]).value(
-                                (int) train.instance(k).value(
-                                labelIndices[i])));
+                                (int) train.instance(k).value(labelIndices[i])));
                         Instance metaInstance = DataUtils.createInstance(train.instance(k), 1, values);
                         metaInstance.setDataset(iporesult);
                         iporesult.add(metaInstance);
@@ -324,7 +260,7 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner
      * @param trainingSet
      * @throws Exception
      */
-    public void buildBaseLevel(MultiLabelInstances trainingSet) throws Exception {
+    private void buildBaseLevel(MultiLabelInstances trainingSet) throws Exception {
         train = new Instances(trainingSet.getDataSet());
         baseLevelData = new Instances[numLabels];
         baseLevelEnsemble = AbstractClassifier.makeCopies(baseClassifier, numLabels);
@@ -343,17 +279,17 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner
             baseLevelData[labelIndex] = BinaryRelevanceTransformation.transformInstances(train, labelIndices,
                     labelIndices[labelIndex]);
             // attach indexes in order to keep track of the original positions
-            baseLevelData[labelIndex] = new Instances(
-                    attachIndexes(baseLevelData[labelIndex]));
+            baseLevelData[labelIndex] = new Instances(attachIndexes(baseLevelData[labelIndex]));
             // prepare the transformed dataset for stratified x-fold cv
             Random random = new Random(1);
             baseLevelData[labelIndex].randomize(random);
             baseLevelData[labelIndex].stratify(numFolds);
             debug("Creating meta-data");
+            HashSet<Integer> indices = new HashSet<Integer>();
             for (int j = 0; j < numFolds; j++) {
                 debug("Label=" + labelIndex + ", Fold=" + j);
-                Instances subtrain = baseLevelData[labelIndex].trainCV(
-                        numFolds, j, random);
+                Instances subtrain = baseLevelData[labelIndex].trainCV(numFolds, j);
+                Instances subtest = baseLevelData[labelIndex].testCV(numFolds, j);
                 // create a filtered meta classifier, used to ignore
                 // the index attribute in the build process
                 // perform stratified x-fold cv and get predictions
@@ -367,15 +303,16 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner
                 fil.buildClassifier(subtrain);
 
                 // Classify test instance
-                Instances subtest = baseLevelData[labelIndex].testCV(numFolds,
-                        j);
                 for (int i = 0; i < subtest.numInstances(); i++) {
                     double distribution[];
                     distribution = fil.distributionForInstance(subtest.instance(i));
-                    // Ensure correct predictions both for class values {0,1}
-                    // and {1,0}
+                    // Ensure correct predictions both for class values {0,1} and {1,0}
                     Attribute classAttribute = baseLevelData[labelIndex].classAttribute();
-                    baseLevelPredictions[(int) subtest.instance(i).value(0)][labelIndex] = distribution[classAttribute.indexOfValue("1")];
+                    int index = (int) subtest.instance(i).value(0);
+                    if (!indices.add(index)) {
+                        System.out.println("Already predicted instance;");
+                    }
+                    baseLevelPredictions[index][labelIndex] = distribution[classAttribute.indexOfValue("1")];
                     if (normalize) {
                         if (distribution[classAttribute.indexOfValue("1")] > maxProb[labelIndex]) {
                             maxProb[labelIndex] = distribution[classAttribute.indexOfValue("1")];
@@ -412,15 +349,16 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner
         for (int i = 0; i < numLabels; i++) { // creating meta-level data new
             ArrayList<Attribute> attributes = new ArrayList<Attribute>();
 
-            if (includeAttrs) {// create an ArrayList with numAttributes size
-                for (int j = 0; j < train.numAttributes(); j++) {
-                    attributes.add(train.attribute(j));
-                }
-            } else {// create a FastVector with numLabels size
-                for (int j = 0; j < numLabels; j++) {
-                    attributes.add(train.attribute(labelIndices[j]));
+            if (includeAttrs) { // add the features in the first positions
+                for (int j = 0; j < featureIndices.length; j++) {
+                    attributes.add(train.attribute(featureIndices[j]));
                 }
             }
+            // add the labels in the last positions
+            for (int j = 0; j < numLabels; j++) {
+                attributes.add(train.attribute(labelIndices[j]));
+            }
+
             attributes.add(train.attribute(labelIndices[i]).copy("meta"));
 
             metaLevelData[i] = new Instances("Meta format", attributes, 0);
@@ -439,16 +377,9 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner
                     System.arraycopy(baseLevelPredictions[l], 0, values, 0, numLabels);
                 }
 
-                values[values.length - 1] = Double.parseDouble(train.attribute(
-                        labelIndices[i]).value(
-                        (int) train.instance(l).value(labelIndices[i])));
                 Instance metaInstance = DataUtils.createInstance(train.instance(l), 1, values);
                 metaInstance.setDataset(metaLevelData[i]);
-                if (values[values.length - 1] > 0.5) {
-                    metaInstance.setClassValue("1");
-                } else {
-                    metaInstance.setClassValue("0");
-                }
+                metaInstance.setClassValue(train.instance(l).value(labelIndices[i]));
                 metaLevelData[i].add(metaInstance);
             }
 
@@ -480,8 +411,7 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner
      * @param trainingSet
      * @throws Exception
      */
-    public void buildBaseLevelKNN(MultiLabelInstances trainingSet)
-            throws Exception {
+    public void buildBaseLevelKNN(MultiLabelInstances trainingSet) throws Exception {
         train = new Instances(trainingSet.getDataSet());
         EuclideanDistance dfunc = new EuclideanDistance();
         dfunc.setDontNormalize(false);
@@ -506,11 +436,9 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner
         int numOfNeighbors = ((IBk) baseClassifier).getKNN();
 
         /*
-         * /old way using brknn brknn = new BRkNN(numOfNeighbors);
-         * brknn.setDebug(true); brknn.build(trainingSet); for (int i = 0; i <
-         * train.numInstances(); i++) { MultiLabelOutput prediction =
-         * brknn.makePrediction(train.instance(i)); baseLevelPredictions[i] =
-         * prediction.getConfidences(); }
+         * /old way using brknn brknn = new BRkNN(numOfNeighbors); brknn.setDebug(true); brknn.build(trainingSet); for
+         * (int i = 0; i < train.numInstances(); i++) { MultiLabelOutput prediction =
+         * brknn.makePrediction(train.instance(i)); baseLevelPredictions[i] = prediction.getConfidences(); }
          */
 
         // new way
@@ -576,8 +504,7 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner
 
             // new way
             int numOfNeighbors = ((IBk) baseClassifier).getKNN();
-            Instances knn = new Instances(lnn.kNearestNeighbours(instance,
-                    numOfNeighbors));
+            Instances knn = new Instances(lnn.kNearestNeighbours(instance, numOfNeighbors));
 
             /*
              * Get the label confidence vector.
@@ -586,8 +513,7 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner
                 // compute sum of counts for each label in KNN
                 double count_for_label_i = 0;
                 for (int k = 0; k < numOfNeighbors; k++) {
-                    double value = Double.parseDouble(train.attribute(
-                            labelIndices[i]).value(
+                    double value = Double.parseDouble(train.attribute(labelIndices[i]).value(
                             (int) knn.instance(k).value(labelIndices[i])));
                     if (Utils.eq(value, 1.0)) {
                         count_for_label_i++;
@@ -599,7 +525,7 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner
             }
         }
         // System.out.println(Utils.arrayToString(confidences));
-		/*
+        /*
          * creation of the meta-instance with the appropriate values
          */
         double[] values = new double[numLabels + 1];
@@ -642,8 +568,7 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner
             metaconfidences[labelIndex] = distribution[classAttribute.indexOfValue("1")];
         }
 
-        MultiLabelOutput mlo = new MultiLabelOutput(bipartition,
-                metaconfidences);
+        MultiLabelOutput mlo = new MultiLabelOutput(bipartition, metaconfidences);
         return mlo;
     }
 
@@ -702,12 +627,10 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner
      */
     public void saveObject(String filename) {
         try {
-            ObjectOutputStream out = new ObjectOutputStream(
-                    new FileOutputStream(filename));
+            ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(filename));
             out.writeObject(this);
         } catch (IOException ex) {
-            Logger.getLogger(MultiLabelStacking.class.getName()).log(
-                    Level.SEVERE, null, ex);
+            Logger.getLogger(MultiLabelStacking.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -769,7 +692,7 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner
 
     /**
      * Returns top k correlated labels
-     * 
+     *
      * @return top k correlated labels
      */
     public int getTopkCorrelated() {

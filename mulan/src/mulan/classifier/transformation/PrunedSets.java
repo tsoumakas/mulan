@@ -13,11 +13,6 @@
  *    along with this program; if not, write to the Free Software
  *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-
-/*
- *    PrunedSets.java
- *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
- */
 package mulan.classifier.transformation;
 
 import java.util.ArrayList;
@@ -28,43 +23,26 @@ import mulan.data.LabelSet;
 import weka.classifiers.Classifier;
 import weka.classifiers.trees.J48;
 import weka.core.Instance;
-import weka.core.TechnicalInformation;
-import weka.core.TechnicalInformation.Field;
-import weka.core.TechnicalInformation.Type;
 
 /**
- <!-- globalinfo-start -->
- * Class implementing the Pruned Sets algorithm (PS). For more information, see<br/>
- * <br/>
- * Read, Jesse, Pfahringer, Bernhard, Holmes, Geoff: Multi-Label Classification using Ensembles of Pruned Sets. In: Proc. 8th IEEE International Conference on Data Mining (ICDM 2008), 995-1000, 2008.
- * <p/>
- <!-- globalinfo-end -->
+ * <p>Implementation of he Pruned Sets (PS) algorithm.</p> <p>For more
+ * information, see <em>Read, J.; Pfahringer, B.; Holmes, G. (2008) Multi-Label
+ * Classification using Ensembles of Pruned Sets. In: Proc. 8th IEEE
+ * International Conference on Data Mining (ICDM 2008), pp. 995-1000. </em></p>
  *
- <!-- technical-bibtex-start -->
- * BibTeX:
- * <pre>
- * &#64;inproceedings{Read2008,
- *    author = {Read, Jesse and Pfahringer, Bernhard and Holmes, Geoff},
- *    booktitle = {Proc. 8th IEEE International Conference on Data Mining (ICDM 2008)},
- *    pages = {995-1000},
- *    title = {Multi-Label Classification using Ensembles of Pruned Sets},
- *    year = {2008}
- * }
- * </pre>
- * <p/>
- <!-- technical-bibtex-end -->
- *
- * @author Grigorios Tsoumakas 
+ * @author Grigorios Tsoumakas
  * @version 2012.02.27
  */
 public class PrunedSets extends LabelsetPruning {
 
-    /** strategies for processing infrequent labelsets*/
+    /**
+     * strategies for processing infrequent labelsets
+     */
     public enum Strategy {
 
         /**
-         * Strategy A: rank subsets firstly by the number of labels they
-         * contain and secondly by the times they occur, then keep top b ranked
+         * Strategy A: rank subsets firstly by the number of labels they contain
+         * and secondly by the times they occur, then keep top b ranked
          */
         A,
         /**
@@ -72,9 +50,13 @@ public class PrunedSets extends LabelsetPruning {
          */
         B;
     };
-    /** strategy for processing infrequent labelsets */
+    /**
+     * strategy for processing infrequent labelsets
+     */
     private Strategy strategy;
-    /** parameter of strategy for processing infrequent labelsets*/
+    /**
+     * parameter of strategy for processing infrequent labelsets
+     */
     private int b;
 
     /**
@@ -83,10 +65,10 @@ public class PrunedSets extends LabelsetPruning {
     public PrunedSets() {
         this(new J48(), 3, Strategy.A, 2);
     }
-    
+
     /**
-     * Constructor that initializes learner with base algorithm, parameter p
-     * and strategy for processing infrequent labelsets
+     * Constructor that initializes learner with base algorithm, parameter p and
+     * strategy for processing infrequent labelsets
      *
      * @param classifier base single-label classification algorithm
      * @param aP number of instances required for a labelset to be included.
@@ -102,33 +84,10 @@ public class PrunedSets extends LabelsetPruning {
     }
 
     @Override
-    public TechnicalInformation getTechnicalInformation() {
-        TechnicalInformation result = new TechnicalInformation(Type.INPROCEEDINGS);
-        result.setValue(Field.AUTHOR, "Read, Jesse and Pfahringer, Bernhard and Holmes, Geoff");
-        result.setValue(Field.TITLE, "Multi-Label Classification using Ensembles of Pruned Sets");
-        result.setValue(Field.PAGES, "995-1000");
-        result.setValue(Field.BOOKTITLE, "Proc. 8th IEEE International Conference on Data Mining (ICDM 2008)");
-        result.setValue(Field.YEAR, "2008");
-        return result;
-    }
-
-   /**
-     * Returns a string describing classifier
-     * @return a description suitable for displaying 
-     */
-    @Override
-    public String globalInfo() {
-
-        return "Class implementing the Pruned Sets algorithm (PS). " 
-                + "For more information, see\n\n"
-                + getTechnicalInformation().toString();
-    }    
-    
-    @Override
     ArrayList<Instance> processRejected(LabelSet ls) {
-        ArrayList<LabelSet> subsets = null;
-        ArrayList<Instance> instances = null;
-        ArrayList<Instance> newInstances = null; 
+        ArrayList<LabelSet> subsets;
+        ArrayList<Instance> instances;
+        ArrayList<Instance> newInstances;
         switch (strategy) {
             case A:
                 // split LabelSet into smaller ones
@@ -183,10 +142,11 @@ public class PrunedSets extends LabelsetPruning {
                         double[] temp = tempInstance.toDoubleArray();
                         double[] tempLabels = l.toDoubleArray();
                         for (int i = 0; i < numLabels; i++) {
-                            if (format.attribute(labelIndices[i]).value(0).equals("0"))
+                            if (format.attribute(labelIndices[i]).value(0).equals("0")) {
                                 temp[labelIndices[i]] = tempLabels[i];
-                            else
+                            } else {
                                 temp[labelIndices[i]] = 1 - tempLabels[i];
+                            }
                         }
                         Instance newInstance = DataUtils.createInstance(tempInstance, 1, temp);
                         newInstances.add(newInstance);
@@ -232,10 +192,11 @@ public class PrunedSets extends LabelsetPruning {
                         double[] temp = tempInstance.toDoubleArray();
                         double[] tempLabels = l.toDoubleArray();
                         for (int i = 0; i < numLabels; i++) {
-                            if (format.attribute(labelIndices[i]).value(0).equals("0"))
+                            if (format.attribute(labelIndices[i]).value(0).equals("0")) {
                                 temp[labelIndices[i]] = tempLabels[i];
-                            else
+                            } else {
                                 temp[labelIndices[i]] = 1 - tempLabels[i];
+                            }
                         }
                         Instance newInstance = DataUtils.createInstance(tempInstance, 1, temp);
                         newInstances.add(newInstance);

@@ -13,11 +13,6 @@
  *    along with this program; if not, write to the Free Software
  *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-
-/*
- *    LabelPowerset.java
- *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
- */
 package mulan.classifier.transformation;
 
 import java.util.Arrays;
@@ -34,9 +29,9 @@ import weka.core.Instance;
 import weka.core.Instances;
 
 /**
- * Class that implements a label powerset classifier <p>
+ * <p>Implementation of the label powerset (LP) algorithm.</p>
  *
- * @author Grigorios Tsoumakas 
+ * @author Grigorios Tsoumakas
  * @author Robert Friberg
  * @version 2012.02.27
  */
@@ -44,10 +39,12 @@ public class LabelPowerset extends TransformationBasedMultiLabelLearner {
 
     /**
      * The confidence values for each label are calculated in the following ways
-     * 0: Confidence 0 1/0 for all labels, (1 if label true, 0 if label is false)
-     * 1: Confidence of x/(1-x) for all labels, where x is the probability of the winning class (x if label true, (1-x) if label is false)
-     * 2: Confidence calculated based on the distribution of probabilities 
-     *    obtained from the base classifier, as introduced by the PPT algorithm
+     * 0: Confidence 0 1/0 for all labels, (1 if label true, 0 if label is
+     * false) 1: Confidence of x/(1-x) for all labels, where x is the
+     * probability of the winning class (x if label true, (1-x) if label is
+     * false) 2: Confidence calculated based on the distribution of
+     * probabilities obtained from the base classifier, as introduced by the PPT
+     * algorithm
      */
     private int confidenceCalculationMethod = 1;
     /**
@@ -62,7 +59,9 @@ public class LabelPowerset extends TransformationBasedMultiLabelLearner {
      * the PPT algorithm
      */
     protected double threshold = 0.5;
-    /** The object that performs the data transformation */
+    /**
+     * The object that performs the data transformation
+     */
     protected LabelPowersetTransformation transformation;
     /**
      * Random number generator for randomly solving tied predictions
@@ -71,7 +70,7 @@ public class LabelPowerset extends TransformationBasedMultiLabelLearner {
 
     /**
      * Conststructor that initializes the learner with a base classifier
-     * 
+     *
      * @param classifier the base single-label classification algorithm
      */
     public LabelPowerset(Classifier classifier) {
@@ -90,7 +89,7 @@ public class LabelPowerset extends TransformationBasedMultiLabelLearner {
 
     /**
      * Setting a seed for random selection in case of ties during prediction
-     * 
+     *
      * @param s the seed
      */
     public void setSeed(int s) {
@@ -99,7 +98,7 @@ public class LabelPowerset extends TransformationBasedMultiLabelLearner {
 
     /**
      * The threshold for obtaining the bipartition from probabilities
-     * 
+     *
      * @param t
      */
     public void setThreshold(double t) {
@@ -108,7 +107,7 @@ public class LabelPowerset extends TransformationBasedMultiLabelLearner {
 
     /**
      * Sets the method of calculating probabilities for each label
-     * 
+     *
      * @param method
      */
     public void setConfidenceCalculationMethod(int method) {
