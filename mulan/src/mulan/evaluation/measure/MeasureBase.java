@@ -26,7 +26,6 @@ import weka.core.SerializedObject;
  */
 public abstract class MeasureBase implements Measure, Serializable {
 
-    @Override
     public final void update(MultiLabelOutput prediction, boolean[] truth) {
         if (prediction == null) {
             throw new ArgumentNullException("Prediction is null");

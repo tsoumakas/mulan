@@ -25,7 +25,7 @@ public class SquaredError extends ConfidenceLossFunctionBase {
 
     @Override
     public String getName() {
-        return "Mean Squared-error";
+        return "Mean Squared Error";
     }
 
     @Override

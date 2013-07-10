@@ -29,6 +29,7 @@ import java.util.List;
  */
 public class AveragePrecision extends RankingMeasureBase {
 
+    @Override
     public String getName() {
         return "Average Precision";
     }
@@ -38,17 +39,18 @@ public class AveragePrecision extends RankingMeasureBase {
         return 1;
     }
 
+    @Override
     protected void updateRanking(int[] ranking, boolean[] trueLabels) {
         double avgP = 0;
         int numLabels = trueLabels.length;
-        List<Integer> relevant = new ArrayList<Integer>();
+        List<Integer> relevant = new ArrayList<>();
         for (int index = 0; index < numLabels; index++) {
             if (trueLabels[index]) {
                 relevant.add(index);
             }
         }
 
-        if (relevant.size() != 0) {
+        if (!relevant.isEmpty()) {
             for (int r : relevant) {
                 double rankedAbove = 0;
                 for (int rr : relevant) {
