@@ -13,7 +13,6 @@
  *    along with this program; if not, write to the Free Software
  *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-
 package mulan.transformations;
 
 import mulan.data.MultiLabelInstances;
@@ -73,11 +72,12 @@ public class RemoveAllLabels {
         int counter1 = 0;
         int counter2 = 0;
         for (int i = 0; i < oldValues.length; i++) {
-            if (counter1 < labelIndices.length)
+            if (counter1 < labelIndices.length) {
                 if (i == labelIndices[counter1]) {
                     counter1++;
                     continue;
                 }
+            }
             newValues[counter2] = oldValues[i];
             counter2++;
         }
