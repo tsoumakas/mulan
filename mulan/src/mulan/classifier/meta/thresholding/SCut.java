@@ -13,11 +13,6 @@
  *    along with this program; if not, write to the Free Software
  *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-
-/*
- *    SCut.java
- *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
- */
 package mulan.classifier.meta.thresholding;
 
 import java.util.ArrayList;
@@ -42,48 +37,32 @@ import weka.core.TechnicalInformation.Type;
 import weka.core.Utils;
 
 /**
- <!-- globalinfo-start -->
- * Class that implements the SCut method (Score-based local  optimization). It computes a separate threshold for each label based on improving a user defined performance measure.For more information, see<br/>
- * <br/>
- * Yiming Yang: A study of thresholding strategies for text categorization. In: Proceedings of the 24th annual international ACM SIGIR conference on Research and development in information retrieval, 137 - 145, 2001.
- * <p/>
- <!-- globalinfo-end -->
- *
- * 
- * <!-- technical-bibtex-start -->
- * * BibTeX:
- * * <pre>
- * * &#64;inproceedings{Yang2001,
- * *    author = {Yiming Yang},
- * *    booktitle = {Proceedings of the 24th annual international ACM SIGIR conference on Research and development in information retrieval},
- * *    pages = {137 - 145},
- * *    title = {A study of thresholding strategies for text categorization},
- * *    year = {2001},
- * *    location = {New Orleans, Louisiana, United States}
- * * }
- * * </pre>
- * * <p/>
- * <!-- technical-bibtex-end -->
+ * <p> Class that implements the SCut method (Score-based local optimization). 
+ * It computes a separate threshold for each label based on improving a user 
+ * defined performance measure.For more information, see <em> Yiming Yang: A 
+ * study of thresholding strategies for text categorization. In: Proceedings of 
+ * the 24th annual international ACM SIGIR conference on Research and 
+ * development in information retrieval, 137 - 145, 2001.</em></p>
  *
  * @author Marios Ioannou
  * @author George Sakkas
  * @author Grigorios Tsoumakas
- * @version 2010.12.14
+ * @version 2013.6.19
  */
 public class SCut extends MultiLabelMetaLearner {
 
     /**
      * measure for auto-tuning the threshold
      */
-    BipartitionMeasureBase measure;
+    private BipartitionMeasureBase measure;
     /**
      * the folds of the cv to evaluate different thresholds
      */
-    int kFoldsCV;
+    private int kFoldsCV;
     /**
      * one threshold for each label to consider relevant
      */
-    double[] thresholds;
+    private double[] thresholds;
 
     /**
      * Default constructor
@@ -117,6 +96,7 @@ public class SCut extends MultiLabelMetaLearner {
         this.measure = measure;
     }
 
+    @Override
     public TechnicalInformation getTechnicalInformation() {
         TechnicalInformation result = new TechnicalInformation(Type.INPROCEEDINGS);
         result.setValue(Field.AUTHOR, "Yiming Yang");
@@ -168,8 +148,8 @@ public class SCut extends MultiLabelMetaLearner {
         }
 
         double counter = 0;
-        double tempThreshold = 0;
-        int conv = 0;
+        double tempThreshold;
+        int conv;
         int numOfThresholds = data.getNumInstances();
         double[] performance = new double[numOfThresholds];
 
@@ -180,10 +160,7 @@ public class SCut extends MultiLabelMetaLearner {
         }
 
         do {
-            //get the old measures values
-            for (int j = 0; j < numLabels; j++) {
-                measureTable[1][j] = measureTable[0][j];
-            }
+            System.arraycopy(measureTable[0], 0, measureTable[1], 0, numLabels);
             //for all labels computing the best thresholds
             for (int j = 0; j < numLabels; j++) {
                 double score = 0;
@@ -263,8 +240,7 @@ public class SCut extends MultiLabelMetaLearner {
                 }
 
             }
-            for (int j = 0; j
-                    < numLabels; j++) {
+            for (int j = 0; j < numLabels; j++) {
                 thresholds[j] /= kFoldsCV;
             }
 
@@ -298,11 +274,12 @@ public class SCut extends MultiLabelMetaLearner {
         return final_mlo;
     }
 
-    public String globalInfo() {
-        return "Class that implements the SCut method (Score-based local "
-                + " optimization). It computes a separate threshold for each "
-                + "label based on improving a user defined performance measure."
-                + "For more information, see\n\n"
-                + getTechnicalInformation().toString();
+    /**
+     * Method to obtain the computed thresholds per label
+     *
+     * @return the computed thresholds per label
+     */
+    public double[] getThresholds() {
+        return thresholds;
     }
 }

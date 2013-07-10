@@ -13,11 +13,6 @@
  *    along with this program; if not, write to the Free Software
  *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-
-/*
- *    OneThreshold.java
- *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
- */
 package mulan.classifier.meta.thresholding;
 
 import java.util.Arrays;
@@ -43,27 +38,11 @@ import weka.core.TechnicalInformation.Type;
 import weka.core.Utils;
 
 /**
- <!-- globalinfo-start -->
- * Class that estimates a single threshold for all labels and examples. For more information, see<br/>
- * <br/>
- * Read, Jesse, Pfahringer, Bernhard, Holmes, Geoff: Multi-label Classification Using Ensembles of Pruned Sets. In: Data Mining, 2008. ICDM '08. Eighth IEEE International Conference on, 995-1000, 2008.
- * <p/>
- <!-- globalinfo-end -->
- * 
- <!-- technical-bibtex-start -->
- * BibTeX:
- * <pre>
- * &#64;inproceedings{Read2008,
- *    author = {Read, Jesse and Pfahringer, Bernhard and Holmes, Geoff},
- *    booktitle = {Data Mining, 2008. ICDM '08. Eighth IEEE International Conference on},
- *    pages = {995-1000},
- *    title = {Multi-label Classification Using Ensembles of Pruned Sets},
- *    year = {2008},
- *    location = {Pisa, Italy}
- * }
- * </pre>
- * <p/>
- <!-- technical-bibtex-end -->
+ * <p> Class that estimates a single threshold for all labels and examples. For
+ * more information, see <em>Read, Jesse, Pfahringer, Bernhard, Holmes, Geoff:
+ * Multi-label Classification Using Ensembles of Pruned Sets. In: Data Mining,
+ * 2008. ICDM '08. Eighth IEEE International Conference on, 995-1000, 2008.</em>
+ * </p>
  *
  * @author Marios Ioannou
  * @author George Sakkas
@@ -72,13 +51,21 @@ import weka.core.Utils;
  */
 public class OneThreshold extends MultiLabelMetaLearner {
 
-    /** final threshold value */
+    /**
+     * final threshold value
+     */
     private double threshold;
-    /** measure for auto-tuning the threshold */
+    /**
+     * measure for auto-tuning the threshold
+     */
     private BipartitionMeasureBase measure;
-    /** the folds of the cv to evaluate different thresholds */
+    /**
+     * the folds of the cv to evaluate different thresholds
+     */
     private int folds = 0;
-    /** copy of a clean multi-label learner to use at each fold */
+    /**
+     * copy of a clean multi-label learner to use at each fold
+     */
     private MultiLabelLearner foldLearner;
 
     /**
@@ -86,8 +73,8 @@ public class OneThreshold extends MultiLabelMetaLearner {
      */
     public OneThreshold() {
         this(new BinaryRelevance(new J48()), new HammingLoss(), 3);
-    } 
-    
+    }
+
     /**
      * @param baseLearner the underlying multi=label learner
      * @param aMeasure the measure to optimize
@@ -117,7 +104,7 @@ public class OneThreshold extends MultiLabelMetaLearner {
     }
 
     /**
-     * Evaluates the performance of the learner on a data set according to a 
+     * Evaluates the performance of the learner on a data set according to a
      * bipartition measure for a range of thresholds
      *
      * @param data the test data to evaluate different thresholds
@@ -180,10 +167,11 @@ public class OneThreshold extends MultiLabelMetaLearner {
         }
 
         for (int i = 0; i < numOfThresholds; i++) {
-            if (!thresholdHasProblem[i])
+            if (!thresholdHasProblem[i]) {
                 performance[i] = Math.abs(measure.getIdealValue() - measureForThreshold[i].getValue());
-            else
+            } else {
                 performance[i] = Double.MAX_VALUE;
+            }
         }
 
         return min + Utils.minIndex(performance) * step;
@@ -206,6 +194,7 @@ public class OneThreshold extends MultiLabelMetaLearner {
         return stage2;
     }
 
+    @Override
     protected void buildInternal(MultiLabelInstances trainingData) throws Exception {
         baseLearner.build(trainingData);
         if (folds == 0) {
@@ -226,6 +215,7 @@ public class OneThreshold extends MultiLabelMetaLearner {
         }
     }
 
+    @Override
     protected MultiLabelOutput makePredictionInternal(Instance instance) throws Exception, InvalidDataException {
         boolean[] predictedLabels;
         MultiLabelOutput mlo = baseLearner.makePrediction(instance);
@@ -245,14 +235,14 @@ public class OneThreshold extends MultiLabelMetaLearner {
 
     @Override
     public TechnicalInformation getTechnicalInformation() {
-       TechnicalInformation info = new TechnicalInformation(Type.INPROCEEDINGS);
-       info.setValue(Field.AUTHOR, "Read, Jesse and Pfahringer, Bernhard and Holmes, Geoff");
-       info.setValue(Field.YEAR, "2008");
-       info.setValue(Field.TITLE, "Multi-label Classification Using Ensembles of Pruned Sets");
-       info.setValue(Field.BOOKTITLE, "Data Mining, 2008. ICDM '08. Eighth IEEE International Conference on");
-       info.setValue(Field.PAGES, "995-1000");
-       info.setValue(Field.LOCATION, "Pisa, Italy");
-       return info;
+        TechnicalInformation info = new TechnicalInformation(Type.INPROCEEDINGS);
+        info.setValue(Field.AUTHOR, "Read, Jesse and Pfahringer, Bernhard and Holmes, Geoff");
+        info.setValue(Field.YEAR, "2008");
+        info.setValue(Field.TITLE, "Multi-label Classification Using Ensembles of Pruned Sets");
+        info.setValue(Field.BOOKTITLE, "Data Mining, 2008. ICDM '08. Eighth IEEE International Conference on");
+        info.setValue(Field.PAGES, "995-1000");
+        info.setValue(Field.LOCATION, "Pisa, Italy");
+        return info;
     }
 
     /**
@@ -264,9 +254,4 @@ public class OneThreshold extends MultiLabelMetaLearner {
         return threshold;
     }
 
-    public String globalInfo() {
-        return "Class that estimates a single threshold for all labels and "
-             + "examples. For more information, see\n\n"
-             + getTechnicalInformation().toString();
-    }
 }

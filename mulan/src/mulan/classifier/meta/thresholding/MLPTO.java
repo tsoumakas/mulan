@@ -13,10 +13,6 @@
  *    along with this program; if not, write to the Free Software
  *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-
-/*
- *    MLPTO.java
- */
 package mulan.classifier.meta.thresholding;
 
 import java.util.ArrayList;
@@ -37,30 +33,10 @@ import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
 
 /**
- <!-- globalinfo-start -->
- * Class that implements the Multi Label Probabilistic Threshold Optimizer (MLTPTO). For more information, see<br/>
- * <br/>
- * J.R. Quevedo, O. Luaces, A. Bahamonde (2012). Multilabel classifiers with a probabilistic thresholding strategy. Pattern Recognition. 45(2):876-883.
- * <p/>
- <!-- globalinfo-end -->
- *
- <!-- technical-bibtex-start -->
- * BibTeX:
- * <pre>
- * &#64;article{Quevedo2012,
- *    author = {J.R. Quevedo and O. Luaces and A. Bahamonde},
- *    journal = {Pattern Recognition},
- *    number = {2},
- *    pages = {876-883},
- *    publisher = {Elsevier},
- *    title = {Multilabel classifiers with a probabilistic thresholding strategy},
- *    volume = {45},
- *    year = {2012},
- *    ISSN = {0031-3203}
- * }
- * </pre>
- * <p/>
- <!-- technical-bibtex-end -->
+ * <p> Class that implements the Multi Label Probabilistic Threshold Optimizer
+ * (MLTPTO). For more information, see <em> J.R. Quevedo, O. Luaces, A.
+ * Bahamonde (2012). Multilabel classifiers with a probabilistic thresholding
+ * strategy. Pattern Recognition. 45(2):876-883.</em></p>
  *
  * @author D. Toimil, J. R. Quevedo, O. Luaces
  * @version 2012.02.02
@@ -246,7 +222,7 @@ public class MLPTO extends MultiLabelMetaLearner {
      * @throws Exception
      */
     private double[] sort(double[] vector) {
-        ArrayList<Double> array = new ArrayList<Double>();
+        ArrayList<Double> array = new ArrayList<>();
         Comparator comparator = Collections.reverseOrder();
         for (int i = 0; i < vector.length; i++) {
             array.add(vector[i]);
@@ -292,6 +268,7 @@ public class MLPTO extends MultiLabelMetaLearner {
         return newOutput;
     }
 
+    @Override
     public TechnicalInformation getTechnicalInformation() {
         TechnicalInformation result;
 
@@ -307,11 +284,5 @@ public class MLPTO extends MultiLabelMetaLearner {
         result.setValue(Field.PUBLISHER, "Elsevier");
 
         return result;
-    }
-
-    public String globalInfo() {
-        return "Class that implements the Multi Label Probabilistic Threshold "
-                + "Optimizer (MLTPTO). For more information, see\n\n"
-                + getTechnicalInformation().toString();
     }
 }

@@ -13,11 +13,6 @@
  *    along with this program; if not, write to the Free Software
  *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-
-/*
- *    ThresholdPrediction.java
- *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
- */
 package mulan.classifier.meta.thresholding;
 
 import java.util.ArrayList;
@@ -39,25 +34,9 @@ import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
 
 /**
- <!-- globalinfo-start -->
- * Class that learns to predict a different threshold per exampleFor more information, see<br/>
- * <br/>
- * Elisseeff, Andre, Weston, Jason: A kernel method for multi-labelled classification. In: Proceedings of NIPS 14, 2002.
- * <p/>
- <!-- globalinfo-end -->
- *
- <!-- technical-bibtex-start -->
- * BibTeX:
- * <pre>
- * &#64;inproceedings{Elisseeff2002,
- *    author = {Elisseeff, Andre and Weston, Jason},
- *    booktitle = {Proceedings of NIPS 14},
- *    title = {A kernel method for multi-labelled classification},
- *    year = {2002}
- * }
- * </pre>
- * <p/>
- <!-- technical-bibtex-end -->
+ * <p> Class that learns to predict a different threshold per exampleFor more 
+ * information, see <em> Elisseeff, Andre, Weston, Jason: A kernel method for 
+ * multi-labelled classification. In: Proceedings of NIPS 14, 2002.</em></p>
  *
  * @author Marios Ioannou
  * @author George Sakkas
@@ -102,7 +81,7 @@ public class ThresholdPrediction extends Meta {
         double bipartition_key = classifier.classifyInstance(modifiedIns);
 
         MultiLabelOutput mlo = baseLearner.makePrediction(instance);
-        double[] arrayOfScores = new double[numLabels];
+        double[] arrayOfScores;
         arrayOfScores = mlo.getConfidences();
         for (int i = 0; i < numLabels; i++) {
             if (arrayOfScores[i] >= bipartition_key) {
@@ -116,6 +95,7 @@ public class ThresholdPrediction extends Meta {
 
     }
 
+    @Override
     public Instances transformData(MultiLabelInstances trainingData) throws Exception {
         // initialize  classifier instances
 
@@ -165,7 +145,8 @@ public class ThresholdPrediction extends Meta {
                     list.add(arrayOfScores[i]);
                 }
                 Collections.sort(list);
-                double tempThresshold = 0, threshold = 0;
+                double tempThresshold;
+                double threshold = 0;
                 double prev = list.get(0);
                 int t = numLabels, tempT = 0;
                 for (Double x : list) {
@@ -202,11 +183,5 @@ public class ThresholdPrediction extends Meta {
         result.setValue(Field.BOOKTITLE, "Proceedings of NIPS 14");
         result.setValue(Field.YEAR, "2002");
         return result;
-    }
-
-    public String globalInfo() {
-        return "Class that learns to predict a different threshold per example" 
-             + "For more information, see\n\n"
-             + getTechnicalInformation().toString();
     }
 }

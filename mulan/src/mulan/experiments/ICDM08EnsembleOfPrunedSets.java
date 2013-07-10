@@ -13,17 +13,14 @@
  *    along with this program; if not, write to the Free Software
  *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-
-/*
- *    ICDM08EnsembleOfPrunedSets.java
- *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
- */
 package mulan.experiments;
 
 import java.util.HashMap;
 import java.util.LinkedList;
 
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import mulan.classifier.meta.thresholding.OneThreshold;
 import mulan.classifier.transformation.EnsembleOfPrunedSets;
 import mulan.classifier.transformation.PrunedSets;
@@ -58,7 +55,6 @@ public class ICDM08EnsembleOfPrunedSets extends Experiment {
      * @param args command line arguments
      */
     public static void main(String[] args) {
-
         try {
             String path = Utils.getOption("path", args);
             String filestem = Utils.getOption("filestem", args);
@@ -73,7 +69,7 @@ public class ICDM08EnsembleOfPrunedSets extends Experiment {
             evaluationMeasures[1] = new HammingLoss();
             evaluationMeasures[2] = new ExampleBasedFMeasure();
 
-            HashMap<String, MultipleEvaluation> result = new HashMap<String, MultipleEvaluation>();
+            HashMap<String, MultipleEvaluation> result = new HashMap<>();
             for (Measure m : evaluationMeasures) {
                 MultipleEvaluation me = new MultipleEvaluation(dataSet);
                 result.put(m.getName(), me);
@@ -91,10 +87,10 @@ public class ICDM08EnsembleOfPrunedSets extends Experiment {
                     Instances test = dataSet.getDataSet().testCV(2, fold);
                     MultiLabelInstances multiTest = new MultiLabelInstances(test, dataSet.getLabelsMetaData());
 
-                    HashMap<String, Integer> bestP = new HashMap<String, Integer>();
-                    HashMap<String, Integer> bestB = new HashMap<String, Integer>();
-                    HashMap<String, PrunedSets.Strategy> bestStrategy = new HashMap<String, PrunedSets.Strategy>();
-                    HashMap<String, Double> bestDiff = new HashMap<String, Double>();
+                    HashMap<String, Integer> bestP = new HashMap<>();
+                    HashMap<String, Integer> bestB = new HashMap<>();
+                    HashMap<String, PrunedSets.Strategy> bestStrategy = new HashMap<>();
+                    HashMap<String, Double> bestDiff = new HashMap<>();
                     for (Measure m : evaluationMeasures) {
                         bestDiff.put(m.getName(), Double.MAX_VALUE);
                     }
@@ -109,7 +105,7 @@ public class ICDM08EnsembleOfPrunedSets extends Experiment {
 
                             evaluator = new Evaluator();
                             ps = new PrunedSets(new SMO(), p, PrunedSets.Strategy.A, b);
-                            measures = new LinkedList<Measure>();
+                            measures = new LinkedList<>();
                             for (Measure m : evaluationMeasures) {
                                 measures.add(m.makeCopy());
                             }
@@ -129,7 +125,7 @@ public class ICDM08EnsembleOfPrunedSets extends Experiment {
 
                             evaluator = new Evaluator();
                             ps = new PrunedSets(new SMO(), p, PrunedSets.Strategy.B, b);
-                            measures = new LinkedList<Measure>();
+                            measures = new LinkedList<>();
                             for (Measure m : evaluationMeasures) {
                                 measures.add(m.makeCopy());
                             }
@@ -170,11 +166,12 @@ public class ICDM08EnsembleOfPrunedSets extends Experiment {
                 result.get(m.getName()).calculateStatistics();
                 System.out.println(result.get(m.getName()));
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception ex) {
+            Logger.getLogger(ICDM08EnsembleOfPrunedSets.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
+    @Override
     public TechnicalInformation getTechnicalInformation() {
         TechnicalInformation result = new TechnicalInformation(Type.CONFERENCE);
         result.setValue(Field.AUTHOR, "Read, Jesse");

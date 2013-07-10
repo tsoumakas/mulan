@@ -13,15 +13,12 @@
  *    along with this program; if not, write to the Free Software
  *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-
-/*
- *    PatternRecognition07MLkNN.java
- *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
- */
 package mulan.experiments;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import mulan.classifier.lazy.MLkNN;
 import mulan.data.MultiLabelInstances;
 import mulan.evaluation.Evaluator;
@@ -46,8 +43,8 @@ public class PatternRecognition07MLkNN extends Experiment {
      * @param args command line arguments
      */
     public static void main(String[] args) {
-
         try {
+
             String path = Utils.getOption("path", args);
             String filestem = Utils.getOption("filestem", args);
 
@@ -56,7 +53,7 @@ public class PatternRecognition07MLkNN extends Experiment {
 
             Evaluator eval = new Evaluator();
             MultipleEvaluation results;
-            List<Measure> measures = new ArrayList<Measure>(5);
+            List<Measure> measures = new ArrayList<>(5);
             measures.add(new HammingLoss());
             measures.add(new OneError());
             measures.add(new Coverage());
@@ -73,13 +70,12 @@ public class PatternRecognition07MLkNN extends Experiment {
                 results = eval.crossValidate(mlknn, dataSet, measures, 10);
                 System.out.println(results);
             }
-
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception ex) {
+            Logger.getLogger(PatternRecognition07MLkNN.class.getName()).log(Level.SEVERE, null, ex);
         }
-
     }
 
+    @Override
     public TechnicalInformation getTechnicalInformation() {
         TechnicalInformation result;
 

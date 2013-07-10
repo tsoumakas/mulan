@@ -13,11 +13,6 @@
  *    along with this program; if not, write to the Free Software
  *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-
-/*
- *    ICTAI2010.java
- *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
- */
 package mulan.experiments;
 
 import java.util.ArrayList;
@@ -66,7 +61,7 @@ public class ICTAI2010 extends Experiment {
 
             Evaluator eval = new Evaluator();
             MultipleEvaluation results;
-            List<Measure> measures = new ArrayList<Measure>(1);
+            List<Measure> measures = new ArrayList<>(1);
             measures.add(new HammingLoss());
 
             int numFolds = 10;
@@ -198,8 +193,9 @@ public class ICTAI2010 extends Experiment {
         } catch (Exception ex) {
             Logger.getLogger(ICTAI2010.class.getName()).log(Level.SEVERE, null, ex);
         }
-    } 
+    }
 
+    @Override
     public TechnicalInformation getTechnicalInformation() {
         TechnicalInformation result;
 

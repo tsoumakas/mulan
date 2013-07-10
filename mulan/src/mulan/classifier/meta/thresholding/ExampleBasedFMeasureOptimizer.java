@@ -13,15 +13,9 @@
  *    along with this program; if not, write to the Free Software
  *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-
-/*
- *    ExampleBasedFMeasureOptimizer.java
- *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
- */
 package mulan.classifier.meta.thresholding;
 
 import java.util.Arrays;
-
 import mulan.classifier.InvalidDataException;
 import mulan.classifier.MultiLabelLearner;
 import mulan.classifier.MultiLabelOutput;
@@ -35,25 +29,15 @@ import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
 
 /**
- <!-- globalinfo-start -->
- * This class takes the marginal probabilities estimated for each label by a multi-label learner and transforms them into a bipartition which is approximately optimal for example-based FMeasure. This optimizer assumes independence of the target variables (labels) and the optimal solution always contains the labels with the highest marginal probabilities. For more information, see<br/>
- * <br/>
- * David Lewis: Evaluating and optimizing autonomous text classification systems. In: Proceedings of the 18th annual international ACM SIGIR conference on Research and development in information retrieval (SIGIR 1995), 1995.
- * <p/>
- <!-- globalinfo-end -->
- *
- <!-- technical-bibtex-start -->
- * BibTeX:
- * <pre>
- * &#64;inproceedings{Lewis1995,
- *    author = {David Lewis},
- *    booktitle = {Proceedings of the 18th annual international ACM SIGIR conference on Research and development in information retrieval (SIGIR 1995)},
- *    title = {Evaluating and optimizing autonomous text classification systems},
- *    year = {1995}
- * }
- * </pre>
- * <p/>
- <!-- technical-bibtex-end -->
+ * <p>This class takes the marginal probabilities estimated for each label by a 
+ * multi-label learner and transforms them into a bipartition which is 
+ * approximately optimal for example-based FMeasure. This optimizer assumes 
+ * independence of the target variables (labels) and the optimal solution always 
+ * contains the labels with the highest marginal probabilities. For more 
+ * information, see <em> Lewis, David (1995) Evaluating and optimizing 
+ * autonomous text classification systems. In: Proceedings of the 18th annual 
+ * international ACM SIGIR conference on Research and development in information 
+ * retrieval (SIGIR 1995).</em></p>
  *
  * @author Eleftherios Spyromitros-Xioufis
  * @version 2012.07.16
@@ -140,6 +124,7 @@ public class ExampleBasedFMeasureOptimizer extends MultiLabelMetaLearner {
         return bipartition;
     }
 
+    @Override
     public TechnicalInformation getTechnicalInformation() {
         TechnicalInformation result = new TechnicalInformation(Type.INPROCEEDINGS);
         result.setValue(Field.AUTHOR, "David Lewis");
@@ -149,16 +134,4 @@ public class ExampleBasedFMeasureOptimizer extends MultiLabelMetaLearner {
         return result;
     }
 
-    public String globalInfo() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("This class takes the marginal probabilities estimated for ");
-        sb.append("each label by a multi-label learner and transforms them ");
-        sb.append("into a bipartition which is approximately optimal for ");
-        sb.append("example-based FMeasure. This optimizer assumes ");
-        sb.append("independence of the target variables (labels) and the ");
-        sb.append("optimal solution always contains the labels with the ");
-        sb.append("highest marginal probabilities. For more information, ");
-        sb.append("see\n\n").append(getTechnicalInformation().toString());
-        return sb.toString();
-    }
 }

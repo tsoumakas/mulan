@@ -13,11 +13,6 @@
  *    along with this program; if not, write to the Free Software
  *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-
-/*
- *    Meta.java
- *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
- */
 package mulan.classifier.meta.thresholding;
 
 import java.util.ArrayList;
@@ -38,8 +33,8 @@ import weka.core.Instance;
 import weka.core.Instances;
 
 /**
- * Base class for instance-based prediction of a bipartition from the labels'
- * scores
+ * <p>Base class for instance-based prediction of a bipartition from the labels'
+ * scores</p>
  *
  * @author Marios Ioannou
  * @author George Sakkas
@@ -173,7 +168,7 @@ public abstract class Meta extends MultiLabelMetaLearner {
                 Logger.getLogger(Meta.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else {
-            ArrayList<Attribute> atts = new ArrayList<Attribute>();
+            ArrayList<Attribute> atts = new ArrayList<>();
             for (int i = 0; i < numLabels; i++) {
                 atts.add(new Attribute("Label" + i));
             }

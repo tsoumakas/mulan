@@ -13,11 +13,6 @@
  *    along with this program; if not, write to the Free Software
  *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-
-/*
- *    RCut.java
- *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
- */
 package mulan.classifier.meta.thresholding;
 
 import java.util.logging.Level;
@@ -43,25 +38,12 @@ import weka.core.TechnicalInformation.Type;
 import weka.core.Utils;
 
 /**
- <!-- globalinfo-start -->
- * Classs that implements RCut(Rank-based cut). It selects the k top ranked labels for each instance, where k is a parameter provided by the user or automatically tuned.Yiming Yang: A study of thresholding strategies for text categorization. In: Proceedings of the 24th annual international ACM SIGIR conference on Research and development in information retrieval, 137 - 145, 2001.
- * <p/>
- <!-- globalinfo-end -->
- *
- <!-- technical-bibtex-start -->
- * BibTeX:
- * <pre>
- * &#64;inproceedings{Yang2001,
- *    author = {Yiming Yang},
- *    booktitle = {Proceedings of the 24th annual international ACM SIGIR conference on Research and development in information retrieval},
- *    pages = {137 - 145},
- *    title = {A study of thresholding strategies for text categorization},
- *    year = {2001},
- *    location = {New Orleans, Louisiana, United States}
- * }
- * </pre>
- * <p/>
- <!-- technical-bibtex-end -->
+ * <p>Classs that implements RCut(Rank-based cut). It selects the k top ranked 
+ * labels for each instance, where k is a parameter provided by the user or 
+ * automatically tuned. For more information, see <em> Yiming Yang: A study of 
+ * thresholding strategies for text categorization. In: Proceedings of the 24th 
+ * annual international ACM SIGIR conference on Research and development in 
+ * information retrieval, 137 - 145, 2001.</em></p>
  *
  * @author Marios Ioannou
  * @author George Sakkas
@@ -215,6 +197,7 @@ public class RCut extends MultiLabelMetaLearner {
         return diff;
     }
 
+    @Override
     protected void buildInternal(MultiLabelInstances trainingData) throws Exception {
         baseLearner.build(trainingData);
         MultiLabelOutput mlo = baseLearner.makePrediction(trainingData.getDataSet().firstInstance());
@@ -236,6 +219,7 @@ public class RCut extends MultiLabelMetaLearner {
         }
     }
 
+    @Override
     public TechnicalInformation getTechnicalInformation() {
         TechnicalInformation result = new TechnicalInformation(Type.INPROCEEDINGS);
         result.setValue(Field.AUTHOR, "Yiming Yang");
@@ -247,6 +231,7 @@ public class RCut extends MultiLabelMetaLearner {
         return result;
     }
 
+    @Override
     protected MultiLabelOutput makePredictionInternal(Instance instance) throws Exception, InvalidDataException {
         boolean[] predictedLabels;
         MultiLabelOutput mlo = baseLearner.makePrediction(instance);
@@ -268,12 +253,5 @@ public class RCut extends MultiLabelMetaLearner {
     public void setDebug(boolean debug) {
         super.setDebug(debug);
         baseLearner.setDebug(debug);
-    }
-
-    public String globalInfo() {
-        return "Classs that implements RCut(Rank-based cut). It selects the k "
-                + "top ranked labels for each instance, where k is a parameter "
-                + "provided by the user or automatically tuned."
-                + getTechnicalInformation().toString();
     }
 }

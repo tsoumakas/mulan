@@ -13,11 +13,6 @@
  *    along with this program; if not, write to the Free Software
  *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-
-/*
- *    MetaLabeler.java
- *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
- */
 package mulan.classifier.meta.thresholding;
 
 import java.util.ArrayList;
@@ -41,27 +36,10 @@ import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
 
 /**
- <!-- globalinfo-start -->
- * Class implementing the MetaLabeler algorithm. For more information, see<br/>
- * <br/>
- * Lei Tang, Sugu Rajan, Yijay K. Narayanan: Large scale multi-label classification via metalabeler. In: Proceedings of the 18th international conference on World wide web , 211-220, 2009.
- * <p/>
- <!-- globalinfo-end -->
- * 
- <!-- technical-bibtex-start -->
- * BibTeX:
- * <pre>
- * &#64;inproceedings{Tang2009,
- *    author = {Lei Tang and Sugu Rajan and Yijay K. Narayanan},
- *    booktitle = {Proceedings of the 18th international conference on World wide web },
- *    pages = {211-220},
- *    title = {Large scale multi-label classification via metalabeler},
- *    year = {2009},
- *    location = {Madrid, Spain}
- * }
- * </pre>
- * <p/>
- <!-- technical-bibtex-end -->
+ * <p> Class implementing the MetaLabeler algorithm. For more information, 
+ * see <em>Lei Tang, Sugu Rajan, Yijay K. Narayanan: Large scale multi-label 
+ * classification via metalabeler. In: Proceedings of the 18th international 
+ * conference on World wide web , 211-220, 2009.</em></p>
  *
  * @author Marios Ioannou
  * @author George Sakkas
@@ -161,31 +139,35 @@ public class MetaLabeler extends Meta {
         return numTrueLabels;
     }
 
+    @Override
     protected Instances transformData(MultiLabelInstances trainingData) throws Exception {
         // initialize  classifier instances
         classifierInstances = RemoveAllLabels.transformInstances(trainingData);
         classifierInstances = new Instances(classifierInstances, 0);
         Attribute target = null;
-        if (classChoice.equals("Nominal-Class")) {
-            int countTrueLabels;
-            Set<Integer> treeSet = new TreeSet();
-            for (int instanceIndex = 0; instanceIndex < trainingData.getDataSet().numInstances(); instanceIndex++) {
-                countTrueLabels = 0;
-                for (int i = 0; i < numLabels; i++) {
-                    int labelIndice = labelIndices[i];
-                    if (trainingData.getDataSet().attribute(labelIndice).value((int) trainingData.getDataSet().instance(instanceIndex).value(labelIndice)).equals("1")) {
-                        countTrueLabels++;
+        switch (classChoice) {
+            case "Nominal-Class":
+                int countTrueLabels;
+                Set<Integer> treeSet = new TreeSet();
+                for (int instanceIndex = 0; instanceIndex < trainingData.getDataSet().numInstances(); instanceIndex++) {
+                    countTrueLabels = 0;
+                    for (int i = 0; i < numLabels; i++) {
+                        int labelIndice = labelIndices[i];
+                        if (trainingData.getDataSet().attribute(labelIndice).value((int) trainingData.getDataSet().instance(instanceIndex).value(labelIndice)).equals("1")) {
+                            countTrueLabels++;
+                        }
                     }
+                    treeSet.add(countTrueLabels);
                 }
-                treeSet.add(countTrueLabels);
-            }
-            ArrayList<String> classlabel = new ArrayList<String>();
-            for (Integer x : treeSet) {
-                classlabel.add(x.toString());
-            }
-            target = new Attribute("Class", classlabel);
-        } else if (classChoice.equals("Numeric-Class")) {
-            target = new Attribute("Class");
+                ArrayList<String> classlabel = new ArrayList<>();
+                for (Integer x : treeSet) {
+                    classlabel.add(x.toString());
+                }
+                target = new Attribute("Class", classlabel);
+                break;
+            case "Numeric-Class":
+                target = new Attribute("Class");
+                break;
         }
         classifierInstances.insertAttributeAt(target, classifierInstances.numAttributes());
         classifierInstances.setClassIndex(classifierInstances.numAttributes() - 1);
@@ -262,10 +244,5 @@ public class MetaLabeler extends Meta {
      */
     public void setFolds(int f) {
         kFoldsCV = f;
-    }
-
-    public String globalInfo() {
-        return "Class implementing the MetaLabeler algorithm. For more "
-                + "information, see\n\n" + getTechnicalInformation().toString();
     }
 }

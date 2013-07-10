@@ -13,14 +13,8 @@
  *    along with this program; if not, write to the Free Software
  *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-
-/*
- *    Experiment.java
- *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
- */
 package mulan.experiments;
 
-import weka.core.TechnicalInformation;
 import weka.core.TechnicalInformationHandler;
 
 /**
@@ -32,12 +26,4 @@ import weka.core.TechnicalInformationHandler;
  */
 public abstract class Experiment implements TechnicalInformationHandler {
 
-    /**
-     * Returns an instance of a TechnicalInformation object, containing
-     * detailed information about the technical background of this class,
-     * e.g., paper reference or book this class is based on.
-     *
-     * @return the technical information about this class
-     */
-    abstract public TechnicalInformation getTechnicalInformation();
 }
