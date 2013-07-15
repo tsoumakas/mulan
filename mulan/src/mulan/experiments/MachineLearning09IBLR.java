@@ -22,6 +22,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import mulan.classifier.lazy.IBLR_ML;
+import mulan.classifier.transformation.MultiLabelStacking;
 import mulan.data.MultiLabelInstances;
 import mulan.evaluation.Evaluation;
 import mulan.evaluation.Evaluator;
@@ -32,6 +33,9 @@ import mulan.evaluation.measure.HammingLoss;
 import mulan.evaluation.measure.Measure;
 import mulan.evaluation.measure.OneError;
 import mulan.evaluation.measure.RankingLoss;
+import weka.classifiers.Classifier;
+import weka.classifiers.functions.Logistic;
+import weka.classifiers.lazy.IBk;
 import weka.core.Instances;
 import weka.core.TechnicalInformation;
 import weka.core.Utils;
@@ -52,7 +56,7 @@ public class MachineLearning09IBLR extends Experiment {
      * @param args command line arguments
      */
     public static void main(String[] args) {
-        try {     
+        try {
             String path = Utils.getOption("path", args);
             String filestem = Utils.getOption("filestem", args);
 
@@ -89,35 +93,33 @@ public class MachineLearning09IBLR extends Experiment {
                     IBLR_ML iblrml = new IBLR_ML();
                     iblrml.build(multiTrain);
                     evaluator = new Evaluator();
-                    Evaluation e1 = evaluator.evaluate(iblrml, multiTest, multiTrain,
-                            measures);
+                    Evaluation e1 = evaluator.evaluate(iblrml, multiTest, measures);
                     System.out.println(e1.toCSV());
                     iblrmlResults.addEvaluation(e1);
 
                     /*
-                     * The following code produces the same results, as IBLR
-                     * is equivalent to stacking using kNN at the 1st level
-                     * and Logistic Regression at the 2nd level
-                     *
-                     * System.out.println("ML-Stacking Experiment");
-                     * int numOfNeighbors = 10;
-                     * Classifier baseClassifier = new IBk(numOfNeighbors);
-                     * Classifier metaClassifier = new Logistic();
-                     * MultiLabelStacking mls = new MultiLabelStacking( baseClassifier, metaClassifier);
-                     * mls.setMetaPercentage(1.0);
-                     * mls.build(multiTrain);
-                     * evaluator = new Evaluator();
-                     * Evaluation e1 = evaluator.evaluate(mls, multiTest, measures);
-                     * System.out.println(e1.toCSV());
-                     * iblrmlResults.addEvaluation(e1);
+                     The following code produces the same results, as IBLR
+                     is equivalent to stacking using kNN at the 1st level
+                     and Logistic Regression at the 2nd level
                      */
+                    System.out.println("ML-Stacking Experiment");
+                    int numOfNeighbors = 10;
+                    Classifier baseClassifier = new IBk(numOfNeighbors);
+                    Classifier metaClassifier = new Logistic();
+                    MultiLabelStacking mls = new MultiLabelStacking(baseClassifier, metaClassifier);
+                    mls.setMetaPercentage(1.0);
+                    mls.build(multiTrain);
+                    evaluator = new Evaluator();
+                    Evaluation e1b = evaluator.evaluate(mls, multiTest, measures);
+                    System.out.println(e1b.toCSV());
+                    iblrmlResults.addEvaluation(e1b);
+                    //*/
 
                     System.out.println("IBLR-ML+ Experiment");
                     IBLR_ML iblrmlplus = new IBLR_ML(10, true);
                     iblrmlplus.build(multiTrain);
                     evaluator = new Evaluator();
-                    Evaluation e2 = evaluator.evaluate(iblrmlplus, multiTest, multiTrain,
-                            measures);
+                    Evaluation e2 = evaluator.evaluate(iblrmlplus, multiTest, measures);
                     System.out.println(e2.toCSV());
                     iblrmlPlusResults.addEvaluation(e2);
                 }
@@ -133,7 +135,7 @@ public class MachineLearning09IBLR extends Experiment {
             Logger.getLogger(MachineLearning09IBLR.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     @Override
     public TechnicalInformation getTechnicalInformation() {
         TechnicalInformation result;

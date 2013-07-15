@@ -13,11 +13,6 @@
  *    along with this program; if not, write to the Free Software
  *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-
-/*
- *    Evaluator.java
- *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
- */
 package mulan.evaluation;
 
 import java.io.BufferedReader;
@@ -68,8 +63,7 @@ public class Evaluator {
      * @throws IllegalArgumentException if an input parameter is null
      * @throws Exception
      */
-    public Evaluation evaluate(MultiLabelLearner learner, MultiLabelInstances data,
-            MultiLabelInstances trainData, List<Measure> measures) throws IllegalArgumentException,
+    public Evaluation evaluate(MultiLabelLearner learner, MultiLabelInstances data, List<Measure> measures) throws IllegalArgumentException,
             Exception {
         checkLearner(learner);
         checkData(data);
@@ -83,7 +77,7 @@ public class Evaluator {
         int numLabels = data.getNumLabels();
         int[] labelIndices = data.getLabelIndices();
         GroundTruth truth;
-        Set<Measure> failed = new HashSet<Measure>();
+        Set<Measure> failed = new HashSet<>();
         Instances testData = data.getDataSet();
         int numInstances = testData.numInstances();
         for (int instanceIndex = 0; instanceIndex < numInstances; instanceIndex++) {
@@ -159,15 +153,15 @@ public class Evaluator {
         List<Measure> measures = prepareMeasures(learner, data, trainData);
 
         if (learner instanceof ClusWrapperClassification) {
-            return evaluate((ClusWrapperClassification) learner, data, trainData, measures);
+            return evaluate((ClusWrapperClassification) learner, data, measures);
         } else {
-            return evaluate(learner, data, trainData, measures);
+            return evaluate(learner, data, measures);
         }
     }
 
     private List<Measure> prepareMeasures(MultiLabelLearner learner, MultiLabelInstances data,
             MultiLabelInstances trainData) {
-        List<Measure> measures = new ArrayList<Measure>();
+        List<Measure> measures = new ArrayList<>();
 
         MultiLabelOutput prediction;
         try {
@@ -311,10 +305,12 @@ public class Evaluator {
                 MultiLabelInstances mlTest = new MultiLabelInstances(test, data.getLabelsMetaData());
                 MultiLabelLearner clone = learner.makeCopy();
                 clone.build(mlTrain);
-                if (hasMeasures)
-                    evaluation[i] = evaluate(clone, mlTest, mlTrain, measures);
-                else
+                if (hasMeasures) {
+                    evaluation[i] = evaluate(clone, mlTest, measures);
+                }
+                else {
                     evaluation[i] = evaluate(clone, mlTest, mlTrain);
+                }
             } catch (Exception ex) {
                 Logger.getLogger(Evaluator.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -335,8 +331,7 @@ public class Evaluator {
      * @throws IllegalArgumentException if an input parameter is null
      * @throws Exception
      */
-    public Evaluation evaluate(ClusWrapperClassification learner, MultiLabelInstances testData,
-            MultiLabelInstances trainData, List<Measure> measures) throws IllegalArgumentException,
+    public Evaluation evaluate(ClusWrapperClassification learner, MultiLabelInstances testData, List<Measure> measures) throws IllegalArgumentException,
             Exception {
 
         boolean isEnsemble = learner.isEnsemble();
@@ -388,7 +383,7 @@ public class Evaluator {
         }
 
         int numLabels = testData.getNumLabels();
-        Set<Measure> failed = new HashSet<Measure>();
+        Set<Measure> failed = new HashSet<>();
         Instances testDataset = testData.getDataSet();
 
         int numInstances = testDataset.numInstances();
