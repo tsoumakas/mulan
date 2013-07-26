@@ -25,7 +25,7 @@ public class ClusWrapperRegression extends ClusWrapperClassification {
     }
 
     /**
-     * This method exists so that CLUSWrapper can extend MultiLabelLearnerBase. Also helps the
+     * This method exists so that CLUSWrapperRegression can extend MultiLabelLearnerBase. Also helps the
      * Evaluator to determine the type of the MultiLabelOutput and thus prepare the appropriate
      * measures to be evaluated upon.
      */

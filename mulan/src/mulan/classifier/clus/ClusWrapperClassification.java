@@ -25,35 +25,42 @@ import weka.filters.Filter;
 import weka.filters.unsupervised.instance.SparseToNonSparse;
 
 /**
- * This class implements a wrapper for the multi-label classification methods
- * included in the CLUS library.
- *
+ * This class implements a wrapper for the multi-label classification methods included in the CLUS
+ * library.
+ * 
  * @author Eleftherios Spyromitros-Xioufis
- * @version 11.27.2012
- *
+ * @version 07.26.2013
+ * 
  */
 public class ClusWrapperClassification extends MultiLabelLearnerBase {
 
     /**
-     * The path to a directory where all the temporary files needed by the CLUS
-     * library are written.
-     *
+     * The path to a directory where all the temporary files needed by the CLUS library are written.
      */
     private String clusWorkingDir;
     /**
      * The dataset name that will be used for training, test and settings files.
      */
     private String datasetName;
+
+    /**
+     * Path to the settings file.
+     */
+    private String settingsFilePath;
+
     /**
      * Whether an ensemble method will be used.
      */
     private boolean isEnsemble = false;
 
     /**
-     * This constructor creates a working directory for the class library and
-     * copies the supplied settings file in it, after modifying it
-     * appropriately.
-     *
+     * Whether a rule-based method will be used.
+     */
+    private boolean isRuleBased = false;
+
+    /**
+     * Constructor.
+     * 
      * @param clusWorkingDir
      * @param datasetName
      * @param settingsFilePath
@@ -63,7 +70,21 @@ public class ClusWrapperClassification extends MultiLabelLearnerBase {
             String settingsFilePath) throws IOException {
         this.clusWorkingDir = clusWorkingDir;
         this.datasetName = datasetName;
+        this.settingsFilePath = settingsFilePath;
+    }
 
+    /**
+     * This method does the following:
+     * <ol>
+     * <li>Creates a working directory for the CLUS library</li>
+     * <li>Copies the supplied settings file in this directory</li>
+     * <li>Modifies the File, TestSet and Target lines of the settings file to the appropriate
+     * values</li>
+     * <li>Makes the supplied training set CLUS compliant and copies it to the working directory</li>
+     * </ol>
+     */
+    @Override
+    protected void buildInternal(MultiLabelInstances trainingSet) throws Exception {
         // create the CLUS working directory if it does not exist
         File theDir = new File(clusWorkingDir);
         if (!theDir.exists()) {
@@ -79,7 +100,7 @@ public class ClusWrapperClassification extends MultiLabelLearnerBase {
         File newSettingsFile = new File(clusWorkingDir + this.datasetName + "-train.s");
         copyFile(settingsFile, newSettingsFile);
 
-        // modify the File and TestSet lines of the settings file to the appropriate values
+        // modify the File, TestSet and Target lines of the settings file to the appropriate values
         BufferedReader in = new BufferedReader(new FileReader(newSettingsFile));
         String settings = "";
         String line;
@@ -92,6 +113,16 @@ public class ClusWrapperClassification extends MultiLabelLearnerBase {
                 settings += "TestSet = " + clusWorkingDir + this.datasetName + "-test.arff" + "\n";
                 continue;
             }
+            if (line.startsWith("Target")) {
+                settings += "Target = ";
+                for (int i = 0; i < numLabels - 1; i++) {
+                    // all targets except last
+                    settings += (labelIndices[i] + 1) + ",";
+                }
+                // last target
+                settings += (labelIndices[numLabels - 1] + 1) + "\n";
+                continue;
+            }
             settings += line + "\n";
         }
         in.close();
@@ -100,19 +131,16 @@ public class ClusWrapperClassification extends MultiLabelLearnerBase {
         out.write(settings);
         out.close();
 
-    }
-
-    @Override
-    protected void buildInternal(MultiLabelInstances trainingSet) throws Exception {
         // transform the supplied MultilabelInstances object in an arff formated file (accepted by
         // CLUS) and write the file in the working directory with the appropriate name
         makeClusCompliant(trainingSet, clusWorkingDir + datasetName + "-train.arff");
+
     }
 
     /**
-     * This method exists so that CLUSWrapper can extend MultiLabelLearnerBase.
-     * Also helps the Evaluator to determine the type of the MultiLabelOutput
-     * and thus prepare the appropriate measures to be evaluated upon.
+     * This method exists so that CLUSWrapperClassification can extend MultiLabelLearnerBase. Also helps the
+     * Evaluator to determine the type of the MultiLabelOutput and thus prepare the appropriate
+     * measures to be evaluated upon.
      */
     @Override
     protected MultiLabelOutput makePredictionInternal(Instance instance) throws Exception,
@@ -143,6 +171,15 @@ public class ClusWrapperClassification extends MultiLabelLearnerBase {
     public void setEnsemble(boolean isEnsemble) {
         this.isEnsemble = isEnsemble;
     }
+
+    public boolean isRuleBased() {
+        return isRuleBased;
+    }
+
+    public void setRuleBased(boolean isRuleBased) {
+        this.isRuleBased = isRuleBased;
+    }
+
     private static final long serialVersionUID = 1L;
 
     private static void copyFile(File sourceFile, File destFile) throws IOException {
@@ -168,9 +205,9 @@ public class ClusWrapperClassification extends MultiLabelLearnerBase {
     }
 
     /**
-     * Takes a dataset as a MultiLabelInstances object and writes an arff file
-     * which is CLUS compliant.
-     *
+     * Takes a dataset as a MultiLabelInstances object and writes an arff file which is CLUS
+     * compliant.
+     * 
      * @param mlDataset
      * @param fileName
      * @throws Exception
@@ -187,13 +224,20 @@ public class ClusWrapperClassification extends MultiLabelLearnerBase {
 
         String header = new Instances(nonSparseDataset, 0).toString();
         // preprocess the header
-        // remove ; characters
+        // remove ; characters and truncate long attribute names
         String[] headerLines = header.split("\n");
         for (int i = 0; i < headerLines.length; i++) {
             if (headerLines[i].startsWith("@attribute")) {
                 headerLines[i] = headerLines[i].replaceAll(";", "SEMI_COLON");
+                String originalAttributeName = headerLines[i].split(" ")[1];
+                String newAttributeName = originalAttributeName;
+                if (originalAttributeName.length() > 30) {
+                    newAttributeName = originalAttributeName.substring(0, 30) + "..";
+                }
+                out.write(headerLines[i].replace(originalAttributeName, newAttributeName) + "\n");
+            } else {
+                out.write(headerLines[i] + "\n");
             }
-            out.write(headerLines[i] + "\n");
         }
         for (int i = 0; i < nonSparseDataset.numInstances(); i++) {
             if (i % 100 == 0) {
