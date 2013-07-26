@@ -13,17 +13,10 @@
  *    along with this program; if not, write to the Free Software
  *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-
-/*
- *    RAkELd.java
- *    Copyright (C) 2009-2011 Aristotle University of Thessaloniki, Greece
- */
 package mulan.classifier.meta;
 
-//[R_d
 import java.util.ArrayList;
 import java.util.Collections;
-//R_d]
 import java.util.Random;
 import mulan.classifier.MultiLabelLearner;
 import mulan.classifier.MultiLabelOutput;
@@ -175,13 +168,13 @@ public class RAkELd extends MultiLabelMetaLearner {
         }
         classIndicesPerSubset_d = new ArrayList[numOfModels];
         for (int i = 0; i < numOfModels; i++) {
-            classIndicesPerSubset_d[i] = new ArrayList<Integer>();
+            classIndicesPerSubset_d[i] = new ArrayList<>();
         }
 
         //<new way>
         absoluteIndicesToRemove = new ArrayList[numOfModels]; //This could be a local variable
         for (int i = 0; i < numOfModels; i++) {
-            absoluteIndicesToRemove[i] = new ArrayList<Integer>();
+            absoluteIndicesToRemove[i] = new ArrayList<>();
         }
         //</new way>
         //R_d]
@@ -190,7 +183,7 @@ public class RAkELd extends MultiLabelMetaLearner {
         remove = new Remove[numOfModels];
 
         //[R_d
-        listOfLabels = new ArrayList<Integer>();
+        listOfLabels = new ArrayList<>();
         for (int c = 0; c < numLabels; c++) {
             listOfLabels.add(c); //add all labels _(relative)_ indices to an arraylist
         }        //R_d]
@@ -254,6 +247,7 @@ public class RAkELd extends MultiLabelMetaLearner {
         subsetClassifiers[model].build(mlTrainData.reintegrateModifiedDataSet(trainSubset));
     }
 
+    @Override
     protected MultiLabelOutput makePredictionInternal(Instance instance) throws Exception {
         double[] confidences = new double[numLabels];
         boolean[] labels = new boolean[numLabels];
