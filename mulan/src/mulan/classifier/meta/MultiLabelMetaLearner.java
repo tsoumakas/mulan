@@ -22,6 +22,7 @@ package mulan.classifier.meta;
 
 import mulan.classifier.*;
 import mulan.core.ArgumentNullException;
+import weka.core.TechnicalInformation;
 
 /**
  * Base class for multi-label learners, which use other multi-label learners
@@ -58,5 +59,26 @@ public abstract class MultiLabelMetaLearner extends MultiLabelLearnerBase {
      */
     public MultiLabelLearner getBaseLearner() {
         return baseLearner;
+    }
+
+    /**
+     * Returns an instance of a TechnicalInformation object, containing detailed
+     * information about the technical background of this class, e.g., paper
+     * reference or book this class is based on.
+     *
+     * @return the technical information about this class
+     */
+    @Override
+    public TechnicalInformation getTechnicalInformation() {
+        TechnicalInformation result = new TechnicalInformation(TechnicalInformation.Type.INCOLLECTION);
+        result.setValue(TechnicalInformation.Field.AUTHOR, "Tsoumakas, Grigorios and Katakis, Ioannis and Vlahavas, Ioannis");
+        result.setValue(TechnicalInformation.Field.TITLE, "Mining Multi-Label Data");
+        result.setValue(TechnicalInformation.Field.PAGES, "667-685");
+        result.setValue(TechnicalInformation.Field.BOOKTITLE, "Data Mining and Knowledge Discovery Handbook");
+        result.setValue(TechnicalInformation.Field.EDITOR, "Maimon, Oded and Rokach, Lior");
+        result.setValue(TechnicalInformation.Field.PUBLISHER, "Springer");
+        result.setValue(TechnicalInformation.Field.EDITION, "2nd");
+        result.setValue(TechnicalInformation.Field.YEAR, "2010");
+        return result;
     }
 }
