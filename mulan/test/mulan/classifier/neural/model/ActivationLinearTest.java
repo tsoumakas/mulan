@@ -13,17 +13,9 @@
  *    along with this program; if not, write to the Free Software
  *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-
-/*
- *    ActivationLinearTest.java
- *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
- */
 package mulan.classifier.neural.model;
 
 import static org.junit.Assert.*;
-
-import mulan.classifier.neural.model.ActivationLinear;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

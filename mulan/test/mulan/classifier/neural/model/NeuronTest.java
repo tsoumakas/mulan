@@ -13,11 +13,6 @@
  *    along with this program; if not, write to the Free Software
  *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-
-/*
- *    NeuronTest.java
- *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
- */
 package mulan.classifier.neural.model;
 
 import static org.junit.Assert.*;
@@ -26,9 +21,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import mulan.classifier.neural.model.ActivationFunction;
-import mulan.classifier.neural.model.ActivationTANH;
-import mulan.classifier.neural.model.Neuron;
 import mulan.core.ArgumentNullException;
 
 import org.junit.After;

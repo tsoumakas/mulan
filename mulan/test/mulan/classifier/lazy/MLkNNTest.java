@@ -13,11 +13,6 @@
  *    along with this program; if not, write to the Free Software
  *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-
-/*
- *    MLkNNTest.java
- *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
- */
 package mulan.classifier.lazy;
 
 import junit.framework.Assert;
@@ -35,7 +30,8 @@ public class MLkNNTest extends MultiLabelKNNTest {
 	private static final double DEFAULT_smooth = 1.0;
 		
 	@Override
-	public void setUp(){			learner = new MLkNN();
+	public void setUp(){
+			learner = new MLkNN();
 	}
 
 	@Test
