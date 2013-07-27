@@ -13,11 +13,6 @@
  *    along with this program; if not, write to the Free Software
  *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-
-/*
- *    AverageRMSE.java
- *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
- */
 package mulan.evaluation.measure;
 
 import java.util.Arrays;
@@ -28,18 +23,22 @@ import mulan.classifier.MultiLabelOutput;
  * Implementation of the Root Mean Squared Error (RMSE) measure.
  * 
  * @author Eleftherios Spyromitros-Xioufis
- * @version 2012.11.26
+ * @version 2013.07.27
  */
 public class AverageRMSE extends RegressionMeasureBase implements MacroAverageMeasure {
 
     /** holds the MSE per target */
     protected double[] meanSquaredError;
     /** counts the number of non-missing values per target */
-    protected int[] counter;
+    protected int[] nonMissingCounter;
+
+    public int getCounter(int labelIndex) {
+        return nonMissingCounter[labelIndex];
+    }
 
     public AverageRMSE(int numOfLabels) {
         meanSquaredError = new double[numOfLabels];
-        counter = new int[numOfLabels];
+        nonMissingCounter = new int[numOfLabels];
     }
 
     public String getName() {
@@ -61,7 +60,7 @@ public class AverageRMSE extends RegressionMeasureBase implements MacroAverageMe
      * @return the value of the measure
      */
     public double getValue(int labelIndex) {
-        double rmse = Math.sqrt(meanSquaredError[labelIndex] / counter[labelIndex]);
+        double rmse = Math.sqrt(meanSquaredError[labelIndex] / nonMissingCounter[labelIndex]);
         return rmse;
     }
 
@@ -79,15 +78,19 @@ public class AverageRMSE extends RegressionMeasureBase implements MacroAverageMe
             if (Double.isNaN(truth[i])) {
                 continue;
             }
-            counter[i]++;
+            nonMissingCounter[i]++;
             meanSquaredError[i] += (truth[i] - scores[i]) * (truth[i] - scores[i]);
         }
     }
 
     @Override
     public void reset() {
-        Arrays.fill(counter, 0);
+        Arrays.fill(nonMissingCounter, 0);
         Arrays.fill(meanSquaredError, 0.0);
+    }
+
+    public boolean handlesMissingValues() {
+        return true;
     }
 
 }

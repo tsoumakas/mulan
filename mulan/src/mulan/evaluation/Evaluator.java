@@ -214,7 +214,7 @@ public class Evaluator {
             // add regression measures if applicable
             if (prediction.hasPvalues()) {
                 measures.add(new AverageRMSE(numOfLabels));
-                measures.add(new AverageRelativeRMSE(numOfLabels, trainData));
+                measures.add(new AverageRelativeRMSE(numOfLabels, trainData, data));
             }
         } catch (Exception ex) {
             Logger.getLogger(Evaluator.class.getName()).log(Level.SEVERE, null, ex);

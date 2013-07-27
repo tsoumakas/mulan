@@ -13,11 +13,6 @@
  *    along with this program; if not, write to the Free Software
  *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-
-/*
- *    AverageRelativeRMSE.java
- *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
- */
 package mulan.evaluation.measure;
 
 import java.util.Arrays;
@@ -26,25 +21,42 @@ import mulan.classifier.MultiLabelOutput;
 import mulan.data.MultiLabelInstances;
 
 /**
- * Implementation of the Relative Root Mean Squared Error (RRMSE) measure.
+ * Implementation of the Relative Root Mean Squared Error (RRMSE) measure. RRMSE is equal to the
+ * RMSE of the prediction divided by the RMSE of predicting the mean for its target. Two versions of
+ * this measure are implemented, one computes target means on the training set and the other on the
+ * union of the training set and the test set. The first version is the default one.
  * 
  * @author Eleftherios Spyromitros-Xioufis
- * @version 2012.11.26
+ * @version 2013.07.26
  */
 public class AverageRelativeRMSE extends AverageRMSE implements MacroAverageMeasure {
 
-    /** holds the average prediction MSE per target */
-    private double[] averagePredictionMSE;
-    /** holds the average value per target */
-    private double[] targetAverages;
+    /** holds the average (calculated of train set) prediction MSE per target */
+    private double[] averageTrainPredictionMSE;
+    /** holds the average (calculated of full dataset) prediction MSE per target */
+    private double[] averageFullPredictionMSE;
+    /** holds the average value per target in train set */
+    private double[] targetAveragesTrain;
+    /** holds the average value per target in full dataset */
+    private double[] targetAveragesFull;
 
-    public AverageRelativeRMSE(int numOfLabels, MultiLabelInstances train) {
+    public AverageRelativeRMSE(int numOfLabels, MultiLabelInstances train, MultiLabelInstances test) {
         super(numOfLabels);
-        averagePredictionMSE = new double[numOfLabels];
-        targetAverages = new double[numOfLabels];
+        averageTrainPredictionMSE = new double[numOfLabels];
+        averageFullPredictionMSE = new double[numOfLabels];
+        targetAveragesTrain = new double[numOfLabels];
+        targetAveragesFull = new double[numOfLabels];
         int[] labelIndices = train.getLabelIndices();
         for (int i = 0; i < numOfLabels; i++) {
-            targetAverages[i] = train.getDataSet().attributeStats(labelIndices[i]).numericStats.mean;
+            targetAveragesTrain[i] = train.getDataSet().attributeStats(labelIndices[i]).numericStats.mean;
+
+            double testAverage = test.getDataSet().attributeStats(labelIndices[i]).numericStats.mean;
+            int trainInstances = train.getDataSet().numInstances();
+            int testInstances = test.getDataSet().numInstances();
+            int allInstances = trainInstances + testInstances;
+            targetAveragesFull[i] = (targetAveragesTrain[i] * trainInstances + testAverage
+                    * testInstances)
+                    / allInstances;
         }
     }
 
@@ -60,9 +72,39 @@ public class AverageRelativeRMSE extends AverageRMSE implements MacroAverageMeas
      */
     @Override
     public double getValue(int labelIndex) {
-        double rmse = super.getValue(labelIndex);
-        double rrmse = rmse / Math.sqrt(averagePredictionMSE[labelIndex] / counter[labelIndex]);
+
+        double mse = meanSquaredError[labelIndex] / nonMissingCounter[labelIndex];
+        double rel_mse = averageTrainPredictionMSE[labelIndex] / nonMissingCounter[labelIndex];
+
+        double root_mse = Math.sqrt(mse);
+        double root_rel_mse = Math.sqrt(rel_mse);
+
+        double rrmse = root_mse / root_rel_mse;
+
         return rrmse;
+    }
+
+    public double getMSE(int labelIndex) {
+        double mse = meanSquaredError[labelIndex];
+        return mse;
+    }
+
+    public double getAvgMSETrain(int labelIndex) {
+        double mse = averageTrainPredictionMSE[labelIndex];
+        return mse;
+    }
+
+    public double getAvgMSEFull(int labelIndex) {
+        double mse = averageFullPredictionMSE[labelIndex];
+        return mse;
+    }
+
+    public double getTargetAverageFull(int labelIndex) {
+        return targetAveragesFull[labelIndex];
+    }
+
+    public double getTargetAverageTrain(int labelIndex) {
+        return targetAveragesTrain[labelIndex];
     }
 
     /**
@@ -75,17 +117,21 @@ public class AverageRelativeRMSE extends AverageRMSE implements MacroAverageMeas
             if (Double.isNaN(truth[i])) {
                 continue;
             }
-            counter[i]++;
+            nonMissingCounter[i]++;
             meanSquaredError[i] += (truth[i] - scores[i]) * (truth[i] - scores[i]);
-            averagePredictionMSE[i] += (truth[i] - targetAverages[i])
-                    * (truth[i] - targetAverages[i]);
+            averageTrainPredictionMSE[i] += (truth[i] - targetAveragesTrain[i])
+                    * (truth[i] - targetAveragesTrain[i]);
+            averageFullPredictionMSE[i] += (truth[i] - targetAveragesFull[i])
+                    * (truth[i] - targetAveragesFull[i]);
         }
     }
 
     @Override
     public void reset() {
         super.reset();
-        Arrays.fill(averagePredictionMSE, 0.0);
+        Arrays.fill(averageTrainPredictionMSE, 0.0);
+        Arrays.fill(averageFullPredictionMSE, 0.0);
+
     }
 
 }

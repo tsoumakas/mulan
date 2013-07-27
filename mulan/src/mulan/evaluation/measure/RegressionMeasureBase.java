@@ -13,11 +13,6 @@
  *    along with this program; if not, write to the Free Software
  *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-
-/*
- *    MeasureBase.java
- *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
- */
 package mulan.evaluation.measure;
 
 import java.io.Serializable;
@@ -28,8 +23,8 @@ import mulan.evaluation.GroundTruth;
 import weka.core.SerializedObject;
 
 /**
- * 
  * @author Eleftherios Spyromitros-Xioufis
+ * @version 2013.07.27
  */
 public abstract class RegressionMeasureBase implements Measure, Serializable {
 
@@ -49,7 +44,7 @@ public abstract class RegressionMeasureBase implements Measure, Serializable {
 
     /**
      * Returns a string with the value of a measure
-     *
+     * 
      * @return string representation of the value of a measure
      */
     @Override
@@ -72,5 +67,14 @@ public abstract class RegressionMeasureBase implements Measure, Serializable {
 
     public Measure makeCopy() throws Exception {
         return (Measure) new SerializedObject(this).getObject();
+    }
+
+    /**
+     * By default, classification measures do not handle missing ground truth values. This method
+     * should be overridden if a particular measure's implementation can handle missing ground thuth
+     * values.
+     */
+    public boolean handlesMissingValues() {
+        return false;
     }
 }

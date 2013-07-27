@@ -75,4 +75,11 @@ public interface Measure {
      * from beginning (e.g. for a new series of outputs from learning task).
      */
     void reset();
+    
+    /**
+     * Returns true if the measure handles missing ground truth values, false otherwise.
+     * 
+     * @return true if missing values are handled, false otherwise
+     */
+    public boolean handlesMissingValues();
 }
