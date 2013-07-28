@@ -36,11 +36,11 @@ import clus.Clus;
  * @author rofr
  * @author Grigorios Tsoumakas
  * @author Eleftherios Spyromitros-Xioufis
- * @version 2012.11.25
+ * @version 2013.07.27
  */
 public class Evaluator {
 
-    // seed for reproduction of cross-validation results
+    /** seed for reproduction of cross-validation results **/
     private int seed = 1;
 
     /**
@@ -57,16 +57,16 @@ public class Evaluator {
      * measures
      * 
      * @param learner the learner to be evaluated
-     * @param data the data set for evaluation
+     * @param mlTestData the data set for evaluation
      * @param measures the evaluation measures to compute
      * @return an Evaluation object
      * @throws IllegalArgumentException if an input parameter is null
      * @throws Exception
      */
-    public Evaluation evaluate(MultiLabelLearner learner, MultiLabelInstances data, List<Measure> measures) throws IllegalArgumentException,
-            Exception {
+    public Evaluation evaluate(MultiLabelLearner learner, MultiLabelInstances mlTestData,
+            List<Measure> measures) throws Exception {
         checkLearner(learner);
-        checkData(data);
+        checkData(mlTestData);
         checkMeasures(measures);
 
         // reset measures
@@ -74,20 +74,18 @@ public class Evaluator {
             m.reset();
         }
 
-        int numLabels = data.getNumLabels();
-        int[] labelIndices = data.getLabelIndices();
+        int numLabels = mlTestData.getNumLabels();
+        int[] labelIndices = mlTestData.getLabelIndices();
         GroundTruth truth;
-        Set<Measure> failed = new HashSet<>();
-        Instances testData = data.getDataSet();
+        Set<Measure> failed = new HashSet<Measure>();
+        Instances testData = mlTestData.getDataSet();
         int numInstances = testData.numInstances();
         for (int instanceIndex = 0; instanceIndex < numInstances; instanceIndex++) {
             Instance instance = testData.instance(instanceIndex);
-            if (data.hasMissingLabels(instance)) {
-                continue; 
-            }
+            boolean hasMissingLabels = mlTestData.hasMissingLabels(instance);
             Instance labelsMissing = (Instance) instance.copy();
             labelsMissing.setDataset(instance.dataset());
-            for (int i = 0; i < data.getNumLabels(); i++) {
+            for (int i = 0; i < mlTestData.getNumLabels(); i++) {
                 labelsMissing.setMissing(labelIndices[i]);
             }
             MultiLabelOutput output = learner.makePrediction(labelsMissing);
@@ -101,6 +99,9 @@ public class Evaluator {
                 Measure m = it.next();
                 if (!failed.contains(m)) {
                     try {
+                        if (hasMissingLabels && !m.handlesMissingValues()) {
+                            continue;
+                        }
                         m.update(output, truth);
                     } catch (Exception ex) {
                         failed.add(m);
@@ -109,7 +110,7 @@ public class Evaluator {
             }
         }
 
-        return new Evaluation(measures, data);
+        return new Evaluation(measures, mlTestData);
     }
 
     private void checkLearner(MultiLabelLearner learner) {
@@ -140,34 +141,35 @@ public class Evaluator {
      * Evaluates a {@link MultiLabelLearner} on given test data set.
      * 
      * @param learner the learner to be evaluated
-     * @param data the data set for evaluation
+     * @param mlTestData the data set for evaluation
      * @return the evaluation result
      * @throws IllegalArgumentException if either of input parameters is null.
      * @throws Exception
      */
-    public Evaluation evaluate(MultiLabelLearner learner, MultiLabelInstances data,
-            MultiLabelInstances trainData) throws IllegalArgumentException, Exception {
+    public Evaluation evaluate(MultiLabelLearner learner, MultiLabelInstances mlTestData,
+            MultiLabelInstances mlTrainData) throws IllegalArgumentException, Exception {
         checkLearner(learner);
-        checkData(data);
+        checkData(mlTestData);
 
-        List<Measure> measures = prepareMeasures(learner, data, trainData);
+        List<Measure> measures = prepareMeasures(learner, mlTestData, mlTrainData);
 
         if (learner instanceof ClusWrapperClassification) {
-            return evaluate((ClusWrapperClassification) learner, data, measures);
+            return evaluate((ClusWrapperClassification) learner, mlTestData, measures);
         } else {
-            return evaluate(learner, data, measures);
+            return evaluate(learner, mlTestData, measures);
         }
     }
 
-    private List<Measure> prepareMeasures(MultiLabelLearner learner, MultiLabelInstances data,
-            MultiLabelInstances trainData) {
-        List<Measure> measures = new ArrayList<>();
+    private List<Measure> prepareMeasures(MultiLabelLearner learner,
+            MultiLabelInstances mlTestData, MultiLabelInstances mlTrainData) {
+        List<Measure> measures = new ArrayList<Measure>();
 
         MultiLabelOutput prediction;
         try {
-            MultiLabelLearner copyOfLearner = learner.makeCopy();
-            prediction = copyOfLearner.makePrediction(data.getDataSet().instance(0));
-            int numOfLabels = data.getNumLabels();
+            // MultiLabelLearner copyOfLearner = learner.makeCopy();
+            // prediction = copyOfLearner.makePrediction(data.getDataSet().instance(0));
+            prediction = learner.makePrediction(mlTestData.getDataSet().instance(0));
+            int numOfLabels = mlTestData.getNumLabels();
             // add bipartition-based measures if applicable
             if (prediction.hasBipartition()) {
                 // add example-based measures
@@ -208,13 +210,13 @@ public class Evaluator {
                 measures.add(new MacroAUC(numOfLabels));
             }
             // add hierarchical measures if applicable
-            if (data.getLabelsMetaData().isHierarchy()) {
-                measures.add(new HierarchicalLoss(data));
+            if (mlTestData.getLabelsMetaData().isHierarchy()) {
+                measures.add(new HierarchicalLoss(mlTestData));
             }
             // add regression measures if applicable
             if (prediction.hasPvalues()) {
                 measures.add(new AverageRMSE(numOfLabels));
-                measures.add(new AverageRelativeRMSE(numOfLabels, trainData, data));
+                measures.add(new AverageRelativeRMSE(numOfLabels, mlTrainData, mlTestData));
             }
         } catch (Exception ex) {
             Logger.getLogger(Evaluator.class.getName()).log(Level.SEVERE, null, ex);
@@ -300,15 +302,14 @@ public class Evaluator {
             try {
                 Instances train = workingSet.trainCV(someFolds, i);
                 Instances test = workingSet.testCV(someFolds, i);
-                MultiLabelInstances mlTrain = new MultiLabelInstances(train, data
-                        .getLabelsMetaData());
+                MultiLabelInstances mlTrain = new MultiLabelInstances(train,
+                        data.getLabelsMetaData());
                 MultiLabelInstances mlTest = new MultiLabelInstances(test, data.getLabelsMetaData());
                 MultiLabelLearner clone = learner.makeCopy();
                 clone.build(mlTrain);
                 if (hasMeasures) {
                     evaluation[i] = evaluate(clone, mlTest, measures);
-                }
-                else {
+                } else {
                     evaluation[i] = evaluate(clone, mlTest, mlTrain);
                 }
             } catch (Exception ex) {
@@ -331,18 +332,15 @@ public class Evaluator {
      * @throws IllegalArgumentException if an input parameter is null
      * @throws Exception
      */
-    public Evaluation evaluate(ClusWrapperClassification learner, MultiLabelInstances testData, List<Measure> measures) throws IllegalArgumentException,
-            Exception {
+    public Evaluation evaluate(ClusWrapperClassification learner, MultiLabelInstances testData,
+            List<Measure> measures) throws Exception {
 
         boolean isEnsemble = learner.isEnsemble();
-        if (isEnsemble) {
-            throw new Exception("Evaluation of CLUS ensemble algorithms is not supported yet!");
-        }
+        boolean isRuleBased = learner.isRuleBased();
         boolean isRegression;
         MultiLabelOutput output = learner.makePrediction(testData.getDataSet().instance(0));
         if (output.hasPvalues()) {
             isRegression = true;
-            throw new Exception("Evaluation of CLUS regression algorithms is not supported yet!");
         } else {
             isRegression = false;
         }
@@ -354,17 +352,17 @@ public class Evaluator {
                 + "-test.arff");
 
         // call Clus.main to write the output files!
-        if (!isEnsemble) {
-            // the only argument passed to Clus is the settings file!
-            String[] clusArgs = new String[1];
-            clusArgs[0] = clusWorkingDir + datasetName + "-train.s";
-            Clus.main(clusArgs);
-        } else {
-            String[] clusArgs = new String[2];
-            clusArgs[0] = "-forest";
-            clusArgs[1] = clusWorkingDir + datasetName + "-train.s";
-            Clus.main(clusArgs);
+        ArrayList<String> clusArgsList = new ArrayList<String>();
+        // the first argument passed to Clus is the settings file!
+        if (isEnsemble) {
+            clusArgsList.add("-forest");
         }
+        if (isRuleBased) {
+            clusArgsList.add("-rules");
+        }
+        clusArgsList.add(clusWorkingDir + datasetName + "-train.s");
+        String[] clusArgs = clusArgsList.toArray(new String[clusArgsList.size()]);
+        Clus.main(clusArgs);
 
         // then parse the output files and finally update the measures!
         // open and load the test set predictions file, which is in arff format
@@ -383,7 +381,7 @@ public class Evaluator {
         }
 
         int numLabels = testData.getNumLabels();
-        Set<Measure> failed = new HashSet<>();
+        Set<Measure> failed = new HashSet<Measure>();
         Instances testDataset = testData.getDataSet();
 
         int numInstances = testDataset.numInstances();
@@ -397,43 +395,59 @@ public class Evaluator {
             for (int i = 0; i < testData.getNumLabels(); i++) {
                 labelsMissing.setMissing(testData.getLabelIndices()[i]);
             }
-            // this part should be replaced
             GroundTruth truth;
             boolean[] trueLabels = new boolean[numLabels];
             double[] trueValues = new double[numLabels];
-
-            // original way
-            // output = learner.makePrediction(labelsMissing);
-            // trueLabels = getTrueLabels(instance, numLabels, labelIndices);
-
             // clus way
             Instance predictionInstance = predictionInstances.instance(instanceIndex);
             double[] predictionsPerSample = new double[testData.getNumLabels()];
             int k = 0;
             for (int j = 0; j < predictionInstance.numValues() - 1; j++) {
                 String pred = predictionInstance.toString(j);
+                // collect the ground truth
                 if (j < testData.getNumLabels()) {
-                    trueValues[j] = Double.parseDouble(pred);
-                    if (Double.parseDouble(pred) > 0.5) {
-                        trueLabels[j] = true;
+                    if (isRegression) {
+                        trueValues[j] = Double.parseDouble(pred);
                     } else {
-                        trueLabels[j] = false;
+                        if (Double.parseDouble(pred) > 0.5) {
+                            trueLabels[j] = true;
+                        } else {
+                            trueLabels[j] = false;
+                        }
                     }
                 }
-                if (isEnsemble) {
-                    if (j >= testData.getNumLabels() * 2) {
-                        predictionsPerSample[k] = predictionInstance.value(j)
-                                / (predictionInstance.value(j) + predictionInstance.value(j + 1));
-                        j++;
-                        k++;
+                // collect predicted values
+                if (isRegression) {
+                    if (isEnsemble && !isRuleBased) {
+                        if (j >= (testData.getNumLabels())) {
+                            predictionsPerSample[k] = predictionInstance.value(j);
+                            k++;
+                        }
+                    } else {
+                        if (j >= (testData.getNumLabels() * 2 + 1)) {
+                            predictionsPerSample[k] = predictionInstance.value(j);
+                            k++;
+                        }
                     }
                 } else {
-                    if (j >= (testData.getNumLabels() * 5 + 1)) {
-                        predictionsPerSample[k] = predictionInstance.value(j)
-                                / (predictionInstance.value(j) + predictionInstance.value(j + 1));
-                        j++;
-                        k++;
+                    if (isEnsemble && !isRuleBased) {
+                        if (j >= testData.getNumLabels() * 2) {
+                            predictionsPerSample[k] = predictionInstance.value(j);
+                            j++;
+                            k++;
+                        }
+                    } else {
+                        if (j >= (testData.getNumLabels() * 5 + 1)) {
+                            predictionsPerSample[k] = predictionInstance.value(j)
+                                    / (predictionInstance.value(j) + predictionInstance
+                                            .value(j + 1));
+                            j++;
+                            k++;
+                        }
                     }
+                }
+                if (k == testData.getNumLabels()) {
+                    break;
                 }
             }
 
@@ -460,4 +474,5 @@ public class Evaluator {
 
         return new Evaluation(measures, testData);
     }
+
 }

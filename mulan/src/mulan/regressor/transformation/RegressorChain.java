@@ -13,11 +13,6 @@
  *    along with this program; if not, write to the Free Software
  *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-
-/*
- *    RegressorChain.java
- *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
- */
 package mulan.regressor.transformation;
 
 import java.util.*;
@@ -33,10 +28,14 @@ import weka.core.Instances;
 import weka.filters.unsupervised.attribute.Remove;
 
 /**
- * Class implementing the Regressor Chain (RC) algorithm.
+ * Class implementing the Regressor Chain (RC) algorithm. <br/>
+ * <br/>
+ * For more information, see:<br/>
+ * E. Spyromitros-Xioufis, W. Groves, G. Tsoumakas, I. Vlahavas (2012). Multi-label Classification
+ * Methods for Multi-target Regression. <a href="http://arxiv.org/abs/1211.6581">ArXiv e-prints</a>.
  * 
  * @author Eleftherios Spyromitros-Xioufis
- * @version 11.27.2012
+ * @version 2013.07.28
  */
 public class RegressorChain extends TransformationBasedMultiTargetRegressor {
 
@@ -67,22 +66,21 @@ public class RegressorChain extends TransformationBasedMultiTargetRegressor {
     /**
      * Creates a new instance
      * 
-     * @param classifier the base regression algorithm that will be used for training each model
+     * @param regressor the base regression algorithm that will be used for training each model
      * @param aChain
      */
-    public RegressorChain(Classifier classifier, int[] aChain) {
-        super(classifier);
+    public RegressorChain(Classifier regressor, int[] aChain) {
+        super(regressor);
         chain = aChain;
     }
 
     /**
      * Creates a new instance
      * 
-     * @param classifier the base-level classification algorithm that will be used for training each
-     *            of the binary models
+     * @param regressor the base regression algorithm that will be used for training each model
      */
-    public RegressorChain(Classifier classifier) {
-        super(classifier);
+    public RegressorChain(Classifier regressor) {
+        super(regressor);
     }
 
     protected void buildInternal(MultiLabelInstances train) throws Exception {
@@ -140,16 +138,12 @@ public class RegressorChain extends TransformationBasedMultiTargetRegressor {
 
         // create a new temporary instance so that the passed instance is not altered
         Instances dataset = instance.dataset();
-        Instance tempInstance = DataUtils.createInstance(instance, instance.weight(), instance
-                .toDoubleArray());
+        Instance tempInstance = DataUtils.createInstance(instance, instance.weight(),
+                instance.toDoubleArray());
 
         for (int counter = 0; counter < numLabels; counter++) {
             dataset.setClassIndex(chain[counter]);
             tempInstance.setDataset(dataset);
-
-            if (Double.isNaN(ensemble[counter].classifyInstance(tempInstance))) {
-                System.out.println("Some problem occured");
-            }
             // find the appropriate position for that score in the scores array
             // i.e. which is the corresponding target
             int pos = 0;

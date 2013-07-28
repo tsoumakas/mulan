@@ -127,8 +127,8 @@ public class MultipleEvaluation {
                 } catch (Exception ex) {
                 }
                 if (sums.containsKey(m.getName())) {
-                    sums.put(m.getName(), sums.get(m.getName())
-                            + Math.pow(value - mean.get(m.getName()), 2));
+                    sums.put(m.getName(),
+                            sums.get(m.getName()) + Math.pow(value - mean.get(m.getName()), 2));
                 } else {
                     sums.put(m.getName(), Math.pow(value - mean.get(m.getName()), 2));
                 }
@@ -267,5 +267,9 @@ public class MultipleEvaluation {
             sb.append(";");
         }
         return sb.toString();
+    }
+
+    public ArrayList<Evaluation> getEvaluations() {
+        return evaluations;
     }
 }

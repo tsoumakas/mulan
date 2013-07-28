@@ -13,11 +13,6 @@
  *    along with this program; if not, write to the Free Software
  *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-
-/*
- *    TransformationBasedMultiTargetLearner.java
- *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
- */
 package mulan.regressor.transformation;
 
 import mulan.classifier.MultiLabelLearnerBase;
@@ -28,39 +23,19 @@ import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
 
 /**
- * 
- <!-- globalinfo-start --> Base class for multi-target regressors, which use a single-target
- * transformation to handle multi-target data.<br/>
+ * Base class for multi-target regressors that use a single-target transformation to handle
+ * multi-target data.<br/>
  * <br/>
- * For more information, see<br/>
- * <br/>
+ * For more information, see:<br/>
  * E. Spyromitros-Xioufis, W. Groves, G. Tsoumakas, I. Vlahavas (2012). Multi-label Classification
- * Methods for Multi-target Regression. ArXiv e-prints.
- * 
- * <p/>
- * <!-- globalinfo-end -->
- * 
- * <!-- technical-bibtex-start --> BibTeX:
- * 
- * <pre>
- * &#64;article{spyromitros.mtr:2012,
- *    author = {E. Spyromitros-Xioufis and W. Groves and G. Tsoumakas and I. Vlahavas},
- *    journal = {ArXiv e-prints},
- *    title = {Multi-label Classification Methods for Multi-target Regression},
- *    url = {http://arxiv.org/abs/1211.6581}
- *    year = {2012}
- * }
- * </pre>
- * <p/>
- * <!-- technical-bibtex-end -->
- * 
+ * Methods for Multi-target Regression. <a href="http://arxiv.org/abs/1211.6581">ArXiv e-prints</a>.
  * 
  * @author Eleftherios Spyromitros-Xioufis
- * @version 2012.11.21
+ * @version 2013.07.28
  */
-@SuppressWarnings("serial")
 public abstract class TransformationBasedMultiTargetRegressor extends MultiLabelLearnerBase {
 
+    private static final long serialVersionUID = 1L;
     /**
      * The underlying single-target regressor.
      */
@@ -100,26 +75,15 @@ public abstract class TransformationBasedMultiTargetRegressor extends MultiLabel
      */
     public TechnicalInformation getTechnicalInformation() {
         TechnicalInformation result = new TechnicalInformation(Type.INCOLLECTION);
-        result
-                .setValue(
-                        Field.AUTHOR,
-                        "Spyromitros-Xioufis, Eleftherios and Groves, William and Tsoumakas, Grigorios and Vlahavas, Ioannis");
+        result.setValue(
+                Field.AUTHOR,
+                "Spyromitros-Xioufis, Eleftherios and Groves, William and Tsoumakas, Grigorios and Vlahavas, Ioannis");
         result.setValue(Field.TITLE,
                 "Multi-label Classification Methods for Multi-target Regression");
         result.setValue(Field.JOURNAL, "ArXiv e-prints");
         result.setValue(Field.URL, "http://arxiv.org/abs/1211.6581");
         result.setValue(Field.YEAR, "2012");
         return result;
-    }
-
-    /**
-     * Returns a string describing the classifier.
-     * 
-     * @return a string description of the classifier
-     */
-    public String globalInfo() {
-        return "Base class for multi-target regressors, which use a single-target transformation to handle multi-target data."
-                + "For more information, see\n\n" + getTechnicalInformation().toString();
     }
 
     /**

@@ -13,11 +13,6 @@
  *    along with this program; if not, write to the Free Software
  *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-
-/*
- *    SingleTargetRegressor.java
- *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
- */
 package mulan.regressor.transformation;
 
 import mulan.classifier.MultiLabelOutput;
@@ -30,11 +25,15 @@ import weka.core.Instances;
 import weka.filters.unsupervised.attribute.Remove;
 
 /**
- * This class implements the baseline regression approach which learns a separate regression model
- * for each target.
+ * This class implements the baseline regression approach that learns a separate regression model
+ * for each target.<br/>
+ * <br/>
+ * For more information, see:<br/>
+ * E. Spyromitros-Xioufis, W. Groves, G. Tsoumakas, I. Vlahavas (2012). Multi-label Classification
+ * Methods for Multi-target Regression. <a href="http://arxiv.org/abs/1211.6581">ArXiv e-prints</a>.
  * 
  * @author Eleftherios Spyromitros-Xioufis
- * @version 11.27.2012
+ * @version 2013.07.28
  */
 public class SingleTargetRegressor extends TransformationBasedMultiTargetRegressor {
 
@@ -49,11 +48,11 @@ public class SingleTargetRegressor extends TransformationBasedMultiTargetRegress
     /**
      * Creates a new instance
      * 
-     * @param classifier the base-level regression algorithm that will be used for training each of
+     * @param regressor the base-level regression algorithm that will be used for training each of
      *            the single-target models
      */
-    public SingleTargetRegressor(Classifier classifier) {
-        super(classifier);
+    public SingleTargetRegressor(Classifier regressor) {
+        super(regressor);
     }
 
     protected void buildInternal(MultiLabelInstances train) throws Exception {
@@ -63,8 +62,7 @@ public class SingleTargetRegressor extends TransformationBasedMultiTargetRegress
             ensemble[i] = new FilteredClassifier();
             ensemble[i].setClassifier(AbstractClassifier.makeCopy(baseRegressor));
 
-            // Indices of attributes to remove. All labelIndices except for the
-            // current index
+            // Indices of attributes to remove. All labelIndices except for the current index
             int[] indicesToRemove = new int[numLabels - 1];
             int counter2 = 0;
             for (int counter1 = 0; counter1 < numLabels; counter1++) {
@@ -76,8 +74,8 @@ public class SingleTargetRegressor extends TransformationBasedMultiTargetRegress
 
             Remove remove = new Remove();
             remove.setAttributeIndicesArray(indicesToRemove);
-            remove.setInputFormat(trainingData);
             remove.setInvertSelection(false);
+            remove.setInputFormat(trainingData);
             ensemble[i].setFilter(remove);
 
             trainingData.setClassIndex(labelIndices[i]);
