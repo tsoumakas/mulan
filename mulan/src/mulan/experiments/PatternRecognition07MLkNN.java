@@ -24,21 +24,21 @@ import mulan.data.MultiLabelInstances;
 import mulan.evaluation.Evaluator;
 import mulan.evaluation.MultipleEvaluation;
 import mulan.evaluation.measure.*;
-import weka.core.TechnicalInformation;
-import weka.core.TechnicalInformation.Field;
-import weka.core.TechnicalInformation.Type;
 import weka.core.Utils;
 
 /**
- * Class replicating an experiment from a published paper
+ * <p>Class replicating the experiment in <em>Min-Ling Zhang and Zhi-Hua Zhou.
+ * 2007. ML-KNN: A lazy learning approach to multi-label learning. Pattern
+ * Recogn. 40, 7 (July 2007), 2038-2048. DOI=10.1016/j.patcog.2006.12.019</em>
+ * </p>
  *
  * @author Eleftherios Spyromitros-Xioufis (espyromi@csd.auth.gr)
  * @version 2010.12.10
  */
-public class PatternRecognition07MLkNN extends Experiment {
+public class PatternRecognition07MLkNN {
 
     /**
-     * Main class
+     * Main code
      *
      * @param args command line arguments
      */
@@ -73,24 +73,5 @@ public class PatternRecognition07MLkNN extends Experiment {
         } catch (Exception ex) {
             Logger.getLogger(PatternRecognition07MLkNN.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }
-
-    @Override
-    public TechnicalInformation getTechnicalInformation() {
-        TechnicalInformation result;
-
-        result = new TechnicalInformation(Type.ARTICLE);
-        result.setValue(Field.AUTHOR, "Min-Ling Zhang and Zhi-Hua Zhou");
-        result.setValue(Field.TITLE, "ML-KNN: A lazy learning approach to multi-label learning");
-        result.setValue(Field.JOURNAL, "Pattern Recogn.");
-        result.setValue(Field.VOLUME, "40");
-        result.setValue(Field.NUMBER, "7");
-        result.setValue(Field.YEAR, "2007");
-        result.setValue(Field.ISSN, "0031-3203");
-        result.setValue(Field.PAGES, "2038--2048");
-        result.setValue(Field.PUBLISHER, "Elsevier Science Inc.");
-        result.setValue(Field.ADDRESS, "New York, NY, USA");
-
-        return result;
     }
 }

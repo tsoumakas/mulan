@@ -35,22 +35,23 @@ import mulan.evaluation.measure.HammingLoss;
 import mulan.evaluation.measure.Measure;
 import weka.classifiers.functions.SMO;
 import weka.core.Instances;
-import weka.core.TechnicalInformation;
 import weka.core.Utils;
-import weka.core.TechnicalInformation.Field;
-import weka.core.TechnicalInformation.Type;
 
 /**
- * Class replicating an experiment from a published paper
+ * <p>Class replicating the experiment in <em>Jesse Read, Bernhard Pfahringer,
+ * and Geoff Holmes. 2008. Multi-label Classification Using Ensembles of Pruned
+ * Sets. In Proceedings of the 2008 Eighth IEEE International Conference on Data
+ * Mining (ICDM '08). IEEE Computer Society, Washington, DC, USA, 995-1000.</em>
+ * </p>
  *
  * @author Emmanouela Stachtiari
  * @author Grigorios Tsoumakas
  * @version 2012.07.18
  */
-public class ICDM08EnsembleOfPrunedSets extends Experiment {
+public class ICDM08EnsembleOfPrunedSets {
 
     /**
-     * Main class
+     * Main code
      *
      * @param args command line arguments
      */
@@ -171,14 +172,4 @@ public class ICDM08EnsembleOfPrunedSets extends Experiment {
         }
     }
 
-    @Override
-    public TechnicalInformation getTechnicalInformation() {
-        TechnicalInformation result = new TechnicalInformation(Type.CONFERENCE);
-        result.setValue(Field.AUTHOR, "Read, Jesse");
-        result.setValue(Field.TITLE, "Multi-label Classification using Ensembles of Pruned Sets");
-        result.setValue(Field.PAGES, "995-1000");
-        result.setValue(Field.BOOKTITLE, "ICDM'08: Eighth IEEE International Conference on Data Mining");
-        result.setValue(Field.YEAR, "2008");
-        return result;
-    }
 }

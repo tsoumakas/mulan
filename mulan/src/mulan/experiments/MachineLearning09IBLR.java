@@ -37,21 +37,21 @@ import weka.classifiers.Classifier;
 import weka.classifiers.functions.Logistic;
 import weka.classifiers.lazy.IBk;
 import weka.core.Instances;
-import weka.core.TechnicalInformation;
 import weka.core.Utils;
-import weka.core.TechnicalInformation.Field;
-import weka.core.TechnicalInformation.Type;
 
 /**
- * Class replicating an experiment from a published paper
+ * <p>Class replicating the experiment in <em>Weiwei Cheng and Eyke Hüllermeier. 
+ * 2009. Combining instance-based learning and logistic regression for 
+ * multilabel classification. Mach. Learn. 76, 2-3 (September 2009), 211-225.
+ * </em></p>
  *
  * @author Eleftherios Spyromitros-Xioufis (espyromi@csd.auth.gr)
  * @version 2010.12.10
  */
-public class MachineLearning09IBLR extends Experiment {
+public class MachineLearning09IBLR {
 
     /**
-     * Main class
+     * Main code
      *
      * @param args command line arguments
      */
@@ -136,21 +136,4 @@ public class MachineLearning09IBLR extends Experiment {
         }
     }
 
-    @Override
-    public TechnicalInformation getTechnicalInformation() {
-        TechnicalInformation result;
-
-        result = new TechnicalInformation(Type.ARTICLE);
-        result.setValue(Field.AUTHOR, "Weiwei Cheng and Eyke Hullermeier");
-        result.setValue(Field.TITLE, "Combining instance-based learning and logistic regression for multilabel classification ");
-        result.setValue(Field.JOURNAL, "Machine Learning");
-        result.setValue(Field.VOLUME, "76");
-        result.setValue(Field.NUMBER, "2-3");
-        result.setValue(Field.YEAR, "2009");
-        result.setValue(Field.ISSN, "0885-6125");
-        result.setValue(Field.PAGES, "211-225");
-        result.setValue(Field.PUBLISHER, "Springer Netherlands");
-
-        return result;
-    }
 }

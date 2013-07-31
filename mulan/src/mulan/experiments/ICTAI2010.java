@@ -33,21 +33,23 @@ import mulan.evaluation.measure.Measure;
 import weka.classifiers.meta.Bagging;
 import weka.classifiers.trees.J48;
 import weka.classifiers.trees.M5P;
-import weka.core.TechnicalInformation;
-import weka.core.TechnicalInformation.Field;
-import weka.core.TechnicalInformation.Type;
 import weka.core.Utils;
 
 /**
- * Class replicating an experiment from a published paper
+ * <p>Class replicating the experiment in <em>Marios Ioannou, George Sakkas, 
+ * Grigorios Tsoumakas, and Ioannis Vlahavas. 2010. Obtaining Bipartitions from 
+ * Score Vectors for Multi-Label Classification. In Proceedings of the 2010 22nd
+ * IEEE International Conference on Tools with Artificial Intelligence - Volume 
+ * 01 (ICTAI '10), Vol. 1. IEEE Computer Society, Washington, DC, USA, 409-416. 
+ * </em></p>
  *
  * @author Grigorios Tsoumakas
  * @version 2010.12.10
  */
-public class ICTAI2010 extends Experiment {
+public class ICTAI2010 {
 
     /**
-     * Main class
+     * Main code
      *
      * @param args command line arguments
      */
@@ -193,18 +195,5 @@ public class ICTAI2010 extends Experiment {
         } catch (Exception ex) {
             Logger.getLogger(ICTAI2010.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }
-
-    @Override
-    public TechnicalInformation getTechnicalInformation() {
-        TechnicalInformation result;
-
-        result = new TechnicalInformation(Type.INPROCEEDINGS);
-        result.setValue(Field.AUTHOR, "Marios Ioannou and George Sakkas and Grigorios Tsoumakas and Ioannis Vlahavas");
-        result.setValue(Field.TITLE, "Obtaining Bipartitions from Score Vectors for Multi-Label Classification");
-        result.setValue(Field.BOOKTITLE, "Proceedings of the 22th IEEE International Conference on Tools with Artificial Intelligence");
-        result.setValue(Field.YEAR, "2010");
-        result.setValue(Field.PUBLISHER, "IEEE");
-        return result;
     }
 }
