@@ -13,11 +13,6 @@
  *    along with this program; if not, write to the Free Software
  *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-
-/*
- *    DimensionalityReductionTest.java
- *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
- */
 package mulan.examples;
 
 import java.util.Arrays;
@@ -56,7 +51,7 @@ public class DimensionalityReductionTest {
         BinaryRelevanceAttributeEvaluator ae = new BinaryRelevanceAttributeEvaluator(ase, mlData, "max", "dl", "eval");
         // MultiClassTransformation mt = new Copy();
         // MultiClassAttributeEvaluator ae = new MultiClassAttributeEvaluator(ase, mt, mlData);
-
+        
         Ranker r = new Ranker();
         int[] result = r.search(ae, mlData);
         System.out.println(Arrays.toString(result));

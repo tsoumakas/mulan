@@ -13,11 +13,6 @@
  *    along with this program; if not, write to the Free Software
  *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-
-/*
- *    MultiClassAttributeEvaluator.java
- *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
- */
 package mulan.dimensionalityReduction;
 
 import java.util.logging.Level;
@@ -29,25 +24,11 @@ import weka.attributeSelection.AttributeEvaluator;
 import weka.core.Instances;
 
 /**
- * Performs attribute evaluation using single-label transformations. For
- * more information, see <br/>
- * <br/>
- * Chen, W., Yan, J., Zhang, B., Chen, Z., and Yang, Q. (2007).
- * Document transformation for multi-label feature selection in text categorization.
- * In 7th IEEE International Conference on Data Mining (ICDM'07), pages 451-456.
- * </p>
- *
- * BibTeX:
- *
- * <pre>
- * &#064;inproceedings{chen+etal:2007,
- * 	author = {Chen, Weizhu and Yan, Jun and Zhang, Benyu and Chen, Zheng and Yang, Qiang},
- *  booktitle = {Proc. 7th IEEE International Conference on Data Mining (ICDM'07)},
- *  pages = {451--456},
- *  title = {Document Transformation for Multi-label Feature Selection in Text Categorization},
- *  year = {2007}
- * }
- * </pre>
+ * <p> Performs attribute evaluation using single-label transformations. For
+ * more information, see <em>Chen, W., Yan, J., Zhang, B., Chen, Z., and Yang, 
+ * Q. (2007). Document transformation for multi-label feature selection in text 
+ * categorization. In 7th IEEE International Conference on Data Mining 
+ * (ICDM'07), pages 451-456. </em></p>
  *
  * @author Grigorios Tsoumakas
  * @version 10 August 2010

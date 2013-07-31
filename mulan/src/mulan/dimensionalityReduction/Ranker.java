@@ -13,11 +13,6 @@
  *    along with this program; if not, write to the Free Software
  *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-
-/*
- *    Ranker.java
- *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
- */
 package mulan.dimensionalityReduction;
 
 import mulan.data.MultiLabelInstances;
@@ -52,8 +47,9 @@ public class Ranker {
         // convert these to feature indices
         int[] featureIndices = mlData.getFeatureIndices();
         int[] finalIndices = new int[indices.length];
-        for (int i=0; i<indices.length; i++)
+        for (int i=0; i<indices.length; i++) {
             finalIndices[i] = featureIndices[indices[i]];
+        }
         return finalIndices;
     }
 }

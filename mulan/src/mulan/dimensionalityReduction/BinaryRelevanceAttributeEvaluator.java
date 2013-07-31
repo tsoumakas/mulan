@@ -13,13 +13,10 @@
  *    along with this program; if not, write to the Free Software
  *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-
-/*
- *    BinaryRelevanceAttributeEvaluator.java
- *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
- */
 package mulan.dimensionalityReduction;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import mulan.data.MultiLabelInstances;
 import mulan.transformations.BinaryRelevanceTransformation;
 import weka.attributeSelection.ASEvaluation;
@@ -69,7 +66,7 @@ public class BinaryRelevanceAttributeEvaluator extends ASEvaluation implements A
 
         /**
          * constructor
-         * 
+         *
          * @param score the score to be given
          * @param index the index to be given
          */
@@ -80,7 +77,7 @@ public class BinaryRelevanceAttributeEvaluator extends ASEvaluation implements A
 
         /**
          * Returns the score of the attribute
-         * 
+         *
          * @return score of the attribute
          */
         public double getScore() {
@@ -89,13 +86,14 @@ public class BinaryRelevanceAttributeEvaluator extends ASEvaluation implements A
 
         /**
          * Returns the index of the attribute
-         * 
+         *
          * @return index of the attribute
          */
         public int getIndex() {
             return index;
         }
 
+        @Override
         public int compareTo(Object o) {
             if (score > ((Rank) o).score) {
                 return 1;
@@ -142,15 +140,15 @@ public class BinaryRelevanceAttributeEvaluator extends ASEvaluation implements A
 
             // scoring of features
             scores = featureSelection(evaluations);
-
         } catch (Exception ex) {
-            ex.printStackTrace();
+            Logger.getLogger(BinaryRelevanceAttributeEvaluator.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
     /**
-     * returns a ranking of attributes (where each attribute is represented by its index)
-     * 
+     * returns a ranking of attributes (where each attribute is represented by
+     * its index)
+     *
      * @param scores the attributes' scorelist
      * @return an ascending ranking of the attributes, based on their scores
      */
@@ -182,8 +180,9 @@ public class BinaryRelevanceAttributeEvaluator extends ASEvaluation implements A
     }
 
     /**
-     * returns a ranking of attributes (where each attribute is represented by its index)
-     * 
+     * returns a ranking of attributes (where each attribute is represented by
+     * its index)
+     *
      * @param scores the attributes' scorelist
      * @return a descending ranking of the attributes, based on their scores
      */
@@ -203,7 +202,7 @@ public class BinaryRelevanceAttributeEvaluator extends ASEvaluation implements A
 
     /**
      * orders the ranking scores according to their attributes' original indices
-     * 
+     *
      * @param ranking a rank table
      * @return the order of the ranking scores
      */
@@ -219,7 +218,7 @@ public class BinaryRelevanceAttributeEvaluator extends ASEvaluation implements A
 
     /**
      * highest score combination approach
-     * 
+     *
      * @param scoreList all attributes' score lists
      * @param index the index of a specific attribute's score
      * @return the highest score achieved in any of the the input score lists
@@ -236,7 +235,7 @@ public class BinaryRelevanceAttributeEvaluator extends ASEvaluation implements A
 
     /**
      * lowest score combination approach
-     * 
+     *
      * @param scoreList all attributes' score lists
      * @param index the index of a specific attribute's score
      * @return the lowest score achieved in all of the input score lists
@@ -253,7 +252,7 @@ public class BinaryRelevanceAttributeEvaluator extends ASEvaluation implements A
 
     /**
      * average score combination approach
-     * 
+     *
      * @param scoreList all attributes' score lists
      * @param index the index of a specific attribute's score
      * @return the average score achieved in all the score lists
@@ -270,7 +269,7 @@ public class BinaryRelevanceAttributeEvaluator extends ASEvaluation implements A
 
     /**
      * performs attribute selection
-     * 
+     *
      * @param evaluations evaluation scores
      * @return an array of scores for all attributes
      * @throws Exception
@@ -344,7 +343,7 @@ public class BinaryRelevanceAttributeEvaluator extends ASEvaluation implements A
 
     /**
      * calculates the norm of a vector
-     * 
+     *
      * @param vector a numeric array (as a vector)
      * @return the norm of the given vector
      */
@@ -360,7 +359,7 @@ public class BinaryRelevanceAttributeEvaluator extends ASEvaluation implements A
 
     /**
      * normalizes an array (in the range of [0,1])
-     * 
+     *
      * @param array a numeric array
      */
     public static void normalize(double array[]) {
@@ -383,7 +382,7 @@ public class BinaryRelevanceAttributeEvaluator extends ASEvaluation implements A
 
     /**
      * divide by length (dl) normalization
-     * 
+     *
      * @param array a numeric array
      * @return a dl normalized copy of array
      */
@@ -391,8 +390,7 @@ public class BinaryRelevanceAttributeEvaluator extends ASEvaluation implements A
         /*
          * a copy of the original array
          */
-        double copy[] = new double[array.length];
-        copy = java.util.Arrays.copyOf(array, array.length);
+        double copy[] = java.util.Arrays.copyOf(array, array.length);
 
         /*
          * calculate the norm
@@ -411,7 +409,7 @@ public class BinaryRelevanceAttributeEvaluator extends ASEvaluation implements A
 
     /**
      * divide by maximum (dm) normalization
-     * 
+     *
      * @param array a numeric array
      * @return a dm normalized copy of array
      */
@@ -419,8 +417,7 @@ public class BinaryRelevanceAttributeEvaluator extends ASEvaluation implements A
         /*
          * a copy of the original array
          */
-        double copy[] = new double[array.length];
-        copy = java.util.Arrays.copyOf(array, array.length);
+        double[] copy = java.util.Arrays.copyOf(array, array.length);
 
         /*
          * normalize the copy
@@ -432,7 +429,7 @@ public class BinaryRelevanceAttributeEvaluator extends ASEvaluation implements A
 
     /**
      * Evaluates an attribute
-     * 
+     *
      * @param attribute the attribute index
      * @return the evaluation
      * @throws Exception
@@ -444,7 +441,7 @@ public class BinaryRelevanceAttributeEvaluator extends ASEvaluation implements A
 
     /**
      * Not supported
-     * 
+     *
      * @param data
      * @throws Exception
      */

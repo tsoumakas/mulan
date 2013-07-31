@@ -13,11 +13,6 @@
  *    along with this program; if not, write to the Free Software
  *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-
-/*
- *    LabelPowersetAttributeEvaluator.java
- *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
- */
 package mulan.dimensionalityReduction;
 
 import java.util.logging.Level;
@@ -29,25 +24,11 @@ import weka.attributeSelection.AttributeEvaluator;
 import weka.core.Instances;
 
 /**
- * Performs attribute evaluation using the label powerset transformation. For
- * more information, see <br/>
- * <br/>
- * K. Trohidis, G. Tsoumakas, G. Kalliris, I. Vlahavas. "Multilabel
- * Classification of Music into Emotions". Proc. 2008 International Conference
- * on Music Information Retrieval (ISMIR 2008)
+ * <p> Performs attribute evaluation using the label powerset transformation. 
+ * For more information, see <em> K. Trohidis, G. Tsoumakas, G. Kalliris, I. 
+ * Vlahavas. "Multilabel Classification of Music into Emotions". Proc. 2008 
+ * International Conference on Music Information Retrieval (ISMIR 2008) </em>
  * </p>
- *
- * BibTeX:
- *
- * <pre>
- * &#064;inproceedings{trohidis+etal:2008,
- *      author =    {Trohidis, K. and Tsoumakas, G. and Kalliris, G. and Vlahavas, I.},
- *      title =     {Multilabel Classification of Music into Emotions},
- *      booktitle = {Proc. 9th International Conference on Music Information Retrieval (ISMIR 2008), Philadelphia, PA, USA, 2008},
- *      year =      {2008},
- *      location =  {Philadephia, PA, USA},
- * }
- * </pre>
  *
  * @author Grigorios Tsoumakas
  */
