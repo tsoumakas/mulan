@@ -15,7 +15,10 @@
  */
 package mulan.regressor.transformation;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Random;
 
 import mulan.classifier.MultiLabelOutput;
 import mulan.data.DataUtils;
@@ -28,7 +31,7 @@ import weka.core.Instances;
 import weka.filters.unsupervised.attribute.Remove;
 
 /**
- * Class implementing the Regressor Chain (RC) algorithm. <br/>
+ * This class implements the Regressor Chain (RC) method.<br/>
  * <br/>
  * For more information, see:<br/>
  * E. Spyromitros-Xioufis, W. Groves, G. Tsoumakas, I. Vlahavas (2012). Multi-label Classification
@@ -43,44 +46,43 @@ public class RegressorChain extends TransformationBasedMultiTargetRegressor {
 
     /**
      * The seed to use for random number generation in order to create a random chain (other than
-     * the default)
+     * the default one which consists of the targets chained in the order they appear in the arff
+     * file).
      */
     private int chainSeed = 0;
 
-    public void setChainSeed(int chainSeed) {
-        this.chainSeed = chainSeed;
-    }
-
     /**
-     * This array should contain a random permutation of the label indices.
+     * A permutation of the target indices. E.g. If there are 3 targets with indices 14,15 and 16, a
+     * valid chain is 15,14,16.
      */
     private int[] chain;
 
     /**
-     * The ensemble of regression chain models. These are Weka FilteredClassifier objects, where the
-     * filter corresponds to removing all targets apart from the one that serves as a target for the
-     * corresponding model.
+     * The regressors of the chain.
      */
-    protected FilteredClassifier[] ensemble;
+    protected FilteredClassifier[] chainRegressors;
 
     /**
-     * Creates a new instance
+     * Creates a new instance with the given base regressor. If {@link #chainSeed} == 0, the default
+     * chain is used. Otherwise, a random chain is created using the given seed.
      * 
-     * @param regressor the base regression algorithm that will be used for training each model
-     * @param aChain
+     * @param baseRegressor the base regression algorithm that will be used
+     * @throws Exception
+     */
+    public RegressorChain(Classifier regressor) {
+        super(regressor);
+    }
+
+    /**
+     * Creates a new instance with the given base regressor and chain ordering.
+     * 
+     * @param baseRegressor the base regression algorithm that will be used
+     * @param aChain a chain ordering
+     * @throws Exception
      */
     public RegressorChain(Classifier regressor, int[] aChain) {
         super(regressor);
         chain = aChain;
-    }
-
-    /**
-     * Creates a new instance
-     * 
-     * @param regressor the base regression algorithm that will be used for training each model
-     */
-    public RegressorChain(Classifier regressor) {
-        super(regressor);
     }
 
     protected void buildInternal(MultiLabelInstances train) throws Exception {
@@ -92,7 +94,7 @@ public class RegressorChain extends TransformationBasedMultiTargetRegressor {
             }
         }
 
-        if (chainSeed != 0) { // we should create a random chain
+        if (chainSeed != 0) { // a random chain will be created by shuffling the existing chain
             Random rand = new Random(chainSeed);
             ArrayList<Integer> chainAsList = new ArrayList<Integer>(numLabels);
             for (int j = 0; j < numLabels; j++) {
@@ -103,14 +105,14 @@ public class RegressorChain extends TransformationBasedMultiTargetRegressor {
                 chain[j] = chainAsList.get(j);
             }
         }
-        debug(Arrays.toString(chain));
+        debug("Using chain: " + Arrays.toString(chain));
 
-        ensemble = new FilteredClassifier[numLabels];
+        chainRegressors = new FilteredClassifier[numLabels];
         Instances trainDataset = train.getDataSet();
 
         for (int i = 0; i < numLabels; i++) {
-            ensemble[i] = new FilteredClassifier();
-            ensemble[i].setClassifier(AbstractClassifier.makeCopy(baseRegressor));
+            chainRegressors[i] = new FilteredClassifier();
+            chainRegressors[i].setClassifier(AbstractClassifier.makeCopy(baseRegressor));
 
             // Indices of attributes to remove.
             // First removes numLabels attributes, then numLabels - 1 attributes and so on.
@@ -124,12 +126,12 @@ public class RegressorChain extends TransformationBasedMultiTargetRegressor {
             remove.setAttributeIndicesArray(indicesToRemove);
             remove.setInvertSelection(false);
             remove.setInputFormat(trainDataset);
-            ensemble[i].setFilter(remove);
+            chainRegressors[i].setFilter(remove);
 
             trainDataset.setClassIndex(chain[i]);
             debug("Bulding model " + (i + 1) + "/" + numLabels);
-            ensemble[i].setDebug(true);
-            ensemble[i].buildClassifier(trainDataset);
+            chainRegressors[i].setDebug(true);
+            chainRegressors[i].buildClassifier(trainDataset);
         }
     }
 
@@ -153,7 +155,7 @@ public class RegressorChain extends TransformationBasedMultiTargetRegressor {
                     break;
                 }
             }
-            scores[pos] = ensemble[counter].classifyInstance(tempInstance);
+            scores[pos] = chainRegressors[counter].classifyInstance(tempInstance);
             tempInstance.setValue(chain[counter], scores[pos]);
         }
 
@@ -162,14 +164,18 @@ public class RegressorChain extends TransformationBasedMultiTargetRegressor {
     }
 
     @Override
-    protected String getModelForTarget(int target) {
-        Classifier model = ensemble[target].getClassifier();
+    protected String getModelForTarget(int targetIndex) {
         try {
-            model.getClass().getMethod("toString", (Class<?>[]) null);
+            chainRegressors[targetIndex].getClassifier().getClass()
+                    .getMethod("toString", (Class<?>[]) null);
         } catch (NoSuchMethodException e) {
             return "A string representation for this base algorithm is not provided!";
         }
-        return model.toString();
+        return chainRegressors[targetIndex].toString();
+    }
+
+    public void setChainSeed(int chainSeed) {
+        this.chainSeed = chainSeed;
     }
 
 }

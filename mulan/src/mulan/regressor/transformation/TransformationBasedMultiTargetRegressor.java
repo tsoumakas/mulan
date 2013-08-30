@@ -110,7 +110,7 @@ public abstract class TransformationBasedMultiTargetRegressor extends MultiLabel
      * Returns a string representation of the single-target regression model build for the target
      * with this targetIndex.
      * 
-     * @param targetIndex
+     * @param targetIndex the target's index
      * @return a string representation of the single-target regression model
      */
     protected abstract String getModelForTarget(int targetIndex);
