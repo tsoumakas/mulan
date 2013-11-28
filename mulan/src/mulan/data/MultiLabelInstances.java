@@ -78,7 +78,7 @@ public class MultiLabelInstances implements Serializable {
 
         File arffFile = new File(arffFilePath);
         Instances data = loadInstances(arffFile);
-        LabelsMetaData labelsData = loadLabesMeta(data, numLabelAttributes);
+        LabelsMetaData labelsData = loadLabesMeta(data, numLabelAttributes, false);
 
         validate(data, labelsData);
 
@@ -111,7 +111,41 @@ public class MultiLabelInstances implements Serializable {
         }
 
         Instances data = loadInstances(arffDataStream);
-        LabelsMetaData labelsData = loadLabesMeta(data, numLabelAttributes);
+        LabelsMetaData labelsData = loadLabesMeta(data, numLabelAttributes, false);
+
+        validate(data, labelsData);
+
+        dataSet = data;
+        labelsMetaData = labelsData;
+    }
+
+    /**
+     * Creates a new instance of {@link MultiLabelInstances} data from the supplied
+     * {@link InputStream} data source. The data in the stream are assumed to be in ARFF format. The
+     * label attributes in ARFF data are assumed to be either the last or the first ones. Based on
+     * those attributes the {@link LabelsMetaData} are created.
+     * 
+     * @param arffDataStream the {@link InputStream} data source to load data in ARFF format
+     * @param numLabelAttributes the number of last ARFF data set attributes which are labels.
+     * @param labelsFirst whether the label attributes are the first or the last ones
+     * @throws ArgumentNullException if {@link InputStream} data source is null
+     * @throws IllegalArgumentException if number of labels attributes is less than 2
+     * @throws InvalidDataFormatException if format of loaded multi-label data is invalid
+     * @throws DataLoadException if ARFF data can not be loaded
+     */
+    public MultiLabelInstances(InputStream arffDataStream, int numLabelAttributes,
+            boolean labelsFirst) throws InvalidDataFormatException {
+
+        if (arffDataStream == null) {
+            throw new ArgumentNullException("arffDataStream");
+        }
+        if (numLabelAttributes < 2) {
+            throw new IllegalArgumentException(
+                    "The number of label attributes must me at least 2 or higher.");
+        }
+
+        Instances data = loadInstances(arffDataStream);
+        LabelsMetaData labelsData = loadLabesMeta(data, numLabelAttributes, labelsFirst);
 
         validate(data, labelsData);
 
@@ -502,8 +536,8 @@ public class MultiLabelInstances implements Serializable {
     private Instances loadInstances(File arffFile) {
         if (!arffFile.exists()) {
             throw new IllegalArgumentException(String.format(
-                    "The arff data file does not exists under specified path '%s'.", arffFile
-                            .getAbsolutePath()));
+                    "The arff data file does not exists under specified path '%s'.",
+                    arffFile.getAbsolutePath()));
         }
 
         Instances aDataSet = null;
@@ -551,19 +585,26 @@ public class MultiLabelInstances implements Serializable {
         try {
             labelsMeta = LabelsBuilder.createLabels(xmlLabelsDefStream);
         } catch (LabelsBuilderException exception) {
-            throw new DataLoadException(String
-                    .format("Error loading labels meta-data from input stream."), exception);
+            throw new DataLoadException(
+                    String.format("Error loading labels meta-data from input stream."), exception);
         }
         return labelsMeta;
     }
 
-    private LabelsMetaData loadLabesMeta(Instances data, int numLabels)
+    private LabelsMetaData loadLabesMeta(Instances data, int numLabels, boolean labelsFirst)
             throws InvalidDataFormatException {
         LabelsMetaDataImpl labelsData = new LabelsMetaDataImpl();
         int numAttributes = data.numAttributes();
-        for (int index = numAttributes - numLabels; index < numAttributes; index++) {
-            String attrName = data.attribute(index).name();
-            labelsData.addRootNode(new LabelNodeImpl(attrName));
+        if (labelsFirst) {
+            for (int index = 0; index < numLabels; index++) {
+                String attrName = data.attribute(index).name();
+                labelsData.addRootNode(new LabelNodeImpl(attrName));
+            }
+        } else {
+            for (int index = numAttributes - numLabels; index < numAttributes; index++) {
+                String attrName = data.attribute(index).name();
+                labelsData.addRootNode(new LabelNodeImpl(attrName));
+            }
         }
 
         if (labelsData.getNumLabels() < numLabels) {
@@ -583,10 +624,9 @@ public class MultiLabelInstances implements Serializable {
         Set<String> labelNames = labelsMetaData.getLabelNames();
         if (labelNames.size() < 2) {
             throw new InvalidDataFormatException(
-                    String
-                            .format(
-                                    "There must be at least 2 label attributes specified, but only '%s' are defined in metadata",
-                                    labelNames.size()));
+                    String.format(
+                            "There must be at least 2 label attributes specified, but only '%s' are defined in metadata",
+                            labelNames.size()));
         }
 
         int numAttributes = dataSet.numAttributes();
@@ -610,9 +650,8 @@ public class MultiLabelInstances implements Serializable {
                 }
             }
             throw new InvalidDataFormatException(
-                    String
-                            .format("Not all labels defined in meta-data are present in ARFF data file. Label(s) missing: "
-                                    + lbabelNamesNotInArff));
+                    String.format("Not all labels defined in meta-data are present in ARFF data file. Label(s) missing: "
+                            + lbabelNamesNotInArff));
         }
 
         if (labelsMetaData.isHierarchy()) {
