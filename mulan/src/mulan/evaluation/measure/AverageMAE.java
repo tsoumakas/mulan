@@ -20,38 +20,37 @@ import java.util.Arrays;
 import mulan.classifier.MultiLabelOutput;
 
 /**
- * Implementation of the average Root Mean Squared Error (RMSE) measure.
+ * Implementation of average Mean Absolute Error (MAE) measure.
  * 
  * @author Eleftherios Spyromitros-Xioufis
- * @version 2013.07.27
+ * @version 2013.11.08
  */
-public class AverageRMSE extends RegressionMeasureBase implements MacroAverageMeasure {
+public class AverageMAE extends RegressionMeasureBase implements MacroAverageMeasure {
 
-    /** holds the total squared error per target */
-    protected double[] totalSquaredError;
+    /** holds the total absolute error per target */
+    protected double[] totalAbsoluteError;
     /** counts the number of non-missing values per target */
     protected int[] nonMissingCounter;
 
-    /** returns the number of non missing values for this target **/
-    public int getNumNonMissing(int targetIndex) {
-        return nonMissingCounter[targetIndex];
+    public int getCounter(int labelIndex) {
+        return nonMissingCounter[labelIndex];
     }
 
-    public AverageRMSE(int numOfLabels) {
-        totalSquaredError = new double[numOfLabels];
+    public AverageMAE(int numOfLabels) {
+        totalAbsoluteError = new double[numOfLabels];
         nonMissingCounter = new int[numOfLabels];
     }
 
     public String getName() {
-        return "Average RMSE";
+        return "Average MAE";
     }
 
     public double getValue() {
         double value = 0;
-        for (int i = 0; i < totalSquaredError.length; i++) {
+        for (int i = 0; i < totalAbsoluteError.length; i++) {
             value += getValue(i);
         }
-        return value / totalSquaredError.length;
+        return value / totalAbsoluteError.length;
     }
 
     /**
@@ -61,9 +60,8 @@ public class AverageRMSE extends RegressionMeasureBase implements MacroAverageMe
      * @return the value of the measure
      */
     public double getValue(int targetIndex) {
-        double mse = totalSquaredError[targetIndex] / nonMissingCounter[targetIndex];
-        double rmse = Math.sqrt(mse);
-        return rmse;
+        double mae = totalAbsoluteError[targetIndex] / nonMissingCounter[targetIndex];
+        return mae;
     }
 
     public double getIdealValue() {
@@ -81,14 +79,14 @@ public class AverageRMSE extends RegressionMeasureBase implements MacroAverageMe
                 continue;
             }
             nonMissingCounter[i]++;
-            totalSquaredError[i] += (truth[i] - scores[i]) * (truth[i] - scores[i]);
+            totalAbsoluteError[i] += Math.abs(truth[i] - scores[i]);
         }
     }
 
     @Override
     public void reset() {
         Arrays.fill(nonMissingCounter, 0);
-        Arrays.fill(totalSquaredError, 0.0);
+        Arrays.fill(totalAbsoluteError, 0.0);
     }
 
     public boolean handlesMissingValues() {

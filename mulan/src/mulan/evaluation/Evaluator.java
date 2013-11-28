@@ -17,7 +17,12 @@ package mulan.evaluation;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Random;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -25,7 +30,40 @@ import mulan.classifier.MultiLabelLearner;
 import mulan.classifier.MultiLabelOutput;
 import mulan.classifier.clus.ClusWrapperClassification;
 import mulan.data.MultiLabelInstances;
-import mulan.evaluation.measure.*;
+import mulan.evaluation.measure.AverageMAE;
+import mulan.evaluation.measure.AveragePrecision;
+import mulan.evaluation.measure.AverageRMSE;
+import mulan.evaluation.measure.AverageRelativeMAE;
+import mulan.evaluation.measure.AverageRelativeRMSE;
+import mulan.evaluation.measure.Coverage;
+import mulan.evaluation.measure.ErrorSetSize;
+import mulan.evaluation.measure.ExampleBasedAccuracy;
+import mulan.evaluation.measure.ExampleBasedFMeasure;
+import mulan.evaluation.measure.ExampleBasedPrecision;
+import mulan.evaluation.measure.ExampleBasedRecall;
+import mulan.evaluation.measure.ExampleBasedSpecificity;
+import mulan.evaluation.measure.GeometricMeanAverageInterpolatedPrecision;
+import mulan.evaluation.measure.GeometricMeanAveragePrecision;
+import mulan.evaluation.measure.HammingLoss;
+import mulan.evaluation.measure.HierarchicalLoss;
+import mulan.evaluation.measure.IsError;
+import mulan.evaluation.measure.LogLoss;
+import mulan.evaluation.measure.MacroAUC;
+import mulan.evaluation.measure.MacroFMeasure;
+import mulan.evaluation.measure.MacroPrecision;
+import mulan.evaluation.measure.MacroRecall;
+import mulan.evaluation.measure.MacroSpecificity;
+import mulan.evaluation.measure.MeanAverageInterpolatedPrecision;
+import mulan.evaluation.measure.MeanAveragePrecision;
+import mulan.evaluation.measure.Measure;
+import mulan.evaluation.measure.MicroAUC;
+import mulan.evaluation.measure.MicroFMeasure;
+import mulan.evaluation.measure.MicroPrecision;
+import mulan.evaluation.measure.MicroRecall;
+import mulan.evaluation.measure.MicroSpecificity;
+import mulan.evaluation.measure.OneError;
+import mulan.evaluation.measure.RankingLoss;
+import mulan.evaluation.measure.SubsetAccuracy;
 import weka.core.Instance;
 import weka.core.Instances;
 import clus.Clus;
@@ -208,6 +246,7 @@ public class Evaluator {
                 measures.add(new GeometricMeanAverageInterpolatedPrecision(numOfLabels, 10));
                 measures.add(new MicroAUC(numOfLabels));
                 measures.add(new MacroAUC(numOfLabels));
+                measures.add(new LogLoss());
             }
             // add hierarchical measures if applicable
             if (mlTestData.getLabelsMetaData().isHierarchy()) {
@@ -217,6 +256,8 @@ public class Evaluator {
             if (prediction.hasPvalues()) {
                 measures.add(new AverageRMSE(numOfLabels));
                 measures.add(new AverageRelativeRMSE(numOfLabels, mlTrainData, mlTestData));
+                measures.add(new AverageMAE(numOfLabels));
+                measures.add(new AverageRelativeMAE(numOfLabels, mlTrainData, mlTestData));
             }
         } catch (Exception ex) {
             Logger.getLogger(Evaluator.class.getName()).log(Level.SEVERE, null, ex);
