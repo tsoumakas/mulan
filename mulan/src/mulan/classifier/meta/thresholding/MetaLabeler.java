@@ -36,15 +36,17 @@ import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
 
 /**
- * <p> Class implementing the MetaLabeler algorithm. For more information, 
- * see <em>Lei Tang, Sugu Rajan, Yijay K. Narayanan: Large scale multi-label 
- * classification via metalabeler. In: Proceedings of the 18th international 
- * conference on World wide web , 211-220, 2009.</em></p>
+ * <p>
+ * Class implementing the MetaLabeler algorithm. For more information, see
+ * <em>Lei Tang, Sugu Rajan, Yijay K. Narayanan: Large scale multi-label
+ * classification via metalabeler. In: Proceedings of the 18th international
+ * conference on World Wide Web , 211-220, 2009.</em></p>
  *
  * @author Marios Ioannou
  * @author George Sakkas
  * @author Grigorios Tsoumakas
- * @version 2010.12.14
+ * 
+ * @version 2014.1.18
  */
 public class MetaLabeler extends Meta {
 
@@ -57,7 +59,7 @@ public class MetaLabeler extends Meta {
      * Default constructor
      */
     public MetaLabeler() {
-        this(new BinaryRelevance(new J48()), new J48(), "Content-based", "Nominal-Class");
+        this(new BinaryRelevance(new J48()), new J48(), MetaData.CONTENT, "Nominal-Class");
     }
 
     /**
@@ -68,9 +70,9 @@ public class MetaLabeler extends Meta {
      * @param metaDataChoice the type of meta-data
      * @param aClassChoice the type of the class
      */
-    public MetaLabeler(MultiLabelLearner baseLearner, Classifier classifier, String metaDataChoice, String aClassChoice) {
+    public MetaLabeler(MultiLabelLearner baseLearner, Classifier classifier, MetaData metaDataChoice, String aClassChoice) {
         super(baseLearner, classifier, metaDataChoice);
-        if (!metaDataChoice.equals("Content-Based")) {
+        if (metaDataChoice != MetaData.CONTENT) {
             try {
                 foldLearner = baseLearner.makeCopy();
             } catch (Exception ex) {

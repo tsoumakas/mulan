@@ -41,7 +41,8 @@ import weka.core.TechnicalInformation.Type;
  * @author Marios Ioannou
  * @author George Sakkas
  * @author Grigorios Tsoumakas
- * @version 2010.12.14
+ * 
+ * @version 2014.1.18
  */
 public class ThresholdPrediction extends Meta {
 
@@ -49,7 +50,7 @@ public class ThresholdPrediction extends Meta {
      * Default constructor
      */
     public ThresholdPrediction() {
-        this(new BinaryRelevance(new J48()), new J48(), "Content-Based", 3);
+        this(new BinaryRelevance(new J48()), new J48(), MetaData.SCORES, 3);
     }
     
     /**
@@ -60,7 +61,7 @@ public class ThresholdPrediction extends Meta {
      * @param metaDataChoice the type of meta-data
      * @param folds the number of internal cv folds
      */
-    public ThresholdPrediction(MultiLabelLearner baseLearner, Classifier classifier, String metaDataChoice, int folds) {
+    public ThresholdPrediction(MultiLabelLearner baseLearner, Classifier classifier, MetaData metaDataChoice, int folds) {
         super(baseLearner, classifier, metaDataChoice);
         try {
             foldLearner = baseLearner.makeCopy();
@@ -84,11 +85,7 @@ public class ThresholdPrediction extends Meta {
         double[] arrayOfScores;
         arrayOfScores = mlo.getConfidences();
         for (int i = 0; i < numLabels; i++) {
-            if (arrayOfScores[i] >= bipartition_key) {
-                predictedLabels[i] = true;
-            } else {
-                predictedLabels[i] = false;
-            }
+            predictedLabels[i] = arrayOfScores[i] >= bipartition_key;
         }
         MultiLabelOutput final_mlo = new MultiLabelOutput(predictedLabels, mlo.getConfidences());
         return final_mlo;
