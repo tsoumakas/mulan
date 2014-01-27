@@ -45,8 +45,8 @@ import weka.core.TechnicalInformation.Type;
  * @author Marios Ioannou
  * @author George Sakkas
  * @author Grigorios Tsoumakas
- * 
- * @version 2014.1.18
+ *
+ * @version 2014.1.27
  */
 public class MetaLabeler extends Meta {
 
@@ -119,11 +119,7 @@ public class MetaLabeler extends Meta {
         if (mlo.hasRanking()) {
             arrayOfRankink = mlo.getRanking();
             for (int i = 0; i < numLabels; i++) {
-                if (arrayOfRankink[i] <= bipartition_key) {
-                    predictedLabels[i] = true;
-                } else {
-                    predictedLabels[i] = false;
-                }
+                predictedLabels[i] = arrayOfRankink[i] <= bipartition_key;
             }
         }
         MultiLabelOutput final_mlo = new MultiLabelOutput(predictedLabels, mlo.getConfidences());
@@ -143,9 +139,6 @@ public class MetaLabeler extends Meta {
 
     @Override
     protected Instances transformData(MultiLabelInstances trainingData) throws Exception {
-        // initialize  classifier instances
-        classifierInstances = RemoveAllLabels.transformInstances(trainingData);
-        classifierInstances = new Instances(classifierInstances, 0);
         Attribute target = null;
         switch (classChoice) {
             case "Nominal-Class":
@@ -171,11 +164,14 @@ public class MetaLabeler extends Meta {
                 target = new Attribute("Class");
                 break;
         }
-        classifierInstances.insertAttributeAt(target, classifierInstances.numAttributes());
-        classifierInstances.setClassIndex(classifierInstances.numAttributes() - 1);
 
         // create instances
-        if (metaDatasetChoice.equals("Content-Based")) {
+        if (metaDatasetChoice == MetaData.CONTENT) {
+            // initialize  classifier instances
+            classifierInstances = RemoveAllLabels.transformInstances(trainingData);
+            classifierInstances = new Instances(classifierInstances, 0);
+            classifierInstances.insertAttributeAt(target, classifierInstances.numAttributes());
+            classifierInstances.setClassIndex(classifierInstances.numAttributes() - 1);
             for (int instanceIndex = 0; instanceIndex < trainingData.getNumInstances(); instanceIndex++) {
                 Instance instance = trainingData.getDataSet().instance(instanceIndex);
                 double[] values = instance.toDoubleArray();
@@ -195,6 +191,14 @@ public class MetaLabeler extends Meta {
                 classifierInstances.add(newInstance);
             }
         } else {
+            // initialize  classifier instances
+            ArrayList<Attribute> list = new ArrayList<>();
+            for (int t = 0; t < numLabels; t++) {
+                list.add(new Attribute("label"+(t+1)));
+            }
+            classifierInstances = new Instances("ranks-scores", list, 0);
+            classifierInstances.insertAttributeAt(target, classifierInstances.numAttributes());
+            classifierInstances.setClassIndex(classifierInstances.numAttributes() - 1);
             for (int k = 0; k < kFoldsCV; k++) {
                 //Split data to train and test sets
                 MultiLabelLearner tempLearner;
