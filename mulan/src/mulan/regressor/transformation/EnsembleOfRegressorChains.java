@@ -1,7 +1,6 @@
 package mulan.regressor.transformation;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Random;
@@ -9,8 +8,9 @@ import java.util.Random;
 import mulan.classifier.InvalidDataException;
 import mulan.classifier.MultiLabelOutput;
 import mulan.data.MultiLabelInstances;
-import mulan.regressor.transformation.RegressorChainCorrected.metaType;
+import mulan.regressor.transformation.RegressorChain.metaType;
 import weka.classifiers.Classifier;
+import weka.classifiers.trees.REPTree;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.filters.Filter;
@@ -19,11 +19,11 @@ import weka.filters.unsupervised.instance.Resample;
 /**
  * This class implements the Ensemble of Regressor Chains (ERC) method.<br/>
  * For more information, see:<br/>
- * E. Spyromitros-Xioufis, W. Groves, G. Tsoumakas, I. Vlahavas (2012). Multi-label Classification
- * Methods for Multi-target Regression. <a href="http://arxiv.org/abs/1211.6581">ArXiv e-prints</a>.
+ * <em>E. Spyromitros-Xioufis, G. Tsoumakas, W. Groves, I. Vlahavas. 2014. Multi-label Classification Methods for
+ * Multi-target Regression. <a href="http://arxiv.org/abs/1211.6581">arXiv e-prints</a></em>.
  * 
  * @author Eleftherios Spyromitros-Xioufis
- * @version 2013.07.28
+ * @version 2014.04.01
  */
 public class EnsembleOfRegressorChains extends TransformationBasedMultiTargetRegressor {
 
@@ -37,7 +37,7 @@ public class EnsembleOfRegressorChains extends TransformationBasedMultiTargetReg
     /**
      * Stores the RC models.
      */
-    private RegressorChainCorrected[] ensemble;
+    private RegressorChain[] ensemble;
 
     /** The seed to use in random number generators. Default = 1. **/
     private int seed = 1;
@@ -50,9 +50,9 @@ public class EnsembleOfRegressorChains extends TransformationBasedMultiTargetReg
     };
 
     /**
-     * The method used to obtain the values of the meta features. CV is used by default.
+     * The method used to obtain the values of the meta features. TRUE is used by default.
      */
-    private metaType meta = RegressorChainCorrected.metaType.CV;
+    private metaType meta = RegressorChain.metaType.TRUE;
 
     /**
      * The type of sampling to be used. None is used by default.
@@ -60,22 +60,31 @@ public class EnsembleOfRegressorChains extends TransformationBasedMultiTargetReg
     private SamplingMethod sampling = SamplingMethod.None;
 
     /**
-     * The size of each sample (as a percentage of the training set size) when sampling with
-     * replacement is performed. Default is 100.
+     * The size of each sample (as a percentage of the training set size) when sampling with replacement is
+     * performed. Default is 100.
      */
     private double sampleWithReplacementPercent = 100;
 
     /**
-     * The size of each sample (as a percentage of the training set size) when sampling without
-     * replacement is performed. Default is 67.
+     * The size of each sample (as a percentage of the training set size) when sampling without replacement is
+     * performed. Default is 67.
      */
     private double sampleWithoutReplacementPercent = 67;
 
     /**
-     * The number of folds to use in RegressorChainCorrected when CV is selected for obtaining the
-     * values of the meta-features.
+     * The number of folds to use in RegressorChainCorrected when CV is selected for obtaining the values of
+     * the meta-features.
      */
     private int numFolds = 3;
+
+    /**
+     * Default constructor.
+     * 
+     * @throws Exception
+     */
+    public EnsembleOfRegressorChains() throws Exception {
+        this(new REPTree(), 10, SamplingMethod.WithReplacement);
+    }
 
     /**
      * Constructor.
@@ -90,11 +99,11 @@ public class EnsembleOfRegressorChains extends TransformationBasedMultiTargetReg
         super(baseRegressor);
         this.numOfModels = numOfModels;
         this.sampling = sampling;
-        ensemble = new RegressorChainCorrected[numOfModels];
+        ensemble = new RegressorChain[numOfModels];
     }
 
     @Override
-    protected void buildInternal(MultiLabelInstances trainingSet) throws Exception {
+    protected void buildInternal(MultiLabelInstances mlTrainSet) throws Exception {
         // calculate the number of models
         int numDistinctChains = 1;
         for (int i = 1; i <= numLabels; i++) {
@@ -127,10 +136,11 @@ public class EnsembleOfRegressorChains extends TransformationBasedMultiTargetReg
                     rsmp.setNoReplacement(false);
                     rsmp.setSampleSizePercent(sampleWithReplacementPercent);
                 }
-                rsmp.setInputFormat(trainingSet.getDataSet());
-                Instances sampled = Filter.useFilter(trainingSet.getDataSet(), rsmp);
+                Instances trainSet = new Instances(mlTrainSet.getDataSet());
+                rsmp.setInputFormat(trainSet);
+                Instances sampled = Filter.useFilter(trainSet, rsmp);
                 sampledTrainingSet = new MultiLabelInstances(sampled,
-                        trainingSet.getLabelsMetaData());
+                        mlTrainSet.getLabelsMetaData());
             }
 
             // create a distinct chain
@@ -154,18 +164,16 @@ public class EnsembleOfRegressorChains extends TransformationBasedMultiTargetReg
                 }
             }
 
-            ensemble[i] = new RegressorChainCorrected(baseRegressor, chain);
+            ensemble[i] = new RegressorChain(baseRegressor, chain);
             ensemble[i].setNumFolds(numFolds);
             ensemble[i].setMeta(meta);
             ensemble[i].setDebug(getDebug());
             if (sampling == SamplingMethod.None) {
-                ensemble[i].build(trainingSet);
+                ensemble[i].build(mlTrainSet);
             } else {
                 ensemble[i].build(sampledTrainingSet);
             }
-
         }
-
     }
 
     @Override
