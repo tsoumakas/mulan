@@ -29,11 +29,11 @@ import weka.filters.unsupervised.attribute.Remove;
  * learns a separate regression model for each target.<br/>
  * <br/>
  * For more information, see:<br/>
- * E. Spyromitros-Xioufis, W. Groves, G. Tsoumakas, I. Vlahavas (2012). Multi-label Classification
- * Methods for Multi-target Regression. <a href="http://arxiv.org/abs/1211.6581">ArXiv e-prints</a>.
+ * <em>E. Spyromitros-Xioufis, G. Tsoumakas, W. Groves, I. Vlahavas. 2014. Multi-label Classification Methods for
+ * Multi-target Regression. <a href="http://arxiv.org/abs/1211.6581">arXiv e-prints</a></em>.
  * 
  * @author Eleftherios Spyromitros-Xioufis
- * @version 2013.07.28
+ * @version 2014.04.01
  */
 public class SingleTargetRegressor extends TransformationBasedMultiTargetRegressor {
 
@@ -56,7 +56,8 @@ public class SingleTargetRegressor extends TransformationBasedMultiTargetRegress
 
     protected void buildInternal(MultiLabelInstances mlTrainSet) throws Exception {
         stRegressors = new FilteredClassifier[numLabels];
-        Instances trainSet = mlTrainSet.getDataSet();
+        // any changes are applied to a copy of the original dataset
+        Instances trainSet = new Instances(mlTrainSet.getDataSet());
         for (int i = 0; i < numLabels; i++) {
             stRegressors[i] = new FilteredClassifier();
             stRegressors[i].setClassifier(AbstractClassifier.makeCopy(baseRegressor));

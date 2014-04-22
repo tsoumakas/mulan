@@ -14,25 +14,26 @@ import weka.core.Attribute;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.filters.Filter;
+import weka.filters.unsupervised.instance.Resample;
 import weka.filters.unsupervised.attribute.AddID;
 import weka.filters.unsupervised.attribute.Remove;
 
 /**
- * This class implements the Multi-Target Stacking (MTS) method. 3 alternative methods to obtain the
- * values of the meta features are implemented.<br/>
+ * This class implements the Multi-Target Stacking (MTS) method. 4 alternative methods to obtain the values of
+ * the meta features are implemented.<br/>
  * For more information, see:<br/>
- * E. Spyromitros-Xioufis, W. Groves, G. Tsoumakas, I. Vlahavas (2012). Multi-label Classification
- * Methods for Multi-target Regression. <a href="http://arxiv.org/abs/1211.6581">ArXiv e-prints</a>.
+ * <em>E. Spyromitros-Xioufis, G. Tsoumakas, W. Groves, I. Vlahavas. 2014. Multi-label Classification Methods for
+ * Multi-target Regression. <a href="http://arxiv.org/abs/1211.6581">arXiv e-prints</a></em>.
  * 
  * @author Eleftherios Spyromitros-Xioufis
- * @version 2013.07.28
+ * @version 2014.04.01
  */
 public class MultiTargetStacking extends TransformationBasedMultiTargetRegressor {
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * The 3 alternative methods to obtain the values of the meta features.
+     * The 4 alternative methods to obtain the values of the meta features.
      */
     public enum metaType {
         /**
@@ -46,13 +47,17 @@ public class MultiTargetStacking extends TransformationBasedMultiTargetRegressor
         /**
          * Using the true target values.
          */
-        TRUE
+        TRUE,
+        /**
+         * Using a random sample.
+         */
+        SAMPLE
     }
 
     /**
-     * The method used to obtain the values of the meta features. CV is used by default.
+     * The method used to obtain the values of the meta features. TRAIN is used by default.
      */
-    private metaType meta = metaType.CV;
+    private metaType meta = metaType.TRAIN;
 
     /**
      * The number of folds to use in internal k fold cross-validation. 3 folds are used by default.
@@ -60,8 +65,7 @@ public class MultiTargetStacking extends TransformationBasedMultiTargetRegressor
     private int numFolds = 3;
 
     /**
-     * Whether to include the original features attributes in the second stage training sets. True
-     * by default.
+     * Whether to include the original features attributes in the second stage training sets. True by default.
      */
     private boolean includeFeatures = true;
 
@@ -74,9 +78,8 @@ public class MultiTargetStacking extends TransformationBasedMultiTargetRegressor
     private Classifier secondStageBaseRegressor;
 
     /**
-     * The values of the meta features (obtained using one of the available methods). The first
-     * dimension's size is equalt to the number of training examples and the second is the number of
-     * targets.
+     * The values of the meta features (obtained using one of the available methods). The first dimension's
+     * size is equalt to the number of training examples and the second is the number of targets.
      */
     private double[][] metaFeatures;
     /** The augmented datasets used to train the second stage regressors. */
@@ -85,13 +88,13 @@ public class MultiTargetStacking extends TransformationBasedMultiTargetRegressor
     private SingleTargetTransformation stt;
 
     /**
-     * When the base regressor is capable of attribute selection this ArrayList holds the indices of
-     * the target variables that were selected in each target's model.
+     * When the base regressor is capable of attribute selection this ArrayList holds the indices of the
+     * target variables that were selected in each target's model.
      */
     protected ArrayList<Integer>[] selectedTargetIndices;
     /**
-     * When the base regressor is capable of attribute selection this ArrayList holds the indices of
-     * the normal feature variables that were selected in each target's model.
+     * When the base regressor is capable of attribute selection this ArrayList holds the indices of the
+     * normal feature variables that were selected in each target's model.
      */
     protected ArrayList<Integer>[] selectedFeatureIndices;
 
@@ -109,10 +112,8 @@ public class MultiTargetStacking extends TransformationBasedMultiTargetRegressor
     /**
      * Creates a new instance with a different base regressor at each stage.
      * 
-     * @param firstStageBaseRegressor the base regression algorithm that will be used in the first
-     *            stage
-     * @param secondStageBaseRegressor the base regression algorithm that will be used in the second
-     *            stage
+     * @param firstStageBaseRegressor the base regression algorithm that will be used in the first stage
+     * @param secondStageBaseRegressor the base regression algorithm that will be used in the second stage
      * @throws Exception
      */
     public MultiTargetStacking(Classifier firstStageBaseRegressor,
@@ -122,16 +123,18 @@ public class MultiTargetStacking extends TransformationBasedMultiTargetRegressor
     }
 
     @Override
-    protected void buildInternal(MultiLabelInstances trainSet) throws Exception {
+    protected void buildInternal(MultiLabelInstances mlTrainSet) throws Exception {
         secondStageTrainsets = new Instances[numLabels];
         firstStageRegressors = AbstractClassifier.makeCopies(baseRegressor, numLabels);
         secondStageRegressors = AbstractClassifier.makeCopies(secondStageBaseRegressor, numLabels);
-        metaFeatures = new double[trainSet.getDataSet().numInstances()][numLabels];
-        stt = new SingleTargetTransformation(trainSet);
+        metaFeatures = new double[mlTrainSet.getDataSet().numInstances()][numLabels];
+        stt = new SingleTargetTransformation(mlTrainSet);
         selectedTargetIndices = new ArrayList[numLabels];
         selectedFeatureIndices = new ArrayList[numLabels];
-        buildFirstStage(trainSet.getDataSet());
-        buildSecondStage(trainSet.getDataSet());
+        // any changes are applied to a copy of the original dataset
+        Instances trainset = new Instances(mlTrainSet.getDataSet());
+        buildFirstStage(trainset);
+        buildSecondStage(trainset);
     }
 
     /**
@@ -197,9 +200,24 @@ public class MultiTargetStacking extends TransformationBasedMultiTargetRegressor
                 for (int i = 0; i < firstStageTrainSet.numInstances(); i++) {
                     metaFeatures[i][targetIndex] = firstStageTrainSet.instance(i).classValue();
                 }
+            } else if (meta == metaType.SAMPLE) {
+                // build a bagged first stageRegressor
+                Resample resample = new Resample();
+                resample.setRandomSeed(targetIndex); // the same seed could be used
+                resample.setInputFormat(firstStageTrainSet);
+                Instances sampledFirstStageTrainSet = Filter
+                        .useFilter(firstStageTrainSet, resample);
+                Classifier sampledfirstStageRegressor = AbstractClassifier.makeCopy(baseRegressor);
+                sampledfirstStageRegressor.buildClassifier(sampledFirstStageTrainSet);
+
+                // Make prediction for each instance in the training set
+                for (int i = 0; i < firstStageTrainSet.numInstances(); i++) {
+                    double score = sampledfirstStageRegressor.classifyInstance(firstStageTrainSet
+                            .instance(i));
+                    metaFeatures[i][targetIndex] = score;
+                }
             }
         }
-        outputExtraLog();
     }
 
     /**
@@ -295,13 +313,13 @@ public class MultiTargetStacking extends TransformationBasedMultiTargetRegressor
                     }
                 }
 
-                System.out.println("# selected feature attributes for target " + targetIndex + ": "
+                System.err.println("# selected feature attributes for target " + targetIndex + ": "
                         + selectedFeatureIndices[targetIndex].size());
-                System.out.println(selectedFeatureIndices[targetIndex].toString());
-                System.out.println("# selected target attributes for target " + targetIndex + ": "
+                System.err.println(selectedFeatureIndices[targetIndex].toString());
+                System.err.println("# selected target attributes for target " + targetIndex + ": "
                         + selectedTargetIndices[targetIndex].size());
-                System.out.println(selectedTargetIndices[targetIndex].toString());
-                System.out.flush();
+                System.err.println(selectedTargetIndices[targetIndex].toString());
+                System.err.flush();
             }
 
         }
@@ -407,30 +425,4 @@ public class MultiTargetStacking extends TransformationBasedMultiTargetRegressor
         return selectedFeatureIndices;
     }
 
-    public void outputExtraLog() {
-        // output the predictions of the first stage models
-        // BufferedWriter out = new BufferedWriter(new FileWriter(new File("MTRS" + meta.toString()
-        // +
-        // "_predictions.txt")));
-        // for (int j = 0; j < metaFeatures[0].length; j++) {
-        // String targetName = trainSet.attribute(labelIndices[j]).name();
-        // out.write(targetName + "_pred " + targetName + " ");
-        // }
-        // out.write("\n");
-        //
-        // for (int i = 0; i < metaFeatures.length; i++) {
-        // for (int j = 0; j < metaFeatures[0].length; j++) {
-        // out.write(metaFeatures[i][j] + " " + trainSet.instance(i).value(labelIndices[j]) + " ");
-        // }
-        // out.write("\n");
-        // }
-        // out.close();
-
-        // output the second stage training sets
-        // BufferedWriter out = new BufferedWriter(new FileWriter(new File("dataset.arff")));
-        // System.out.println("==== Second stage training set for target " + targetIndex +
-        // " ====");
-        // out.write(secondStageDatasets[targetIndex].toString());
-        // out.close();
-    }
 }

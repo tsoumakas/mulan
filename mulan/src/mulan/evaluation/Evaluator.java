@@ -394,13 +394,13 @@ public class Evaluator {
 
         // call Clus.main to write the output files!
         ArrayList<String> clusArgsList = new ArrayList<String>();
-        // the first argument passed to Clus is the settings file!
         if (isEnsemble) {
             clusArgsList.add("-forest");
         }
         if (isRuleBased) {
             clusArgsList.add("-rules");
         }
+        // the next argument passed to Clus is the settings file!
         clusArgsList.add(clusWorkingDir + datasetName + "-train.s");
         String[] clusArgs = clusArgsList.toArray(new String[clusArgsList.size()]);
         Clus.main(clusArgs);

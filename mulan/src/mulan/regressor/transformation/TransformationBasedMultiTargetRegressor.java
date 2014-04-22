@@ -23,15 +23,14 @@ import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
 
 /**
- * Base class for multi-target regressors that use a single-target transformation to handle
- * multi-target data.<br/>
+ * Base class for multi-target regressors that use a single-target transformation to handle multi-target data.<br/>
  * <br/>
  * For more information, see:<br/>
- * E. Spyromitros-Xioufis, W. Groves, G. Tsoumakas, I. Vlahavas (2012). Multi-label Classification
- * Methods for Multi-target Regression. <a href="http://arxiv.org/abs/1211.6581">ArXiv e-prints</a>.
+ * <em>E. Spyromitros-Xioufis, G. Tsoumakas, W. Groves, I. Vlahavas. 2014. Multi-label Classification Methods for
+ * Multi-target Regression. <a href="http://arxiv.org/abs/1211.6581">arXiv e-prints</a></em>.
  * 
  * @author Eleftherios Spyromitros-Xioufis
- * @version 2013.07.28
+ * @version 2014.04.01
  */
 public abstract class TransformationBasedMultiTargetRegressor extends MultiLabelLearnerBase {
 
@@ -42,8 +41,8 @@ public abstract class TransformationBasedMultiTargetRegressor extends MultiLabel
     protected Classifier baseRegressor;
 
     /**
-     * Creates a new instance of {@link TransformationBasedMultiTargetRegressor} with default
-     * {@link ZeroR} base regressor.
+     * Creates a new instance of {@link TransformationBasedMultiTargetRegressor} with default {@link ZeroR}
+     * base regressor.
      */
     public TransformationBasedMultiTargetRegressor() {
         this(new ZeroR());
@@ -68,28 +67,26 @@ public abstract class TransformationBasedMultiTargetRegressor extends MultiLabel
     }
 
     /**
-     * Returns an instance of a TechnicalInformation object, containing detailed information about
-     * the technical background of this class, e.g., paper reference or book this class is based on.
+     * Returns an instance of a TechnicalInformation object, containing detailed information about the
+     * technical background of this class, e.g., paper reference or book this class is based on.
      * 
      * @return the technical information about this class
      */
     public TechnicalInformation getTechnicalInformation() {
         TechnicalInformation result = new TechnicalInformation(Type.INCOLLECTION);
-        result.setValue(
-                Field.AUTHOR,
-                "Spyromitros-Xioufis, Eleftherios and Groves, William and Tsoumakas, Grigorios and Vlahavas, Ioannis");
-        result.setValue(Field.TITLE,
-                "Multi-label Classification Methods for Multi-target Regression");
+        result.setValue(Field.AUTHOR,
+                "Spyromitros-Xioufis, Eleftherios and Tsoumakas, Grigorios and Groves, William and Vlahavas, Ioannis");
+        result.setValue(Field.TITLE, "Multi-label Classification Methods for Multi-target Regression");
         result.setValue(Field.JOURNAL, "ArXiv e-prints");
         result.setValue(Field.URL, "http://arxiv.org/abs/1211.6581");
-        result.setValue(Field.YEAR, "2012");
+        result.setValue(Field.YEAR, "2014");
         return result;
     }
 
     /**
      * Returns a string representation of the multi-target regression model by calling
-     * {@link #getModelForTarget(int)} for each target. Should always by called after the model has
-     * been initialized.
+     * {@link #getModelForTarget(int)} for each target. Should always by called after the model has been
+     * initialized.
      * 
      * @return a string representation of the multi-target regression model
      */
@@ -107,8 +104,8 @@ public abstract class TransformationBasedMultiTargetRegressor extends MultiLabel
     }
 
     /**
-     * Returns a string representation of the single-target regression model build for the target
-     * with this targetIndex.
+     * Returns a string representation of the single-target regression model build for the target with this
+     * targetIndex.
      * 
      * @param targetIndex the target's index
      * @return a string representation of the single-target regression model

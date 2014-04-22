@@ -24,12 +24,12 @@ import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.Remove;
 
 /**
- * This class implements the Regressor Chain transformation and is used by the RegressorChain class.
+ * This class implements the Classifier/Regressor Chain transformation.
  * 
  * @author Eleftherios Spyromitros-Xioufis
- * @version 2013.07.28
+ * @version 2014.04.01
  */
-public class RegressorChainTransformation implements Serializable {
+public class ChainTransformation implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -114,8 +114,8 @@ public class RegressorChainTransformation implements Serializable {
         Instance original = train.getDataSet().instance(0);
         System.out.println("Original:\t" + original);
         for (int i = 1; i <= train.getNumLabels(); i++) {
-            Instance transformed = RegressorChainTransformation.transformInstance(original,
-                    targetIndices, i);
+            Instance transformed = ChainTransformation
+                    .transformInstance(original, targetIndices, i);
             System.out.println("Transformed " + i + ":\t" + transformed);
         }
     }

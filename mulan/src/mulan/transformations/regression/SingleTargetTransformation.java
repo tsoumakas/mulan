@@ -30,7 +30,7 @@ import weka.filters.unsupervised.attribute.Remove;
  * Class that implements the single target transformation.
  * 
  * @author Eleftherios Spyromitros-Xioufis
- * @version 2013.07.28
+ * @version 2014.04.01
  */
 public class SingleTargetTransformation implements Serializable {
 
@@ -44,19 +44,21 @@ public class SingleTargetTransformation implements Serializable {
     /**
      * Constructor
      * 
-     * @param data a multi-target regression dataset
+     * @param mlData a multi-target regression dataset
      */
-    public SingleTargetTransformation(MultiLabelInstances data) {
+    public SingleTargetTransformation(MultiLabelInstances mlData) {
         try {
-            this.data = data;
+            this.data = mlData;
+            // any changes are applied to a copy of the original dataset
+            Instances data = new Instances(mlData.getDataSet());
             remove = new Remove();
-            int[] labelIndices = data.getLabelIndices();
+            int[] labelIndices = mlData.getLabelIndices();
             int[] indices = new int[labelIndices.length];
             System.arraycopy(labelIndices, 0, indices, 0, labelIndices.length);
             remove.setAttributeIndicesArray(indices);
             remove.setInvertSelection(false);
-            remove.setInputFormat(data.getDataSet());
-            shell = Filter.useFilter(data.getDataSet(), remove);
+            remove.setInputFormat(data);
+            shell = Filter.useFilter(data, remove);
             add = new Add();
             add.setAttributeIndex("last");
             add.setAttributeName("SingleTarget");
