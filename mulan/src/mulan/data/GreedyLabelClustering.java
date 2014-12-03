@@ -267,7 +267,7 @@ public class GreedyLabelClustering implements LabelClustering, Serializable {
 
         /**
          * 
-         * @return
+         * @return Number of folds
          */
         public int getNumFolds() {
 		return numFolds;
@@ -283,7 +283,7 @@ public class GreedyLabelClustering implements LabelClustering, Serializable {
 
         /**
          * 
-         * @return
+         * @return Measure by which models are compared
          */
         public Measure getMeasure() {
 		return measure;
@@ -299,7 +299,7 @@ public class GreedyLabelClustering implements LabelClustering, Serializable {
 
         /**
          * 
-         * @return
+         * @return Number of allowed concurrent steps with reduced accuracy
          */
         public int getAllowedNonImprovementSteps() {
 		return allowedNonImprovementSteps;
@@ -315,7 +315,7 @@ public class GreedyLabelClustering implements LabelClustering, Serializable {
 
         /**
          * 
-         * @return
+         * @return Critical value below which the label pairs are considered independent
          */
         public double getCriticalValue() {
 		return criticalValue;
@@ -331,7 +331,7 @@ public class GreedyLabelClustering implements LabelClustering, Serializable {
 
         /**
          * 
-         * @return
+         * @return Classifier for single label training and predictions
          */
         public Classifier getSingleLabelLearner() {
 		return singleLabelLearner;
@@ -339,7 +339,7 @@ public class GreedyLabelClustering implements LabelClustering, Serializable {
 
         /**
          * 
-         * @return
+         * @return Classifier for multi label training and predictions
          */
         public MultiLabelLearner getMultiLabelLearner() {
 		return multiLabelLearner;
@@ -347,7 +347,7 @@ public class GreedyLabelClustering implements LabelClustering, Serializable {
 
         /**
          * 
-         * @return
+         * @return If SubsetLearner caching mechanism is enabled
          */
         public boolean isUseSubsetLearnerCache() {
 		return useSubsetLearnerCache;
@@ -363,7 +363,7 @@ public class GreedyLabelClustering implements LabelClustering, Serializable {
 
         /**
          * 
-         * @return
+         * @return If debug output of the internal SubsetLearner is enabled
          */
         public boolean isInternalSubsetLearnerDebug() {
 		return internalSubsetLearnerDebug;

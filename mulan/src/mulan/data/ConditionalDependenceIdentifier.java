@@ -310,7 +310,7 @@ public class ConditionalDependenceIdentifier implements LabelPairsDependenceIden
 
     /**
      * 
-     * @return
+     * @return The seed for replication of random experiments
      */
     public int getSeed() {
         return seed;
@@ -326,7 +326,7 @@ public class ConditionalDependenceIdentifier implements LabelPairsDependenceIden
 
     /**
      * 
-     * @return
+     * @return Number of folds
      */
     public int getNumFolds() {
         return numFolds;

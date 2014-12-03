@@ -25,7 +25,7 @@ public interface ConfidenceLossFunction extends MultiLabelLossFunction {
 
     /**
      * @param confidences the confidences output by the learner for the example
-     * @param truth the ground truth of the example
+     * @param groundTruth the ground truth of the example
      * @return the value of the loss function
      */
     public double computeLoss(double[] confidences, boolean[] groundTruth);

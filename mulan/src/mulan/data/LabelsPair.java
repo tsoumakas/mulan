@@ -49,7 +49,7 @@ public class LabelsPair implements Comparable, Serializable {
 
     /**
      * 
-     * @return
+     * @return The pair of labels
      */
     public int[] getPair() {
         return pair;
@@ -65,7 +65,7 @@ public class LabelsPair implements Comparable, Serializable {
 
     /**
      * 
-     * @return
+     * @return The dependence score of the labels pair
      */
     public Double getScore() {
         return score;

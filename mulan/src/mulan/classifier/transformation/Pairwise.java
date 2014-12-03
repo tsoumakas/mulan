@@ -125,7 +125,7 @@ public class Pairwise extends TransformationBasedMultiLabelLearner {
      * Calculates the sum of votes/scores for each label by querying all
      * pairwise models
      *
-     * @param transformed an instance who has passed through the pairwise
+     * @param instance an instance who has passed through the pairwise
      * transformation filter
      * @return an array with the sum of scores/votes for the labels
      * @throws Exception

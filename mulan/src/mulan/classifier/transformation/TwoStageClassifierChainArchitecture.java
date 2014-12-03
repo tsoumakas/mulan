@@ -69,7 +69,7 @@ public class TwoStageClassifierChainArchitecture extends TransformationBasedMult
     /**
      * threshold for efficient two stage strategy
      */
-    private double treshold = 0.2;
+    private double threshold = 0.2;
 
     /**
      * Default constructor using J48 as underlying classifier
@@ -93,7 +93,7 @@ public class TwoStageClassifierChainArchitecture extends TransformationBasedMult
      * @return the actual value of the threshold
      */
     public double getTreshold() {
-        return treshold;
+        return threshold;
     }
 
     /**
@@ -101,8 +101,8 @@ public class TwoStageClassifierChainArchitecture extends TransformationBasedMult
      *
      * @param threshold
      */
-    public void setTreshold(double treshold) {
-        this.treshold = treshold;
+    public void setTreshold(double threshold) {
+        this.threshold = threshold;
     }
 
     @Override
@@ -245,7 +245,7 @@ public class TwoStageClassifierChainArchitecture extends TransformationBasedMult
                 voteVirtual++;
             }
 
-            if (confidenceFromVirtualModels[i] > treshold) {
+            if (confidenceFromVirtualModels[i] > threshold) {
                 forwards++;
             }
         }
@@ -267,7 +267,7 @@ public class TwoStageClassifierChainArchitecture extends TransformationBasedMult
         for (int label1 = 0; label1 < numLabels - 1; label1++) {
             for (int label2 = label1 + 1; label2 < numLabels; label2++) {
                 if (!nodata[counter]) {
-                    if (confidenceFromVirtualModels[label1] > treshold && confidenceFromVirtualModels[label2] > treshold) {
+                    if (confidenceFromVirtualModels[label1] > threshold && confidenceFromVirtualModels[label2] > threshold) {
                         double distribution[];
                         try {
                             newInstance.setDataset(metaDataTest[counter]);
@@ -285,9 +285,9 @@ public class TwoStageClassifierChainArchitecture extends TransformationBasedMult
                         } else {
                             voteLabel[label2]++;
                         }
-                    } else if (confidenceFromVirtualModels[label1] > treshold) {
+                    } else if (confidenceFromVirtualModels[label1] > threshold) {
                         voteLabel[label1]++;
-                    } else if (confidenceFromVirtualModels[label2] > treshold) {
+                    } else if (confidenceFromVirtualModels[label2] > threshold) {
                         voteLabel[label2]++;
                     } else {
                         noVoteLabel[label1]++;

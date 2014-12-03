@@ -91,7 +91,7 @@ public class EnsembleOfRegressorChains extends TransformationBasedMultiTargetReg
      * 
      * @param baseRegressor the base regression algorithm that will be used
      * @param numOfModels the number of models in the ensemble
-     * @param samplingMethod the sampling method
+     * @param sampling the sampling method
      * @throws Exception
      */
     public EnsembleOfRegressorChains(Classifier baseRegressor, int numOfModels,

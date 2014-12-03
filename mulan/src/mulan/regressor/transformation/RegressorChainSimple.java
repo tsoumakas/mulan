@@ -66,7 +66,7 @@ public class RegressorChainSimple extends TransformationBasedMultiTargetRegresso
      * Creates a new instance with the given base regressor. If {@link #chainSeed} == 0, the default
      * chain is used. Otherwise, a random chain is created using the given seed.
      * 
-     * @param baseRegressor the base regression algorithm that will be used
+     * @param regressor the base regression algorithm that will be used
      * @throws Exception
      */
     public RegressorChainSimple(Classifier regressor) {
@@ -76,7 +76,7 @@ public class RegressorChainSimple extends TransformationBasedMultiTargetRegresso
     /**
      * Creates a new instance with the given base regressor and chain ordering.
      * 
-     * @param baseRegressor the base regression algorithm that will be used
+     * @param regressor the base regression algorithm that will be used
      * @param aChain a chain ordering
      * @throws Exception
      */

@@ -51,7 +51,7 @@ public class TwoStageVotingArchitecture extends BinaryAndPairwise {
     /**
      * threshold for efficient two stage strategy
      */
-    private double treshold = 0.2;
+    private double threshold = 0.2;
 
     /**
      * Default constructor using J48 as underlying classifier
@@ -75,7 +75,7 @@ public class TwoStageVotingArchitecture extends BinaryAndPairwise {
      * @return the actual value of the threshold
      */
     public double getTreshold() {
-        return treshold;
+        return threshold;
     }
 
     /**
@@ -83,8 +83,8 @@ public class TwoStageVotingArchitecture extends BinaryAndPairwise {
      *
      * @param threshold
      */
-    public void setTreshold(double treshold) {
-        this.treshold = treshold;
+    public void setTreshold(double threshold) {
+        this.threshold = threshold;
     }
 
     /**
@@ -120,7 +120,7 @@ public class TwoStageVotingArchitecture extends BinaryAndPairwise {
                 voteVirtual++;
             }
 
-            if (confidenceFromVirtualModels[i] > treshold) {
+            if (confidenceFromVirtualModels[i] > threshold) {
                 forwards++;
             }
         }
@@ -131,7 +131,7 @@ public class TwoStageVotingArchitecture extends BinaryAndPairwise {
         for (int label1 = 0; label1 < numLabels - 1; label1++) {
             for (int label2 = label1 + 1; label2 < numLabels; label2++) {
                 if (!getOneVsOneModels().noData(counter)) {
-                    if (confidenceFromVirtualModels[label1] > treshold && confidenceFromVirtualModels[label2] > treshold) {
+                    if (confidenceFromVirtualModels[label1] > threshold && confidenceFromVirtualModels[label2] > threshold) {
                         double distribution[];
                         distribution = getOneVsOneModels().getModel(counter).distributionForInstance(transformed);
                         int maxIndex = (distribution[0] > distribution[1]) ? 0 : 1;
@@ -140,9 +140,9 @@ public class TwoStageVotingArchitecture extends BinaryAndPairwise {
                         } else {
                             voteLabel[label2]++;
                         }
-                    } else if (confidenceFromVirtualModels[label1] > treshold) {
+                    } else if (confidenceFromVirtualModels[label1] > threshold) {
                         voteLabel[label1]++;
-                    } else if (confidenceFromVirtualModels[label2] > treshold) {
+                    } else if (confidenceFromVirtualModels[label2] > threshold) {
                         voteLabel[label2]++;
                     } else {
                         noVoteLabel[label1]++;

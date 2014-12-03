@@ -34,8 +34,8 @@ public interface Measure {
     String getName();
 
     /**
-     * Gets the value of a measure. The measure is incrementally cumulated for learner's
-     * prediction by each {@link Measure#update(MultiLabelOutput, boolean[])} call. The value
+     * Gets the value of a measure. The measure is incrementally accumulated for learner's
+     * prediction by each {@link Measure#update(MultiLabelOutput, GroundTruth)} call. The value
      * returned by the method, returns sum of all update calls divided by the number
      * of calls (average of all measures for all predictions).
      *

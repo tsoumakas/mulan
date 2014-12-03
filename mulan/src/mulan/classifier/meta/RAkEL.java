@@ -206,7 +206,7 @@ public class RAkEL extends MultiLabelMetaLearner {
      * 
      * @param n
      * @param m
-     * @return
+     * @return The result of the binomial function
      */
     public static int binomial(int n, int m) {
         int[] b = new int[n + 1];

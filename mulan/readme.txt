@@ -1,7 +1,8 @@
-Mulan's 1.4.0 release contains:
+Mulan's 1.5.0 release contains:
 
 A jar file with Mulan classes (mulan.jar)
-A jar file with Weka classes, upon which Mulan is built (weka-3.7.6.jar)
+A jar file with Weka classes, upon which Mulan is built (weka-3.7.10.jar)
+A jar file with Clus classes (Clus.jar)
 A jar file with Mulan sources (mulan-src.jar)
 A folder with the API reference documentation for offline inspection (apidoc/)
 A folder with a sample dataset (data/)

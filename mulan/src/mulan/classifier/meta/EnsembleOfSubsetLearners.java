@@ -885,7 +885,7 @@ public class EnsembleOfSubsetLearners extends MultiLabelMetaLearner {
 
     /**
      * 
-     * @return
+     * @return Number of models
      */
     public int getNumModels() {
         return numModels;
@@ -893,7 +893,7 @@ public class EnsembleOfSubsetLearners extends MultiLabelMetaLearner {
 
     /**
      * 
-     * @return
+     * @return Most different from the highly weighted partitions
      */
     public boolean isSelectDiverseModels() {
         return selectDiverseModels;

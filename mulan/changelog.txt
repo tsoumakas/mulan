@@ -1,3 +1,31 @@
+=== Changes in version 1.5.0 (2014-11-25) ===
+Learners
+-MLCSSP.java: Added the MLCSSP algorithm (from ICML 2013)
+-Enhancements of multi-target regression capabilities
+-Improved CLUS support
+-Added pairwise classifier and pairwise transformation
+
+Measures/Evaluation
+-Providing training data in the Evaluator is unnecessary in the case of specific measures.
+-Examples with missing ground truth are not skipped for measures that handle missing values.
+-Added logistics and squared error losses and measures
+
+Bug fixes
+-IndexOutOfBounds in calculation of MiAP and GMiAP
+-Bug fix in Rcut.java
+-When in rank/score mode the meta-data contained additional unecessary attributes. (Newton Spolaor)
+
+API changes
+-Upgrade to Java 7
+-Upgrade to Weka 3.7.10
+
+Miscalleneous
+-Small changes and improvements in the wrapper classes for the CLUS library
+-ENTCS13FeatureSelection.java (new experiment)
+-Enumeration is now used for specifying the type of meta-data. (Newton Spolaor)
+
+
+
 === Changes in version 1.4.0 (2012-07-31) ===
 Learners
 -BinaryRelevance.java: improved data handling that avoids copying the entire input space, leading to important speedups in case of large datasets and very large number of labels.
@@ -31,6 +59,7 @@ Miscellaneous
 -PT6(PT6Transformation.java): renamed to IncludeLabelsTransformation.java.
 -MultiLabelInstances now support serialization, as needed by the improved binary relevance transformation.
 -BinaryRelevanceAttributeEvaluator.java: updated according to latest BR improvements.
+
 
 === Changes in version 1.3.0 (2011-05-26) ===
 Learners

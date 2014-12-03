@@ -73,7 +73,7 @@ public class ConstrainedKMeans extends RandomizableClusterer implements NumberOf
 
         /**
          * 
-         * @return
+         * @return distances
          */
         public double[] getDistances() {
             return distances;
@@ -81,7 +81,7 @@ public class ConstrainedKMeans extends RandomizableClusterer implements NumberOf
 
         /**
          * 
-         * @return
+         * @return distance
          */
         public double getDistance() {
             return distance;

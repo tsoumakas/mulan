@@ -819,7 +819,7 @@ public class MultiLabelInstances implements Serializable {
     /**
      * Returns the next instace of a multi-label dataset when the incremental read is enabled.
      * 
-     * @return
+     * @return The next instace of a multi-label dataset
      * @throws IOException
      */
     public Instance getNextInstance() throws IOException {
