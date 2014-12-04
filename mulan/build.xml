@@ -46,7 +46,7 @@
 
 	<target name="build" description="Builds the source code.">
 		<mkdir dir="${target.classes.dir}" />
-		<javac source="1.7" target="1.7" 
+		<javac source="1.8" target="1.8" 
 			   deprecation="true" debug="true" optimize="false" 
 			   srcdir="${src.dir}" 
 			   destdir="${target.classes.dir}">
@@ -61,7 +61,7 @@
 
 	<target name="build-test" depends="build" description="Builds tests classes.">
 		<mkdir dir="${target.testclasses.dir}" />
-		<javac source="1.7" target="1.7" 
+		<javac source="1.8" target="1.8" 
 			   deprecation="true" debug="true" optimize="false" 
 			   srcdir="${test.dir}" 
 			   destdir="${target.testclasses.dir}">
@@ -172,8 +172,8 @@
 			doctitle="Mulan ${mulan.version}" windowtitle="Mulan" failonerror="yes">
 			<classpath refid="dependency.libs.path" />
 			<excludepackage name="mulan.examples"/>
-			<link href="http://java.oracle.com/j2se/1.7.0/docs/api/" />
-			<link href="http://www.cs.waikato.ac.nz/~ml/weka/documentation.html" />
+			<link href="http://docs.oracle.com/javase/8/docs/api/" />
+			<link href="http://weka.sourceforge.net/doc.stable/" />
 		</javadoc>
 	</target>
 
