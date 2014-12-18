@@ -30,7 +30,7 @@ import weka.filters.unsupervised.attribute.Remove;
 /**
  * <p>Class that solves the column subset selection problem via random sampling.
  * For more information, see <em>Bi, W., Kwok, J. (2013) Efficient Multi-label
- * Classification with Many Labels, JMLR W&CP 28(3):405-413, 2013</em></p>
+ * Classification with Many Labels, JMLR W&quot;CP 28(3):405-413, 2013</em></p>
  *
  * @author Sotiris L Karavarsamis
  * @author Grigorios Tsoumakas

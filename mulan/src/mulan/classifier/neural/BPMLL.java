@@ -43,7 +43,7 @@ import weka.filters.unsupervised.attribute.NominalToBinary;
 /**
  <!-- globalinfo-start -->
  * The implementation of Back-Propagation Multi-Label Learning (BPMLL) learner. The learned model is stored in {&#64;link NeuralNet} neural network. The models of the learner built by {&#64;link BPMLLAlgorithm} from given training data set.
- * <p/>
+ * <br>
  <!-- globalinfo-end -->
  *
  <!-- technical-bibtex-start -->
@@ -58,7 +58,7 @@ import weka.filters.unsupervised.attribute.NominalToBinary;
  *    year = {2006}
  * }
  * </pre>
- * <p/>
+ * <br>
  <!-- technical-bibtex-end -->
  *
  * @see BPMLLAlgorithm
@@ -104,11 +104,11 @@ public class BPMLL extends MultiLabelLearnerBase {
      * The length of passed array defines number of hidden layers.
      * The value at particular index of array defines number of neurons in that layer.
      * If <code>null</code> is specified, no hidden layers will be created.
-     * <br/>
+     * <br>
      * The network is created when learner is being built.
      * The input and output layer is determined from input training data.
      *
-     * @param hiddenLayers
+     * @param hiddenLayers the hidden layers of the neural network
      * @throws IllegalArgumentException if any value in the array is less or equal to zero
      */
     public void setHiddenLayers(int[] hiddenLayers) {
@@ -133,7 +133,7 @@ public class BPMLL extends MultiLabelLearnerBase {
     }
 
     /**
-     * Sets the learning rate. Must be greater than 0 and no more than 1.<br/>
+     * Sets the learning rate. Must be greater than 0 and no more than 1.<br>
      * Default value is 0.05.
      *
      * @param learningRate the learning rate
@@ -157,7 +157,7 @@ public class BPMLL extends MultiLabelLearnerBase {
 
     /**
      * Sets the regularization cost term for weights decay.
-     * Must be greater than 0 and no more than 1.<br/>
+     * Must be greater than 0 and no more than 1.<br>
      * Default value is 0.00001.
      *
      * @param weightsDecayCost the weights decay cost term
@@ -181,7 +181,7 @@ public class BPMLL extends MultiLabelLearnerBase {
     }
 
     /**
-     * Sets the number of training epochs. Must be greater than 0.<br/>
+     * Sets the number of training epochs. Must be greater than 0.<br>
      * Default value is 100.
      *
      * @param epochs the number of training epochs
@@ -207,9 +207,9 @@ public class BPMLL extends MultiLabelLearnerBase {
     /**
      * Sets whether attributes of instances data (except label attributes) should
      * be normalized prior to building the learner. Normalization is performed
-     * on numeric attributes to the range {-1,1}).<br/>
+     * on numeric attributes to the range {-1,1}).<br>
      * When making prediction, attributes of passed input instance are also
-     * normalized prior to making prediction.<br/>
+     * normalized prior to making prediction.<br>
      * Default is true (normalization of attributes takes place).
      *
      * @param normalize flag if normalization of attributes should be used
@@ -327,7 +327,7 @@ public class BPMLL extends MultiLabelLearnerBase {
 
     /**
      * Prepares {@link MultiLabelInstances} data for the learning algorithm.
-     * <br/>
+     * <br>
      * The data are checked for correct format, label attributes
      * are converted to bipolar values. Finally {@link Instance} instances are
      * converted to {@link DataPair} instances, which will be used for the algorithm.

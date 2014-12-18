@@ -85,7 +85,7 @@ public class NormalizationFilter implements Serializable {
     /**
      * Creates a new instance of {@link NormalizationFilter} class for given data set.
      * The normalizer will be initialized to perform normalization to the default
-     * range <-1,1>.
+     * range &lt;-1,1&gt;.
      *
      * @param mlData the {@link MultiLabelInstances} data set from which normalizer
      * should be initialized.

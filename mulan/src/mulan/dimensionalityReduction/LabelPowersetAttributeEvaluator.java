@@ -24,9 +24,9 @@ import weka.attributeSelection.AttributeEvaluator;
 import weka.core.Instances;
 
 /**
- * <p> Performs attribute evaluation using the label powerset transformation. 
- * For more information, see <em> K. Trohidis, G. Tsoumakas, G. Kalliris, I. 
- * Vlahavas. "Multilabel Classification of Music into Emotions". Proc. 2008 
+ * <p> Performs attribute evaluation using the label powerset transformation.
+ * For more information, see <em> K. Trohidis, G. Tsoumakas, G. Kalliris, I.
+ * Vlahavas. "Multilabel Classification of Music into Emotions". Proc. 2008
  * International Conference on Music Information Retrieval (ISMIR 2008) </em>
  * </p>
  *
@@ -37,8 +37,8 @@ public class LabelPowersetAttributeEvaluator extends ASEvaluation implements Att
     /** The single-label attribute evaluator to use underneath */
     private ASEvaluation baseAttributeEvaluator;
 
-    /** Constructor that uses an evaluator on a multi-label dataset 
-     * @param x 
+    /** Constructor that uses an evaluator on a multi-label dataset
+     * @param x
      * @param mlData */
     public LabelPowersetAttributeEvaluator(ASEvaluation x, MultiLabelInstances mlData) {
         baseAttributeEvaluator = x;
@@ -53,11 +53,11 @@ public class LabelPowersetAttributeEvaluator extends ASEvaluation implements Att
     }
 
     /**
-     * Evaluates an attribute 
-     * 
+     * Evaluates an attribute
+     *
      * @param attribute the attribute index
      * @return the evaluation
-     * @throws Exception
+     * @throws Exception when evaluation fails
      */
     @Override
     public double evaluateAttribute(int attribute) throws Exception {
@@ -66,9 +66,9 @@ public class LabelPowersetAttributeEvaluator extends ASEvaluation implements Att
 
     /**
      * Not supported
-     * 
+     *
      * @param arg0
-     * @throws Exception
+     * @throws Exception functionality is not supported yet
      */
     @Override
     public void buildEvaluator(Instances arg0) throws Exception {

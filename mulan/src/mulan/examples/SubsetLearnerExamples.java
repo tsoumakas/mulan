@@ -28,9 +28,9 @@ import weka.classifiers.trees.J48;
 import weka.core.Utils;
 
 /**
- * A main class with examples for SubsetLearner, GreedyLabelClustering and 
+ * A main class with examples for SubsetLearner, GreedyLabelClustering and
  * EnsembleOfSubsetLearners methods usage.
- * 
+ *
  * @author Lena Chekina (lenat@bgu.ac.il)
  * @version 2012.02.06
  */
@@ -39,9 +39,9 @@ public class SubsetLearnerExamples {
     /**
      * Executes this example
      *
-     * @param args command-line arguments -path, -filestem, 
+     * @param args command-line arguments -path, -filestem,
      * e.g. -path dataset/ -filestem emotions
-     * @throws Exception  
+     * @throws Exception exceptions not caught
      */
     public static void main(String[] args) throws Exception {
         String path = Utils.getOption("path", args); // e.g. -path dataset/

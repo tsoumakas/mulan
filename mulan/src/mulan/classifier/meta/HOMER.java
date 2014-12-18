@@ -32,10 +32,10 @@ import weka.core.TechnicalInformation.Type;
 
 /**
  <!-- globalinfo-start -->
- * Class implementing the Hierarchy Of Multi-labEl leaRners algorithm. For more information, see<br/>
- * <br/>
+ * Class implementing the Hierarchy Of Multi-labEl leaRners algorithm. For more information, see<br>
+ * <br>
  * Grigorios Tsoumakas, Ioannis Katakis, Ioannis Vlahavas: Effective and Efficient Multilabel Classification in Domains with Large Number of Labels. In: Proc. ECML/PKDD 2008 Workshop on Mining Multidimensional Data (MMD'08), 2008.
- * <p/>
+ * <br>
  <!-- globalinfo-end -->
  *
  <!-- technical-bibtex-start -->
@@ -49,7 +49,7 @@ import weka.core.TechnicalInformation.Type;
  *    location = {Antwerp, Belgium}
  * }
  * </pre>
- * <p/>
+ * <br>
  <!-- technical-bibtex-end -->
  *
  * @author Grigorios Tsoumakas

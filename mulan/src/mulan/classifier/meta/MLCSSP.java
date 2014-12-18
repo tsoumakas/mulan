@@ -31,7 +31,7 @@ import weka.core.Instance;
 /**
  * <p>Algorithm for selecting a small subset of labels that can approximately 
  * span the original label space. For more information see: <em>Bi, W., Kwok, J. 
- * (2013) Efficient Multi-label Classification with Many Labels, JMLR W&CP 
+ * (2013) Efficient Multi-label Classification with Many Labels, JMLR W&quot;CP
  * 28(3):405-413, 2013</em></p>
  *
  * @author Sotiris L Karavarsamis

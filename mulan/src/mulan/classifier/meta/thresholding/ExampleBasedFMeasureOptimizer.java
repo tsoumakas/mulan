@@ -48,7 +48,7 @@ public class ExampleBasedFMeasureOptimizer extends MultiLabelMetaLearner {
      * The supplied multi-label learner should be able to output marginal
      * probabilities.
      *
-     * @param baseLearner
+     * @param baseLearner the base MultilabelLearner used 
      */
     public ExampleBasedFMeasureOptimizer(MultiLabelLearner baseLearner) {
         super(baseLearner);

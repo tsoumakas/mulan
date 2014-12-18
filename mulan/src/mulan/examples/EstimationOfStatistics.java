@@ -21,7 +21,7 @@ import weka.core.Utils;
 
 /**
  * Class that calculates multi-label stastistics for a multi-label dataset
- * 
+ *
  * @author Grigorios Tsoumakas
  * @version 2012.02.06
  */
@@ -32,7 +32,7 @@ public class EstimationOfStatistics {
      *
      * @param args command-line arguments -path and -filestem, e.g.
      * -path datasets/ -filestem emotions
-     * @throws Exception  
+     * @throws Exception exceptions not caught
      */
     public static void main(String[] args) throws Exception {
         String path = Utils.getOption("path", args);

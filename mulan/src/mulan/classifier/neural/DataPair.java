@@ -79,8 +79,8 @@ public class DataPair {
      * This is useful when output represents labels bipartition.
      * If output values in <code>double[]</code> are not in boolean representation,
      * then output of this method is might not be valid.
-     * The computation is as follows:<br></br>
-     * - if value is equal to 1, then output is <code>true</code> in boolean<br></br>
+     * The computation is as follows:<br>
+     * - if value is equal to 1, then output is <code>true</code> in boolean<br>
      * - if value is other than 1, then output is <code>false</code> in boolean
      *
      * @return the boolean representation of the output pattern

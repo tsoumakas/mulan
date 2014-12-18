@@ -25,9 +25,9 @@ import weka.core.Utils;
 
 /**
  <!-- globalinfo-start -->
- * This class uses weka's Javadoc auto-generation classes to generate Javadoc<br/>
+ * This class uses weka's Javadoc auto-generation classes to generate Javadoc<br>
  * comments and replaces the content between certain comment tags.
- * <p/>
+ * <br>
  <!-- globalinfo-end -->
  * 
  * @author Eleftherios Spyromitros-Xioufis
@@ -42,7 +42,7 @@ public class MulanJavadoc {
     /**
      * Sets the direcrory
      *
-     * @param dir
+     * @param dir the directory path
      */
     public static void setDir(String dir) {
         MulanJavadoc.dir = dir;
@@ -51,7 +51,7 @@ public class MulanJavadoc {
     /**
      * Command line interface
      *
-     * @param args
+     * @param args command line args
      * @throws java.lang.Exception
      */
     public static void main(String[] args) throws Exception {
@@ -63,7 +63,7 @@ public class MulanJavadoc {
     /**
      * Updates comments
      *
-     * @param classname
+     * @param classname the name of the class
      */
     public static void updateJavadoc(String classname) {
         try {
@@ -101,7 +101,7 @@ public class MulanJavadoc {
     /**
      * Recursively visit all files
      *
-     * @throws java.lang.Exception
+     * @throws java.lang.Exception if failed
      */
     public static void traverse() throws Exception {
         recursiveTraversal(originalDir);
@@ -110,8 +110,8 @@ public class MulanJavadoc {
     /**
      * Recursively visit all files
      *
-     * @param fileObject
-     * @throws java.lang.Exception
+     * @param fileObject the path of the file or directory
+     * @throws java.lang.Exception if failed
      */
     public static void recursiveTraversal(File fileObject) throws Exception {
         if (fileObject.isDirectory()) {

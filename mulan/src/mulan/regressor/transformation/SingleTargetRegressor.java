@@ -26,9 +26,9 @@ import weka.filters.unsupervised.attribute.Remove;
 
 /**
  * This class implements the baseline Single-Target (ST) method for multi-target regression that
- * learns a separate regression model for each target.<br/>
- * <br/>
- * For more information, see:<br/>
+ * learns a separate regression model for each target.<br>
+ * <br>
+ * For more information, see:<br>
  * <em>E. Spyromitros-Xioufis, G. Tsoumakas, W. Groves, I. Vlahavas. 2014. Multi-label Classification Methods for
  * Multi-target Regression. <a href="http://arxiv.org/abs/1211.6581">arXiv e-prints</a></em>.
  * 

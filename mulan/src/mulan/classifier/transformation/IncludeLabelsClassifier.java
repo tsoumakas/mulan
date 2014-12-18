@@ -23,10 +23,10 @@ import weka.core.Instance;
 import weka.core.Instances;
 
 /**
- * <p>A multilabel classifier based on the include labels transformation. The
+ * A multilabel classifier based on the include labels transformation. The
  * multiple label attributes are mapped to two attributes: <ul> <li>a) one
  * nominal attribute containing the class</li> <li>b) one binary attribute
- * containing whether it is true.</li> </ul> </p>
+ * containing whether it is true.</li> </ul> 
  *
  * @author Robert Friberg
  * @author Grigorios Tsoumakas
@@ -49,7 +49,7 @@ public class IncludeLabelsClassifier extends TransformationBasedMultiLabelLearne
     /**
      * Constructor that initializes a new learner with the given base classifier
      *
-     * @param classifier
+     * @param classifier the base classifier used to initialize the learner
      */
     public IncludeLabelsClassifier(Classifier classifier) {
         super(classifier);

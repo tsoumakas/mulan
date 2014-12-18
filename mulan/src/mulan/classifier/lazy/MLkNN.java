@@ -29,12 +29,12 @@ import weka.core.Utils;
 
 /**
  <!-- globalinfo-start -->
- * Class implementing the ML-kNN (Multi-Label k Nearest Neighbours) algorithm.<br/>
- * <br/>
- * For more information, see<br/>
- * <br/>
+ * Class implementing the ML-kNN (Multi-Label k Nearest Neighbours) algorithm.<br>
+ * <br>
+ * For more information, see<br>
+ * <br>
  * Min-Ling Zhang, Zhi-Hua Zhou (2007). ML-KNN: A lazy learning approach to multi-label learning. Pattern Recogn.. 40(7):2038--2048.
- * <p/>
+ * <br>
  <!-- globalinfo-end -->
  *
  <!-- technical-bibtex-start -->
@@ -53,7 +53,7 @@ import weka.core.Utils;
  *    ISSN = {0031-3203}
  * }
  * </pre>
- * <p/>
+ * <br>
  <!-- technical-bibtex-end -->
  *
  * @author Eleftherios Spyromitros-Xioufis

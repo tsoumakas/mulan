@@ -169,7 +169,7 @@
 	<target name="javadoc" description="Generates JavaDocs API documentation.">
 		<mkdir dir="${javadoc.dir}" />
 		<javadoc packagenames="mulan.*" sourcepath="${src.dir}" destdir="${javadoc.dir}" 
-			doctitle="Mulan ${mulan.version}" windowtitle="Mulan" failonerror="yes">
+			doctitle="Mulan ${mulan.version}" windowtitle="Mulan" failonerror="no">
 			<classpath refid="dependency.libs.path" />
 			<excludepackage name="mulan.examples"/>
 			<link href="http://docs.oracle.com/javase/8/docs/api/" />

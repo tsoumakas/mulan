@@ -76,7 +76,7 @@ public class SCut extends MultiLabelMetaLearner {
      * and num of folds
      *
      * @param baseLearner the underlying multi-label learner
-     * @param measure
+     * @param measure the measure for auto-tuning the threshold
      * @param folds the number of folds to split the dataset
      */
     public SCut(MultiLabelLearner baseLearner, BipartitionMeasureBase measure, int folds) {
@@ -89,7 +89,7 @@ public class SCut extends MultiLabelMetaLearner {
      * Creates a new instance of SCut
      *
      * @param baseLearner the underlying multi-label learner
-     * @param measure
+     * @param measure the measure for auto-tuning the threshold
      */
     public SCut(MultiLabelLearner baseLearner, BipartitionMeasureBase measure) {
         super(baseLearner);

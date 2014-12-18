@@ -122,8 +122,8 @@ public class EnsembleOfClassifierChains extends TransformationBasedMultiLabelLea
      *
      * @param classifier the base classifier for each ClassifierChain model
      * @param aNumOfModels the number of models
-     * @param doUseConfidences
-     * @param doUseSamplingWithReplacement
+     * @param doUseConfidences whether to use confidences or not
+     * @param doUseSamplingWithReplacement whether to use sampling with replacement or not 
      */
     public EnsembleOfClassifierChains(Classifier classifier, int aNumOfModels,
             boolean doUseConfidences, boolean doUseSamplingWithReplacement) {

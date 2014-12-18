@@ -29,9 +29,9 @@ import mulan.classifier.neural.model.Neuron;
 /**
  * The implementation of Back-Propagation Multi-Label Learning (BPMLL) algorithm for neural networks.
  * The algorithm uses weights decay regularization to avoid overfitting.
- * <br/><br/>
+ * <br><br>
  * For more information see:
- * <br/>
+ * <br>
  * Zhang, M.L., Zhou, Z.H.: Multi-label neural networks with applications to functional genomics 
  * and text categorization. IEEE Transactions on Knowledge and Data Engineering 18 (2006) 1338-1351
  * 
@@ -84,7 +84,7 @@ public class BPMLLAlgorithm {
 
     /**
      * Performs one learning step with given input pattern and expected output values.
-     * The function outputs the error for passed input pattern.<br/>
+     * The function outputs the error for passed input pattern.<br>
      * The input is ignored by the algorithm (can not process) if the input example has
      * assigned either all or non of the labels.
      * In this case, the function returns {@link Double#NaN}.
@@ -162,7 +162,7 @@ public class BPMLLAlgorithm {
     /**
      * Returns the error of the neural network for given input. This is value of error function
      * computed from network output value for given input and expected,
-     * ideal output for given input.<br/>
+     * ideal output for given input.<br>
      * The input is ignored by the algorithm (can not process), if the input example has
      * assigned either all or non of labels.
      * In this case, the function returns {@link Double#NaN}.
@@ -256,7 +256,7 @@ public class BPMLLAlgorithm {
     }
 
     /**
-     * Computes errors for each output neurons separately according formula: <br/><br/>
+     * Computes errors for each output neurons separately according formula: <br><br>
      *
      * Ei = --- (1/|Yi|*|Yi'|)*SUM{exp(-(Ci - Cl))}   ... if ith is from Yi set (is label)
      * 		|				where l is from Yi'

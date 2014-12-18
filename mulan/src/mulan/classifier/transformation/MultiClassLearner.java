@@ -25,13 +25,14 @@ import weka.core.Instances;
 
 /**
  * <p>Class enabling a number of simple transformations of a multi-label task to
- * a multi-class task (labels become class values).</p> <p>For more information,
- * see <ul><em><li>Boutell, M.; Luo, J.; Shen, X.; Brown, C. (2004) Learning
- * multi-label scene classification. Pattern Recognition 37:1757-1771</li>
- * <li>Chen, W.; Yan, J.; Zhang, B.; Chen, Z.; Yang, Q. (2007) Document
+ * a multi-class task (labels become class values).</p>
+ * <p>For more information,
+ * see <ul><li><em>Boutell, M.; Luo, J.; Shen, X.; Brown, C. (2004) Learning
+ * multi-label scene classification. Pattern Recognition 37:1757-1771</em></li>
+ * <li><em>Chen, W.; Yan, J.; Zhang, B.; Chen, Z.; Yang, Q. (2007) Document
  * transformation for multi-label feature selection in text categorization. In:
  * Proc. 7th IEEE International Conference on Data Mining, Los Alamitos, CA,
- * USA, IEEE Computer Society, pp. 451-456</li></em></ul></p>
+ * USA, IEEE Computer Society, pp. 451-456</em></li></ul>
  *
  * @author Stavros Mpakirtzoglou
  * @author Grigorios Tsoumakas

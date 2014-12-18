@@ -117,9 +117,9 @@ public class Neuron implements Serializable {
     }
 
     /**
-     * Returns weights of the {@link Neuron}. <br/>
+     * Returns weights of the {@link Neuron}. <br>
      * The index of returned array corresponds to input pattern dimension + 1 for a bias.
-     * Weight for a bias is at the end of returned array. <br/>
+     * Weight for a bias is at the end of returned array. <br>
      *
      * @return weights of the {@link Neuron}
      */
@@ -128,7 +128,7 @@ public class Neuron implements Serializable {
     }
 
     /**
-     * Returns error term of the {@link Neuron}. <br/>
+     * Returns error term of the {@link Neuron}. <br>
      *
      * @return error term
      */
@@ -137,7 +137,7 @@ public class Neuron implements Serializable {
     }
 
     /**
-     * Sets the error term of the {@link Neuron}. <br/>
+     * Sets the error term of the {@link Neuron}. <br>
      *
      * @param error the error value
      */
@@ -148,7 +148,7 @@ public class Neuron implements Serializable {
     /**
      * Returns deltas of the {@link Neuron}. Deltas are terms, which are used
      * to update weights. Here are returned deltas which were computed and used
-     * to update weights in previous learning iteration.<br/>
+     * to update weights in previous learning iteration.<br>
      * The index of returned array corresponds to input pattern dimension + 1 for a bias.
      * Delta for the bias is at the end of returned array.
      *
@@ -202,7 +202,7 @@ public class Neuron implements Serializable {
      * The value is input pattern multiplied with weights and summed
      * across all weights of particular neuron. The output of the
      * neuron is then input transformed by activation function.
-     * <br/>
+     * <br>
      * The input values are cached from last processed input pattern.
      *
      * @return the input value of the {@link Neuron} or 0 if no
@@ -222,7 +222,7 @@ public class Neuron implements Serializable {
     }
 
     /**
-     * Adds a connection to a specified {@link Neuron}.<br/>
+     * Adds a connection to a specified {@link Neuron}.<br>
      * The passed instance is assumed to be connected to the
      * output of this instance (forward connections only).
      *
@@ -242,7 +242,7 @@ public class Neuron implements Serializable {
     }
 
     /**
-     * Adds connections to all specified {@link Neuron} instances.<br/>
+     * Adds connections to all specified {@link Neuron} instances.<br>
      * Each instance of the collection is assumed to be connected to the
      * output of this instance (forward connections only).
      *
@@ -264,7 +264,7 @@ public class Neuron implements Serializable {
     }
 
     /**
-     * Removes a connection to a specified {@link Neuron}.<br/>
+     * Removes a connection to a specified {@link Neuron}.<br>
      * The passed instance is assumed to be connected to the
      * output of this instance (forward connections only).
      *

@@ -33,10 +33,10 @@ import weka.filters.unsupervised.attribute.Remove;
 
 /**
 <!-- globalinfo-start -->
-* Class for calculating statistics of a multi-label dataset. For more information, see<br/>
-* <br/>
+* Class for calculating statistics of a multi-label dataset. For more information, see<br>
+* <br>
 * Tsoumakas, Grigorios, Katakis, Ioannis, Vlahavas, Ioannis: Mining Multi-Label Data. In Maimon, Oded and Rokach, Lior, editors, Data Mining and Knowledge Discovery Handbook, 667-685, 2010.
-* <p/>
+* <br>
 <!-- globalinfo-end -->
  * 
 <!-- technical-bibtex-start -->
@@ -53,7 +53,7 @@ import weka.filters.unsupervised.attribute.Remove;
 *    year = {2010}
 * }
 * </pre>
-* <p/>
+* <br>
 <!-- technical-bibtex-end -->
  *
  *
@@ -300,11 +300,11 @@ public class Statistics implements Serializable, TechnicalInformationHandler {
 
     /**
      * returns the indices of the labels whose phi coefficient values lie
-     * between -bound <= phi <= bound
+     * between -bound &lt;= phi &lt;= bound
      *
      * @param labelIndex
      * @param bound
-     * @return the indices of the labels whose phi coefficient values lie between -bound <= phi <= bound
+     * @return the indices of the labels whose phi coefficient values lie between -bound &lt;= phi &lt;= bound
      */
     public int[] uncorrelatedLabels(int labelIndex, double bound) {
         ArrayList<Integer> indiceslist = new ArrayList<Integer>();

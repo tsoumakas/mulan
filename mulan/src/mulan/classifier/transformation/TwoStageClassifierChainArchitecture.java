@@ -99,7 +99,7 @@ public class TwoStageClassifierChainArchitecture extends TransformationBasedMult
     /**
      * Set threshold to concrete value.
      *
-     * @param threshold
+     * @param threshold the threshold
      */
     public void setTreshold(double threshold) {
         this.threshold = threshold;
@@ -191,8 +191,8 @@ public class TwoStageClassifierChainArchitecture extends TransformationBasedMult
      * missing Temporary included to switch between standard voting and
      * qweighted multilabel voting
      *
-     * @param instance
-     * @return prediction
+     * @param instance the instance used 
+     * @return prediction the prediction made
      * @throws java.lang.Exception
      */
     protected MultiLabelOutput makePredictionInternal(Instance instance) throws Exception {
@@ -206,8 +206,8 @@ public class TwoStageClassifierChainArchitecture extends TransformationBasedMult
      * architecture for multi-label learning Pattern Recognition, vol. 45, pp.
      * 1019–1034, 2012
      *
-     * @param instance
-     * @return prediction
+     * @param instance the instance used
+     * @return prediction the prediction made
      * @throws java.lang.Exception
      */
     private MultiLabelOutput makePredictionTSCCV(Instance instance) throws Exception {
@@ -324,8 +324,8 @@ public class TwoStageClassifierChainArchitecture extends TransformationBasedMult
      * a function to get the classifier index for label1 vs label2 (single
      * Round-Robin) in the array of classifiers, oneVsOneModels
      *
-     * @param label1
-     * @param label2
+     * @param label1 the first label
+     * @param label2 the second label
      * @return index of classifier (label1 vs label2)
      */
     private int getRRClassifierIndex(int label1, int label2) {

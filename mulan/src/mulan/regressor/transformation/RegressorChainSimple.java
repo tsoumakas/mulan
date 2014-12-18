@@ -31,9 +31,9 @@ import weka.core.Instances;
 import weka.filters.unsupervised.attribute.Remove;
 
 /**
- * This class implements the Regressor Chain (RC) method.<br/>
- * <br/>
- * For more information, see:<br/>
+ * This class implements the Regressor Chain (RC) method.<br>
+ * <br>
+ * For more information, see:<br>
  * <em>E. Spyromitros-Xioufis, G. Tsoumakas, W. Groves, I. Vlahavas. 2014. Multi-label Classification Methods for
  * Multi-target Regression. <a href="http://arxiv.org/abs/1211.6581">arXiv e-prints</a></em>.
  * 
@@ -67,7 +67,6 @@ public class RegressorChainSimple extends TransformationBasedMultiTargetRegresso
      * chain is used. Otherwise, a random chain is created using the given seed.
      * 
      * @param regressor the base regression algorithm that will be used
-     * @throws Exception
      */
     public RegressorChainSimple(Classifier regressor) {
         super(regressor);
@@ -78,7 +77,6 @@ public class RegressorChainSimple extends TransformationBasedMultiTargetRegresso
      * 
      * @param regressor the base regression algorithm that will be used
      * @param aChain a chain ordering
-     * @throws Exception
      */
     public RegressorChainSimple(Classifier regressor, int[] aChain) {
         super(regressor);

@@ -33,7 +33,7 @@ import weka.filters.unsupervised.instance.SparseToNonSparse;
 
 /**
  * This class implements a wrapper for the multi-label classification methods included in <a
- * href="https://dtai.cs.kuleuven.be/clus/">CLUS<a/> library.
+ * href="https://dtai.cs.kuleuven.be/clus/">CLUS</a> library.
  * 
  * @author Eleftherios Spyromitros-Xioufis
  * @version 2013.04.01
@@ -67,8 +67,8 @@ public class ClusWrapperClassification extends MultiLabelLearnerBase {
      * Constructor with 2 arguments. This constructor is used when the settings file that is required by CLUS
      * will be created inside the class.
      * 
-     * @param clusWorkingDir
-     * @param datasetName
+     * @param clusWorkingDir the working directory for clus
+     * @param datasetName the name of the dataset
      */
     public ClusWrapperClassification(String clusWorkingDir, String datasetName) {
         this.clusWorkingDir = clusWorkingDir;
@@ -78,9 +78,9 @@ public class ClusWrapperClassification extends MultiLabelLearnerBase {
     /**
      * Constructor with 3 arguments. This constructor is used when an existing settings file will be used.
      * 
-     * @param clusWorkingDir
-     * @param datasetName
-     * @param settingsFilePath
+     * @param clusWorkingDir the working directory for clus
+     * @param datasetName the name of the dataset
+     * @param settingsFilePath the path for settings file
      */
     public ClusWrapperClassification(String clusWorkingDir, String datasetName, String settingsFilePath) {
         this.clusWorkingDir = clusWorkingDir;

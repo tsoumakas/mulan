@@ -18,7 +18,7 @@ package mulan.core;
 /**
  * The convenience exception, which can be used to wrap up checked general {@link Exception}
  * commonly thrown by underlying Weka library into anonymous runtime exception.
- * <br></br><br></br> 
+ * <br><br> 
  * Note: The preferred way of handling Weka exceptional states is to define custom typed 
  * exception thrown by Mulan, which specifies a context about failure reason. 
  * 

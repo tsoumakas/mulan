@@ -85,8 +85,8 @@ public class CalibratedLabelRanking extends BinaryAndPairwise {
      * missing Temporary included to switch between standard voting and
      * qweighted multilabel voting
      *
-     * @param instance
-     * @return prediction
+     * @param instance the instance for which the prediction is made
+     * @return prediction the prediction made
      * @throws java.lang.Exception
      */
     @Override
@@ -106,8 +106,8 @@ public class CalibratedLabelRanking extends BinaryAndPairwise {
      * This method does a prediction for an instance with the values of label
      * missing
      *
-     * @param instance
-     * @return prediction
+     * @param instance the instance for which the prediction is made
+     * @return prediction the prediction made
      * @throws java.lang.Exception
      */
     public MultiLabelOutput makePredictionStandard(Instance instance) throws Exception {
@@ -162,8 +162,8 @@ public class CalibratedLabelRanking extends BinaryAndPairwise {
      * confidences are only approximated. Therefore, ranking-based performances
      * are worse than ordinary voting.
      *
-     * @param instance
-     * @return prediction
+     * @param instance the instance for which the prediction is made
+     * @return prediction the prediction made
      * @throws java.lang.Exception
      */
     public MultiLabelOutput makePredictionQW(Instance instance) throws Exception {
@@ -289,8 +289,8 @@ public class CalibratedLabelRanking extends BinaryAndPairwise {
      * confidences are only approximated. Therefore, ranking-based performances
      * are worse than ordinary voting.
      *
-     * @param instance
-     * @return prediction
+     * @param instance the instance for which the prediction is made
+     * @return prediction the prediction made
      * @throws java.lang.Exception
      */
     public MultiLabelOutput makePredictionQWSoft(Instance instance) throws Exception {
@@ -407,8 +407,8 @@ public class CalibratedLabelRanking extends BinaryAndPairwise {
      * a function to get the classifier index for label1 vs label2 (single
      * Round-Robin) in the array of classifiers, oneVsOneModels
      *
-     * @param label1
-     * @param label2
+     * @param label1 the first label
+     * @param label2 the second label
      * @return index of classifier (label1 vs label2)
      */
     private int getRRClassifierIndex(int label1, int label2) {

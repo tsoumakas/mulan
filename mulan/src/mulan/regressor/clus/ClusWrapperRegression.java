@@ -6,8 +6,8 @@ import mulan.classifier.clus.ClusWrapperClassification;
 import weka.core.Instance;
 
 /**
- * This class is a wrapper for the multi-target regression methods included in <a
- * href="https://dtai.cs.kuleuven.be/clus/">CLUS<a/> library.
+ * This class is a wrapper for the multi-target regression methods included in 
+ * <a href="https://dtai.cs.kuleuven.be/clus/">CLUS</a> library.
  * 
  * @author Eleftherios Spyromitros-Xioufis
  * @version 2013.04.01

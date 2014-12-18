@@ -46,10 +46,10 @@ import weka.filters.unsupervised.attribute.NominalToBinary;
 
 /**
  <!-- globalinfo-start -->
- * Implementation of Multiclass Multilabel Perceptrons learner. For more information, see<br/>
- * <br/>
+ * Implementation of Multiclass Multilabel Perceptrons learner. For more information, see<br>
+ * <br>
  * Koby Crammer, Yoram Singer (2003). A Family of Additive Online Algorithms for Category Ranking.. Journal of Machine Learning Research. 3(6):1025-1058.
- * <p/>
+ * <br>
  <!-- globalinfo-end -->
  * 
  <!-- technical-bibtex-start -->
@@ -64,7 +64,7 @@ import weka.filters.unsupervised.attribute.NominalToBinary;
  *    year = {2003}
  * }
  * </pre>
- * <p/>
+ * <br>
  <!-- technical-bibtex-end -->
  * 
  * @author Jozef Vilcek
@@ -117,7 +117,7 @@ public class MMPLearner extends MultiLabelLearnerBase {
      *
      * @param lossMeasure the loss measure to be used when judging
      * 	ranking performance in learning process
-     * @param modelUpdateRule 
+     * @param modelUpdateRule the model update rule used to update the model when learning from training data
      */
     public MMPLearner(RankingLossFunction lossMeasure, MMPUpdateRuleType modelUpdateRule) {
         if (lossMeasure == null) {
@@ -137,7 +137,7 @@ public class MMPLearner extends MultiLabelLearnerBase {
      *
      * @param lossMeasure the loss measure to be used when judging
      * 	ranking performance in learning process
-     * @param modelUpdateRule 
+     * @param modelUpdateRule the model update rule used to update the model when learning from training data
      * @param randomnessSeed the seed value for pseudo-random generator
      */
     public MMPLearner(RankingLossFunction lossMeasure, MMPUpdateRuleType modelUpdateRule, long randomnessSeed) {
@@ -154,7 +154,7 @@ public class MMPLearner extends MultiLabelLearnerBase {
     }
 
     /**
-     * Sets the number of training epochs. Must be greater than 0.<br/>
+     * Sets the number of training epochs. Must be greater than 0.<br>
      * Default value is 1.
      *
      * @param epochs the number of training epochs
@@ -199,9 +199,9 @@ public class MMPLearner extends MultiLabelLearnerBase {
 
 //    /**
 //     * Sets whether feature attributes should be normalized prior to learning.
-//     * Normalization is performed on numeric attributes to the range <-1,1>.<br/>
+//     * Normalization is performed on numeric attributes to the range <-1,1>.<br>
 //     * When making prediction, attributes of passed input instance are also
-//     * normalized prior to making prediction.<br/>
+//     * normalized prior to making prediction.<br>
 //     * Default value is <code>true</code> (normalization of attributes takes place).
 //     *
 //     * @param normalize flag if normalization of feature attributes should be performed
@@ -304,7 +304,7 @@ public class MMPLearner extends MultiLabelLearnerBase {
     }
 
     /**
-     * Prepares {@link MultiLabelInstances} data set for a learning:<br/>
+     * Prepares {@link MultiLabelInstances} data set for a learning:<br>
      * - feature attributes are checked for correct format (nominal of numeric)
      * - nominal feature attributes are converted to binary
      * - feature attributes are normalized if normalization is enabled

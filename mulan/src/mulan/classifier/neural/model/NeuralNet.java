@@ -25,7 +25,7 @@ import java.util.List;
 
 /**
  * Common interface for interaction with a neural network representation.
- * <br/>
+ * <br>
  * Neural Network structure is composed of neurons organized into layers. 
  * There is one input layer, zero or more hidden layers and one output layer.
  * The input layer is used just to store and forward input pattern of the network to the first
@@ -64,11 +64,11 @@ public interface NeuralNet {
     /**
      * Returns units of a particular layer of the neural network.
      * The valid indexes for layers are from 0 to N-1, where N is total number of layers
-     * <br/>
+     * <br>
      * The first layer (index = 0) is always input layer and
      * last (index = N-1) always output layer.
      *
-     * @param layerIndex
+     * @param layerIndex the index of certain layer in the neural network
      * @return returns an unmodifiable list of units of the particular layer
      * @throws IndexOutOfBoundsException if the index is out of range
      * @see Collections#unmodifiableList(List)

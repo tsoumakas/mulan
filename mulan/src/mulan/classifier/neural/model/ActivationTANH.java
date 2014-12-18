@@ -22,7 +22,7 @@ package mulan.classifier.neural.model;
 
 /**
  * Implements the hyperbolic tangent activation function.
- * The function output values are from interval <-1,1>.
+ * The function output values are from interval &lt;-1,1&gt;.
  * 
  * @author Jozef Vilcek
  * @version 2012.02.27

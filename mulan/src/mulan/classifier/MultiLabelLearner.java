@@ -28,14 +28,14 @@ public interface MultiLabelLearner {
     /**
      * Returns value indicating if learner is updatable, so if learner is able to
      * perform on-line learning. The fact if learner is updatable or not influences
-     * the behavior of {@link MultiLabelLearner#build(MultiLabelInstances)} method.<br></br>
+     * the behavior of {@link MultiLabelLearner#build(MultiLabelInstances)} method.<br>
      * When <code>false</code> is returned, each call of the
      * {@link MultiLabelLearner#build(MultiLabelInstances)} will initialize the learner from
      * the scratch, removing any potential knowledge built by previously entered training data.
      * When <code>true</code> is returned, then on the first call of the
      * {@link MultiLabelLearner#build(MultiLabelInstances)} the learner is initialized
      * with the passed training data. All other calls contribute to the existing learner's
-     * model with new data.<br></br>
+     * model with new data.<br>
      *
      * @return <code>true</code> if learner is updatable (on-line), <code>false</code> otherwise.
      */
@@ -77,7 +77,7 @@ public interface MultiLabelLearner {
     /**
      * Sets whether debugging information should be output by the model
      * 
-     * @param debug
+     * @param debug True to show debug information, False not to
      */
     public void setDebug(boolean debug);
 }

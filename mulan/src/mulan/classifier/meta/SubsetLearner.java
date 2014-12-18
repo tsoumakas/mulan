@@ -42,14 +42,14 @@ import weka.filters.unsupervised.attribute.Remove;
 
 /**
  <!-- globalinfo-start -->
- * A class for learning a classifier according to disjoint label subsets: a multi-label learner (the Label Powerset by default) is applied to subsets with multiple labels and a single-label learner is applied to single label  subsets. The final classification prediction is  determined by combining labels predicted by all the learned models. Note: the class is not multi-thread safe. &lt;br&gt; &lt;br&gt; There is a mechanism for caching and reusing learned classification models. The caching mechanism is controlled by {&#64;link #useCache} parameter.<br/>
- * <br/>
- * For more information, see<br/>
- * <br/>
- * Lena Tenenboim, Lior Rokach,, Bracha Shapira: Multi-label Classification by Analyzing Labels Dependencies. In: , Bled, Slovenia, 117--132, 2009.<br/>
- * <br/>
+ * A class for learning a classifier according to disjoint label subsets: a multi-label learner (the Label Powerset by default) is applied to subsets with multiple labels and a single-label learner is applied to single label  subsets. The final classification prediction is  determined by combining labels predicted by all the learned models. Note: the class is not multi-thread safe. &lt;br&gt; &lt;br&gt; There is a mechanism for caching and reusing learned classification models. The caching mechanism is controlled by {&#64;link #useCache} parameter.<br>
+ * <br>
+ * For more information, see<br>
+ * <br>
+ * Lena Tenenboim, Lior Rokach,, Bracha Shapira: Multi-label Classification by Analyzing Labels Dependencies. In: , Bled, Slovenia, 117--132, 2009.<br>
+ * <br>
  * Lena Tenenboim-Chekina, Lior Rokach,, Bracha Shapira: Identification of Label Dependencies for Multi-label Classification. In: , Haifa, Israel, 53--60, 2010.
- * <p/>
+ * <br>
  <!-- globalinfo-end -->
  *
  <!-- technical-bibtex-start -->
@@ -73,7 +73,7 @@ import weka.filters.unsupervised.attribute.Remove;
  *    year = {2010}
  * }
  * </pre>
- * <p/>
+ * <br>
  <!-- technical-bibtex-end -->
  * 
  * @author Lena Chekina (lenat@bgu.ac.il)
@@ -187,7 +187,7 @@ public class SubsetLearner extends MultiLabelMetaLearner {
      * Initialize the SubsetLearner with a label clustering method, multilabel
      * and single label learners.
      *
-     * @param clusteringMethod
+     * @param clusteringMethod the method used for clustering
      * @param multiLabelLearner method used for multilabel classification
      * @param singleLabelClassifier method used for single label classification
      */

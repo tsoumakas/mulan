@@ -22,8 +22,8 @@ import weka.filters.unsupervised.instance.Resample;
 
 /**
  * This class implements the Regressor Chain (RC) method. 4 alternative methods to obtain the values of the
- * meta features are implemented.<br/>
- * For more information, see:<br/>
+ * meta features are implemented.<br>
+ * For more information, see:<br>
  * <em>E. Spyromitros-Xioufis, G. Tsoumakas, W. Groves, I. Vlahavas. 2014. Multi-label Classification Methods for
  * Multi-target Regression. <a href="http://arxiv.org/abs/1211.6581">arXiv e-prints</a></em>.
  * 

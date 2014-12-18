@@ -34,10 +34,10 @@ import weka.filters.unsupervised.attribute.Remove;
 /**
  *
  <!-- globalinfo-start -->
- * Class implementing a generalized version of the RAkEL-d (RAndom k-labELsets) algorithm with disjoint labelsets. For more information, see<br/>
- * <br/>
+ * Class implementing a generalized version of the RAkEL-d (RAndom k-labELsets) algorithm with disjoint labelsets. For more information, see<br>
+ * <br>
  * Grigorios Tsoumakas, Ioannis Katakis, Ioannis Vlahavas (2011). Random k-Labelsets for Multi-Label Classification. IEEE Transactions on Knowledge and Data Engineering. 23(7):1079-1089.
- * <p/>
+ * <br>
  <!-- globalinfo-end -->
  *
  <!-- technical-bibtex-start -->
@@ -53,7 +53,7 @@ import weka.filters.unsupervised.attribute.Remove;
  *    year = {2011}
  * }
  * </pre>
- * <p/>
+ * <br>
  <!-- technical-bibtex-end -->
  *
  * @author Ioannis Katakis

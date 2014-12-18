@@ -27,9 +27,9 @@ import weka.core.Utils;
 /**
  * Class that handles labelsets <p>
  *
- * @author Grigorios Tsoumakas 
+ * @author Grigorios Tsoumakas
  * @author Robert Friberg
- * @version $Revision: 0.03 $ 
+ * @version $Revision: 0.03 $
  */
 public class LabelSet implements Serializable, Comparable<LabelSet> {
 
@@ -44,8 +44,8 @@ public class LabelSet implements Serializable, Comparable<LabelSet> {
 
     /**
      * Initializes an object based on an array of doubles containing 0/1
-     * 
-     * @param set
+     *
+     * @param set array of doubles containing 0 and 1
      */
     public LabelSet(double[] set) {
         labelSet = new int[set.length];
@@ -121,7 +121,7 @@ public class LabelSet implements Serializable, Comparable<LabelSet> {
 
     /**
      * Calculates the Hamming Distance between the current labelset and another labelset.
-     * 
+     *
      * @param other the other LabelSet object.
      * @return the Hamming Distance.
      */
@@ -152,7 +152,7 @@ public class LabelSet implements Serializable, Comparable<LabelSet> {
      *
      * @param bits the bitstring
      * @return the labelset.
-     * @throws Exception
+     * @throws Exception if creation fails due to invalid bitstring
      */
     public static LabelSet fromBitString(String bits) throws Exception {
         LabelSet result = new LabelSet(new double[bits.length()]);
@@ -173,9 +173,9 @@ public class LabelSet implements Serializable, Comparable<LabelSet> {
 
     /**
      * Constructs all subsets of a labelset (apart from the empty one).
-     * 
+     *
      * @return an ArrayList of LabelSet objects with the subsets.
-     * @throws Exception
+     * @throws Exception if creation of labelset's subsets fails
      */
     public ArrayList<LabelSet> getSubsets() throws Exception {
         ArrayList<LabelSet> subsets = new ArrayList<LabelSet>();
@@ -210,7 +210,7 @@ public class LabelSet implements Serializable, Comparable<LabelSet> {
     }
 
     /**
-     * 
+     *
      * @param l1 a labelset
      * @param l2 another labelset
      * @return their interesection
@@ -235,7 +235,7 @@ public class LabelSet implements Serializable, Comparable<LabelSet> {
         return new LabelSet(intersection);
     }
 
-    /** 
+    /**
      * Used for sorting collections of labelsets according to size
      */
     public int compareTo(LabelSet o) {

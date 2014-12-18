@@ -24,7 +24,7 @@ import weka.core.Instances;
 
 /**
  * Class that implements the PT6 transformation
- * 
+ *
  * @author Stavros Mpakirtzoglou
  * @author Grigorios Tsoumakas
  * @version 2012.02.02
@@ -34,7 +34,7 @@ public class IncludeLabelsTransformation implements Serializable {
     private int[] labelIndices;
 
     /**
-     * 
+     *
      * @param mlData
      * @return transformed instances
      * @throws Exception
@@ -89,7 +89,7 @@ public class IncludeLabelsTransformation implements Serializable {
     /**
      * Transform an unlabeled instance to the format expected by
      * the binary classifier
-     * 
+     *
      * @param instance an unlabeled instance
      * @return a transformed unlabeled instance
      * @throws Exception

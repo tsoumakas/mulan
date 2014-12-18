@@ -81,7 +81,7 @@ public class TwoStageVotingArchitecture extends BinaryAndPairwise {
     /**
      * Set threshold to concrete value.
      *
-     * @param threshold
+     * @param threshold the threshold
      */
     public void setTreshold(double threshold) {
         this.threshold = threshold;
@@ -92,8 +92,8 @@ public class TwoStageVotingArchitecture extends BinaryAndPairwise {
      * missing Temporary included to switch between standard voting and
      * qweighted multilabel voting
      *
-     * @param instance
-     * @return prediction
+     * @param instance the instance used
+     * @return prediction the prediction made
      * @throws java.lang.Exception
      */
     @Override

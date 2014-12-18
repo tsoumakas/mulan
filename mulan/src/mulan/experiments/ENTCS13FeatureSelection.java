@@ -216,7 +216,6 @@ public class ENTCS13FeatureSelection {
      *
      * @param threshold
      * @param sortedEvaluatedAttributeList feature ranking returned from
-     * {@link ExtendedRanker}
      * @return the indices of the selected features
      */
     public static int[] featureIndicesByThreshold(double threshold, double[][] sortedEvaluatedAttributeList) {
@@ -256,7 +255,6 @@ public class ENTCS13FeatureSelection {
      *
      * @param k value in (0,M]
      * @param sortedEvaluatedAttributeList feature ranking returned from
-     * {@link ExtendedRanker}
      * @return the indices of the selected features
      */
     public static int[] featureIndicesByKBest(int k, double[][] sortedEvaluatedAttributeList) {
@@ -279,7 +277,7 @@ public class ENTCS13FeatureSelection {
      *
      * @param t percentage of the number of features with value in (0,1)
      * @param sortedEvaluatedAttributeList feature ranking returned from
-     * {@link ExtendedRanker}
+
      * @return the indices of the selected features
      */
     public static int[] featureIndicesbyTPercent(double t, double[][] sortedEvaluatedAttributeList) {

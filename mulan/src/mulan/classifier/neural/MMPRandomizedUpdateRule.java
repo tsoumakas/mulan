@@ -27,8 +27,8 @@ import mulan.evaluation.loss.RankingLossFunction;
 /**
  * Implementation of randomized update rule for {@link MMPLearner}. It is a randomized variation 
  * of {@link MMPUniformUpdateRule}. A opposed to uniformed update, the randomized version will
- * penalize each wrongly order pair of labels by random value from interval <0,1>. Afterwards, the 
- * penalty weights are normalized, so their sum is equal to 1.<br></br>
+ * penalize each wrongly order pair of labels by random value from interval &lt;0,1&gt;. Afterwards, the 
+ * penalty weights are normalized, so their sum is equal to 1.<br>
  * The model is represented as a list of perceptrons (one for each label), each represented 
  * by {@link Neuron}. Perceptrons are expected to be in the same order as labels in training data set.
  * 

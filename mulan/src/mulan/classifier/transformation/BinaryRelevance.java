@@ -102,7 +102,7 @@ public class BinaryRelevance extends TransformationBasedMultiLabelLearner {
     /**
      * Returns the model which corresponds to the label with labelName
      *
-     * @param labelName
+     * @param labelName The label name of the model to be returned
      * @return the corresponding model or null if the labelIndex is wrong
      */
     public Classifier getModel(String labelName) {

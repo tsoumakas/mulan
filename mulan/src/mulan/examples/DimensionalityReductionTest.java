@@ -29,7 +29,7 @@ import weka.filters.unsupervised.attribute.Remove;
 
 /**
  * Demonstrates the attribute selection capabilities of Mulan
- * 
+ *
  * @author Grigorios Tsoumakas
  * @version 2012.02.02
  */
@@ -37,9 +37,9 @@ public class DimensionalityReductionTest {
 
     /**
      * Executes this example
-     * 
+     *
      * @param args command-line arguments -path and -filestem, e.g. -path datasets/ -filestem emotions
-     * @throws Exception
+     * @throws Exception exceptions not caught
      */
     public static void main(String[] args) throws Exception {
         String path = Utils.getOption("path", args);
@@ -51,7 +51,7 @@ public class DimensionalityReductionTest {
         BinaryRelevanceAttributeEvaluator ae = new BinaryRelevanceAttributeEvaluator(ase, mlData, "max", "dl", "eval");
         // MultiClassTransformation mt = new Copy();
         // MultiClassAttributeEvaluator ae = new MultiClassAttributeEvaluator(ase, mt, mlData);
-        
+
         Ranker r = new Ranker();
         int[] result = r.search(ae, mlData);
         System.out.println(Arrays.toString(result));

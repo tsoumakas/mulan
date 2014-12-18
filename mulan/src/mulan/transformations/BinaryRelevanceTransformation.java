@@ -96,7 +96,7 @@ public class BinaryRelevanceTransformation implements Serializable {
      *
      * @param labelToKeep
      * @return transformed Instances object
-     * @throws Exception
+     * @throws Exception when removal fails
      */
     public Instances transformInstances(int labelToKeep) throws Exception {
         Instances shellCopy = new Instances(this.shell);
@@ -123,7 +123,7 @@ public class BinaryRelevanceTransformation implements Serializable {
      * @param labelIndices
      * @param indexToKeep
      * @return transformed Instances object
-     * @throws Exception
+     * @throws Exception when removal fails
      */
     public static Instances transformInstances(Instances train, int[] labelIndices, int indexToKeep) throws Exception {
         int numLabels = labelIndices.length;

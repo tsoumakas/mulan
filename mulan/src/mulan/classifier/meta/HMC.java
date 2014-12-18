@@ -35,10 +35,10 @@ import weka.filters.unsupervised.attribute.Remove;
 /**
  *
  <!-- globalinfo-start -->
- * Class that implements a Hierarchical Multilabel classifier (HMC). HMC classifier takes as parameter any kind of multilabel classifier and builds a hierarchy. Any node of hierarchy is a classifier and is trained separately. The root classifier is trained on all data and as getting down the hierarchy tree the data is adjusted properly to each node. Firstly, instances that do not belong to the node are removed and then attributes that are unnecessary are removed also. For more information, see<br/>
- * <br/>
+ * Class that implements a Hierarchical Multilabel classifier (HMC). HMC classifier takes as parameter any kind of multilabel classifier and builds a hierarchy. Any node of hierarchy is a classifier and is trained separately. The root classifier is trained on all data and as getting down the hierarchy tree the data is adjusted properly to each node. Firstly, instances that do not belong to the node are removed and then attributes that are unnecessary are removed also. For more information, see<br>
+ * <br>
  * Grigorios Tsoumakas, Ioannis Katakis, Ioannis Vlahavas: Effective and Efficient Multilabel Classification in Domains with Large Number of Labels. In: Proc. ECML/PKDD 2008 Workshop on Mining Multidimensional Data (MMD'08), 2008.
- * <p/>
+ * <br>
  <!-- globalinfo-end -->
  *
  <!-- technical-bibtex-start -->
@@ -52,7 +52,7 @@ import weka.filters.unsupervised.attribute.Remove;
  *    location = {Antwerp, Belgium}
  * }
  * </pre>
- * <p/>
+ * <br>
  <!-- technical-bibtex-end -->
  *
  * @author George Saridis

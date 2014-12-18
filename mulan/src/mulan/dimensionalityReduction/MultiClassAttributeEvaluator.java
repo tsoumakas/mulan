@@ -25,9 +25,9 @@ import weka.core.Instances;
 
 /**
  * <p> Performs attribute evaluation using single-label transformations. For
- * more information, see <em>Chen, W., Yan, J., Zhang, B., Chen, Z., and Yang, 
- * Q. (2007). Document transformation for multi-label feature selection in text 
- * categorization. In 7th IEEE International Conference on Data Mining 
+ * more information, see <em>Chen, W., Yan, J., Zhang, B., Chen, Z., and Yang,
+ * Q. (2007). Document transformation for multi-label feature selection in text
+ * categorization. In 7th IEEE International Conference on Data Mining
  * (ICDM'07), pages 451-456. </em></p>
  *
  * @author Grigorios Tsoumakas
@@ -38,9 +38,9 @@ public class MultiClassAttributeEvaluator extends ASEvaluation implements Attrib
     /** The single-label attribute evaluator to use underneath */
     private ASEvaluation baseAttributeEvaluator;
 
-    /** Constructor that uses an evaluator on a multi-label dataset using a transformation 
-     * @param x 
-     * @param dt 
+    /** Constructor that uses an evaluator on a multi-label dataset using a transformation
+     * @param x
+     * @param dt
      * @param mlData */
     public MultiClassAttributeEvaluator(ASEvaluation x, MultiClassTransformation dt, MultiLabelInstances mlData) {
         baseAttributeEvaluator = x;
@@ -54,11 +54,11 @@ public class MultiClassAttributeEvaluator extends ASEvaluation implements Attrib
     }
 
     /**
-     * Evaluates an attribute 
-     * 
+     * Evaluates an attribute
+     *
      * @param attribute the attribute index
      * @return the evaluation
-     * @throws Exception
+     * @throws Exception when evaluation fails
      */
     @Override
     public double evaluateAttribute(int attribute) throws Exception {
@@ -67,9 +67,9 @@ public class MultiClassAttributeEvaluator extends ASEvaluation implements Attrib
 
     /**
      * Not supported
-     * 
+     *
      * @param arg0
-     * @throws Exception
+     * @throws Exception functionality is not supported yet
      */
     @Override
     public void buildEvaluator(Instances arg0) throws Exception {

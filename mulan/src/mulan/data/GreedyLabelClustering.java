@@ -291,7 +291,7 @@ public class GreedyLabelClustering implements LabelClustering, Serializable {
 
         /**
          * 
-         * @param measure
+         * @param measure the measure by which models are compared
          */
         public void setMeasure(Measure measure) {
 		this.measure = measure;
@@ -307,7 +307,7 @@ public class GreedyLabelClustering implements LabelClustering, Serializable {
 
         /**
          * 
-         * @param allowedNonImprovementSteps
+         * @param allowedNonImprovementSteps the number of allowed concurrent steps with reduced accuracy
          */
         public void setAllowedNonImprovementSteps(int allowedNonImprovementSteps) {
 		this.allowedNonImprovementSteps = allowedNonImprovementSteps;
@@ -323,7 +323,7 @@ public class GreedyLabelClustering implements LabelClustering, Serializable {
 
         /**
          * 
-         * @param criticalValue
+         * @param criticalValue Critical value below which the label pairs are considered independent
          */
         public void setCriticalValue(double criticalValue) {
 		this.criticalValue = criticalValue;
@@ -355,7 +355,7 @@ public class GreedyLabelClustering implements LabelClustering, Serializable {
 
         /**
          * 
-         * @param useSubsetLearnerCache
+         * @param useSubsetLearnerCache Whether SubsetLearner caching mechanism is enabled or not
          */
         public void setUseSubsetLearnerCache(boolean useSubsetLearnerCache) {
 		this.useSubsetLearnerCache = useSubsetLearnerCache;
@@ -371,7 +371,7 @@ public class GreedyLabelClustering implements LabelClustering, Serializable {
 
         /**
          * 
-         * @param internalSubsetLearnerDebug
+         * @param internalSubsetLearnerDebug whether to enable debug output of the internal SubsetLearner or not
          */
         public void setInternalSubsetLearnerDebug(boolean internalSubsetLearnerDebug) {
 		this.internalSubsetLearnerDebug = internalSubsetLearnerDebug;

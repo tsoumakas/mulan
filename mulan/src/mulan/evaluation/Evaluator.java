@@ -70,7 +70,7 @@ import clus.Clus;
 
 /**
  * Evaluator - responsible for generating evaluation data
- * 
+ *
  * @author rofr
  * @author Grigorios Tsoumakas
  * @author Eleftherios Spyromitros-Xioufis
@@ -83,7 +83,7 @@ public class Evaluator {
 
     /**
      * Sets the seed for reproduction of cross-validation results
-     * 
+     *
      * @param aSeed seed for reproduction of cross-validation results
      */
     public void setSeed(int aSeed) {
@@ -93,13 +93,13 @@ public class Evaluator {
     /**
      * Evaluates a {@link MultiLabelLearner} on given test data set using specified evaluation
      * measures
-     * 
+     *
      * @param learner the learner to be evaluated
      * @param mlTestData the data set for evaluation
      * @param measures the evaluation measures to compute
      * @return an Evaluation object
      * @throws IllegalArgumentException if an input parameter is null
-     * @throws Exception
+     * @throws Exception when evaluation fails
      */
     public Evaluation evaluate(MultiLabelLearner learner, MultiLabelInstances mlTestData,
             List<Measure> measures) throws Exception {
@@ -177,12 +177,12 @@ public class Evaluator {
 
     /**
      * Evaluates a {@link MultiLabelLearner} on given test data set.
-     * 
+     *
      * @param learner the learner to be evaluated
      * @param mlTestData the data set for evaluation
      * @return the evaluation result
      * @throws IllegalArgumentException if either of input parameters is null.
-     * @throws Exception
+     * @throws Exception when evaluation fails
      */
     public Evaluation evaluate(MultiLabelLearner learner, MultiLabelInstances mlTestData,
             MultiLabelInstances mlTrainData) throws IllegalArgumentException, Exception {
@@ -298,7 +298,7 @@ public class Evaluator {
     /**
      * Evaluates a {@link MultiLabelLearner} via cross-validation on given data set with defined
      * number of folds and seed.
-     * 
+     *
      * @param learner the learner to be evaluated via cross-validation
      * @param data the multi-label data set for cross-validation
      * @param someFolds
@@ -316,7 +316,7 @@ public class Evaluator {
     /**
      * Evaluates a {@link MultiLabelLearner} via cross-validation on given data set using given
      * evaluation measures with defined number of folds and seed.
-     * 
+     *
      * @param learner the learner to be evaluated via cross-validation
      * @param data the multi-label data set for cross-validation
      * @param measures the evaluation measures to compute
@@ -365,13 +365,13 @@ public class Evaluator {
     /**
      * Evaluates a {@link ClusWrapperClassification} on given test data set using specified
      * evaluation measures
-     * 
+     *
      * @param learner the learner to be evaluated
      * @param testData the data set for evaluation
      * @param measures the evaluation measures to compute
      * @return an Evaluation object
      * @throws IllegalArgumentException if an input parameter is null
-     * @throws Exception
+     * @throws Exception when evaluation fails
      */
     public Evaluation evaluate(ClusWrapperClassification learner, MultiLabelInstances testData,
             List<Measure> measures) throws Exception {

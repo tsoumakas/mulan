@@ -30,12 +30,12 @@ import weka.core.TechnicalInformation;
 
 /**
  <!-- globalinfo-start -->
- * A class for gathering several different SubsetLearners into a composite ensemble model. &lt;br&gt; &lt;br&gt; The label set partitions for participation in ensemble are selected using their dependence weight from the large number of randomly generated possible partitions. The type of the learned dependencies is determined by the {&#64;link mulan.data.LabelPairsDependenceIdentifier} supplied to the class constructor. Two strategies for selecting ensemble partitions exists: (1) to select the highly weighted ones and (2) to select most different from the highly weighted ones. The strategy to be used is determined by the {&#64;link #selectDiverseModels} parameter which is 'true' by default.<br/>
- * <br/>
- * For more information, see<br/>
- * <br/>
+ * A class for gathering several different SubsetLearners into a composite ensemble model. &lt;br&gt; &lt;br&gt; The label set partitions for participation in ensemble are selected using their dependence weight from the large number of randomly generated possible partitions. The type of the learned dependencies is determined by the {&#64;link mulan.data.LabelPairsDependenceIdentifier} supplied to the class constructor. Two strategies for selecting ensemble partitions exists: (1) to select the highly weighted ones and (2) to select most different from the highly weighted ones. The strategy to be used is determined by the {&#64;link #selectDiverseModels} parameter which is 'true' by default.<br>
+ * <br>
+ * For more information, see<br>
+ * <br>
  * Lena Tenenboim-Chekina, Lior Rokach,, Bracha Shapira: Identification of Label Dependencies for Multi-label Classification. In: , Haifa, Israel, 53--60, 2010.
- * <p/>
+ * <br>
  <!-- globalinfo-end --> 
  * 
  <!-- technical-bibtex-start -->
@@ -50,7 +50,7 @@ import weka.core.TechnicalInformation;
  *    year = {2010}
  * }
  * </pre>
- * <p/>
+ * <br>
  <!-- technical-bibtex-end -->
  * 
  * @author Lena Chekina (lenat@bgu.ac.il)
@@ -844,7 +844,7 @@ public class EnsembleOfSubsetLearners extends MultiLabelMetaLearner {
 
     /**
      * 
-     * @param rnd
+     * @param rnd random generator
      */
     public void setRnd(Random rnd) {
         this.rnd = rnd;
@@ -852,7 +852,7 @@ public class EnsembleOfSubsetLearners extends MultiLabelMetaLearner {
 
     /**
      * 
-     * @param threshold
+     * @param threshold the threshold for ensemble voting
      */
     public void setThreshold(double threshold) {
         this.threshold = threshold;
@@ -860,7 +860,7 @@ public class EnsembleOfSubsetLearners extends MultiLabelMetaLearner {
 
     /**
      * 
-     * @param dependenceIdentifier
+     * @param dependenceIdentifier the type of dependence identification process
      */
     public void setDependenceIdentifier(LabelPairsDependenceIdentifier dependenceIdentifier) {
         this.dependenceIdentifier = dependenceIdentifier;
@@ -868,7 +868,7 @@ public class EnsembleOfSubsetLearners extends MultiLabelMetaLearner {
 
     /**
      * 
-     * @param x
+     * @param x seed value
      */
     public void setSeed(int x) {
         seed = x;
@@ -877,7 +877,7 @@ public class EnsembleOfSubsetLearners extends MultiLabelMetaLearner {
 
     /**
      * 
-     * @param models
+     * @param models the number of models
      */
     public void setNumModels(int models) {
         numModels = models;
@@ -901,7 +901,7 @@ public class EnsembleOfSubsetLearners extends MultiLabelMetaLearner {
 
     /**
      * 
-     * @param selectDiverseModels
+     * @param selectDiverseModels whether to select most different from the highly weighted partitions
      */
     public void setSelectDiverseModels(boolean selectDiverseModels) {
         this.selectDiverseModels = selectDiverseModels;
@@ -909,7 +909,7 @@ public class EnsembleOfSubsetLearners extends MultiLabelMetaLearner {
 
     /**
      * 
-     * @param useSubsetcache
+     * @param useSubsetcache whether to use Subset caching
      */
     public void setUseSubsetLearnerCache(boolean useSubsetcache) {
         this.useSubsetcache = useSubsetcache;
@@ -917,7 +917,7 @@ public class EnsembleOfSubsetLearners extends MultiLabelMetaLearner {
 
     /**
      * 
-     * @param numOfRandomPartitions
+     * @param numOfRandomPartitions number of randomly generated possible label set partitions
      */
     public static void setNumOfRandomPartitions(int numOfRandomPartitions) {
         EnsembleOfSubsetLearners.numOfRandomPartitions = numOfRandomPartitions;
@@ -925,7 +925,7 @@ public class EnsembleOfSubsetLearners extends MultiLabelMetaLearner {
 
     /**
      * 
-     * @param numOfPartitionsForDiversity
+     * @param numOfPartitionsForDiversity  number of highly weighted partitions used for selecting the 'enough' different among them
      */
     public static void setNumOfPartitionsForDiversity(int numOfPartitionsForDiversity) {
         EnsembleOfSubsetLearners.numOfPartitionsForDiversity = numOfPartitionsForDiversity;
@@ -933,7 +933,8 @@ public class EnsembleOfSubsetLearners extends MultiLabelMetaLearner {
 
     /**
      * 
-     * @param dynamicDiversityThreshold
+     * @param dynamicDiversityThreshold parameter used to dynamically define the threshold of 'enough' different
+     * partition
      */
     public static void setDynamicDiversityThreshold(double dynamicDiversityThreshold) {
         EnsembleOfSubsetLearners.dynamicDiversityThreshold = dynamicDiversityThreshold;

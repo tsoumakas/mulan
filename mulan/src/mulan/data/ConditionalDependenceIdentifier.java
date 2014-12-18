@@ -243,7 +243,7 @@ public class ConditionalDependenceIdentifier implements LabelPairsDependenceIden
      * @param classIndex index of the label tested as class
      * @param trainDataset the {@link weka.core.Instances} dataset on which the model should be learned
      * @return {@link weka.classifiers.meta.FilteredClassifier} classification model
-     * @throws Exception
+     * @throws Exception if creating the classification model fails
      */
     private FilteredClassifier buildModel(int[] indicesToRemove, int classIndex, Instances trainDataset) throws Exception {
         FilteredClassifier model = new FilteredClassifier();
@@ -285,7 +285,7 @@ public class ConditionalDependenceIdentifier implements LabelPairsDependenceIden
      * @param classIndex index of the class label
      * @param dataset the initial {@link weka.core.Instances} dataset
      * @return {@link weka.core.Instances} filtered dataset with set classIndex
-     * @throws Exception
+     * @throws Exception if removal has failed
      */
     private Instances prepareDatSet(int[] indicesToRemove, int classIndex, Instances dataset) throws Exception {
         Remove remove = new Remove();
@@ -297,8 +297,8 @@ public class ConditionalDependenceIdentifier implements LabelPairsDependenceIden
     }
 
     /**
-     * 
-     * @param criticalValue
+     *
+     * @param criticalValue a t-critical value
      */
     public void setCriticalValue(double criticalValue) {
         this.criticalValue = criticalValue;
@@ -309,7 +309,7 @@ public class ConditionalDependenceIdentifier implements LabelPairsDependenceIden
     }
 
     /**
-     * 
+     *
      * @return The seed for replication of random experiments
      */
     public int getSeed() {
@@ -317,15 +317,15 @@ public class ConditionalDependenceIdentifier implements LabelPairsDependenceIden
     }
 
     /**
-     * 
-     * @param seed
+     *
+     * @param seed the seed for random generation
      */
     public void setSeed(int seed) {
         this.seed = seed;
     }
 
     /**
-     * 
+     *
      * @return Number of folds
      */
     public int getNumFolds() {
@@ -333,8 +333,8 @@ public class ConditionalDependenceIdentifier implements LabelPairsDependenceIden
     }
 
     /**
-     * 
-     * @param numFolds
+     *
+     * @param numFolds the number of folds
      */
     public void setNumFolds(int numFolds) {
         this.numFolds = numFolds;

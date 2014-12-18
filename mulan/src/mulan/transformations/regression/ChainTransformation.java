@@ -40,7 +40,7 @@ public class ChainTransformation implements Serializable {
      * @param data the input data set
      * @param chain a chain (permutation) of the indices of the target attributes
      * @param numTargetsToKeep the number of target attributes from the beginning of the chain that
-     *            should be kept, 1<=numTargetsToKeep<=numOfTargets
+     *            should be kept, 1&lt;=numTargetsToKeep&lt;=numOfTargets
      * @return the transformed Instances object. The input object is not modified.
      * @throws Exception
      */
@@ -76,7 +76,7 @@ public class ChainTransformation implements Serializable {
      * @param instance the input instance
      * @param chain a chain (permutation) of the indices of the target attributes
      * @param numTargetsToKeep the number of target attributes from the beginning of the chain that
-     *            should be kept, 1<=numTargetsToKeep<=numOfTargets
+     *            should be kept, 1&lt;=numTargetsToKeep&lt;=numOfTargets
      * @return the transformed Instance object. The input object is not modified.
      * @throws Exception
      */

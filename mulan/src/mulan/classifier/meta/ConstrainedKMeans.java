@@ -27,7 +27,7 @@ import weka.filters.unsupervised.attribute.ReplaceMissingValues;
 /**
  <!-- globalinfo-start -->
  * Cluster data using the constrained k means algorithm
- * <p/>
+ * <br>
  <!-- globalinfo-end -->
  *
  * @author Mark Hall
@@ -65,7 +65,7 @@ public class ConstrainedKMeans extends RandomizableClusterer implements NumberOf
 
         /**
          * 
-         * @param x
+         * @param x the distance
          */
         public void setDistance(double x) {
             distance = x;
@@ -180,7 +180,7 @@ public class ConstrainedKMeans extends RandomizableClusterer implements NumberOf
 
     /**
      * 
-     * @param x
+     * @param x max iterations
      */
     public void setMaxIterations(int x) {
         maxIterations = x;

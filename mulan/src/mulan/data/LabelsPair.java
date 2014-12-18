@@ -57,7 +57,7 @@ public class LabelsPair implements Comparable, Serializable {
 
     /**
      * 
-     * @param pair
+     * @param pair a pair of labels
      */
     public void setPair(int[] pair) {
         this.pair = pair;
@@ -73,7 +73,7 @@ public class LabelsPair implements Comparable, Serializable {
 
     /**
      * 
-     * @param score
+     * @param score the dependence score of the labels pair
      */
     public void setScore(Double score) {
         this.score = score;

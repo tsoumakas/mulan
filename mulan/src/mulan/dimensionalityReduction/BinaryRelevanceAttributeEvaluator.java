@@ -272,7 +272,7 @@ public class BinaryRelevanceAttributeEvaluator extends ASEvaluation implements A
      *
      * @param evaluations evaluation scores
      * @return an array of scores for all attributes
-     * @throws Exception
+     * @throws Exception when featureSelection fails
      */
     private double[] featureSelection(double evaluations[][]) throws Exception {
         // perform dm or dl
@@ -432,7 +432,7 @@ public class BinaryRelevanceAttributeEvaluator extends ASEvaluation implements A
      *
      * @param attribute the attribute index
      * @return the evaluation
-     * @throws Exception
+     * @throws Exception when evaluate Attribute fails
      */
     @Override
     public double evaluateAttribute(int attribute) throws Exception {
@@ -443,7 +443,7 @@ public class BinaryRelevanceAttributeEvaluator extends ASEvaluation implements A
      * Not supported
      *
      * @param data
-     * @throws Exception
+     * @throws Exception functionality is not supported yet
      */
     @Override
     public void buildEvaluator(Instances data) throws Exception {

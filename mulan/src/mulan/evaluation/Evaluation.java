@@ -29,9 +29,9 @@ import mulan.evaluation.measure.Measure;
 /**
  * Simple class that includes a list of evaluation measures returned from a
  * call to the static methods of {@link Evaluator} for evaluation purposes.
- * 
+ *
  * @see Evaluator
- * 
+ *
  * @author Jozef Vilcek
  * @author Grigorios Tsoumakas
  * @version 2010.11.05
@@ -44,11 +44,11 @@ public class Evaluation {
     /**
      * Creates a new evaluation object by deep copying the measure objects that are given as
      * parameters
-     * 
+     *
      * @param someMeasures calculated measures
      * @param data the evaluation data used for obtaining label names for outputting per label
      *            values of macro averaged measures
-     * @throws Exception
+     * @throws Exception when creating Evaluation object fails
      */
     public Evaluation(List<Measure> someMeasures, MultiLabelInstances data) throws Exception {
         measures = new ArrayList<Measure>();
@@ -61,7 +61,7 @@ public class Evaluation {
 
     /**
      * Returns a string with the results of the evaluation
-     * 
+     *
      * @return a string with the results of the evaluation
      */
     @Override

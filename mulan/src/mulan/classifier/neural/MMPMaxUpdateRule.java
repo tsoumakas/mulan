@@ -27,7 +27,7 @@ import mulan.evaluation.loss.RankingLossFunction;
 /**
  * Implementation of max update rule for {@link MMPLearner}. Only two perceptrons will
  * receive updates, the one corresponding to the lowest ranked relevant label and the
- * one corresponding to the highest ranked non-relevant label. <br></br>
+ * one corresponding to the highest ranked non-relevant label. <br>
  * The model is represented as a list of perceptrons (one for each label), each represented 
  * by {@link Neuron}. Perceptrons are expected to be in the same order as labels in training 
  * data set.

@@ -32,10 +32,10 @@ import weka.core.TechnicalInformation.Type;
 
 /**
  <!-- globalinfo-start -->
- * Class implementing clustering-based multi-label classification. For more information, see<br/>
- * <br/>
+ * Class implementing clustering-based multi-label classification. For more information, see<br>
+ * <br>
  * Gulisong Nasierding, Grigorios Tsoumakas, Abbas Kouzani: Clustering Based Multi-Label Classification for Image Annotation and Retrieval. In: Proc. 2009 IEEE International Conference on Systems, Man, and Cybernetics (SMC 2009), 2009.
- * <p/>
+ * <br>
  <!-- globalinfo-end -->
  *
  <!-- technical-bibtex-start -->
@@ -49,7 +49,7 @@ import weka.core.TechnicalInformation.Type;
  *    location = {Texas, USA}
  * }
  * </pre>
- * <p/>
+ * <br>
  <!-- technical-bibtex-end -->
  *
  * @author  Gulisong Nasierding

@@ -34,13 +34,13 @@ import weka.core.converters.ArffLoader;
  * {@link Instances}. The class is a convenient wrapper. The data are loaded form data file, checked
  * for valid format. If hierarchy for labels is specified via XML meta-data file, the data file is
  * cross-checked with XML for consistency. <br>
- * </br> Applied rules:<br>
- * </br> - label names must be unique<br>
- * </br> - all labels in XML meta-data must be defined also in ARFF data set<br>
- * </br> - each label attribute must be nominal with binary values<br>
- * </br> - if labels has hierarchy, then if child labels indicates <code>true</code> of some data
+ *  Applied rules:<br>
+ *  - label names must be unique<br>
+ *  - all labels in XML meta-data must be defined also in ARFF data set<br>
+ *  - each label attribute must be nominal with binary values<br>
+ *  - if labels has hierarchy, then if child labels indicates <code>true</code> of some data
  * instance, then all its parent labels must indicate also <code>true</code> for that instance<br>
- * </br>
+ * 
  * 
  * @author Jozef Vilcek
  */
@@ -213,11 +213,11 @@ public class MultiLabelInstances implements Serializable {
      * 
      * @param arffFilePath the path to ARFF file containing the data
      * @param xmlLabelsDefFilePath the path to XML file containing labels meta-data
-     * @param incremental
+     * @param incremental if incremental or not
      * @throws ArgumentNullException if input parameters are null
      * @throws IllegalArgumentException if input parameters refers to non-existing files
      * @throws InvalidDataFormatException if format of loaded multi-label data is invalid
-     * @throws IOException
+     * @throws IOException if arff or xml is not found
      * @throws DataLoadException if XML meta-data of ARFF data file can not be loaded
      */
     public MultiLabelInstances(String arffFilePath, String xmlLabelsDefFilePath, boolean incremental)
@@ -277,7 +277,7 @@ public class MultiLabelInstances implements Serializable {
      * Creates a new instance of {@link MultiLabelInstances} data from existing {@link Instances}
      * and {@link LabelsMetaData}. The input parameters are not copied. Internally are stored only
      * references.<br>
-     * </br> The data set and labels meta data are validated against each other. Any violation of
+     *  The data set and labels meta data are validated against each other. Any violation of
      * validation criteria result in {@link InvalidDataFormatException}.
      * 
      * @param dataSet the data set with data instances in multi-label format
@@ -487,11 +487,11 @@ public class MultiLabelInstances implements Serializable {
      * {@link MultiLabelInstances} if needed. The underlying {@link LabelsMetaData} are modified to
      * reflect changes in data set. The method creates new instance of {@link MultiLabelInstances}
      * with modified data set and new meta-data. <br>
-     * </br> The supported changes are:<br>
-     * </br> - remove of label {@link Attribute} to the existing {@link Instances}<br>
-     * </br> - add/remove of {@link Instance} from the existing {@link Instances}<br>
-     * </br> - add/remove of feature/predictor {@link Attribute} to the existing {@link Instances}<br>
-     * </br>
+     *  The supported changes are:<br>
+     *  - remove of label {@link Attribute} to the existing {@link Instances}<br>
+     *  - add/remove of {@link Instance} from the existing {@link Instances}<br>
+     *  - add/remove of feature/predictor {@link Attribute} to the existing {@link Instances}<br>
+     * 
      * 
      * @param modifiedDataSet the modified data set
      * @return the modified data set
@@ -761,7 +761,7 @@ public class MultiLabelInstances implements Serializable {
      * Calculates the depth of a label, in the Hierarchy of the tree of labels. Returns the counter
      * of every level. We define the root node label that has the depth 1
      * 
-     * @param labelName
+     * @param labelName the name of the label
      * @return the depth of a label
      */
     public int getDepth(String labelName) {
@@ -820,7 +820,7 @@ public class MultiLabelInstances implements Serializable {
      * Returns the next instace of a multi-label dataset when the incremental read is enabled.
      * 
      * @return The next instace of a multi-label dataset
-     * @throws IOException
+     * @throws IOException if loader fails
      */
     public Instance getNextInstance() throws IOException {
         if (loader == null) {

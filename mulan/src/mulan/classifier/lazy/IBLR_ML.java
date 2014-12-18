@@ -27,12 +27,12 @@ import weka.core.*;
 
 /**
  <!-- globalinfo-start -->
- * This class is an implementation of the "IBLR-ML" and "IBLR-ML+" methods for the MULAN package.<br/>
- * <br/>
- * For more information, see<br/>
- * <br/>
+ * This class is an implementation of the "IBLR-ML" and "IBLR-ML+" methods for the MULAN package.<br>
+ * <br>
+ * For more information, see<br>
+ * <br>
  * Weiwei Cheng, Eyke Hullermeier (2009). Combining instance-based learning and logistic regression for multilabel classification. Machine Learning. 76(2-3):211-225.
- * <p/>
+ * <br>
  <!-- globalinfo-end -->
  * 
  <!-- technical-bibtex-start -->
@@ -50,7 +50,7 @@ import weka.core.*;
  *    ISSN = {0885-6125}
  * }
  * </pre>
- * <p/>
+ * <br>
  <!-- technical-bibtex-end -->
  *
  * @author Weiwei Cheng

@@ -75,7 +75,7 @@ public class LabelPowersetStratification implements Stratification, TechnicalInf
     /**
      * Constructor setting the random seed
      * 
-     * @param aSeed 
+     * @param aSeed the seed for random generation
      */    
     public LabelPowersetStratification(int aSeed) {
         seed = aSeed;

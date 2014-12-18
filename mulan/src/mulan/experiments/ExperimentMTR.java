@@ -31,10 +31,10 @@ import weka.core.Utils;
  * <em>E. Spyromitros-Xioufis, G. Tsoumakas, W. Groves, I. Vlahavas. 2014. Multi-label Classification Methods for
  * Multi-target Regression. <a href="http://arxiv.org/abs/1211.6581">arXiv e-prints</a></em>.
  * </p>
- * 
+ *
  * @author Eleftherios Spyromitros-Xioufis
  * @version 2014.04.01
- * 
+ *
  */
 public class ExperimentMTR {
 
@@ -70,7 +70,7 @@ public class ExperimentMTR {
      *            <li><b>-slots:</b> number of execution slots to be used by Weka's algorithms which support
      *            this option</li>
      *            </ul>
-     * @throws Exception
+     * @throws Exception exceptions not caught
      */
     public static void main(String[] args) throws Exception {
         // parsing options related to dataset and evaluation type

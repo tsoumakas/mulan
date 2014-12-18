@@ -30,10 +30,10 @@ import weka.core.Utils;
 
 /**
  <!-- globalinfo-start -->
- * Simple BR implementation of the KNN algorithm.For more information, see<br/>
- * <br/>
+ * Simple BR implementation of the KNN algorithm.For more information, see<br>
+ * <p>
  * Eleftherios Spyromitros, Grigorios Tsoumakas, Ioannis Vlahavas: An Empirical Study of Lazy Multilabel Classification Algorithms. In: Proc. 5th Hellenic Conference on Artificial Intelligence (SETN 2008), 2008.
- * <p/>
+ * </p>
  <!-- globalinfo-end -->
  * 
  <!-- technical-bibtex-start -->
@@ -47,7 +47,7 @@ import weka.core.Utils;
  *    location = {Syros, Greece}
  * }
  * </pre>
- * <p/>
+ * <br>
  <!-- technical-bibtex-end -->
  * 
  * @author Eleftherios Spyromitros-Xioufis 
@@ -105,7 +105,7 @@ public class BRkNN extends MultiLabelKNN {
     /**
      * A constructor that sets the number of neighbors
      *
-     * @param numOfNeighbors
+     * @param numOfNeighbors the number of neighbors
      */
     public BRkNN(int numOfNeighbors) {
         this(numOfNeighbors, ExtensionType.NONE);
@@ -114,7 +114,7 @@ public class BRkNN extends MultiLabelKNN {
     /**
      * Constructor giving the option to select an extension of the base version
      *
-     * @param numOfNeighbors
+     * @param numOfNeighbors the number of neighbors
      * @param ext the extension to use (see {@link ExtensionType})
      */
     public BRkNN(int numOfNeighbors, ExtensionType ext) {
@@ -404,7 +404,7 @@ public class BRkNN extends MultiLabelKNN {
     /**
      * set the maximum number of neighbors to be evaluated via cross-validation
      *
-     * @param cvMaxK
+     * @param cvMaxK  Maximum number of neighbors
      */
     public void setCvMaxK(int cvMaxK) {
         this.cvMaxK = cvMaxK;

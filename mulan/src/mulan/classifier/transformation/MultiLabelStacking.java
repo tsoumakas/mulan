@@ -408,7 +408,7 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner {
     /**
      * Used only in case of a kNN base classifier.
      *
-     * @param trainingSet
+     * @param trainingSet the training set
      * @throws Exception
      */
     public void buildBaseLevelKNN(MultiLabelInstances trainingSet) throws Exception {
@@ -575,7 +575,7 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner {
     /**
      * Attaches an index attribute at the beginning of each instance
      *
-     * @param original
+     * @param original the original instances
      * @return the modified instances
      */
     protected Instances attachIndexes(Instances original) {
@@ -605,7 +605,7 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner {
     /**
      * Detaches the index attribute from the beginning of each instance
      *
-     * @param original
+     * @param original the original instances
      * @return the modified instances
      * @throws Exception
      */
@@ -623,7 +623,7 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner {
     /**
      * Saves a {@link MultiLabelStacking} object in a file
      *
-     * @param filename
+     * @param filename path to save the object
      */
     public void saveObject(String filename) {
         try {
@@ -637,7 +637,7 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner {
     /**
      * Sets the value of normalize
      *
-     * @param normalize
+     * @param normalize whether to normalize baseLevelPredictions or not
      */
     public void setNormalize(boolean normalize) {
         this.normalize = normalize;
@@ -646,7 +646,7 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner {
     /**
      * Sets the value of includeAttrs
      *
-     * @param includeAttrs
+     * @param includeAttrs whether to include the original attributes in the meta-level
      */
     public void setIncludeAttrs(boolean includeAttrs) {
         this.includeAttrs = includeAttrs;
@@ -655,7 +655,7 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner {
     /**
      * Sets the value of metaPercentage
      *
-     * @param metaPercentage
+     * @param metaPercentage the percentage of labels used in the meta-level
      */
     public void setMetaPercentage(double metaPercentage) {
         this.metaPercentage = metaPercentage;
@@ -664,7 +664,8 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner {
     /**
      * Sets the attribute selection evaluation class
      *
-     * @param eval
+     * @param eval The attribute selection evaluator used for pruning the meta-level
+     * attributes.
      */
     public void setEval(ASEvaluation eval) {
         this.eval = eval;
@@ -673,7 +674,7 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner {
     /**
      * Sets the type of the meta classifier and initializes the ensemble
      *
-     * @param metaClassifier
+     * @param metaClassifier the type of meta classifier
      * @throws Exception
      */
     public void setMetaAlgorithm(Classifier metaClassifier) throws Exception {
@@ -684,7 +685,7 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner {
     /**
      * sets the value for partialBuild
      *
-     * @param partialBuild
+     * @param partialBuild whether base and meta level are going to be built separately
      */
     public void setPartialBuild(boolean partialBuild) {
         this.partialBuild = partialBuild;

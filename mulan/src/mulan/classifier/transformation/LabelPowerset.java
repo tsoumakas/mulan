@@ -99,7 +99,7 @@ public class LabelPowerset extends TransformationBasedMultiLabelLearner {
     /**
      * The threshold for obtaining the bipartition from probabilities
      *
-     * @param t
+     * @param t threshold value
      */
     public void setThreshold(double t) {
         threshold = t;
@@ -108,7 +108,7 @@ public class LabelPowerset extends TransformationBasedMultiLabelLearner {
     /**
      * Sets the method of calculating probabilities for each label
      *
-     * @param method
+     * @param method the method of calculating probabilities
      */
     public void setConfidenceCalculationMethod(int method) {
         if (method == 0 || method == 1 || method == 2) {

@@ -144,7 +144,7 @@ public class ThresholdFunction implements Serializable {
     /**
      * Returns parameters learned by the threshold function in last build.
      * Based on these parameters the functions is computing thresholds for
-     * label confidences.<br/>
+     * label confidences.<br>
      * Support for unit tests ...
      *
      * @return parameters
