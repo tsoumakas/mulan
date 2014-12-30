@@ -62,8 +62,8 @@ public class RegressorChain extends TransformationBasedMultiTargetRegressor {
     private metaType meta = metaType.TRUE;
 
     /**
-     * A permutation of the target indices. E.g. If there are 3 targets with indices 14,15 and 16, a valid
-     * chain is 15,14,16.
+     * A permutation of the target indices. E.g. If there are 3 targets with indices 14, 15, 16, a valid chain
+     * is 15, 14, 16.
      */
     private int[] chain;
 
@@ -366,12 +366,19 @@ public class RegressorChain extends TransformationBasedMultiTargetRegressor {
 
     @Override
     protected String getModelForTarget(int targetIndex) {
+        // find the position of this target in the chain
+        int posInChain = -1;
+        for (int i = 0; i < numLabels; i++) {
+            if (chain[i] == targetIndex) {
+                posInChain = i;
+            }
+        }
         try {
-            chainRegressors[targetIndex].getClass().getMethod("toString", (Class<?>[]) null);
+            chainRegressors[posInChain].getClass().getMethod("toString", (Class<?>[]) null);
         } catch (NoSuchMethodException e) {
             return "A string representation for this base algorithm is not provided!";
         }
-        return chainRegressors[targetIndex].toString();
+        return chainRegressors[posInChain].toString();
     }
 
     public void setMeta(metaType meta) {
