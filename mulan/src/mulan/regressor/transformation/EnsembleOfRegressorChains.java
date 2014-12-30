@@ -198,11 +198,11 @@ public class EnsembleOfRegressorChains extends TransformationBasedMultiTargetReg
     }
 
     @Override
-    protected String getModelForTarget(int target) {
+    protected String getModelForTarget(int targetIndex) {
         StringBuffer output = new StringBuffer();
         for (int i = 0; i < numOfModels; i++) {
-            output.append("Ensemble of Regressor Chains: " + (i + 1) + "\n");
-            output.append(ensemble[i].getModel() + "\n");
+            output.append("Ensemble member: " + (i + 1) + "\n");
+            output.append(ensemble[i].getModelForTarget(targetIndex) + "\n");
         }
         return output.toString();
     }
