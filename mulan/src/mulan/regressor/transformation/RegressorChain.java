@@ -369,7 +369,7 @@ public class RegressorChain extends TransformationBasedMultiTargetRegressor {
         // find the position of this target in the chain
         int posInChain = -1;
         for (int i = 0; i < numLabels; i++) {
-            if (chain[i] == targetIndex) {
+            if (chain[i] == labelIndices[targetIndex]) {
                 posInChain = i;
             }
         }
