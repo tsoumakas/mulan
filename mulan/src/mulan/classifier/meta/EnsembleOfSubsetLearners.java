@@ -190,7 +190,7 @@ public class EnsembleOfSubsetLearners extends MultiLabelMetaLearner {
      * @param instance the data instance to predict on
      * @return the {@link mulan.classifier.MultiLabelOutput} classification
      * prediction for the instance.
-     * @throws Exception
+     * @throws Exception Potential exception thrown. To be handled in an upper level.
      */
     protected MultiLabelOutput makePredictionInternal(Instance instance) throws Exception {
         int[] sumVotes = new int[numLabels];

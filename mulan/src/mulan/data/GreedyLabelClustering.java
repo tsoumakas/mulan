@@ -275,7 +275,7 @@ public class GreedyLabelClustering implements LabelClustering, Serializable {
 
         /**
          * 
-         * @param numFolds
+         * @param numFolds Number of folds
          */
         public void setNumFolds(int numFolds) {
 		this.numFolds = numFolds;

@@ -52,7 +52,7 @@ public class MulanJavadoc {
      * Command line interface
      *
      * @param args command line args
-     * @throws java.lang.Exception
+     * @throws java.lang.Exception Potential exception thrown. To be handled in an upper level.
      */
     public static void main(String[] args) throws Exception {
         dir = Utils.getOption("dir", args);

@@ -71,7 +71,7 @@ public class PairwiseTransformation implements Serializable {
     /**
      * Keeps the predictors and adds one binary attrinute
      *
-     * @param instance
+     * @param instance the instance to be transformed
      * @return transformed Instance
      */
     public Instance transformInstance(Instance instance) {

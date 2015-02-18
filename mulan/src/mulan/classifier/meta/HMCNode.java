@@ -50,7 +50,7 @@ public class HMCNode extends MultiLabelMetaLearner {
      * 
      * @param name name of the node
      * @param mlc learner
-     * @throws Exception 
+     * @throws Exception Potential exception thrown. To be handled in an upper level.
      */
     public HMCNode(String name, MultiLabelLearner mlc) throws Exception {
         super(mlc);

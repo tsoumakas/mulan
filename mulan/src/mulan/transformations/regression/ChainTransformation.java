@@ -42,7 +42,7 @@ public class ChainTransformation implements Serializable {
      * @param numTargetsToKeep the number of target attributes from the beginning of the chain that
      *            should be kept, 1&lt;=numTargetsToKeep&lt;=numOfTargets
      * @return the transformed Instances object. The input object is not modified.
-     * @throws Exception
+     * @throws Exception Potential exception thrown. To be handled in an upper level.
      */
     public static Instances transformInstances(Instances data, int[] chain, int numTargetsToKeep)
             throws Exception {
@@ -78,7 +78,7 @@ public class ChainTransformation implements Serializable {
      * @param numTargetsToKeep the number of target attributes from the beginning of the chain that
      *            should be kept, 1&lt;=numTargetsToKeep&lt;=numOfTargets
      * @return the transformed Instance object. The input object is not modified.
-     * @throws Exception
+     * @throws Exception Potential exception thrown. To be handled in an upper level.
      */
     public static Instance transformInstance(Instance instance, int[] chain, int numTargetsToKeep)
             throws Exception {
@@ -101,8 +101,8 @@ public class ChainTransformation implements Serializable {
     /**
      * Exemplifies how the per instance transformation works.
      * 
-     * @param args
-     * @throws Exception
+     * @param args Arguments accepted from command line
+     * @throws Exception Potential exception thrown. To be handled in an upper level.
      */
     public static void main(String[] args) throws Exception {
 

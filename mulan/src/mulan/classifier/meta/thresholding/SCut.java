@@ -115,7 +115,7 @@ public class SCut extends MultiLabelMetaLearner {
      * @param baseRegressor the underlying multi-label learner
      * @param data the test data to evaluate different thresholds
      * @return one threshold for each label
-     * @throws Exception
+     * @throws Exception Potential exception thrown. To be handled in an upper level.
      */
     private double[] computeThresholds(MultiLabelLearner learner, MultiLabelInstances data) throws Exception {
 

@@ -39,9 +39,10 @@ public class MultiClassAttributeEvaluator extends ASEvaluation implements Attrib
     private ASEvaluation baseAttributeEvaluator;
 
     /** Constructor that uses an evaluator on a multi-label dataset using a transformation
-     * @param x
-     * @param dt
-     * @param mlData */
+     * @param x the evaluator type (weka type)
+     * @param dt mutliclass transformation
+     * @param mlData multi-label instances for evaluation
+     */
     public MultiClassAttributeEvaluator(ASEvaluation x, MultiClassTransformation dt, MultiLabelInstances mlData) {
         baseAttributeEvaluator = x;
         Instances data;
@@ -68,7 +69,7 @@ public class MultiClassAttributeEvaluator extends ASEvaluation implements Attrib
     /**
      * Not supported
      *
-     * @param arg0
+     * @param arg0 functionality is not supported yet
      * @throws Exception functionality is not supported yet
      */
     @Override

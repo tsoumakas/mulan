@@ -192,7 +192,7 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner {
      * @param metaClassifier
      * @param metaPercentage
      * @param eval
-     * @throws Exception
+     * @throws Exception Potential exception thrown. To be handled in an upper level.
      */
     private void initializeMetaLevel(MultiLabelInstances dataSet, Classifier metaClassifier, double metaPercentage,
             ASEvaluation eval) throws Exception {
@@ -258,7 +258,7 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner {
      * baseLevelPredictions member
      *
      * @param trainingSet
-     * @throws Exception
+     * @throws Exception Potential exception thrown. To be handled in an upper level.
      */
     private void buildBaseLevel(MultiLabelInstances trainingSet) throws Exception {
         train = new Instances(trainingSet.getDataSet());
@@ -341,7 +341,7 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner {
     /**
      * Builds the ensemble of meta-level classifiers.
      *
-     * @throws Exception
+     * @throws Exception Potential exception thrown. To be handled in an upper level.
      */
     public void buildMetaLevel() throws Exception {
         debug("Building the ensemle of the meta level classifiers");
@@ -409,7 +409,7 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner {
      * Used only in case of a kNN base classifier.
      *
      * @param trainingSet the training set
-     * @throws Exception
+     * @throws Exception Potential exception thrown. To be handled in an upper level.
      */
     public void buildBaseLevelKNN(MultiLabelInstances trainingSet) throws Exception {
         train = new Instances(trainingSet.getDataSet());
@@ -607,7 +607,7 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner {
      *
      * @param original the original instances
      * @return the modified instances
-     * @throws Exception
+     * @throws Exception Potential exception thrown. To be handled in an upper level.
      */
     protected Instances detachIndexes(Instances original) throws Exception {
 
@@ -675,7 +675,7 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner {
      * Sets the type of the meta classifier and initializes the ensemble
      *
      * @param metaClassifier the type of meta classifier
-     * @throws Exception
+     * @throws Exception Potential exception thrown. To be handled in an upper level.
      */
     public void setMetaAlgorithm(Classifier metaClassifier) throws Exception {
         this.metaClassifier = metaClassifier;

@@ -180,6 +180,7 @@ public class Evaluator {
      *
      * @param learner the learner to be evaluated
      * @param mlTestData the data set for evaluation
+     * @param mlTrainData the train data set
      * @return the evaluation result
      * @throws IllegalArgumentException if either of input parameters is null.
      * @throws Exception when evaluation fails
@@ -301,7 +302,7 @@ public class Evaluator {
      *
      * @param learner the learner to be evaluated via cross-validation
      * @param data the multi-label data set for cross-validation
-     * @param someFolds
+     * @param someFolds number of folds
      * @return a {@link MultipleEvaluation} object holding the results
      */
     public MultipleEvaluation crossValidate(MultiLabelLearner learner, MultiLabelInstances data,
@@ -320,7 +321,7 @@ public class Evaluator {
      * @param learner the learner to be evaluated via cross-validation
      * @param data the multi-label data set for cross-validation
      * @param measures the evaluation measures to compute
-     * @param someFolds
+     * @param someFolds number of folds
      * @return a {@link MultipleEvaluation} object holding the results
      */
     public MultipleEvaluation crossValidate(MultiLabelLearner learner, MultiLabelInstances data,

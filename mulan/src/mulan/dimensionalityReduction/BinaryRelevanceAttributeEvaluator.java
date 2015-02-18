@@ -106,8 +106,8 @@ public class BinaryRelevanceAttributeEvaluator extends ASEvaluation implements A
     }
 
     /**
-     * @param ase
-     * @param mlData
+     * @param ase the evaluator type (weka type)
+     * @param mlData multi-label instances for evaluation
      * @param combapp combination approach mode ("max", "avg", "min")
      * @param norm normalization mode ("dl", "dm", "none")
      * @param mode scoring mode ("eval", "rank")
@@ -442,7 +442,7 @@ public class BinaryRelevanceAttributeEvaluator extends ASEvaluation implements A
     /**
      * Not supported
      *
-     * @param data
+     * @param data functionality is not supported yet
      * @throws Exception functionality is not supported yet
      */
     @Override

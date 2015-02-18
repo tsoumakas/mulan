@@ -25,9 +25,9 @@ public class ClusRandomForest extends ClusWrapperRegression {
     /**
      * Constructor.
      * 
-     * @param clusWorkingDir
-     * @param datasetName
-     * @param numTrees
+     * @param clusWorkingDir the working directory
+     * @param datasetName the dataset name
+     * @param numTrees the number of trees
      */
     public ClusRandomForest(String clusWorkingDir, String datasetName, int numTrees) {
         super(clusWorkingDir, datasetName);
@@ -45,7 +45,7 @@ public class ClusRandomForest extends ClusWrapperRegression {
      * This method creates a CLUS settings file that corresponds to the MORF algorithm and writes it in
      * clusWorkingDir.
      * 
-     * @throws Exception
+     * @throws Exception Potential exception thrown. To be handled in an upper level.
      */
     private void createSettingsFile() throws Exception {
         BufferedWriter out = new BufferedWriter(new FileWriter(new File(clusWorkingDir + this.datasetName

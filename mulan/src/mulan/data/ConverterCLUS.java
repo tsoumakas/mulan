@@ -53,7 +53,7 @@ public class ConverterCLUS {
      * @param sourceFilename the source file name
      * @param arffFilename the converted arff name
      * @param xmlFilename the xml name
-     * @throws java.lang.Exception
+     * @throws java.lang.Exception Potential exception thrown. To be handled in an upper level.
      */
     public static void convert(String sourceFilename, String arffFilename, String xmlFilename) throws Exception {
         String line;

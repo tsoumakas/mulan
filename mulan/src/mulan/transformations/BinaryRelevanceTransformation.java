@@ -70,8 +70,8 @@ public class BinaryRelevanceTransformation implements Serializable {
     /**
      * Remove all label attributes except labelToKeep
      *
-     * @param instance
-     * @param labelToKeep
+     * @param instance the instance from which labels are to be removed
+     * @param labelToKeep the label to keep
      * @return transformed Instance
      */
     public Instance transformInstance(Instance instance, int labelToKeep) {
@@ -94,7 +94,7 @@ public class BinaryRelevanceTransformation implements Serializable {
     /**
      * Remove all label attributes except labelToKeep
      *
-     * @param labelToKeep
+     * @param labelToKeep the label to keep
      * @return transformed Instances object
      * @throws Exception when removal fails
      */
@@ -119,9 +119,9 @@ public class BinaryRelevanceTransformation implements Serializable {
     /**
      * Remove all label attributes except that at indexOfLabelToKeep
      *
-     * @param train
-     * @param labelIndices
-     * @param indexToKeep
+     * @param train -
+     * @param labelIndices - 
+     * @param indexToKeep the label to keep
      * @return transformed Instances object
      * @throws Exception when removal fails
      */
@@ -152,9 +152,9 @@ public class BinaryRelevanceTransformation implements Serializable {
     /**
      * Remove all label attributes except label at position indexToKeep
      *
-     * @param instance
-     * @param labelIndices
-     * @param indexToKeep
+     * @param instance the instance from which labels are to be removed
+     * @param labelIndices the label indices to remove
+     * @param indexToKeep the label to keep
      * @return transformed Instance
      */
     public static Instance transformInstance(Instance instance, int[] labelIndices, int indexToKeep) {

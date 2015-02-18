@@ -32,7 +32,11 @@ public class AverageRMSE extends RegressionMeasureBase implements MacroAverageMe
     /** counts the number of non-missing values per target */
     protected int[] nonMissingCounter;
 
-    /** returns the number of non missing values for this target **/
+    /**
+     * returns the number of non missing values for this target
+     * @param targetIndex index of the target
+     * @return the number of non missing values
+     */
     public int getNumNonMissing(int targetIndex) {
         return nonMissingCounter[targetIndex];
     }

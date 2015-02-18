@@ -292,7 +292,10 @@ public class ExperimentMTR {
         return stLearner;
     }
 
-    /** Get CPU time in milliseconds. */
+    /** 
+     * Get CPU time in milliseconds.
+     * @return the CPU time in ms
+     */
     public static long getCpuTime() {
         ThreadMXBean bean = ManagementFactory.getThreadMXBean();
         return bean.isCurrentThreadCpuTimeSupported() ? (long) ((double) bean

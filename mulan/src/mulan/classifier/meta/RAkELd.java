@@ -198,7 +198,7 @@ public class RAkELd extends MultiLabelMetaLearner {
      * 
      * @param mlTrainData the training data
      * @param model the model to train
-     * @throws Exception
+     * @throws Exception Potential exception thrown. To be handled in an upper level.
      */
     public void updateClassifier(MultiLabelInstances mlTrainData, int model) throws Exception {
         Instances trainData = mlTrainData.getDataSet();

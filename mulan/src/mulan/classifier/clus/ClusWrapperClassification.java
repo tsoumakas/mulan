@@ -161,7 +161,7 @@ public class ClusWrapperClassification extends MultiLabelLearnerBase {
      * 
      * @param mlDataset the dataset as a MultiLabelInstances object
      * @param fileName the name of the generated arff file
-     * @throws Exception
+     * @throws Exception Potential exception thrown. To be handled in an upper level.
      */
     public static void makeClusCompliant(MultiLabelInstances mlDataset, String fileName) throws Exception {
         BufferedWriter out = new BufferedWriter(new FileWriter(new File(fileName)));

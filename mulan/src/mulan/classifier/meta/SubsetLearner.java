@@ -228,7 +228,7 @@ public class SubsetLearner extends MultiLabelMetaLearner {
      *
      * @param trainingSet The initial {@link mulan.data.MultiLabelInstances}
      * dataset
-     * @throws Exception
+     * @throws Exception Potential exception thrown. To be handled in an upper level.
      */
     @Override
     protected void buildInternal(MultiLabelInstances trainingSet) throws Exception {
@@ -293,7 +293,7 @@ public class SubsetLearner extends MultiLabelMetaLearner {
      * @param totalSplitNo the total number of previous splits within the
      * label-set partition
      * @param modelKey the unique key of the trainingSet and the labels subset
-     * @throws Exception
+     * @throws Exception Potential exception thrown. To be handled in an upper level.
      */
     private void buildMultiLabelModel(MultiLabelInstances trainingSet, int countMulti,
             int totalSplitNo, String modelKey) throws Exception {
@@ -330,7 +330,7 @@ public class SubsetLearner extends MultiLabelMetaLearner {
      * @param totalSplitNo the total number of previous splits within the
      * label-set partition
      * @param modelKey the unique key of the trainingSet and the labels subset
-     * @throws Exception
+     * @throws Exception Potential exception thrown. To be handled in an upper level.
      */
     private void buildSingleLabelModel(MultiLabelInstances trainingSet, int countSingle,
             int totalSplitNo, String modelKey) throws Exception {
@@ -428,7 +428,7 @@ public class SubsetLearner extends MultiLabelMetaLearner {
      * @param instance the instance for classification prediction
      * @return the {@link mulan.classifier.MultiLabelOutput} classification
      * prediction for the instance
-     * @throws Exception
+     * @throws Exception Potential exception thrown. To be handled in an upper level.
      */
     public MultiLabelOutput makePredictionInternal(Instance instance) throws Exception {
         MultiLabelOutput[] MLO = new MultiLabelOutput[splitOrder.length];

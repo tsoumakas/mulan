@@ -193,7 +193,7 @@ public class TwoStageClassifierChainArchitecture extends TransformationBasedMult
      *
      * @param instance the instance used 
      * @return prediction the prediction made
-     * @throws java.lang.Exception
+     * @throws java.lang.Exception Potential exception thrown. To be handled in an upper level.
      */
     protected MultiLabelOutput makePredictionInternal(Instance instance) throws Exception {
         return makePredictionTSCCV(instance);
@@ -208,7 +208,7 @@ public class TwoStageClassifierChainArchitecture extends TransformationBasedMult
      *
      * @param instance the instance used
      * @return prediction the prediction made
-     * @throws java.lang.Exception
+     * @throws java.lang.Exception Potential exception thrown. To be handled in an upper level.
      */
     private MultiLabelOutput makePredictionTSCCV(Instance instance) throws Exception {
         boolean[] bipartition = new boolean[numLabels];

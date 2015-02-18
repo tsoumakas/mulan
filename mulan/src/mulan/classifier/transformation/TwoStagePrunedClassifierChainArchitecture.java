@@ -100,7 +100,7 @@ public class TwoStagePrunedClassifierChainArchitecture extends TransformationBas
     /**
      * Set threshold to concrete value.
      *
-     * @param threshold
+     * @param threshold threshold value to set
      */
     public void setTreshold(double threshold) {
         this.threshold = threshold;
@@ -195,9 +195,9 @@ public class TwoStagePrunedClassifierChainArchitecture extends TransformationBas
      * missing Temporary included to switch between standard voting and
      * qweighted multilabel voting
      *
-     * @param instance
-     * @return prediction
-     * @throws java.lang.Exception
+     * @param instance the instance for which the prediction is to be made
+     * @return prediction the prediction made
+     * @throws java.lang.Exception Potential exception thrown. To be handled in an upper level.
      */
     protected MultiLabelOutput makePredictionInternal(Instance instance) throws Exception {
         return makePredictionTSCCA(instance);
@@ -213,7 +213,7 @@ public class TwoStagePrunedClassifierChainArchitecture extends TransformationBas
      *
      * @param instance
      * @return prediction
-     * @throws java.lang.Exception
+     * @throws java.lang.Exception Potential exception thrown. To be handled in an upper level.
      */
     private MultiLabelOutput makePredictionTSCCA(Instance instance) throws Exception {
         boolean[] bipartition = new boolean[numLabels];

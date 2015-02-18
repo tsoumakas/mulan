@@ -204,8 +204,8 @@ public class RAkEL extends MultiLabelMetaLearner {
     /**
      * The binomial function
      * 
-     * @param n
-     * @param m
+     * @param n Binomial coefficient index
+     * @param m Binomial coefficient index
      * @return The result of the binomial function
      */
     public static int binomial(int n, int m) {

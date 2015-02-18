@@ -99,7 +99,7 @@ public abstract class Meta extends MultiLabelMetaLearner {
      *
      * @param trainingData the training data set
      * @return the meta data for training the predictor of labels/threshold
-     * @throws Exception
+     * @throws Exception Potential exception thrown. To be handled in an upper level.
      */
     protected abstract Instances transformData(MultiLabelInstances trainingData) throws Exception;
 
@@ -190,7 +190,7 @@ public abstract class Meta extends MultiLabelMetaLearner {
      * @param instance the training instances
      * @param newValues the array to fill
      * @param xBased the type for constructing the meta dataset
-     * @throws Exception
+     * @throws Exception Potential exception thrown. To be handled in an upper level.
      */
     protected void valuesX(MultiLabelLearner learner, Instance instance, double[] newValues, MetaData xBased) throws Exception {
         MultiLabelOutput mlo;

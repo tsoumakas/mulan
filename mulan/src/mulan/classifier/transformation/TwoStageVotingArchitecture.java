@@ -94,7 +94,7 @@ public class TwoStageVotingArchitecture extends BinaryAndPairwise {
      *
      * @param instance the instance used
      * @return prediction the prediction made
-     * @throws java.lang.Exception
+     * @throws java.lang.Exception Potential exception thrown. To be handled in an upper level.
      */
     @Override
     protected MultiLabelOutput makePredictionInternal(Instance instance) throws Exception {

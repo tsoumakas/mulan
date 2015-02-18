@@ -214,7 +214,7 @@ public class ENTCS13FeatureSelection {
      * Selects all features from a sorted evaluated attribute list with
      * evaluation better than a threshold
      *
-     * @param threshold
+     * @param threshold the threshold limiting the results
      * @param sortedEvaluatedAttributeList feature ranking returned from
      * @return the indices of the selected features
      */

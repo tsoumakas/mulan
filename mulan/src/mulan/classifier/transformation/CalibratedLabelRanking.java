@@ -87,7 +87,7 @@ public class CalibratedLabelRanking extends BinaryAndPairwise {
      *
      * @param instance the instance for which the prediction is made
      * @return prediction the prediction made
-     * @throws java.lang.Exception
+     * @throws java.lang.Exception Potential exception thrown. To be handled in an upper level.
      */
     @Override
     protected MultiLabelOutput makePredictionInternal(Instance instance) throws Exception {
@@ -108,7 +108,7 @@ public class CalibratedLabelRanking extends BinaryAndPairwise {
      *
      * @param instance the instance for which the prediction is made
      * @return prediction the prediction made
-     * @throws java.lang.Exception
+     * @throws java.lang.Exception Potential exception thrown. To be handled in an upper level.
      */
     public MultiLabelOutput makePredictionStandard(Instance instance) throws Exception {
         double[] scores = getOneVsOneModels().calculateScores(instance);
@@ -164,7 +164,7 @@ public class CalibratedLabelRanking extends BinaryAndPairwise {
      *
      * @param instance the instance for which the prediction is made
      * @return prediction the prediction made
-     * @throws java.lang.Exception
+     * @throws java.lang.Exception Potential exception thrown. To be handled in an upper level.
      */
     public MultiLabelOutput makePredictionQW(Instance instance) throws Exception {
         int[] voteLabel = new int[numLabels];
@@ -291,7 +291,7 @@ public class CalibratedLabelRanking extends BinaryAndPairwise {
      *
      * @param instance the instance for which the prediction is made
      * @return prediction the prediction made
-     * @throws java.lang.Exception
+     * @throws java.lang.Exception Potential exception thrown. To be handled in an upper level.
      */
     public MultiLabelOutput makePredictionQWSoft(Instance instance) throws Exception {
         double[] voteLabel = new double[numLabels];

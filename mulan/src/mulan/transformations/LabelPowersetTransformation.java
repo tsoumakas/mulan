@@ -47,9 +47,9 @@ public class LabelPowersetTransformation implements Serializable {
 
     /**
      * 
-     * @param mlData
+     * @param mlData multi-label data
      * @return the transformed instances
-     * @throws Exception
+     * @throws Exception Potential exception thrown. To be handled in an upper level.
      */
     public Instances transformInstances(MultiLabelInstances mlData) throws Exception {
         Instances data = mlData.getDataSet();
@@ -105,10 +105,10 @@ public class LabelPowersetTransformation implements Serializable {
 
     /**
      * 
-     * @param instance
-     * @param labelIndices
+     * @param instance the instance to be transformed
+     * @param labelIndices the labels to remove.
      * @return tranformed instance
-     * @throws Exception
+     * @throws Exception Potential exception thrown. To be handled in an upper level.
      */
     public Instance transformInstance(Instance instance, int[] labelIndices) throws Exception {
         Instance transformedInstance = RemoveAllLabels.transformInstance(instance, labelIndices);

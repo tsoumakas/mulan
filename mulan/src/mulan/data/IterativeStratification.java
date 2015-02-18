@@ -50,7 +50,7 @@ public class IterativeStratification implements Stratification, TechnicalInforma
     /**
      * Constructor setting a specific random seed
      * 
-     * @param seed
+     * @param seed Seed of the random generator.
      */
     public IterativeStratification(long seed) {
         this.seed = seed;

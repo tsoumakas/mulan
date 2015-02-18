@@ -110,7 +110,7 @@ public class RegressorChain extends TransformationBasedMultiTargetRegressor {
      * used. Otherwise, a random chain is created using the given seed.
      * 
      * @param baseRegressor the base regression algorithm that will be used
-     * @throws Exception
+     * @throws Exception Potential exception thrown. To be handled in an upper level.
      */
     public RegressorChain(Classifier baseRegressor) throws Exception {
         super(baseRegressor);
@@ -121,7 +121,7 @@ public class RegressorChain extends TransformationBasedMultiTargetRegressor {
      * 
      * @param baseRegressor the base regression algorithm that will be used
      * @param aChain a chain ordering
-     * @throws Exception
+     * @throws Exception Potential exception thrown. To be handled in an upper level.
      */
     public RegressorChain(Classifier baseRegressor, int[] aChain) throws Exception {
         super(baseRegressor);

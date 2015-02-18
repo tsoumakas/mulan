@@ -35,9 +35,9 @@ public class IncludeLabelsTransformation implements Serializable {
 
     /**
      *
-     * @param mlData
+     * @param mlData multi-label data
      * @return transformed instances
-     * @throws Exception
+     * @throws Exception Potential exception thrown. To be handled in an upper level.
      */
     public Instances transformInstances(MultiLabelInstances mlData) throws Exception {
         int numLabels = mlData.getNumLabels();
@@ -92,7 +92,7 @@ public class IncludeLabelsTransformation implements Serializable {
      *
      * @param instance an unlabeled instance
      * @return a transformed unlabeled instance
-     * @throws Exception
+     * @throws Exception Potential exception thrown. To be handled in an upper level.
      */
     public Instance transformInstance(Instance instance) throws Exception {
         if (labelIndices == null) {

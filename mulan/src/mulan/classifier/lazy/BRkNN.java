@@ -156,7 +156,7 @@ public class BRkNN extends MultiLabelKNN {
      * Select the best value for k by hold-one-out cross-validation. Hamming
      * Loss is minimized
      *
-     * @throws Exception
+     * @throws Exception Potential exception thrown. To be handled in an upper level.
      */
     private void crossValidate() throws Exception {
         try {

@@ -80,7 +80,7 @@ public class EnsembleOfRegressorChains extends TransformationBasedMultiTargetReg
     /**
      * Default constructor.
      * 
-     * @throws Exception
+     * @throws Exception Potential exception thrown. To be handled in an upper level.
      */
     public EnsembleOfRegressorChains() throws Exception {
         this(new REPTree(), 10, SamplingMethod.WithReplacement);
@@ -92,7 +92,7 @@ public class EnsembleOfRegressorChains extends TransformationBasedMultiTargetReg
      * @param baseRegressor the base regression algorithm that will be used
      * @param numOfModels the number of models in the ensemble
      * @param sampling the sampling method
-     * @throws Exception
+     * @throws Exception Potential exception thrown. To be handled in an upper level.
      */
     public EnsembleOfRegressorChains(Classifier baseRegressor, int numOfModels,
             SamplingMethod sampling) throws Exception {

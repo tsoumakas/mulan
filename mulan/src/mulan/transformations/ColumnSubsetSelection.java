@@ -321,7 +321,7 @@ public class ColumnSubsetSelection implements Serializable {
      * Remove labels not being contained in the sampled label set given a data
      * instance
      *
-     * @param instance
+     * @param instance the instance from which the labels are to be removed
      * @return transformed Instance
      */
     public Instance transformInstance(Instance instance) {

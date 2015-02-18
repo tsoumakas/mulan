@@ -74,8 +74,8 @@ public class SingleTargetTransformation implements Serializable {
     /**
      * Remove all target attributes except labelToKeep
      * 
-     * @param instance
-     * @param targetToKeep
+     * @param instance the instance to be transformed
+     * @param targetToKeep the target to keep
      * @return transformed Instance
      */
     public Instance transformInstance(Instance instance, int targetToKeep) {
@@ -96,9 +96,9 @@ public class SingleTargetTransformation implements Serializable {
     /**
      * Remove all target attributes except targetToKeep
      * 
-     * @param targetToKeep
+     * @param targetToKeep the target to keep
      * @return transformed Instances object
-     * @throws Exception
+     * @throws Exception Potential exception thrown. To be handled in an upper level.
      */
     public Instances transformInstances(int targetToKeep) throws Exception {
         Instances shellCopy = new Instances(this.shell);
@@ -115,11 +115,11 @@ public class SingleTargetTransformation implements Serializable {
     /**
      * Remove all target attributes except that at indexToKeep.
      * 
-     * @param train
-     * @param targetIndices
-     * @param indexToKeep
+     * @param train -
+     * @param targetIndices the target indices to tranform
+     * @param indexToKeep the target to keep
      * @return transformed Instances object
-     * @throws Exception
+     * @throws Exception Potential exception thrown. To be handled in an upper level.
      */
     public static Instances transformInstances(Instances train, int[] targetIndices, int indexToKeep)
             throws Exception {
@@ -148,9 +148,9 @@ public class SingleTargetTransformation implements Serializable {
     /**
      * Remove all target attributes except target at position indexToKeep.
      * 
-     * @param instance
-     * @param targetIndices
-     * @param indexToKeep
+     * @param instance the instance to be transformed
+     * @param targetIndices the target indices to transform
+     * @param indexToKeep the target to keep
      * @return transformed Instance
      */
     public static Instance transformInstance(Instance instance, int[] targetIndices, int indexToKeep) {

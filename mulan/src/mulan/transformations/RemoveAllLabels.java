@@ -34,9 +34,9 @@ public class RemoveAllLabels {
 
     /**
      * 
-     * @param mlData
+     * @param mlData multi-label data
      * @return transformed instances
-     * @throws Exception
+     * @throws Exception Potential exception thrown. To be handled in an upper level.
      */
     public static Instances transformInstances(MultiLabelInstances mlData) throws Exception {
         Instances result;
@@ -50,7 +50,7 @@ public class RemoveAllLabels {
      * @param dataSet a multi-label dataset
      * @param labelIndices the indices of the labels
      * @return the transformed dataset
-     * @throws Exception
+     * @throws Exception Potential exception thrown. To be handled in an upper level.
      */
     public static Instances transformInstances(Instances dataSet, int[] labelIndices) throws Exception {
         Remove remove = new Remove();
@@ -62,8 +62,8 @@ public class RemoveAllLabels {
 
     /**
      * 
-     * @param instance
-     * @param labelIndices
+     * @param instance the instance to be transformed
+     * @param labelIndices the indices of labels to transform 
      * @return tranformed instance
      */
     public static Instance transformInstance(Instance instance, int[] labelIndices) {

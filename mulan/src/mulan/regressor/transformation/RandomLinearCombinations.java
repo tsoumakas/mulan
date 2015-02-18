@@ -61,7 +61,9 @@ public class RandomLinearCombinations extends TransformationBasedMultiTargetRegr
     /**
      * This function is used to speed-up experiments with different number of models, which we built only
      * once, but test multiple times.
-     * 
+     * @param instance the instance to predict
+     * @param model the model to use
+     * @return prediction of model on instance
      */
     public double getPredictionOfModel(Instance instance, int model) {
         try {

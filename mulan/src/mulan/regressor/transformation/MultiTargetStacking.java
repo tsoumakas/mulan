@@ -102,7 +102,7 @@ public class MultiTargetStacking extends TransformationBasedMultiTargetRegressor
      * Creates a new instance with the given base regressor at both stages.
      * 
      * @param baseRegressor the base regression algorithm that will be used in both stages
-     * @throws Exception
+     * @throws Exception Potential exception thrown. To be handled in an upper level.
      */
     public MultiTargetStacking(Classifier baseRegressor) throws Exception {
         super(baseRegressor);
@@ -114,7 +114,7 @@ public class MultiTargetStacking extends TransformationBasedMultiTargetRegressor
      * 
      * @param firstStageBaseRegressor the base regression algorithm that will be used in the first stage
      * @param secondStageBaseRegressor the base regression algorithm that will be used in the second stage
-     * @throws Exception
+     * @throws Exception Potential exception thrown. To be handled in an upper level.
      */
     public MultiTargetStacking(Classifier firstStageBaseRegressor,
             Classifier secondStageBaseRegressor) throws Exception {
@@ -141,7 +141,7 @@ public class MultiTargetStacking extends TransformationBasedMultiTargetRegressor
      * Builds the first stage regressors and populates the {@link #metaFeatures} field.
      * 
      * @param trainSet
-     * @throws Exception
+     * @throws Exception Potential exception thrown. To be handled in an upper level.
      */
     private void buildFirstStage(Instances trainSet) throws Exception {
 
@@ -223,7 +223,7 @@ public class MultiTargetStacking extends TransformationBasedMultiTargetRegressor
     /**
      * Builds the second stage regressors.
      * 
-     * @throws Exception
+     * @throws Exception Potential exception thrown. To be handled in an upper level.
      */
     private void buildSecondStage(Instances trainSet) throws Exception {
         debug("Building the second stage regressors.");
@@ -398,7 +398,7 @@ public class MultiTargetStacking extends TransformationBasedMultiTargetRegressor
     /**
      * Sets the value of {@link #includeFeatures}.
      * 
-     * @param includeAttrs
+     * @param includeAttrs the setter value
      */
     public void setIncludeAttrs(boolean includeAttrs) {
         this.includeFeatures = includeAttrs;
@@ -407,7 +407,7 @@ public class MultiTargetStacking extends TransformationBasedMultiTargetRegressor
     /**
      * Sets the value of {@link #meta}.
      * 
-     * @param meta
+     * @param meta the setter value
      */
     public void setMeta(metaType meta) {
         this.meta = meta;

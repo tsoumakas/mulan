@@ -202,7 +202,7 @@ public class Statistics implements Serializable, TechnicalInformationHandler {
      *
      * @param dataSet a multi-label dataset
      * @return a matrix containing phi correlations
-     * @throws java.lang.Exception
+     * @throws java.lang.Exception Potential exception thrown. To be handled in an upper level.
      */
     public double[][] calculatePhi(MultiLabelInstances dataSet) throws Exception {
 
@@ -302,8 +302,8 @@ public class Statistics implements Serializable, TechnicalInformationHandler {
      * returns the indices of the labels whose phi coefficient values lie
      * between -bound &lt;= phi &lt;= bound
      *
-     * @param labelIndex
-     * @param bound
+     * @param labelIndex the label index under examination
+     * @param bound the bound which limits the phi coefficient values 
      * @return the indices of the labels whose phi coefficient values lie between -bound &lt;= phi &lt;= bound
      */
     public int[] uncorrelatedLabels(int labelIndex, double bound) {
@@ -326,8 +326,8 @@ public class Statistics implements Serializable, TechnicalInformationHandler {
      * with the label which is given as a parameter. The second parameter is
      * the number of labels that will be returned.
      *
-     * @param labelIndex
-     * @param k
+     * @param labelIndex the label index under examination
+     * @param k the number of labels to be returned
      * @return the indices of the k most correlated labels
      */
     public int[] topPhiCorrelatedLabels(int labelIndex, int k) {

@@ -113,7 +113,7 @@ public class OneThreshold extends MultiLabelMetaLearner {
      * @param max the maximum threshold
      * @param the step to increase threshold from min to max
      * @return the optimal threshold
-     * @throws Exception
+     * @throws Exception Potential exception thrown. To be handled in an upper level.
      */
     private double computeThreshold(MultiLabelLearner learner, MultiLabelInstances data, BipartitionMeasureBase measure, double min, double step, double max) throws Exception {
         int numOfThresholds = (int) Math.rint((max - min) / step + 1);
@@ -184,7 +184,7 @@ public class OneThreshold extends MultiLabelMetaLearner {
      * @param measure the evaluation is based on this parameter
      * @return the sum of differences from the optimal value of the measure for
      * each instance and threshold
-     * @throws Exception
+     * @throws Exception Potential exception thrown. To be handled in an upper level.
      */
     private double computeThreshold(MultiLabelLearner learner, MultiLabelInstances data, BipartitionMeasureBase measure) throws Exception {
         double stage1 = computeThreshold(learner, data, measure, 0, 0.1, 1);

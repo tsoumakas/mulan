@@ -128,7 +128,7 @@ public class Pairwise extends TransformationBasedMultiLabelLearner {
      * @param instance an instance who has passed through the pairwise
      * transformation filter
      * @return an array with the sum of scores/votes for the labels
-     * @throws Exception
+     * @throws Exception Potential exception thrown. To be handled in an upper level.
      */
     public double[] calculateScores(Instance instance) throws Exception {
         Instance transformed = pt.transformInstance(instance);

@@ -176,7 +176,7 @@ public class MLkNN extends MultiLabelKNN {
     /**
      * Computing Cond and CondN Probabilities for each class of the training set
      *
-     * @throws Exception
+     * @throws Exception Potential exception thrown. To be handled in an upper level.
      */
     private void ComputeCond() throws Exception {
         int[][] temp_Ci = new int[numLabels][numOfNeighbors + 1];

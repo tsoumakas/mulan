@@ -18,6 +18,7 @@ package mulan.classifier.meta;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
 import mulan.classifier.MultiLabelLearner;
 import mulan.classifier.MultiLabelOutput;
 import mulan.classifier.transformation.BinaryRelevance;
@@ -293,7 +294,7 @@ public class HMC extends MultiLabelMetaLearner {
      * @param currentLabel the name of the node whose children will be kept as attributes
      * @param keepSubTree whether to keep the subtree
      * @return MultiLabelInstances
-     * @throws mulan.data.InvalidDataFormatException
+     * @throws mulan.data.InvalidDataFormatException InvalidDataFormatException In case of unexpected data format, checked exception due to instantiated MutlilabelInstances.
      */
     protected MultiLabelInstances deleteLabels(MultiLabelInstances mlData, String currentLabel, boolean keepSubTree) throws InvalidDataFormatException {
         LabelsMetaData currentMetaData = mlData.getLabelsMetaData();

@@ -38,8 +38,9 @@ public class LabelPowersetAttributeEvaluator extends ASEvaluation implements Att
     private ASEvaluation baseAttributeEvaluator;
 
     /** Constructor that uses an evaluator on a multi-label dataset
-     * @param x
-     * @param mlData */
+     * @param x the evaluator type (weka type)
+     * @param mlData multi-label instances for evaluation
+     */
     public LabelPowersetAttributeEvaluator(ASEvaluation x, MultiLabelInstances mlData) {
         baseAttributeEvaluator = x;
         LabelPowersetTransformation lpt = new LabelPowersetTransformation();
@@ -67,7 +68,7 @@ public class LabelPowersetAttributeEvaluator extends ASEvaluation implements Att
     /**
      * Not supported
      *
-     * @param arg0
+     * @param arg0 functionality is not supported yet
      * @throws Exception functionality is not supported yet
      */
     @Override

@@ -74,7 +74,7 @@ public class MLPTO extends MultiLabelMetaLearner {
      * probabilities of the labels
      * @param EBBM the measure function to be optimized.
      * @return the number of labels to optimize the loss function
-     * @throws Exception
+     * @throws Exception Potential exception thrown. To be handled in an upper level.
      */
     private int OptimizeFLoss(double[] orderedProbabilities, ExampleBasedBipartitionMeasureBase EBBM) throws Exception {
         int NLabels;
@@ -197,7 +197,7 @@ public class MLPTO extends MultiLabelMetaLearner {
      *
      * @param confidences an array with the probabilities of each label
      * @return the optimal threshold for the given loss function
-     * @throws Exception
+     * @throws Exception Potential exception thrown. To be handled in an upper level.
      */
     private double calculateThreshold(double[] confidences) throws Exception {
         double newThreshold;
@@ -219,7 +219,7 @@ public class MLPTO extends MultiLabelMetaLearner {
      *
      * @param vector the array to be ordered
      * @return the descending ordered vector
-     * @throws Exception
+     * @throws Exception Potential exception thrown. To be handled in an upper level.
      */
     private double[] sort(double[] vector) {
         ArrayList<Double> array = new ArrayList<>();

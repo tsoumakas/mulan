@@ -60,7 +60,7 @@ public class MultipleEvaluation {
      * 
      * @param data the evaluation data used for obtaining label names for per outputting per label
      *            values of macro average measures
-     * @param someEvaluations
+     * @param someEvaluations the array of evaluations
      */
     public MultipleEvaluation(Evaluation[] someEvaluations, MultiLabelInstances data) {
         evaluations = new ArrayList<Evaluation>();

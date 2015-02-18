@@ -46,6 +46,7 @@ public class ExperimentRLC {
      *            -eval "evaluation type 'cv' and 'holdout' are supported (default: cv)"<br>
      *            -models "maximum number of models in the RLC method" (default: number of targets)<br>
      *            -seed "a seed number used for random number generation" (default: 1)<br>
+     * @throws Exception Potential exception thrown. To be handled in an upper level.
      */
     public static void main(String[] args) throws Exception {
         String path = Utils.getOption("path", args);

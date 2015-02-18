@@ -121,7 +121,7 @@ public class RCut extends MultiLabelMetaLearner {
      * @param measure performance is evaluated based on this parameter
      * @param folds number of cross-validation folds
      * @throws InvalidDataFormatException
-     * @throws Exception
+     * @throws Exception Potential exception thrown. To be handled in an upper level.
      */
     private void autoTuneThreshold(MultiLabelInstances trainingData, BipartitionMeasureBase measure, int folds) throws InvalidDataFormatException, Exception {
         if (folds < 2) {
@@ -152,7 +152,7 @@ public class RCut extends MultiLabelMetaLearner {
      * @param measure the evaluation is based on this parameter
      * @return the sum of differences from the optimal value of the measure for
      * each instance and threshold
-     * @throws Exception
+     * @throws Exception Potential exception thrown. To be handled in an upper level.
      */
     private double[] computeThreshold(MultiLabelLearner learner, MultiLabelInstances data, BipartitionMeasureBase measure) throws Exception {
         double[] diff = new double[numLabels + 1];

@@ -82,7 +82,7 @@ public class HierarchyBuilder implements Serializable {
      *
      * @param mlData the multiLabel data on which the new hierarchy will be built
      * @return the new multiLabel data
-     * @throws java.lang.Exception
+     * @throws java.lang.Exception Potential exception thrown. To be handled in an upper level.
      */
     public MultiLabelInstances buildHierarchy(MultiLabelInstances mlData) throws Exception {
         LabelsMetaData labelsMetaData = buildLabelHierarchy(mlData);
@@ -96,7 +96,7 @@ public class HierarchyBuilder implements Serializable {
      *
      * @param mlData the multiLabel data on with the new hierarchy will be built
      * @return a hierarchy of labels
-     * @throws java.lang.Exception
+     * @throws java.lang.Exception Potential exception thrown. To be handled in an upper level.
      */
     public LabelsMetaData buildLabelHierarchy(MultiLabelInstances mlData) throws Exception {
         if (numPartitions > mlData.getNumLabels()) {
@@ -156,7 +156,7 @@ public class HierarchyBuilder implements Serializable {
      * @param arffName the name of the hierachical data
      * @param xmlName the filename for the hirearchy
      * @return the hierarchical data
-     * @throws Exception 
+     * @throws Exception Potential exception thrown. To be handled in an upper level.
      */
     public MultiLabelInstances buildHierarchyAndSaveFiles(MultiLabelInstances mlData, String arffName, String xmlName) throws Exception {
         MultiLabelInstances newData = buildHierarchy(mlData);
@@ -305,7 +305,7 @@ public class HierarchyBuilder implements Serializable {
      * @param mlData the original multilabel instances
      * @param metaData the metadata of the constructed label hierarchy
      * @return the produced dataset
-     * @throws InvalidDataFormatException 
+     * @throws InvalidDataFormatException In case of unexpected data format, checked exception due to instantiated MutlilabelInstances.
      */
     public static MultiLabelInstances createHierarchicalDataset(MultiLabelInstances mlData, LabelsMetaData metaData) throws InvalidDataFormatException {
         Set<String> leafLabels = mlData.getLabelsMetaData().getLabelNames();
