@@ -49,7 +49,7 @@ import weka.core.Instances;
 import weka.core.converters.ArffSaver;
 
 /**
- * Class that builds a hierarchy on flat lables of given mulltilabel data.
+ * Class that builds a hierarchy on flat labels of given multi-label data.
  * The hierarchy may be built with three methods.
  *
  * @author George Saridis
@@ -63,7 +63,7 @@ public class HierarchyBuilder implements Serializable {
     private Method method;
 
     /**
-     * Constructs a new istance based on given number of partitions and method
+     * Constructs a new instance based on given number of partitions and method
      * 
      * @param partitions the number of partitions
      * @param method the partitioning method
@@ -74,7 +74,7 @@ public class HierarchyBuilder implements Serializable {
     }
 
     /**
-     * Builds a hierarhical multi-label dataset. Firstly a random hierarchy is
+     * Builds a hierarchical multi-label dataset. Firstly a random hierarchy is
      * built on top of the labels of a flat multi-label dataset, by recursively
      * randomly partitioning the labels into a specified number of clusters.
      * Then the values for the new "meta-labels" are properly set, so that
@@ -90,7 +90,7 @@ public class HierarchyBuilder implements Serializable {
     }
 
     /**
-     * Builds a hierarhy of labels on top of the labels of a flat multi-label
+     * Builds a hierarchy of labels on top of the labels of a flat multi-label
      * dataset, by recursively partitioning the labels into a specified number
      * of partitions.
      *
