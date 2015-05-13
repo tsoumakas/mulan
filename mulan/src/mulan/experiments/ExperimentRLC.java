@@ -21,8 +21,7 @@ import weka.filters.unsupervised.attribute.Normalize;
 /**
  * <p>
  * Class replicating the experiment in
- * <em>Grigorios Tsoumakas, Eleftherios Spyromitros-Xioufis, Aikaterini Vrekou, Ioannis Vlahavas. 2014. Multi-Target Regression via Random Linear Target
- * Combinations. <a href="http://arxiv.org/abs/1404.5065">arXiv e-prints</a></em>
+ * <em>G. Tsoumakas, E. Spyromitros-Xioufis, A. Vrekou, I. Vlahavas, "Multi-Target Regression via Random Linear Target Combinations", Proc. of ECML PKDD 2014, Springer, Nancy, France, 2014.</em>
  * </p>
  * 
  * @author Eleftherios Spyromitros-Xioufis
