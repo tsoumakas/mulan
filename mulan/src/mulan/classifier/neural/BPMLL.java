@@ -41,13 +41,13 @@ import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.NominalToBinary;
 
 /**
- <!-- globalinfo-start -->
- * The implementation of Back-Propagation Multi-Label Learning (BPMLL) learner. The learned model is stored in {&#64;link NeuralNet} neural network. The models of the learner built by {&#64;link BPMLLAlgorithm} from given training data set.
- * <br>
- <!-- globalinfo-end -->
+ * <!-- globalinfo-start --> The implementation of Back-Propagation Multi-Label Learning (BPMLL) learner. The
+ * learned model is stored in {@link NeuralNet} neural network. The models of the learner built by
+ * {@link BPMLLAlgorithm} from given training data set. <br>
+ * <!-- globalinfo-end -->
  *
- <!-- technical-bibtex-start -->
- * BibTeX:
+ * <!-- technical-bibtex-start --> BibTeX:
+ * 
  * <pre>
  * &#64;article{Zhang2006,
  *    author = {Zhang, M.L., Zhou, Z.H.},
@@ -58,8 +58,9 @@ import weka.filters.unsupervised.attribute.NominalToBinary;
  *    year = {2006}
  * }
  * </pre>
+ * 
  * <br>
- <!-- technical-bibtex-end -->
+ * <!-- technical-bibtex-end -->
  *
  * @see BPMLLAlgorithm
  * @author Jozef Vilcek
