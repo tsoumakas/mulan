@@ -21,9 +21,8 @@ import weka.filters.unsupervised.attribute.Remove;
 
 /**
  * <p>
- * Implementation of the multi-target regression method presented in
- * <em>Grigorios Tsoumakas, Eleftherios Spyromitros-Xioufis, Aikaterini Vrekou, Ioannis Vlahavas. 2014. Multi-Target Regression via Random Linear Target
- * Combinations. <a href="http://arxiv.org/abs/1404.5065">arXiv e-prints</a></em>
+ * Implementation of the Random Linear Target Combinations method.<br>
+ * <em>G. Tsoumakas, E. Spyromitros-Xioufis, A. Vrekou, I. Vlahavas, "Multi-Target Regression via Random Linear Target Combinations", Proc. of ECML PKDD 2014, Springer, Nancy, France, 2014.</em>
  * </p>
  * 
  * @author Grigorios Tsoumakas
@@ -61,6 +60,7 @@ public class RandomLinearCombinations extends TransformationBasedMultiTargetRegr
     /**
      * This function is used to speed-up experiments with different number of models, which we built only
      * once, but test multiple times.
+     * 
      * @param instance the instance to predict
      * @param model the model to use
      * @return prediction of model on instance
