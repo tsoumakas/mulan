@@ -1,0 +1,2 @@
+# mulan
+Mulan is an open-source Java library for learning from multi-label datasets. Multi-label datasets consist of training examples of a target function that has multiple binary target variables. This means that each item of a multi-label dataset can be a member of multiple categories or annotated by many labels (classes). This is actually the nature of many real world problems such as semantic annotation of images and video, web page categorization, direct marketing, functional genomics and music categorization into genres and emotions. 
