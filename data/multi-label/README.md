@@ -320,6 +320,13 @@ The following multi-label datasets are properly formatted for use with Mulan. We
 
 ### bibtex
 
-Train and test sets along with their union and the XML header [bibtex.rar]
+Files: [Train and test sets along with their union and the XML header]()
 
-[I. Katakis, G. Tsoumakas, I. Vlahavas, "Multilabel Text Classification for Automated Tag Suggestion", Proceedings of the ECML/PKDD 2008 Discovery Challenge, Antwerp, Belgium, 2008.](http://intelligence.csd.auth.gr/publication/conference-papers/multilabel-text-classification-for-automated-tag-suggestion) 
+Source: [I. Katakis, G. Tsoumakas, I. Vlahavas, "Multilabel Text Classification for Automated Tag Suggestion", Proceedings of the ECML/PKDD 2008 Discovery Challenge, Antwerp, Belgium, 2008.](http://intelligence.csd.auth.gr/publication/conference-papers/multilabel-text-classification-for-automated-tag-suggestion) 
+
+### birds
+
+Files: [Train and test set along with the XML header]()
+
+Source: [F. Briggs, Yonghong Huang, R. Raich, K. Eftaxias, Zhong Lei, W. Cukierski, S. Hadley, A. Hadley, M. Betts, X. Fern, J. Irvine, L. Neal, A. Thomas, G. Fodor, G. Tsoumakas, Hong Wei Ng, Thi Ngoc Tho Nguyen, H. Huttunen, P. Ruusuvuori, T. Manninen, A. Diment, T. Virtanen, J. Marzat, J. Defretin, D. Callender, C. Hurlburt, K. Larrey, M. Milakov. "The 9th annual MLSP competition: New methods for acoustic classification of multiple simultaneous bird species in a noisy environment", in proc. 2013 IEEE International Workshop on Machine Learning for Signal Processing (MLSP).](http://dx.doi.org/10.1109/MLSP.2013.6661934)
+
