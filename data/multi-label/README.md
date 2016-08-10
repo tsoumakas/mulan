@@ -2,6 +2,8 @@
 
 The following multi-label datasets are properly formatted for use with Mulan. We initially provide a table with dataset statistics, followed by the actual files and sources. 
 
+## Statistics
+
 <table border="0" cellpadding="2" cellspacing="1" width="200" style="font-size:0.9em">
           <tbody>
             <tr style="background-color:#D4F8BC">
@@ -37,8 +39,7 @@ The following multi-label datasets are properly formatted for use with Mulan. We
               <td align="right" nowrap="nowrap">2856</td>
             </tr>
             <tr style="background-color:#f0f0f0">
-              <td nowrap="nowrap">birds
-			  <img alt="new dataset" height="11" src="graphics/new2.gif" width="28" /></td>
+              <td nowrap="nowrap">birds</td>
               <td align="center" nowrap="nowrap">audio</td>
               <td align="right" nowrap="nowrap">645</td>
               <td align="right" nowrap="nowrap">2</td>
@@ -125,7 +126,6 @@ The following multi-label datasets are properly formatted for use with Mulan. We
               <td align="right" nowrap="nowrap">0.064</td>
               <td align="right" nowrap="nowrap">753</td>
             </tr>
-
             <tr style="background-color:#f0f0f0">
               <td nowrap="nowrap">EUR-Lex (directory codes) </td>
               <td align="center" nowrap="nowrap">text</td>
@@ -204,7 +204,7 @@ The following multi-label datasets are properly formatted for use with Mulan. We
               <td align="right" nowrap="nowrap">94</td>
             </tr>
             <tr style="background-color:#f7f7f7">
-              <td nowrap="nowrap">NUS-WIDE<img alt="new dataset" height="11" src="graphics/new2.gif" width="28" /></td>
+              <td nowrap="nowrap">NUS-WIDE</td>
               <td align="center" nowrap="nowrap">images</td>
               <td align="right" nowrap="nowrap">269648</td>
               <td align="right" nowrap="nowrap">0</td>
@@ -321,4 +321,5 @@ The following multi-label datasets are properly formatted for use with Mulan. We
 ### bibtex
 
 Train and test sets along with their union and the XML header [bibtex.rar]
+
 [I. Katakis, G. Tsoumakas, I. Vlahavas, "Multilabel Text Classification for Automated Tag Suggestion", Proceedings of the ECML/PKDD 2008 Discovery Challenge, Antwerp, Belgium, 2008.](http://intelligence.csd.auth.gr/publication/conference-papers/multilabel-text-classification-for-automated-tag-suggestion) 
