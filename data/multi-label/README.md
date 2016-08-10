@@ -344,3 +344,18 @@ Source: [Douglas Turnbull, Luke Barrington, David Torres and Gert Lanckriet, Sem
 
 More information: [http://cosmal.ucsd.edu/cal/projects/AnnRet/](http://cosmal.ucsd.edu/cal/projects/AnnRet/)
 
+###  corel5k
+
+Files: [Train and test sets along with their union and the XML header]()
+
+Source: [Pinar Duygulu, Kobus Barnard, Nando de Freitas, and David Forsyth, Object recognition as machine translation: Learning a lexicon for a fixed image vocabulary, 7th European Conference on Computer Vision, pp IV:97-112, 2002.](http://dx/doi.org/10.1007/3-540-47979-1_7)
+
+More information: [http://kobus.ca/research/data/eccv_2002/](http://kobus.ca/research/data/eccv_2002/)
+
+### corel16k
+
+Files: [10 different samples containing the train, test and test3 disjoint sets along with their union and the XML header]()
+
+Source: ["Matching Words and Pictures", by Kobus Barnard, Pinar Duygulu, Nando de Freitas, David Forsyth, David Blei, and Michael I. Jordan, Journal of Machine Learning Research, Vol 3, pp 1107-1135.](http://www.jmlr.org/papers/v3/barnard03a.html)
+
+More information: [http://kobus.ca/research/data/jmlr_2003/](http://kobus.ca/research/data/jmlr_2003/)
