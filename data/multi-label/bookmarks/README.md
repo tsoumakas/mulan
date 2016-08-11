@@ -4,7 +4,7 @@
 
 # Files
 
-| name           | description                     |
-| -------------- | ------------------------------- |
-| bookmarks.xml  | header file                     |
-| bookmarks.arff | union of training and test sets |
+| name           | description |
+| -------------- | ----------- |
+| bookmarks.xml  | header file |
+| bookmarks.arff | data set    |
