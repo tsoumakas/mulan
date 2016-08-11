@@ -316,46 +316,4 @@ The following multi-label datasets are properly formatted for use with Mulan. We
           </tbody>
         </table>
 
-## Files and Sources
 
-### bibtex
-
-Files: [Train and test sets along with their union and the XML header]()
-
-Source: [I. Katakis, G. Tsoumakas, I. Vlahavas, "Multilabel Text Classification for Automated Tag Suggestion", Proceedings of the ECML/PKDD 2008 Discovery Challenge, Antwerp, Belgium, 2008.](http://intelligence.csd.auth.gr/publication/conference-papers/multilabel-text-classification-for-automated-tag-suggestion) 
-
-### birds
-
-Files: [Train and test set along with the XML header]()
-
-Source: [F. Briggs, Yonghong Huang, R. Raich, K. Eftaxias, Zhong Lei, W. Cukierski, S. Hadley, A. Hadley, M. Betts, X. Fern, J. Irvine, L. Neal, A. Thomas, G. Fodor, G. Tsoumakas, Hong Wei Ng, Thi Ngoc Tho Nguyen, H. Huttunen, P. Ruusuvuori, T. Manninen, A. Diment, T. Virtanen, J. Marzat, J. Defretin, D. Callender, C. Hurlburt, K. Larrey, M. Milakov. "The 9th annual MLSP competition: New methods for acoustic classification of multiple simultaneous bird species in a noisy environment", in proc. 2013 IEEE International Workshop on Machine Learning for Signal Processing (MLSP).](http://dx.doi.org/10.1109/MLSP.2013.6661934)
-
-### bookmarks
-
-Files: [Union of train and test sets along with the XML header (sparse)]()
-
-Source: [I. Katakis, G. Tsoumakas, I. Vlahavas, "Multilabel Text Classification for Automated Tag Suggestion", Proceedings of the ECML/PKDD 2008 Discovery Challenge, Antwerp, Belgium, 2008.](http://intelligence.csd.auth.gr/publication/conference-papers/multilabel-text-classification-for-automated-tag-suggestion) 
-
-### CAL500
-
-Files: [Dataset along with the XML header]()
-
-Source: [Douglas Turnbull, Luke Barrington, David Torres and Gert Lanckriet, Semantic Annotation and Retrieval of Music and Sound Effects, IEEE Transactions on Audio, Speech and Language Processing 16(2), pp. 467-476, 2008.](http://dx.doi.org/10.1109/TASL.2007.913750)
-
-More information: [http://cosmal.ucsd.edu/cal/projects/AnnRet/](http://cosmal.ucsd.edu/cal/projects/AnnRet/)
-
-###  corel5k
-
-Files: [Train and test sets along with their union and the XML header]()
-
-Source: [Pinar Duygulu, Kobus Barnard, Nando de Freitas, and David Forsyth, Object recognition as machine translation: Learning a lexicon for a fixed image vocabulary, 7th European Conference on Computer Vision, pp IV:97-112, 2002.](http://dx/doi.org/10.1007/3-540-47979-1_7)
-
-More information: [http://kobus.ca/research/data/eccv_2002/](http://kobus.ca/research/data/eccv_2002/)
-
-### corel16k
-
-Files: [10 different samples containing the train, test and test3 disjoint sets along with their union and the XML header]()
-
-Source: ["Matching Words and Pictures", by Kobus Barnard, Pinar Duygulu, Nando de Freitas, David Forsyth, David Blei, and Michael I. Jordan, Journal of Machine Learning Research, Vol 3, pp 1107-1135.](http://www.jmlr.org/papers/v3/barnard03a.html)
-
-More information: [http://kobus.ca/research/data/jmlr_2003/](http://kobus.ca/research/data/jmlr_2003/)
