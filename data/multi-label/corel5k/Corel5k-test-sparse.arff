@@ -1,0 +1,1377 @@
+@relation Corel5k-test-weka.filters.unsupervised.instance.NonSparseToSparse
+
+@attribute Cluster1 {0,1}
+@attribute Cluster2 {0,1}
+@attribute Cluster3 {0,1}
+@attribute Cluster4 {0,1}
+@attribute Cluster5 {0,1}
+@attribute Cluster6 {0,1}
+@attribute Cluster7 {0,1}
+@attribute Cluster8 {0,1}
+@attribute Cluster9 {0,1}
+@attribute Cluster10 {0,1}
+@attribute Cluster11 {0,1}
+@attribute Cluster12 {0,1}
+@attribute Cluster13 {0,1}
+@attribute Cluster14 {0,1}
+@attribute Cluster15 {0,1}
+@attribute Cluster16 {0,1}
+@attribute Cluster17 {0,1}
+@attribute Cluster18 {0,1}
+@attribute Cluster19 {0,1}
+@attribute Cluster20 {0,1}
+@attribute Cluster21 {0,1}
+@attribute Cluster22 {0,1}
+@attribute Cluster23 {0,1}
+@attribute Cluster24 {0,1}
+@attribute Cluster25 {0,1}
+@attribute Cluster26 {0,1}
+@attribute Cluster27 {0,1}
+@attribute Cluster28 {0,1}
+@attribute Cluster29 {0,1}
+@attribute Cluster30 {0,1}
+@attribute Cluster31 {0,1}
+@attribute Cluster32 {0,1}
+@attribute Cluster33 {0,1}
+@attribute Cluster34 {0,1}
+@attribute Cluster35 {0,1}
+@attribute Cluster36 {0,1}
+@attribute Cluster37 {0,1}
+@attribute Cluster38 {0,1}
+@attribute Cluster39 {0,1}
+@attribute Cluster40 {0,1}
+@attribute Cluster41 {0,1}
+@attribute Cluster42 {0,1}
+@attribute Cluster43 {0,1}
+@attribute Cluster44 {0,1}
+@attribute Cluster45 {0,1}
+@attribute Cluster46 {0,1}
+@attribute Cluster47 {0,1}
+@attribute Cluster48 {0,1}
+@attribute Cluster49 {0,1}
+@attribute Cluster50 {0,1}
+@attribute Cluster51 {0,1}
+@attribute Cluster52 {0,1}
+@attribute Cluster53 {0,1}
+@attribute Cluster54 {0,1}
+@attribute Cluster55 {0,1}
+@attribute Cluster56 {0,1}
+@attribute Cluster57 {0,1}
+@attribute Cluster58 {0,1}
+@attribute Cluster59 {0,1}
+@attribute Cluster60 {0,1}
+@attribute Cluster61 {0,1}
+@attribute Cluster62 {0,1}
+@attribute Cluster63 {0,1}
+@attribute Cluster64 {0,1}
+@attribute Cluster65 {0,1}
+@attribute Cluster66 {0,1}
+@attribute Cluster67 {0,1}
+@attribute Cluster68 {0,1}
+@attribute Cluster69 {0,1}
+@attribute Cluster70 {0,1}
+@attribute Cluster71 {0,1}
+@attribute Cluster72 {0,1}
+@attribute Cluster73 {0,1}
+@attribute Cluster74 {0,1}
+@attribute Cluster75 {0,1}
+@attribute Cluster76 {0,1}
+@attribute Cluster77 {0,1}
+@attribute Cluster78 {0,1}
+@attribute Cluster79 {0,1}
+@attribute Cluster80 {0,1}
+@attribute Cluster81 {0,1}
+@attribute Cluster82 {0,1}
+@attribute Cluster83 {0,1}
+@attribute Cluster84 {0,1}
+@attribute Cluster85 {0,1}
+@attribute Cluster86 {0,1}
+@attribute Cluster87 {0,1}
+@attribute Cluster88 {0,1}
+@attribute Cluster89 {0,1}
+@attribute Cluster90 {0,1}
+@attribute Cluster91 {0,1}
+@attribute Cluster92 {0,1}
+@attribute Cluster93 {0,1}
+@attribute Cluster94 {0,1}
+@attribute Cluster95 {0,1}
+@attribute Cluster96 {0,1}
+@attribute Cluster97 {0,1}
+@attribute Cluster98 {0,1}
+@attribute Cluster99 {0,1}
+@attribute Cluster100 {0,1}
+@attribute Cluster101 {0,1}
+@attribute Cluster102 {0,1}
+@attribute Cluster103 {0,1}
+@attribute Cluster104 {0,1}
+@attribute Cluster105 {0,1}
+@attribute Cluster106 {0,1}
+@attribute Cluster107 {0,1}
+@attribute Cluster108 {0,1}
+@attribute Cluster109 {0,1}
+@attribute Cluster110 {0,1}
+@attribute Cluster111 {0,1}
+@attribute Cluster112 {0,1}
+@attribute Cluster113 {0,1}
+@attribute Cluster114 {0,1}
+@attribute Cluster115 {0,1}
+@attribute Cluster116 {0,1}
+@attribute Cluster117 {0,1}
+@attribute Cluster118 {0,1}
+@attribute Cluster119 {0,1}
+@attribute Cluster120 {0,1}
+@attribute Cluster121 {0,1}
+@attribute Cluster122 {0,1}
+@attribute Cluster123 {0,1}
+@attribute Cluster124 {0,1}
+@attribute Cluster125 {0,1}
+@attribute Cluster126 {0,1}
+@attribute Cluster127 {0,1}
+@attribute Cluster128 {0,1}
+@attribute Cluster129 {0,1}
+@attribute Cluster130 {0,1}
+@attribute Cluster131 {0,1}
+@attribute Cluster132 {0,1}
+@attribute Cluster133 {0,1}
+@attribute Cluster134 {0,1}
+@attribute Cluster135 {0,1}
+@attribute Cluster136 {0,1}
+@attribute Cluster137 {0,1}
+@attribute Cluster138 {0,1}
+@attribute Cluster139 {0,1}
+@attribute Cluster140 {0,1}
+@attribute Cluster141 {0,1}
+@attribute Cluster142 {0,1}
+@attribute Cluster143 {0,1}
+@attribute Cluster144 {0,1}
+@attribute Cluster145 {0,1}
+@attribute Cluster146 {0,1}
+@attribute Cluster147 {0,1}
+@attribute Cluster148 {0,1}
+@attribute Cluster149 {0,1}
+@attribute Cluster150 {0,1}
+@attribute Cluster151 {0,1}
+@attribute Cluster152 {0,1}
+@attribute Cluster153 {0,1}
+@attribute Cluster154 {0,1}
+@attribute Cluster155 {0,1}
+@attribute Cluster156 {0,1}
+@attribute Cluster157 {0,1}
+@attribute Cluster158 {0,1}
+@attribute Cluster159 {0,1}
+@attribute Cluster160 {0,1}
+@attribute Cluster161 {0,1}
+@attribute Cluster162 {0,1}
+@attribute Cluster163 {0,1}
+@attribute Cluster164 {0,1}
+@attribute Cluster165 {0,1}
+@attribute Cluster166 {0,1}
+@attribute Cluster167 {0,1}
+@attribute Cluster168 {0,1}
+@attribute Cluster169 {0,1}
+@attribute Cluster170 {0,1}
+@attribute Cluster171 {0,1}
+@attribute Cluster172 {0,1}
+@attribute Cluster173 {0,1}
+@attribute Cluster174 {0,1}
+@attribute Cluster175 {0,1}
+@attribute Cluster176 {0,1}
+@attribute Cluster177 {0,1}
+@attribute Cluster178 {0,1}
+@attribute Cluster179 {0,1}
+@attribute Cluster180 {0,1}
+@attribute Cluster181 {0,1}
+@attribute Cluster182 {0,1}
+@attribute Cluster183 {0,1}
+@attribute Cluster184 {0,1}
+@attribute Cluster185 {0,1}
+@attribute Cluster186 {0,1}
+@attribute Cluster187 {0,1}
+@attribute Cluster188 {0,1}
+@attribute Cluster189 {0,1}
+@attribute Cluster190 {0,1}
+@attribute Cluster191 {0,1}
+@attribute Cluster192 {0,1}
+@attribute Cluster193 {0,1}
+@attribute Cluster194 {0,1}
+@attribute Cluster195 {0,1}
+@attribute Cluster196 {0,1}
+@attribute Cluster197 {0,1}
+@attribute Cluster198 {0,1}
+@attribute Cluster199 {0,1}
+@attribute Cluster200 {0,1}
+@attribute Cluster201 {0,1}
+@attribute Cluster202 {0,1}
+@attribute Cluster203 {0,1}
+@attribute Cluster204 {0,1}
+@attribute Cluster205 {0,1}
+@attribute Cluster206 {0,1}
+@attribute Cluster207 {0,1}
+@attribute Cluster208 {0,1}
+@attribute Cluster209 {0,1}
+@attribute Cluster210 {0,1}
+@attribute Cluster211 {0,1}
+@attribute Cluster212 {0,1}
+@attribute Cluster213 {0,1}
+@attribute Cluster214 {0,1}
+@attribute Cluster215 {0,1}
+@attribute Cluster216 {0,1}
+@attribute Cluster217 {0,1}
+@attribute Cluster218 {0,1}
+@attribute Cluster219 {0,1}
+@attribute Cluster220 {0,1}
+@attribute Cluster221 {0,1}
+@attribute Cluster222 {0,1}
+@attribute Cluster223 {0,1}
+@attribute Cluster224 {0,1}
+@attribute Cluster225 {0,1}
+@attribute Cluster226 {0,1}
+@attribute Cluster227 {0,1}
+@attribute Cluster228 {0,1}
+@attribute Cluster229 {0,1}
+@attribute Cluster230 {0,1}
+@attribute Cluster231 {0,1}
+@attribute Cluster232 {0,1}
+@attribute Cluster233 {0,1}
+@attribute Cluster234 {0,1}
+@attribute Cluster235 {0,1}
+@attribute Cluster236 {0,1}
+@attribute Cluster237 {0,1}
+@attribute Cluster238 {0,1}
+@attribute Cluster239 {0,1}
+@attribute Cluster240 {0,1}
+@attribute Cluster241 {0,1}
+@attribute Cluster242 {0,1}
+@attribute Cluster243 {0,1}
+@attribute Cluster244 {0,1}
+@attribute Cluster245 {0,1}
+@attribute Cluster246 {0,1}
+@attribute Cluster247 {0,1}
+@attribute Cluster248 {0,1}
+@attribute Cluster249 {0,1}
+@attribute Cluster250 {0,1}
+@attribute Cluster251 {0,1}
+@attribute Cluster252 {0,1}
+@attribute Cluster253 {0,1}
+@attribute Cluster254 {0,1}
+@attribute Cluster255 {0,1}
+@attribute Cluster256 {0,1}
+@attribute Cluster257 {0,1}
+@attribute Cluster258 {0,1}
+@attribute Cluster259 {0,1}
+@attribute Cluster260 {0,1}
+@attribute Cluster261 {0,1}
+@attribute Cluster262 {0,1}
+@attribute Cluster263 {0,1}
+@attribute Cluster264 {0,1}
+@attribute Cluster265 {0,1}
+@attribute Cluster266 {0,1}
+@attribute Cluster267 {0,1}
+@attribute Cluster268 {0,1}
+@attribute Cluster269 {0,1}
+@attribute Cluster270 {0,1}
+@attribute Cluster271 {0,1}
+@attribute Cluster272 {0,1}
+@attribute Cluster273 {0,1}
+@attribute Cluster274 {0,1}
+@attribute Cluster275 {0,1}
+@attribute Cluster276 {0,1}
+@attribute Cluster277 {0,1}
+@attribute Cluster278 {0,1}
+@attribute Cluster279 {0,1}
+@attribute Cluster280 {0,1}
+@attribute Cluster281 {0,1}
+@attribute Cluster282 {0,1}
+@attribute Cluster283 {0,1}
+@attribute Cluster284 {0,1}
+@attribute Cluster285 {0,1}
+@attribute Cluster286 {0,1}
+@attribute Cluster287 {0,1}
+@attribute Cluster288 {0,1}
+@attribute Cluster289 {0,1}
+@attribute Cluster290 {0,1}
+@attribute Cluster291 {0,1}
+@attribute Cluster292 {0,1}
+@attribute Cluster293 {0,1}
+@attribute Cluster294 {0,1}
+@attribute Cluster295 {0,1}
+@attribute Cluster296 {0,1}
+@attribute Cluster297 {0,1}
+@attribute Cluster298 {0,1}
+@attribute Cluster299 {0,1}
+@attribute Cluster300 {0,1}
+@attribute Cluster301 {0,1}
+@attribute Cluster302 {0,1}
+@attribute Cluster303 {0,1}
+@attribute Cluster304 {0,1}
+@attribute Cluster305 {0,1}
+@attribute Cluster306 {0,1}
+@attribute Cluster307 {0,1}
+@attribute Cluster308 {0,1}
+@attribute Cluster309 {0,1}
+@attribute Cluster310 {0,1}
+@attribute Cluster311 {0,1}
+@attribute Cluster312 {0,1}
+@attribute Cluster313 {0,1}
+@attribute Cluster314 {0,1}
+@attribute Cluster315 {0,1}
+@attribute Cluster316 {0,1}
+@attribute Cluster317 {0,1}
+@attribute Cluster318 {0,1}
+@attribute Cluster319 {0,1}
+@attribute Cluster320 {0,1}
+@attribute Cluster321 {0,1}
+@attribute Cluster322 {0,1}
+@attribute Cluster323 {0,1}
+@attribute Cluster324 {0,1}
+@attribute Cluster325 {0,1}
+@attribute Cluster326 {0,1}
+@attribute Cluster327 {0,1}
+@attribute Cluster328 {0,1}
+@attribute Cluster329 {0,1}
+@attribute Cluster330 {0,1}
+@attribute Cluster331 {0,1}
+@attribute Cluster332 {0,1}
+@attribute Cluster333 {0,1}
+@attribute Cluster334 {0,1}
+@attribute Cluster335 {0,1}
+@attribute Cluster336 {0,1}
+@attribute Cluster337 {0,1}
+@attribute Cluster338 {0,1}
+@attribute Cluster339 {0,1}
+@attribute Cluster340 {0,1}
+@attribute Cluster341 {0,1}
+@attribute Cluster342 {0,1}
+@attribute Cluster343 {0,1}
+@attribute Cluster344 {0,1}
+@attribute Cluster345 {0,1}
+@attribute Cluster346 {0,1}
+@attribute Cluster347 {0,1}
+@attribute Cluster348 {0,1}
+@attribute Cluster349 {0,1}
+@attribute Cluster350 {0,1}
+@attribute Cluster351 {0,1}
+@attribute Cluster352 {0,1}
+@attribute Cluster353 {0,1}
+@attribute Cluster354 {0,1}
+@attribute Cluster355 {0,1}
+@attribute Cluster356 {0,1}
+@attribute Cluster357 {0,1}
+@attribute Cluster358 {0,1}
+@attribute Cluster359 {0,1}
+@attribute Cluster360 {0,1}
+@attribute Cluster361 {0,1}
+@attribute Cluster362 {0,1}
+@attribute Cluster363 {0,1}
+@attribute Cluster364 {0,1}
+@attribute Cluster365 {0,1}
+@attribute Cluster366 {0,1}
+@attribute Cluster367 {0,1}
+@attribute Cluster368 {0,1}
+@attribute Cluster369 {0,1}
+@attribute Cluster370 {0,1}
+@attribute Cluster371 {0,1}
+@attribute Cluster372 {0,1}
+@attribute Cluster373 {0,1}
+@attribute Cluster374 {0,1}
+@attribute Cluster375 {0,1}
+@attribute Cluster376 {0,1}
+@attribute Cluster377 {0,1}
+@attribute Cluster378 {0,1}
+@attribute Cluster379 {0,1}
+@attribute Cluster380 {0,1}
+@attribute Cluster381 {0,1}
+@attribute Cluster382 {0,1}
+@attribute Cluster383 {0,1}
+@attribute Cluster384 {0,1}
+@attribute Cluster385 {0,1}
+@attribute Cluster386 {0,1}
+@attribute Cluster387 {0,1}
+@attribute Cluster388 {0,1}
+@attribute Cluster389 {0,1}
+@attribute Cluster390 {0,1}
+@attribute Cluster391 {0,1}
+@attribute Cluster392 {0,1}
+@attribute Cluster393 {0,1}
+@attribute Cluster394 {0,1}
+@attribute Cluster395 {0,1}
+@attribute Cluster396 {0,1}
+@attribute Cluster397 {0,1}
+@attribute Cluster398 {0,1}
+@attribute Cluster399 {0,1}
+@attribute Cluster400 {0,1}
+@attribute Cluster401 {0,1}
+@attribute Cluster402 {0,1}
+@attribute Cluster403 {0,1}
+@attribute Cluster404 {0,1}
+@attribute Cluster405 {0,1}
+@attribute Cluster406 {0,1}
+@attribute Cluster407 {0,1}
+@attribute Cluster408 {0,1}
+@attribute Cluster409 {0,1}
+@attribute Cluster410 {0,1}
+@attribute Cluster411 {0,1}
+@attribute Cluster412 {0,1}
+@attribute Cluster413 {0,1}
+@attribute Cluster414 {0,1}
+@attribute Cluster415 {0,1}
+@attribute Cluster416 {0,1}
+@attribute Cluster417 {0,1}
+@attribute Cluster418 {0,1}
+@attribute Cluster419 {0,1}
+@attribute Cluster420 {0,1}
+@attribute Cluster421 {0,1}
+@attribute Cluster422 {0,1}
+@attribute Cluster423 {0,1}
+@attribute Cluster424 {0,1}
+@attribute Cluster425 {0,1}
+@attribute Cluster426 {0,1}
+@attribute Cluster427 {0,1}
+@attribute Cluster428 {0,1}
+@attribute Cluster429 {0,1}
+@attribute Cluster430 {0,1}
+@attribute Cluster431 {0,1}
+@attribute Cluster432 {0,1}
+@attribute Cluster433 {0,1}
+@attribute Cluster434 {0,1}
+@attribute Cluster435 {0,1}
+@attribute Cluster436 {0,1}
+@attribute Cluster437 {0,1}
+@attribute Cluster438 {0,1}
+@attribute Cluster439 {0,1}
+@attribute Cluster440 {0,1}
+@attribute Cluster441 {0,1}
+@attribute Cluster442 {0,1}
+@attribute Cluster443 {0,1}
+@attribute Cluster444 {0,1}
+@attribute Cluster445 {0,1}
+@attribute Cluster446 {0,1}
+@attribute Cluster447 {0,1}
+@attribute Cluster448 {0,1}
+@attribute Cluster449 {0,1}
+@attribute Cluster450 {0,1}
+@attribute Cluster451 {0,1}
+@attribute Cluster452 {0,1}
+@attribute Cluster453 {0,1}
+@attribute Cluster454 {0,1}
+@attribute Cluster455 {0,1}
+@attribute Cluster456 {0,1}
+@attribute Cluster457 {0,1}
+@attribute Cluster458 {0,1}
+@attribute Cluster459 {0,1}
+@attribute Cluster460 {0,1}
+@attribute Cluster461 {0,1}
+@attribute Cluster462 {0,1}
+@attribute Cluster463 {0,1}
+@attribute Cluster464 {0,1}
+@attribute Cluster465 {0,1}
+@attribute Cluster466 {0,1}
+@attribute Cluster467 {0,1}
+@attribute Cluster468 {0,1}
+@attribute Cluster469 {0,1}
+@attribute Cluster470 {0,1}
+@attribute Cluster471 {0,1}
+@attribute Cluster472 {0,1}
+@attribute Cluster473 {0,1}
+@attribute Cluster474 {0,1}
+@attribute Cluster475 {0,1}
+@attribute Cluster476 {0,1}
+@attribute Cluster477 {0,1}
+@attribute Cluster478 {0,1}
+@attribute Cluster479 {0,1}
+@attribute Cluster480 {0,1}
+@attribute Cluster481 {0,1}
+@attribute Cluster482 {0,1}
+@attribute Cluster483 {0,1}
+@attribute Cluster484 {0,1}
+@attribute Cluster485 {0,1}
+@attribute Cluster486 {0,1}
+@attribute Cluster487 {0,1}
+@attribute Cluster488 {0,1}
+@attribute Cluster489 {0,1}
+@attribute Cluster490 {0,1}
+@attribute Cluster491 {0,1}
+@attribute Cluster492 {0,1}
+@attribute Cluster493 {0,1}
+@attribute Cluster494 {0,1}
+@attribute Cluster495 {0,1}
+@attribute Cluster496 {0,1}
+@attribute Cluster497 {0,1}
+@attribute Cluster498 {0,1}
+@attribute Cluster499 {0,1}
+@attribute city {0,1}
+@attribute mountain {0,1}
+@attribute sky {0,1}
+@attribute sun {0,1}
+@attribute water {0,1}
+@attribute clouds {0,1}
+@attribute tree {0,1}
+@attribute bay {0,1}
+@attribute lake {0,1}
+@attribute sea {0,1}
+@attribute beach {0,1}
+@attribute boats {0,1}
+@attribute people {0,1}
+@attribute branch {0,1}
+@attribute leaf {0,1}
+@attribute grass {0,1}
+@attribute plain {0,1}
+@attribute palm {0,1}
+@attribute horizon {0,1}
+@attribute shell {0,1}
+@attribute hills {0,1}
+@attribute waves {0,1}
+@attribute birds {0,1}
+@attribute land {0,1}
+@attribute dog {0,1}
+@attribute bridge {0,1}
+@attribute ships {0,1}
+@attribute buildings {0,1}
+@attribute fence {0,1}
+@attribute island {0,1}
+@attribute storm {0,1}
+@attribute peaks {0,1}
+@attribute jet {0,1}
+@attribute plane {0,1}
+@attribute runway {0,1}
+@attribute basket {0,1}
+@attribute flight {0,1}
+@attribute flag {0,1}
+@attribute helicopter {0,1}
+@attribute boeing {0,1}
+@attribute prop {0,1}
+@attribute f-16 {0,1}
+@attribute tails {0,1}
+@attribute smoke {0,1}
+@attribute formation {0,1}
+@attribute bear {0,1}
+@attribute polar {0,1}
+@attribute snow {0,1}
+@attribute tundra {0,1}
+@attribute ice {0,1}
+@attribute head {0,1}
+@attribute black {0,1}
+@attribute reflection {0,1}
+@attribute ground {0,1}
+@attribute forest {0,1}
+@attribute fall {0,1}
+@attribute river {0,1}
+@attribute field {0,1}
+@attribute flowers {0,1}
+@attribute stream {0,1}
+@attribute meadow {0,1}
+@attribute rocks {0,1}
+@attribute hillside {0,1}
+@attribute shrubs {0,1}
+@attribute close-up {0,1}
+@attribute grizzly {0,1}
+@attribute cubs {0,1}
+@attribute drum {0,1}
+@attribute log {0,1}
+@attribute hut {0,1}
+@attribute sunset {0,1}
+@attribute display {0,1}
+@attribute plants {0,1}
+@attribute pool {0,1}
+@attribute coral {0,1}
+@attribute fan {0,1}
+@attribute anemone {0,1}
+@attribute fish {0,1}
+@attribute ocean {0,1}
+@attribute diver {0,1}
+@attribute sunrise {0,1}
+@attribute face {0,1}
+@attribute sand {0,1}
+@attribute rainbow {0,1}
+@attribute farms {0,1}
+@attribute reefs {0,1}
+@attribute vegetation {0,1}
+@attribute house {0,1}
+@attribute village {0,1}
+@attribute carvings {0,1}
+@attribute path {0,1}
+@attribute wood {0,1}
+@attribute dress {0,1}
+@attribute coast {0,1}
+@attribute sailboats {0,1}
+@attribute cat {0,1}
+@attribute tiger {0,1}
+@attribute bengal {0,1}
+@attribute fox {0,1}
+@attribute kit {0,1}
+@attribute run {0,1}
+@attribute shadows {0,1}
+@attribute winter {0,1}
+@attribute autumn {0,1}
+@attribute cliff {0,1}
+@attribute bush {0,1}
+@attribute rockface {0,1}
+@attribute pair {0,1}
+@attribute den {0,1}
+@attribute coyote {0,1}
+@attribute light {0,1}
+@attribute arctic {0,1}
+@attribute shore {0,1}
+@attribute town {0,1}
+@attribute road {0,1}
+@attribute chapel {0,1}
+@attribute moon {0,1}
+@attribute harbor {0,1}
+@attribute windmills {0,1}
+@attribute restaurant {0,1}
+@attribute wall {0,1}
+@attribute skyline {0,1}
+@attribute window {0,1}
+@attribute clothes {0,1}
+@attribute shops {0,1}
+@attribute street {0,1}
+@attribute cafe {0,1}
+@attribute tables {0,1}
+@attribute nets {0,1}
+@attribute crafts {0,1}
+@attribute roofs {0,1}
+@attribute ruins {0,1}
+@attribute stone {0,1}
+@attribute cars {0,1}
+@attribute castle {0,1}
+@attribute courtyard {0,1}
+@attribute statue {0,1}
+@attribute stairs {0,1}
+@attribute costume {0,1}
+@attribute sponges {0,1}
+@attribute sign {0,1}
+@attribute palace {0,1}
+@attribute paintings {0,1}
+@attribute sheep {0,1}
+@attribute valley {0,1}
+@attribute balcony {0,1}
+@attribute post {0,1}
+@attribute gate {0,1}
+@attribute plaza {0,1}
+@attribute festival {0,1}
+@attribute temple {0,1}
+@attribute sculpture {0,1}
+@attribute museum {0,1}
+@attribute hotel {0,1}
+@attribute art {0,1}
+@attribute fountain {0,1}
+@attribute market {0,1}
+@attribute door {0,1}
+@attribute mural {0,1}
+@attribute garden {0,1}
+@attribute star {0,1}
+@attribute butterfly {0,1}
+@attribute angelfish {0,1}
+@attribute lion {0,1}
+@attribute cave {0,1}
+@attribute crab {0,1}
+@attribute grouper {0,1}
+@attribute pagoda {0,1}
+@attribute buddha {0,1}
+@attribute decoration {0,1}
+@attribute monastery {0,1}
+@attribute landscape {0,1}
+@attribute detail {0,1}
+@attribute writing {0,1}
+@attribute sails {0,1}
+@attribute food {0,1}
+@attribute room {0,1}
+@attribute entrance {0,1}
+@attribute fruit {0,1}
+@attribute night {0,1}
+@attribute perch {0,1}
+@attribute cow {0,1}
+@attribute figures {0,1}
+@attribute facade {0,1}
+@attribute chairs {0,1}
+@attribute guard {0,1}
+@attribute pond {0,1}
+@attribute church {0,1}
+@attribute park {0,1}
+@attribute barn {0,1}
+@attribute arch {0,1}
+@attribute hats {0,1}
+@attribute cathedral {0,1}
+@attribute ceremony {0,1}
+@attribute crowd {0,1}
+@attribute glass {0,1}
+@attribute shrine {0,1}
+@attribute model {0,1}
+@attribute pillar {0,1}
+@attribute carpet {0,1}
+@attribute monument {0,1}
+@attribute floor {0,1}
+@attribute vines {0,1}
+@attribute cottage {0,1}
+@attribute poppies {0,1}
+@attribute lawn {0,1}
+@attribute tower {0,1}
+@attribute vegetables {0,1}
+@attribute bench {0,1}
+@attribute rose {0,1}
+@attribute tulip {0,1}
+@attribute canal {0,1}
+@attribute cheese {0,1}
+@attribute railing {0,1}
+@attribute dock {0,1}
+@attribute horses {0,1}
+@attribute petals {0,1}
+@attribute umbrella {0,1}
+@attribute column {0,1}
+@attribute waterfalls {0,1}
+@attribute elephant {0,1}
+@attribute monks {0,1}
+@attribute pattern {0,1}
+@attribute interior {0,1}
+@attribute vendor {0,1}
+@attribute silhouette {0,1}
+@attribute architecture {0,1}
+@attribute blossoms {0,1}
+@attribute athlete {0,1}
+@attribute parade {0,1}
+@attribute ladder {0,1}
+@attribute sidewalk {0,1}
+@attribute store {0,1}
+@attribute steps {0,1}
+@attribute relief {0,1}
+@attribute fog {0,1}
+@attribute frost {0,1}
+@attribute frozen {0,1}
+@attribute rapids {0,1}
+@attribute crystals {0,1}
+@attribute spider {0,1}
+@attribute needles {0,1}
+@attribute stick {0,1}
+@attribute mist {0,1}
+@attribute doorway {0,1}
+@attribute vineyard {0,1}
+@attribute pottery {0,1}
+@attribute pots {0,1}
+@attribute military {0,1}
+@attribute designs {0,1}
+@attribute mushrooms {0,1}
+@attribute terrace {0,1}
+@attribute tent {0,1}
+@attribute bulls {0,1}
+@attribute giant {0,1}
+@attribute tortoise {0,1}
+@attribute wings {0,1}
+@attribute albatross {0,1}
+@attribute booby {0,1}
+@attribute nest {0,1}
+@attribute hawk {0,1}
+@attribute iguana {0,1}
+@attribute lizard {0,1}
+@attribute marine {0,1}
+@attribute penguin {0,1}
+@attribute deer {0,1}
+@attribute white-tailed {0,1}
+@attribute horns {0,1}
+@attribute slope {0,1}
+@attribute mule {0,1}
+@attribute fawn {0,1}
+@attribute antlers {0,1}
+@attribute elk {0,1}
+@attribute caribou {0,1}
+@attribute herd {0,1}
+@attribute moose {0,1}
+@attribute clearing {0,1}
+@attribute mare {0,1}
+@attribute foals {0,1}
+@attribute orchid {0,1}
+@attribute lily {0,1}
+@attribute stems {0,1}
+@attribute row {0,1}
+@attribute chrysanthemums {0,1}
+@attribute blooms {0,1}
+@attribute cactus {0,1}
+@attribute saguaro {0,1}
+@attribute giraffe {0,1}
+@attribute zebra {0,1}
+@attribute tusks {0,1}
+@attribute hands {0,1}
+@attribute train {0,1}
+@attribute desert {0,1}
+@attribute dunes {0,1}
+@attribute canyon {0,1}
+@attribute lighthouse {0,1}
+@attribute mast {0,1}
+@attribute seals {0,1}
+@attribute texture {0,1}
+@attribute dust {0,1}
+@attribute pepper {0,1}
+@attribute swimmers {0,1}
+@attribute pyramid {0,1}
+@attribute mosque {0,1}
+@attribute sphinx {0,1}
+@attribute truck {0,1}
+@attribute fly {0,1}
+@attribute trunk {0,1}
+@attribute baby {0,1}
+@attribute eagle {0,1}
+@attribute lynx {0,1}
+@attribute rodent {0,1}
+@attribute squirrel {0,1}
+@attribute goat {0,1}
+@attribute marsh {0,1}
+@attribute wolf {0,1}
+@attribute pack {0,1}
+@attribute dall {0,1}
+@attribute porcupine {0,1}
+@attribute whales {0,1}
+@attribute rabbit {0,1}
+@attribute tracks {0,1}
+@attribute crops {0,1}
+@attribute animals {0,1}
+@attribute moss {0,1}
+@attribute trail {0,1}
+@attribute locomotive {0,1}
+@attribute railroad {0,1}
+@attribute vehicle {0,1}
+@attribute aerial {0,1}
+@attribute range {0,1}
+@attribute insect {0,1}
+@attribute man {0,1}
+@attribute woman {0,1}
+@attribute rice {0,1}
+@attribute prayer {0,1}
+@attribute glacier {0,1}
+@attribute harvest {0,1}
+@attribute girl {0,1}
+@attribute indian {0,1}
+@attribute pole {0,1}
+@attribute dance {0,1}
+@attribute african {0,1}
+@attribute shirt {0,1}
+@attribute buddhist {0,1}
+@attribute tomb {0,1}
+@attribute outside {0,1}
+@attribute shade {0,1}
+@attribute formula {0,1}
+@attribute turn {0,1}
+@attribute straightaway {0,1}
+@attribute prototype {0,1}
+@attribute steel {0,1}
+@attribute scotland {0,1}
+@attribute ceiling {0,1}
+@attribute furniture {0,1}
+@attribute lichen {0,1}
+@attribute pups {0,1}
+@attribute antelope {0,1}
+@attribute pebbles {0,1}
+@attribute remains {0,1}
+@attribute leopard {0,1}
+@attribute jeep {0,1}
+@attribute calf {0,1}
+@attribute reptile {0,1}
+@attribute snake {0,1}
+@attribute cougar {0,1}
+@attribute oahu {0,1}
+@attribute kauai {0,1}
+@attribute maui {0,1}
+@attribute school {0,1}
+@attribute canoe {0,1}
+@attribute race {0,1}
+@attribute hawaii {0,1}
+
+@data
+{22 1,233 1,258 1,280 1,344 1,356 1,383 1,438 1,498 1,500 1,501 1,502 1,503 1}
+{75 1,113 1,143 1,329 1,379 1,498 1,501 1,502 1,504 1,505 1}
+{21 1,22 1,110 1,132 1,156 1,158 1,199 1,203 1,336 1,421 1,498 1,502 1,504 1,505 1,508 1}
+{19 1,143 1,199 1,259 1,438 1,498 1,501 1,502 1,504 1}
+{38 1,93 1,149 1,185 1,219 1,220 1,318 1,385 1,498 1,501 1,502 1,503 1,505 1}
+{19 1,21 1,148 1,308 1,313 1,322 1,329 1,374 1,391 1,463 1,498 1,502 1,503 1,504 1,505 1}
+{32 1,103 1,143 1,205 1,271 1,373 1,461 1,470 1,472 1,498 1,502 1,503 1,504 1,521 1}
+{113 1,143 1,149 1,240 1,329 1,498 1,501 1,502 1,504 1,522 1}
+{17 1,149 1,217 1,233 1,310 1,336 1,379 1,498 1,499 1,502 1,503 1}
+{21 1,87 1,93 1,103 1,132 1,149 1,220 1,318 1,379 1,498 1,499 1,500 1,501 1,502 1}
+{154 1,255 1,351 1,428 1,498 1,501 1,531 1,532 1}
+{40 1,93 1,372 1,498 1,501 1,531 1,532 1}
+{38 1,115 1,306 1,318 1,498 1,532 1,533 1,539 1}
+{10 1,351 1,410 1,498 1,501 1,531 1,532 1}
+{21 1,127 1,201 1,233 1,288 1,292 1,335 1,351 1,368 1,408 1,498 1,531 1,532 1,540 1}
+{21 1,22 1,75 1,86 1,154 1,193 1,259 1,296 1,303 1,480 1,498 1,501 1,531 1,532 1}
+{40 1,66 1,83 1,126 1,155 1,242 1,245 1,296 1,366 1,440 1,498 1,501 1,531 1,532 1,542 1}
+{82 1,154 1,242 1,335 1,380 1,482 1,498 1,501 1,531 1,532 1,542 1}
+{126 1,242 1,432 1,498 1,501 1,531 1,532 1,542 1}
+{34 1,105 1,164 1,266 1,270 1,288 1,480 1,498 1,501 1,531 1,532 1,542 1}
+{121 1,126 1,163 1,182 1,189 1,292 1,396 1,408 1,432 1,498 1,544 1,545 1,546 1,547 1}
+{5 1,40 1,66 1,126 1,230 1,266 1,351 1,428 1,480 1,498 1,544 1,545 1,546 1,547 1}
+{13 1,198 1,223 1,270 1,272 1,429 1,432 1,476 1,482 1,498 1,544 1,545 1,546 1,547 1}
+{397 1,498 1,503 1,544 1,550 1,555 1}
+{39 1,101 1,118 1,158 1,199 1,209 1,280 1,291 1,349 1,367 1,498 1,503 1,544 1,550 1,551 1}
+{158 1,232 1,353 1,355 1,475 1,491 1,497 1,498 1,514 1,544 1,559 1,564 1}
+{36 1,43 1,65 1,101 1,133 1,137 1,151 1,296 1,392 1,498 1,500 1,503 1,544 1,564 1}
+{65 1,146 1,231 1,251 1,281 1,497 1,498 1,514 1,544 1,559 1,564 1}
+{81 1,97 1,196 1,205 1,251 1,321 1,383 1,498 1,503 1,509 1,544 1,564 1}
+{13 1,73 1,93 1,126 1,191 1,193 1,335 1,392 1,403 1,498 1,544 1,546 1,552 1,564 1}
+{151 1,232 1,240 1,305 1,345 1,350 1,376 1,402 1,474 1,498 1,501 1,505 1,568 1}
+{127 1,137 1,219 1,226 1,249 1,262 1,305 1,345 1,376 1,448 1,498 1,505 1,509 1,511 1,516 1}
+{88 1,97 1,178 1,201 1,227 1,292 1,323 1,324 1,339 1,426 1,498 1,505 1,509 1,511 1,516 1}
+{99 1,265 1,289 1,296 1,333 1,335 1,406 1,412 1,427 1,498 1,501 1,503 1,572 1}
+{56 1,75 1,113 1,329 1,461 1,498 1,501 1,504 1,543 1,569 1}
+{19 1,56 1,71 1,113 1,259 1,276 1,329 1,498 1,503 1,509 1,511 1,569 1}
+{19 1,56 1,78 1,203 1,317 1,461 1,470 1,498 1,503 1,509 1,510 1,569 1}
+{82 1,130 1,193 1,221 1,265 1,333 1,424 1,440 1,498 1,501 1,503 1,525 1}
+{72 1,187 1,232 1,348 1,429 1,434 1,486 1,489 1,498 1,501 1,503 1,504 1,511 1}
+{13 1,82 1,163 1,211 1,223 1,295 1,300 1,498 1,501 1,503 1,509 1,581 1}
+{123 1,137 1,158 1,176 1,177 1,237 1,277 1,400 1,413 1,439 1,498 1,553 1,594 1,595 1,596 1}
+{22 1,50 1,100 1,136 1,301 1,426 1,489 1,498 1,503 1,514 1,594 1,595 1}
+{9 1,323 1,348 1,449 1,475 1,487 1,498 1,553 1,594 1,595 1,596 1}
+{158 1,171 1,212 1,313 1,343 1,386 1,422 1,452 1,498 1,553 1,594 1,595 1,596 1}
+{1 1,94 1,145 1,212 1,237 1,353 1,411 1,484 1,498 1,514 1,553 1,594 1,595 1}
+{213 1,228 1,236 1,302 1,449 1,484 1,497 1,498 1,514 1,594 1,595 1,596 1}
+{76 1,157 1,158 1,236 1,297 1,362 1,404 1,463 1,473 1,498 1,503 1,560 1,594 1,595 1}
+{79 1,137 1,158 1,169 1,178 1,208 1,302 1,406 1,445 1,468 1,498 1,505 1,553 1,594 1,595 1}
+{9 1,213 1,228 1,265 1,289 1,302 1,466 1,484 1,498 1,514 1,594 1,595 1,596 1}
+{7 1,79 1,158 1,204 1,222 1,302 1,320 1,399 1,400 1,422 1,498 1,553 1,594 1,595 1,596 1}
+{17 1,101 1,108 1,117 1,130 1,231 1,321 1,486 1,498 1,546 1,549 1,563 1,597 1}
+{17 1,51 1,66 1,85 1,146 1,280 1,298 1,410 1,473 1,498 1,505 1,546 1,590 1,597 1}
+{39 1,60 1,108 1,123 1,241 1,264 1,383 1,386 1,399 1,498 1,590 1,597 1}
+{20 1,30 1,39 1,158 1,194 1,339 1,362 1,370 1,392 1,474 1,498 1,505 1,546 1,553 1,608 1}
+{20 1,245 1,277 1,288 1,397 1,407 1,422 1,440 1,480 1,498 1,505 1,546 1,553 1,608 1}
+{103 1,107 1,108 1,125 1,267 1,279 1,342 1,370 1,454 1,498 1,503 1,548 1,555 1,597 1}
+{44 1,62 1,66 1,130 1,182 1,380 1,409 1,416 1,433 1,498 1,546 1,597 1,610 1}
+{342 1,388 1,399 1,432 1,498 1,501 1,514 1,547 1,597 1}
+{66 1,182 1,206 1,241 1,278 1,335 1,476 1,498 1,546 1,597 1,610 1}
+{31 1,55 1,85 1,165 1,311 1,325 1,411 1,456 1,464 1,498 1,514 1,597 1,607 1,610 1}
+{35 1,37 1,67 1,201 1,313 1,340 1,402 1,463 1,471 1,498 1,500 1,511 1,613 1}
+{99 1,129 1,172 1,186 1,245 1,247 1,319 1,436 1,498 1,503 1,510 1,520 1}
+{30 1,31 1,94 1,108 1,228 1,306 1,342 1,445 1,483 1,498 1,503 1,526 1,611 1,616 1}
+{7 1,32 1,119 1,141 1,144 1,268 1,448 1,483 1,498 1,503 1,519 1,611 1}
+{6 1,31 1,97 1,100 1,164 1,187 1,212 1,306 1,345 1,396 1,498 1,501 1,611 1,612 1,617 1}
+{31 1,175 1,194 1,291 1,313 1,372 1,400 1,432 1,498 1,503 1,526 1,611 1,625 1}
+{21 1,148 1,405 1,410 1,498 1,609 1,611 1}
+{28 1,35 1,37 1,69 1,215 1,244 1,399 1,466 1,467 1,498 1,505 1,618 1,624 1,635 1}
+{92 1,141 1,166 1,245 1,313 1,315 1,350 1,460 1,465 1,498 1,505 1,511 1,618 1,626 1}
+{77 1,194 1,204 1,219 1,237 1,244 1,248 1,271 1,443 1,452 1,498 1,511 1,526 1,640 1}
+{34 1,154 1,165 1,209 1,292 1,396 1,397 1,416 1,436 1,498 1,511 1,624 1,632 1,648 1}
+{3 1,66 1,164 1,221 1,236 1,364 1,416 1,430 1,498 1,501 1,526 1,624 1,632 1}
+{59 1,124 1,126 1,130 1,275 1,290 1,337 1,338 1,366 1,498 1,526 1,551 1,621 1,635 1}
+{16 1,172 1,186 1,236 1,240 1,330 1,421 1,474 1,498 1,526 1,620 1,624 1,652 1}
+{27 1,222 1,241 1,364 1,377 1,384 1,404 1,441 1,475 1,498 1,505 1,526 1,624 1,650 1}
+{21 1,101 1,236 1,296 1,319 1,322 1,397 1,421 1,470 1,498 1,526 1,620 1,624 1}
+{155 1,193 1,303 1,410 1,488 1,498 1,526 1,620 1,624 1,632 1}
+{85 1,86 1,142 1,166 1,172 1,204 1,215 1,289 1,436 1,445 1,498 1,526 1,622 1,623 1,624 1}
+{132 1,165 1,209 1,236 1,296 1,322 1,397 1,408 1,430 1,441 1,498 1,501 1,526 1,624 1,632 1}
+{39 1,69 1,73 1,150 1,313 1,315 1,377 1,400 1,429 1,498 1,526 1,620 1,624 1,655 1}
+{176 1,178 1,184 1,249 1,277 1,324 1,402 1,407 1,475 1,498 1,573 1,576 1,577 1,660 1}
+{100 1,155 1,277 1,376 1,407 1,443 1,444 1,475 1,496 1,498 1,573 1,576 1,662 1,663 1}
+{135 1,253 1,259 1,265 1,277 1,366 1,407 1,419 1,471 1,498 1,573 1,577 1,584 1}
+{70 1,88 1,97 1,118 1,135 1,174 1,191 1,434 1,488 1,498 1,511 1,573 1,577 1}
+{69 1,73 1,239 1,364 1,407 1,508 1,573 1,574 1,577 1,584 1}
+{104 1,135 1,277 1,366 1,407 1,498 1,573 1,577 1,584 1,663 1}
+{3 1,9 1,118 1,166 1,253 1,286 1,328 1,394 1,438 1,488 1,498 1,573 1,576 1,577 1,584 1}
+{76 1,132 1,171 1,375 1,376 1,419 1,457 1,498 1,573 1,575 1,577 1,584 1}
+{54 1,129 1,155 1,172 1,275 1,415 1,440 1,453 1,462 1,498 1,511 1,576 1,577 1,665 1}
+{0 1,145 1,177 1,184 1,213 1,411 1,417 1,484 1,498 1,573 1,576 1,577 1}
+{33 1,35 1,67 1,78 1,92 1,195 1,298 1,302 1,354 1,399 1,498 1,639 1,656 1,668 1,669 1}
+{21 1,55 1,58 1,59 1,239 1,298 1,387 1,416 1,425 1,498 1,503 1,528 1,669 1,670 1}
+{21 1,122 1,132 1,148 1,258 1,318 1,467 1,498 1,511 1,618 1}
+{9 1,76 1,97 1,122 1,204 1,429 1,446 1,452 1,469 1,498 1,503 1,510 1,511 1}
+{42 1,116 1,192 1,281 1,405 1,413 1,422 1,439 1,498 1,503 1,510 1,517 1,673 1}
+{76 1,138 1,158 1,182 1,302 1,408 1,452 1,471 1,498 1,503 1,510 1,576 1,587 1}
+{24 1,87 1,116 1,170 1,219 1,375 1,443 1,450 1,498 1,526 1,609 1,616 1,620 1}
+{3 1,26 1,40 1,58 1,158 1,236 1,368 1,409 1,486 1,498 1,503 1,510 1,616 1,620 1}
+{21 1,24 1,87 1,150 1,169 1,208 1,234 1,249 1,402 1,468 1,498 1,609 1,623 1}
+{30 1,48 1,67 1,76 1,132 1,141 1,302 1,498 1,505 1,509 1,635 1}
+{123 1,144 1,212 1,243 1,302 1,333 1,349 1,388 1,426 1,466 1,498 1,526 1,619 1,635 1,640 1}
+{226 1,232 1,244 1,289 1,302 1,415 1,419 1,452 1,456 1,464 1,498 1,501 1,505 1,640 1,658 1}
+{16 1,129 1,158 1,297 1,339 1,430 1,457 1,470 1,473 1,498 1,505 1,621 1,635 1,671 1}
+{25 1,28 1,103 1,238 1,299 1,345 1,359 1,498 1,505 1,600 1,624 1}
+{127 1,169 1,178 1,183 1,243 1,324 1,418 1,435 1,498 1,514 1}
+{25 1,64 1,67 1,127 1,137 1,150 1,215 1,345 1,402 1,498 1,505 1}
+{6 1,59 1,81 1,85 1,164 1,263 1,289 1,323 1,441 1,498 1,501 1,526 1,536 1}
+{31 1,127 1,130 1,137 1,196 1,226 1,310 1,375 1,456 1,464 1,498 1,501 1,503 1,551 1,633 1}
+{55 1,193 1,227 1,261 1,349 1,416 1,446 1,498 1,501 1,624 1,633 1,645 1}
+{55 1,222 1,240 1,289 1,362 1,370 1,498 1,501 1,526 1,624 1}
+{76 1,77 1,87 1,243 1,302 1,313 1,350 1,419 1,468 1,471 1,498 1,560 1,619 1,642 1,697 1}
+{39 1,79 1,200 1,215 1,222 1,313 1,345 1,367 1,442 1,498 1,499 1,511 1,516 1,692 1}
+{40 1,141 1,169 1,171 1,315 1,340 1,450 1,464 1,466 1,498 1,500 1,505 1,526 1,658 1}
+{48 1,67 1,87 1,123 1,183 1,192 1,249 1,332 1,404 1,418 1,498 1,511 1,526 1,624 1,634 1}
+{163 1,206 1,209 1,221 1,321 1,399 1,436 1,448 1,473 1,498 1,501 1,503 1,520 1,526 1}
+{79 1,97 1,201 1,212 1,247 1,386 1,483 1,498 1,503 1,509 1,511 1,517 1}
+{32 1,144 1,188 1,202 1,282 1,340 1,343 1,386 1,399 1,498 1,499 1,519 1,526 1,670 1}
+{39 1,144 1,161 1,249 1,268 1,303 1,315 1,350 1,399 1,429 1,498 1,501 1,505 1,526 1,634 1}
+{44 1,48 1,77 1,141 1,215 1,225 1,268 1,282 1,413 1,467 1,498 1,501 1,511 1,630 1,649 1}
+{260 1,271 1,344 1,373 1,374 1,385 1,472 1,498 1,500 1,560 1}
+{145 1,278 1,302 1,368 1,497 1,498 1,514 1,527 1,557 1,701 1}
+{30 1,76 1,181 1,183 1,225 1,240 1,387 1,455 1,483 1,498 1,501 1,505 1,658 1,702 1}
+{8 1,111 1,201 1,216 1,265 1,277 1,352 1,456 1,498 1,503 1,505 1,510 1,586 1}
+{6 1,11 1,67 1,150 1,176 1,201 1,223 1,296 1,475 1,492 1,498 1,505 1,557 1,586 1,658 1}
+{7 1,49 1,157 1,158 1,216 1,240 1,316 1,373 1,457 1,492 1,498 1,505 1,586 1,658 1,704 1}
+{8 1,94 1,177 1,200 1,216 1,369 1,411 1,477 1,493 1,498 1,505 1,589 1,658 1,702 1}
+{55 1,167 1,169 1,210 1,234 1,240 1,254 1,307 1,324 1,498 1,505 1,586 1,619 1,688 1}
+{11 1,33 1,48 1,179 1,195 1,240 1,254 1,355 1,455 1,492 1,498 1,557 1,586 1,621 1,658 1}
+{55 1,145 1,194 1,376 1,400 1,402 1,423 1,477 1,496 1,498 1,557 1,619 1,646 1,704 1}
+{120 1,154 1,157 1,178 1,277 1,386 1,412 1,455 1,498 1,557 1,586 1,658 1}
+{67 1,87 1,178 1,201 1,207 1,345 1,419 1,498 1,505 1,557 1,658 1,709 1}
+{102 1,119 1,140 1,178 1,298 1,384 1,407 1,422 1,426 1,449 1,498 1,526 1,617 1,621 1,629 1}
+{102 1,111 1,151 1,228 1,333 1,375 1,426 1,456 1,479 1,498 1,505 1,514 1,556 1}
+{55 1,62 1,76 1,99 1,158 1,243 1,247 1,249 1,251 1,422 1,498 1,501 1,503 1,524 1,586 1}
+{28 1,35 1,97 1,231 1,291 1,313 1,321 1,408 1,422 1,429 1,498 1,501 1,511 1,629 1,705 1}
+{5 1,21 1,32 1,37 1,81 1,315 1,349 1,384 1,387 1,498 1,503 1,504 1,510 1,616 1}
+{196 1,245 1,290 1,368 1,392 1,403 1,440 1,481 1,498 1,505 1,586 1,624 1,705 1}
+{51 1,62 1,132 1,158 1,249 1,277 1,298 1,422 1,498 1,501 1,586 1,621 1,632 1}
+{201 1,214 1,265 1,345 1,376 1,498 1,501 1,503 1,510 1,526 1}
+{30 1,36 1,151 1,171 1,178 1,226 1,324 1,334 1,371 1,447 1,498 1,503 1,551 1,583 1,586 1}
+{73 1,91 1,158 1,165 1,320 1,322 1,365 1,421 1,498 1,503 1,511 1,586 1,710 1}
+{73 1,83 1,90 1,158 1,172 1,188 1,199 1,227 1,415 1,498 1,501 1,503 1,510 1,526 1}
+{5 1,21 1,165 1,231 1,343 1,418 1,425 1,464 1,498 1,636 1,644 1}
+{21 1,90 1,91 1,152 1,277 1,288 1,431 1,467 1,477 1,498 1,503 1,511 1,519 1,557 1}
+{56 1,173 1,208 1,259 1,326 1,391 1,431 1,457 1,478 1,498 1,511 1,557 1,658 1,720 1}
+{137 1,158 1,204 1,249 1,336 1,410 1,421 1,437 1,498 1,511 1,557 1,587 1,637 1}
+{48 1,79 1,84 1,141 1,160 1,199 1,276 1,310 1,465 1,498 1,511 1,587 1,624 1,637 1}
+{21 1,90 1,308 1,322 1,356 1,421 1,498 1,511 1,637 1,690 1}
+{58 1,59 1,72 1,90 1,153 1,172 1,186 1,338 1,498 1,511 1,624 1,639 1}
+{73 1,152 1,290 1,319 1,328 1,366 1,411 1,415 1,449 1,475 1,498 1,503 1,505 1,510 1,528 1}
+{20 1,21 1,55 1,86 1,132 1,155 1,239 1,277 1,389 1,433 1,498 1,526 1,551 1,647 1}
+{59 1,498 1,499 1,524 1,526 1,689 1}
+{20 1,73 1,81 1,140 1,227 1,261 1,407 1,429 1,473 1,498 1,499 1,501 1,503 1,526 1}
+{21 1,56 1,78 1,113 1,132 1,308 1,329 1,470 1,498 1,609 1,635 1,678 1}
+{59 1,116 1,132 1,219 1,226 1,238 1,345 1,360 1,376 1,470 1,498 1,503 1,524 1,551 1,687 1}
+{77 1,150 1,185 1,201 1,238 1,246 1,341 1,468 1,498 1,499 1,526 1,609 1,624 1}
+{97 1,132 1,196 1,249 1,283 1,370 1,451 1,467 1,470 1,498 1,526 1,624 1,705 1}
+{149 1,203 1,258 1,345 1,375 1,391 1,498 1,501 1,503 1,525 1,635 1}
+{32 1,171 1,178 1,225 1,331 1,340 1,406 1,463 1,467 1,475 1,498 1,499 1,503 1,525 1,526 1}
+{21 1,245 1,276 1,309 1,317 1,319 1,353 1,415 1,470 1,472 1,498 1,501 1,705 1}
+{142 1,146 1,238 1,375 1,385 1,404 1,407 1,498 1,511 1,526 1,624 1,730 1}
+{9 1,81 1,132 1,231 1,262 1,359 1,375 1,384 1,422 1,450 1,498 1,511 1,612 1,624 1,714 1}
+{85 1,100 1,231 1,277 1,298 1,321 1,330 1,339 1,342 1,376 1,498 1,511 1,612 1,624 1,714 1}
+{55 1,108 1,158 1,230 1,231 1,240 1,321 1,404 1,410 1,416 1,498 1,501 1,503 1,586 1}
+{116 1,132 1,185 1,203 1,220 1,237 1,318 1,439 1,444 1,450 1,498 1,503 1,569 1,586 1,611 1}
+{13 1,14 1,87 1,115 1,238 1,253 1,274 1,285 1,450 1,498 1,501 1}
+{21 1,51 1,132 1,182 1,196 1,322 1,498 1,501 1,503 1,504 1,551 1}
+{55 1,137 1,202 1,255 1,265 1,283 1,456 1,498 1,501 1,504 1,505 1,586 1}
+{51 1,73 1,81 1,158 1,227 1,231 1,340 1,375 1,410 1,422 1,498 1,501 1,526 1,612 1,624 1}
+{28 1,35 1,127 1,208 1,213 1,324 1,326 1,382 1,467 1,483 1,498 1,505 1,514 1,613 1,680 1}
+{5 1,72 1,115 1,384 1,448 1,476 1,482 1,498 1,546 1,548 1,736 1}
+{175 1,186 1,194 1,322 1,345 1,368 1,400 1,404 1,498 1,548 1,571 1,735 1}
+{108 1,264 1,342 1,409 1,498 1,548 1,735 1,736 1,738 1}
+{60 1,202 1,218 1,323 1,331 1,333 1,430 1,498 1,548 1,735 1,736 1}
+{22 1,347 1,350 1,371 1,419 1,450 1,467 1,483 1,498 1,548 1,677 1,735 1}
+{66 1,242 1,278 1,351 1,380 1,410 1,428 1,480 1,481 1,498 1,503 1,505 1,546 1,548 1}
+{64 1,202 1,218 1,369 1,435 1,447 1,491 1,498 1,548 1,621 1,694 1,735 1}
+{25 1,32 1,127 1,170 1,202 1,238 1,347 1,373 1,438 1,498 1,548 1,571 1,735 1}
+{4 1,5 1,31 1,44 1,214 1,272 1,306 1,321 1,331 1,384 1,498 1,503 1,546 1,548 1,736 1}
+{4 1,72 1,389 1,395 1,441 1,448 1,498 1,501 1,505 1,548 1,735 1}
+{44 1,108 1,304 1,359 1,409 1,446 1,473 1,498 1,511 1,656 1,691 1,743 1}
+{74 1,94 1,123 1,159 1,339 1,386 1,422 1,498 1,635 1,651 1,653 1}
+{12 1,26 1,66 1,73 1,106 1,221 1,256 1,297 1,498 1,503 1,654 1}
+{73 1,85 1,91 1,144 1,158 1,406 1,410 1,421 1,469 1,498 1,511 1,557 1,624 1,723 1}
+{9 1,26 1,85 1,99 1,165 1,215 1,227 1,321 1,343 1,445 1,498 1,623 1,722 1,731 1,746 1}
+{93 1,161 1,193 1,206 1,292 1,303 1,304 1,335 1,436 1,446 1,498 1,511 1,526 1}
+{36 1,101 1,304 1,446 1,494 1,498 1,500 1,501 1,504 1,505 1}
+{36 1,47 1,51 1,72 1,168 1,202 1,209 1,303 1,369 1,381 1,498 1,501 1,613 1,632 1,705 1}
+{36 1,108 1,300 1,304 1,409 1,446 1,489 1,498 1,514 1,556 1,752 1}
+{27 1,51 1,135 1,261 1,265 1,296 1,396 1,445 1,473 1,498 1,503 1,509 1,524 1}
+{60 1,85 1,164 1,206 1,498 1,501 1,535 1,756 1}
+{13 1,81 1,124 1,154 1,196 1,197 1,303 1,320 1,396 1,498 1,503 1,664 1}
+{126 1,130 1,161 1,209 1,242 1,261 1,392 1,481 1,498 1,503 1,521 1,757 1}
+{12 1,46 1,275 1,290 1,292 1,296 1,297 1,396 1,498 1,503 1,521 1,757 1}
+{59 1,81 1,158 1,261 1,265 1,277 1,410 1,422 1,446 1,498 1,521 1,560 1,757 1}
+{16 1,73 1,99 1,301 1,352 1,354 1,424 1,449 1,487 1,498 1,521 1,757 1}
+{40 1,46 1,101 1,117 1,255 1,292 1,446 1,448 1,498 1,521 1,560 1,757 1}
+{6 1,58 1,72 1,124 1,223 1,255 1,261 1,430 1,434 1,446 1,498 1,503 1,760 1,762 1}
+{12 1,26 1,31 1,59 1,94 1,161 1,291 1,292 1,306 1,452 1,498 1,560 1,563 1,760 1,762 1}
+{20 1,83 1,236 1,303 1,387 1,397 1,425 1,430 1,498 1,560 1,760 1,761 1,762 1}
+{39 1,108 1,163 1,196 1,268 1,291 1,320 1,407 1,454 1,498 1,503 1,555 1,764 1,765 1}
+{158 1,159 1,192 1,267 1,291 1,363 1,369 1,388 1,498 1,505 1,553 1,764 1,765 1}
+{99 1,124 1,187 1,193 1,266 1,303 1,380 1,397 1,403 1,498 1,546 1,590 1,764 1,768 1}
+{43 1,84 1,137 1,192 1,202 1,268 1,376 1,386 1,498 1,514 1,556 1,764 1,768 1}
+{90 1,160 1,161 1,220 1,320 1,445 1,498 1,514 1,770 1,771 1}
+{33 1,52 1,136 1,166 1,185 1,203 1,322 1,347 1,498 1,680 1,752 1,770 1,771 1}
+{53 1,200 1,225 1,228 1,289 1,333 1,343 1,471 1,498 1,680 1,752 1,771 1}
+{36 1,46 1,101 1,117 1,241 1,261 1,342 1,498 1,514 1,547 1,770 1,772 1}
+{103 1,222 1,280 1,310 1,342 1,368 1,472 1,498 1,514 1,547 1,772 1}
+{7 1,31 1,64 1,158 1,168 1,265 1,291 1,321 1,386 1,407 1,498 1,556 1,770 1,774 1}
+{39 1,65 1,168 1,213 1,215 1,228 1,255 1,311 1,484 1,498 1,505 1,714 1,776 1,777 1}
+{11 1,65 1,139 1,144 1,179 1,186 1,199 1,261 1,498 1,556 1,714 1,776 1,777 1}
+{45 1,80 1,125 1,179 1,210 1,255 1,265 1,281 1,498 1,556 1,714 1,776 1,777 1}
+{2 1,181 1,199 1,228 1,233 1,282 1,497 1,498 1,556 1,714 1,776 1,777 1}
+{7 1,65 1,151 1,168 1,213 1,285 1,422 1,438 1,484 1,498 1,559 1,714 1,776 1}
+{7 1,65 1,373 1,417 1,498 1,556 1,714 1,776 1,777 1}
+{65 1,125 1,168 1,199 1,350 1,435 1,460 1,498 1,514 1,714 1,776 1,777 1}
+{80 1,107 1,151 1,265 1,268 1,282 1,422 1,449 1,498 1,556 1,714 1,776 1,777 1}
+{80 1,107 1,199 1,213 1,228 1,244 1,265 1,498 1,556 1,714 1,777 1}
+{32 1,80 1,151 1,168 1,194 1,312 1,343 1,422 1,475 1,498 1,556 1,714 1,776 1,777 1}
+{38 1,45 1,234 1,307 1,360 1,498 1,514 1,557 1,715 1}
+{38 1,149 1,167 1,176 1,179 1,210 1,307 1,498 1,557 1,715 1}
+{7 1,143 1,149 1,259 1,338 1,381 1,438 1,453 1,498 1,501 1,505 1,557 1,709 1}
+{11 1,141 1,151 1,158 1,215 1,259 1,318 1,321 1,402 1,466 1,498 1,505 1,557 1,709 1}
+{9 1,28 1,61 1,230 1,249 1,323 1,340 1,495 1,498 1,514 1,557 1,715 1}
+{52 1,61 1,141 1,201 1,231 1,324 1,361 1,419 1,492 1,498 1,513 1,557 1,715 1,780 1}
+{122 1,145 1,336 1,355 1,356 1,382 1,392 1,436 1,477 1,492 1,498 1,501 1,505 1,557 1,562 1}
+{16 1,99 1,107 1,163 1,323 1,376 1,425 1,449 1,467 1,498 1,557 1,631 1}
+{200 1,228 1,306 1,333 1,339 1,357 1,376 1,387 1,498 1,557 1,740 1,783 1,784 1}
+{94 1,117 1,164 1,253 1,288 1,337 1,437 1,465 1,498 1,501 1,557 1,780 1}
+{39 1,106 1,189 1,256 1,351 1,362 1,367 1,399 1,498 1,501 1,505 1,514 1,786 1}
+{98 1,151 1,190 1,264 1,321 1,331 1,498 1,514 1,552 1,611 1}
+{43 1,58 1,168 1,192 1,211 1,264 1,306 1,363 1,452 1,498 1,505 1,532 1,773 1,787 1}
+{74 1,108 1,134 1,304 1,321 1,331 1,498 1,505 1,514 1,773 1,787 1}
+{23 1,43 1,60 1,94 1,103 1,159 1,202 1,260 1,342 1,498 1,514 1,521 1,532 1,787 1}
+{36 1,108 1,200 1,241 1,304 1,306 1,432 1,460 1,498 1,500 1,532 1,773 1,787 1}
+{50 1,128 1,182 1,295 1,371 1,393 1,409 1,479 1,498 1,505 1,514 1}
+{42 1,81 1,321 1,342 1,498 1,552 1,600 1}
+{31 1,43 1,108 1,156 1,264 1,321 1,331 1,386 1,498 1,503 1,532 1,662 1}
+{74 1,134 1,138 1,189 1,224 1,280 1,363 1,378 1,405 1,498 1,505 1,514 1,532 1,662 1}
+{85 1,222 1,278 1,291 1,380 1,392 1,403 1,480 1,498 1,511 1,623 1,655 1,674 1}
+{93 1,108 1,161 1,163 1,255 1,342 1,386 1,476 1,498 1,621 1,631 1,742 1}
+{36 1,57 1,182 1,196 1,239 1,262 1,348 1,409 1,446 1,498 1,514 1,560 1,643 1,742 1}
+{231 1,255 1,342 1,346 1,365 1,465 1,489 1,498 1,500 1,557 1,563 1,643 1}
+{92 1,498 1,513 1,557 1,560 1,778 1}
+{26 1,59 1,66 1,227 1,409 1,473 1,480 1,498 1,501 1,503 1,505 1,551 1}
+{94 1,157 1,158 1,209 1,268 1,320 1,348 1,408 1,474 1,498 1,501 1,503 1,505 1,551 1}
+{5 1,23 1,36 1,43 1,202 1,269 1,320 1,370 1,384 1,480 1,498 1,501 1,503 1,505 1,611 1}
+{69 1,231 1,251 1,281 1,310 1,344 1,373 1,454 1,460 1,498 1,526 1,645 1}
+{26 1,110 1,200 1,211 1,227 1,236 1,274 1,446 1,473 1,491 1,498 1,511 1,560 1,619 1}
+{21 1,34 1,82 1,117 1,118 1,270 1,348 1,424 1,498 1,501 1,571 1,643 1,791 1}
+{44 1,206 1,279 1,364 1,488 1,498 1,560 1,581 1,643 1,793 1}
+{5 1,132 1,182 1,196 1,227 1,331 1,364 1,409 1,415 1,498 1,560 1,581 1,643 1,793 1}
+{6 1,17 1,40 1,42 1,53 1,121 1,306 1,405 1,498 1,500 1,643 1,791 1,793 1}
+{7 1,67 1,91 1,154 1,155 1,159 1,266 1,286 1,405 1,421 1,498 1,505 1,570 1,651 1,790 1}
+{46 1,168 1,182 1,196 1,214 1,218 1,331 1,488 1,498 1,500 1,571 1,643 1,791 1}
+{21 1,135 1,170 1,219 1,238 1,245 1,421 1,428 1,498 1,500 1,505 1,643 1}
+{21 1,132 1,203 1,207 1,438 1,443 1,498 1,500 1,503 1,517 1,579 1}
+{164 1,172 1,209 1,256 1,292 1,421 1,441 1,498 1,501 1,581 1,791 1}
+{74 1,78 1,117 1,126 1,336 1,364 1,498 1,501 1,504 1,686 1,791 1}
+{209 1,230 1,266 1,277 1,278 1,304 1,319 1,415 1,498 1,503 1,504 1,519 1,592 1}
+{73 1,86 1,106 1,223 1,265 1,303 1,348 1,434 1,446 1,482 1,498 1,503 1,519 1,592 1,794 1}
+{9 1,117 1,202 1,243 1,251 1,268 1,296 1,448 1,480 1,498 1,503 1,517 1,592 1}
+{8 1,111 1,132 1,171 1,208 1,249 1,255 1,389 1,406 1,457 1,498 1,514 1,519 1,557 1,643 1}
+{12 1,164 1,236 1,255 1,306 1,364 1,372 1,441 1,446 1,498 1,501 1,505 1,519 1,687 1}
+{12 1,168 1,232 1,268 1,369 1,432 1,498 1,501 1,514 1,519 1,688 1}
+{3 1,51 1,66 1,107 1,115 1,130 1,345 1,375 1,387 1,467 1,498 1,501 1,503 1,520 1,592 1}
+{73 1,111 1,249 1,285 1,318 1,498 1,513 1,557 1,560 1,571 1}
+{6 1,86 1,94 1,231 1,256 1,277 1,291 1,345 1,376 1,422 1,498 1,503 1,519 1,524 1,592 1}
+{21 1,132 1,158 1,227 1,261 1,270 1,375 1,473 1,498 1,503 1,519 1,524 1,560 1}
+{25 1,208 1,305 1,324 1,347 1,382 1,455 1,498 1,513 1,563 1,571 1,585 1}
+{455 1,498 1,513 1,571 1,619 1,746 1}
+{49 1,111 1,216 1,305 1,324 1,382 1,492 1,497 1,498 1,571 1}
+{216 1,231 1,288 1,324 1,342 1,376 1,449 1,486 1,492 1,498 1,503 1,557 1,571 1}
+{1 1,132 1,173 1,209 1,245 1,392 1,393 1,407 1,496 1,498 1,513 1,746 1}
+{111 1,201 1,216 1,323 1,345 1,382 1,388 1,456 1,475 1,492 1,498 1,513 1,563 1,571 1}
+{111 1,177 1,181 1,382 1,414 1,455 1,484 1,498 1,513 1,563 1,571 1}
+{15 1,36 1,151 1,193 1,328 1,352 1,407 1,422 1,498 1,505 1,513 1,571 1,719 1}
+{70 1,104 1,459 1,481 1,494 1,498 1,501 1,512 1,513 1}
+{167 1,226 1,238 1,248 1,307 1,324 1,385 1,498 1,513 1,563 1,571 1}
+{13 1,34 1,124 1,197 1,198 1,211 1,366 1,396 1,430 1,498 1,503 1,572 1,727 1}
+{18 1,145 1,173 1,210 1,216 1,326 1,382 1,458 1,459 1,498 1,503 1,572 1,727 1,800 1}
+{50 1,127 1,191 1,334 1,348 1,462 1,489 1,498 1,511 1,572 1,727 1,800 1}
+{18 1,73 1,191 1,322 1,325 1,366 1,398 1,458 1,498 1,503 1,572 1,609 1,722 1}
+{13 1,18 1,41 1,114 1,187 1,200 1,222 1,463 1,466 1,493 1,498 1,503 1,511 1,572 1,800 1}
+{18 1,45 1,129 1,170 1,191 1,301 1,412 1,487 1,498 1,503 1,511 1,572 1,800 1}
+{12 1,128 1,325 1,371 1,393 1,401 1,412 1,424 1,498 1,503 1,511 1,572 1,800 1}
+{11 1,18 1,208 1,326 1,366 1,382 1,412 1,458 1,477 1,498 1,503 1,511 1,572 1,800 1}
+{69 1,121 1,198 1,221 1,223 1,270 1,384 1,441 1,498 1,503 1,511 1,572 1,800 1}
+{18 1,128 1,191 1,225 1,326 1,393 1,398 1,412 1,498 1,503 1,511 1,572 1,800 1}
+{42 1,78 1,87 1,116 1,146 1,162 1,281 1,359 1,450 1,498 1,631 1,649 1,650 1,697 1}
+{235 1,260 1,281 1,283 1,353 1,426 1,472 1,498 1,631 1,635 1,650 1,803 1}
+{52 1,78 1,92 1,116 1,148 1,203 1,276 1,318 1,498 1,511 1,631 1,635 1,697 1}
+{5 1,148 1,285 1,299 1,443 1,461 1,498 1,505 1,619 1,631 1,697 1}
+{42 1,78 1,138 1,269 1,443 1,461 1,498 1,631 1,635 1,650 1,697 1}
+{146 1,162 1,268 1,272 1,427 1,450 1,498 1,631 1,649 1,697 1,802 1}
+{132 1,162 1,378 1,427 1,443 1,498 1,526 1,600 1,631 1,697 1}
+{116 1,162 1,235 1,267 1,374 1,443 1,498 1,631 1,649 1,650 1,697 1}
+{116 1,162 1,235 1,267 1,374 1,443 1,498 1,631 1,649 1,650 1,697 1}
+{78 1,116 1,132 1,148 1,162 1,378 1,461 1,498 1,630 1,631 1,649 1,697 1}
+{8 1,129 1,141 1,178 1,201 1,247 1,313 1,376 1,464 1,466 1,498 1,513 1,521 1,758 1}
+{111 1,150 1,201 1,238 1,305 1,456 1,457 1,498 1,505 1,521 1,758 1}
+{7 1,111 1,151 1,192 1,205 1,228 1,362 1,457 1,498 1,505 1,521 1,758 1}
+{106 1,151 1,348 1,411 1,498 1,514 1,521 1,552 1}
+{80 1,127 1,190 1,192 1,200 1,305 1,306 1,324 1,498 1,512 1,521 1,758 1}
+{32 1,60 1,110 1,151 1,264 1,265 1,306 1,445 1,498 1,505 1,521 1,806 1}
+{20 1,26 1,81 1,256 1,456 1,498 1,505 1,521 1,806 1}
+{7 1,9 1,168 1,227 1,231 1,232 1,268 1,324 1,339 1,388 1,498 1,514 1,521 1,758 1}
+{150 1,201 1,226 1,282 1,345 1,445 1,456 1,457 1,498 1,521 1,758 1}
+{26 1,80 1,151 1,154 1,213 1,404 1,418 1,435 1,498 1,521 1,758 1,805 1}
+{6 1,7 1,32 1,64 1,146 1,321 1,373 1,386 1,498 1,503 1,514 1,772 1}
+{126 1,137 1,168 1,231 1,232 1,473 1,498 1,514 1,547 1,772 1,773 1}
+{25 1,146 1,158 1,162 1,248 1,344 1,373 1,498 1,514 1,544 1,556 1,564 1}
+{7 1,123 1,202 1,205 1,334 1,435 1,447 1,450 1,498 1,514 1,544 1,556 1,564 1}
+{37 1,49 1,127 1,208 1,294 1,324 1,402 1,431 1,498 1,503 1,514 1,810 1}
+{81 1,115 1,183 1,298 1,376 1,390 1,406 1,498 1,500 1,501 1,767 1,812 1}
+{25 1,36 1,127 1,146 1,238 1,264 1,376 1,386 1,419 1,498 1,503 1,810 1,813 1}
+{100 1,201 1,208 1,216 1,375 1,382 1,455 1,475 1,478 1,498 1,557 1,810 1,817 1}
+{81 1,158 1,196 1,292 1,304 1,486 1,498 1,503 1,818 1}
+{88 1,127 1,169 1,202 1,218 1,255 1,270 1,389 1,399 1,429 1,498 1,505 1,567 1,810 1,811 1}
+{12 1,93 1,97 1,287 1,366 1,494 1,498 1,500 1,505 1,556 1,744 1}
+{63 1,93 1,94 1,158 1,187 1,239 1,276 1,353 1,407 1,498 1,526 1,624 1,730 1}
+{17 1,107 1,173 1,194 1,200 1,286 1,289 1,326 1,460 1,498 1,505 1,514 1,604 1,804 1}
+{19 1,273 1,379 1,422 1,498 1,501 1,569 1,686 1}
+{101 1,193 1,216 1,296 1,376 1,477 1,494 1,498 1,505 1,526 1,612 1,686 1}
+{16 1,58 1,93 1,163 1,168 1,261 1,348 1,352 1,387 1,407 1,498 1,505 1,519 1,526 1,612 1}
+{2 1,46 1,88 1,181 1,300 1,352 1,424 1,435 1,484 1,498 1,505 1,514 1,519 1,526 1}
+{26 1,70 1,191 1,278 1,323 1,324 1,325 1,348 1,410 1,494 1,498 1,505 1,624 1,686 1}
+{115 1,154 1,196 1,198 1,256 1,297 1,339 1,429 1,446 1,498 1,543 1,631 1,650 1,823 1}
+{36 1,80 1,147 1,168 1,255 1,278 1,338 1,403 1,412 1,453 1,498 1,500 1,514 1,556 1,642 1}
+{65 1,126 1,328 1,348 1,375 1,381 1,433 1,449 1,489 1,498 1,790 1,820 1,825 1,826 1}
+{6 1,9 1,20 1,60 1,73 1,101 1,239 1,386 1,467 1,498 1,501 1,790 1,825 1,826 1}
+{132 1,236 1,295 1,303 1,322 1,375 1,431 1,487 1,498 1,632 1,790 1,825 1,826 1}
+{144 1,223 1,259 1,276 1,289 1,348 1,380 1,400 1,449 1,494 1,498 1,542 1,790 1,825 1,826 1}
+{37 1,55 1,94 1,157 1,194 1,333 1,376 1,416 1,464 1,477 1,498 1,501 1,790 1,825 1}
+{13 1,62 1,129 1,186 1,211 1,240 1,245 1,298 1,434 1,481 1,498 1,526 1,542 1,790 1,825 1}
+{128 1,191 1,277 1,295 1,401 1,407 1,411 1,416 1,424 1,494 1,498 1,501 1,542 1,790 1,825 1}
+{12 1,36 1,66 1,72 1,154 1,180 1,198 1,218 1,403 1,480 1,498 1,542 1,790 1,825 1,826 1}
+{101 1,130 1,209 1,262 1,297 1,323 1,408 1,449 1,487 1,498 1,503 1,524 1,790 1,826 1}
+{100 1,183 1,216 1,228 1,262 1,278 1,417 1,449 1,464 1,498 1,505 1,790 1,825 1,826 1}
+{47 1,73 1,235 1,283 1,349 1,399 1,498 1,544 1,545 1,563 1,580 1}
+{184 1,212 1,268 1,283 1,349 1,386 1,498 1,514 1,544 1,545 1,546 1}
+{53 1,64 1,180 1,232 1,369 1,388 1,447 1,498 1,544 1,545 1,546 1,580 1}
+{84 1,144 1,283 1,331 1,343 1,426 1,450 1,498 1,544 1,545 1,547 1,565 1}
+{137 1,183 1,235 1,332 1,349 1,386 1,445 1,498 1,544 1,545 1,546 1}
+{185 1,212 1,225 1,304 1,332 1,384 1,426 1,486 1,498 1,544 1,545 1,546 1,828 1}
+{72 1,115 1,124 1,158 1,206 1,232 1,277 1,321 1,332 1,498 1,544 1,545 1,546 1,827 1}
+{33 1,78 1,116 1,162 1,219 1,373 1,375 1,439 1,498 1,514 1,544 1,545 1,547 1}
+{44 1,187 1,225 1,283 1,349 1,372 1,413 1,426 1,498 1,544 1,545 1,546 1,548 1}
+{32 1,180 1,183 1,205 1,331 1,334 1,369 1,426 1,498 1,544 1,545 1,546 1}
+{24 1,37 1,115 1,167 1,218 1,307 1,456 1,498 1,500 1,526 1,586 1,587 1}
+{88 1,120 1,130 1,198 1,441 1,476 1,498 1,500 1,501 1,530 1,546 1}
+{144 1,158 1,235 1,298 1,334 1,464 1,475 1,498 1,526 1,561 1,586 1,587 1}
+{62 1,227 1,255 1,261 1,264 1,429 1,473 1,481 1,498 1,500 1,501 1,526 1,587 1}
+{146 1,226 1,268 1,299 1,317 1,345 1,375 1,450 1,498 1,511 1}
+{12 1,67 1,121 1,141 1,178 1,226 1,249 1,446 1,498 1,500 1,505 1,526 1,587 1}
+{25 1,67 1,78 1,100 1,243 1,319 1,345 1,450 1,467 1,498 1,511 1,526 1,676 1}
+{179 1,212 1,246 1,254 1,283 1,341 1,417 1,420 1,484 1,498 1,505 1,556 1,750 1}
+{24 1,64 1,120 1,150 1,180 1,235 1,254 1,360 1,455 1,464 1,498 1,500 1,501 1,503 1,555 1}
+{29 1,112 1,132 1,231 1,232 1,268 1,342 1,422 1,498 1,500 1,511 1}
+{28 1,48 1,51 1,69 1,73 1,112 1,116 1,253 1,282 1,310 1,498 1,511 1,838 1}
+{17 1,199 1,225 1,276 1,280 1,310 1,363 1,442 1,498 1,511 1,831 1,838 1}
+{9 1,67 1,78 1,116 1,132 1,148 1,336 1,386 1,467 1,498 1,511 1,837 1,838 1}
+{20 1,31 1,52 1,87 1,92 1,306 1,322 1,404 1,442 1,498 1,509 1,511 1}
+{2 1,32 1,94 1,187 1,228 1,240 1,246 1,315 1,347 1,376 1,498 1,511 1,514 1,837 1}
+{48 1,67 1,137 1,285 1,311 1,404 1,465 1,466 1,471 1,498 1,511 1,568 1}
+{35 1,37 1,48 1,76 1,253 1,318 1,345 1,492 1,498 1,511 1,591 1,837 1}
+{37 1,148 1,315 1,317 1,329 1,345 1,406 1,450 1,498 1,511 1,841 1}
+{9 1,87 1,169 1,225 1,243 1,302 1,349 1,387 1,419 1,469 1,498 1,511 1,526 1,832 1}
+{84 1,116 1,281 1,299 1,315 1,360 1,419 1,450 1,498 1,511 1,619 1}
+{37 1,87 1,150 1,231 1,282 1,406 1,424 1,464 1,475 1,498 1,511 1,690 1,843 1}
+{12 1,62 1,83 1,164 1,336 1,369 1,395 1,422 1,433 1,446 1,498 1,720 1,766 1}
+{32 1,187 1,194 1,261 1,268 1,311 1,321 1,330 1,355 1,498 1,511 1,621 1,720 1}
+{255 1,265 1,398 1,411 1,412 1,433 1,434 1,441 1,498 1,500 1,501 1,504 1,640 1}
+{20 1,88 1,196 1,227 1,261 1,380 1,489 1,498 1,500 1,504 1,514 1,612 1}
+{78 1,96 1,119 1,203 1,360 1,422 1,498 1,631 1,650 1,667 1}
+{45 1,178 1,188 1,201 1,211 1,255 1,297 1,306 1,498 1,843 1}
+{73 1,84 1,105 1,106 1,277 1,302 1,325 1,407 1,480 1,498 1,501 1,505 1,649 1,843 1}
+{51 1,90 1,93 1,204 1,215 1,298 1,445 1,463 1,498 1,505 1,514 1,646 1,649 1}
+{71 1,132 1,185 1,215 1,258 1,302 1,463 1,498 1,503 1,649 1,678 1,689 1}
+{37 1,167 1,305 1,307 1,324 1,375 1,421 1,431 1,467 1,498 1,505 1,511 1,514 1}
+{3 1,51 1,69 1,87 1,94 1,418 1,419 1,471 1,498 1,503 1,510 1,536 1}
+{29 1,67 1,79 1,132 1,269 1,291 1,308 1,353 1,498 1,503 1,526 1,699 1,713 1}
+{4 1,121 1,123 1,241 1,343 1,370 1,384 1,419 1,471 1,475 1,498 1,499 1,501 1,503 1,505 1}
+{21 1,56 1,67 1,87 1,192 1,308 1,467 1,498 1,510 1,651 1}
+{21 1,28 1,29 1,33 1,78 1,92 1,112 1,276 1,309 1,467 1,498 1,511 1,618 1,626 1}
+{39 1,78 1,112 1,116 1,125 1,268 1,302 1,356 1,498 1,511 1,567 1}
+{21 1,78 1,87 1,91 1,92 1,146 1,244 1,308 1,322 1,498 1,505 1,511 1,840 1,845 1}
+{24 1,45 1,53 1,117 1,249 1,270 1,324 1,345 1,448 1,449 1,498 1,501 1,503 1,562 1,633 1}
+{14 1,57 1,146 1,158 1,281 1,313 1,367 1,448 1,464 1,467 1,498 1,501 1,526 1,527 1}
+{187 1,221 1,279 1,320 1,333 1,339 1,409 1,426 1,436 1,498 1,619 1,632 1,820 1,847 1}
+{4 1,60 1,69 1,85 1,154 1,293 1,303 1,387 1,392 1,485 1,498 1,619 1,632 1,820 1,847 1}
+{110 1,165 1,261 1,293 1,303 1,330 1,359 1,446 1,498 1,619 1,632 1,820 1,847 1}
+{3 1,16 1,153 1,236 1,272 1,289 1,409 1,425 1,473 1,498 1,619 1,632 1,820 1,847 1}
+{60 1,64 1,213 1,237 1,338 1,357 1,358 1,368 1,447 1,498 1,514 1,632 1,820 1}
+{36 1,90 1,91 1,129 1,153 1,255 1,366 1,424 1,446 1,487 1,498 1,632 1,820 1,848 1,850 1}
+{36 1,50 1,129 1,168 1,239 1,350 1,366 1,392 1,446 1,498 1,632 1,820 1,848 1,850 1}
+{44 1,120 1,153 1,232 1,384 1,397 1,403 1,418 1,426 1,474 1,498 1,563 1,632 1,820 1}
+{53 1,59 1,152 1,154 1,172 1,304 1,401 1,481 1,491 1,498 1,632 1,820 1,848 1,850 1}
+{26 1,43 1,73 1,264 1,291 1,335 1,369 1,403 1,469 1,487 1,498 1,632 1,820 1,850 1}
+{82 1,155 1,270 1,319 1,433 1,453 1,470 1,498 1,501 1,503 1}
+{97 1,200 1,227 1,351 1,376 1,388 1,421 1,429 1,498 1,503 1,524 1,794 1,826 1}
+{21 1,69 1,261 1,279 1,291 1,322 1,342 1,370 1,380 1,415 1,498 1,503 1,524 1,590 1}
+{15 1,86 1,132 1,157 1,212 1,289 1,302 1,313 1,389 1,449 1,498 1,504 1,524 1,526 1}
+{26 1,43 1,93 1,127 1,137 1,141 1,228 1,232 1,369 1,396 1,498 1,524 1,526 1,689 1}
+{129 1,132 1,320 1,421 1,436 1,470 1,487 1,493 1,498 1,503 1,510 1,524 1}
+{31 1,44 1,93 1,106 1,227 1,331 1,335 1,368 1,446 1,498 1,503 1,505 1,524 1}
+{110 1,182 1,197 1,261 1,303 1,359 1,403 1,446 1,498 1,524 1,526 1,631 1,689 1}
+{12 1,55 1,93 1,120 1,186 1,303 1,416 1,498 1,503 1,524 1,705 1}
+{55 1,126 1,201 1,240 1,305 1,369 1,376 1,455 1,498 1,503 1,519 1,852 1}
+{72 1,106 1,201 1,205 1,234 1,255 1,324 1,348 1,416 1,458 1,498 1,503 1,561 1,852 1}
+{162 1,248 1,317 1,391 1,443 1,461 1,498 1,503 1,507 1,852 1}
+{51 1,60 1,62 1,117 1,170 1,184 1,211 1,232 1,327 1,441 1,498 1,499 1,503 1,519 1,852 1}
+{27 1,51 1,117 1,163 1,238 1,376 1,377 1,385 1,416 1,450 1,498 1,503 1,519 1,852 1}
+{5 1,7 1,58 1,184 1,190 1,220 1,232 1,307 1,360 1,498 1,500 1,503 1,633 1,852 1}
+{28 1,29 1,76 1,201 1,268 1,315 1,318 1,349 1,373 1,471 1,498 1,503 1,612 1,852 1}
+{21 1,33 1,137 1,149 1,203 1,375 1,385 1,443 1,498 1,503 1,569 1,724 1,852 1}
+{24 1,77 1,97 1,113 1,137 1,146 1,302 1,463 1,498 1,511 1,612 1,627 1,852 1}
+{7 1,24 1,29 1,77 1,170 1,201 1,226 1,234 1,238 1,254 1,498 1,505 1,686 1,705 1,852 1}
+{6 1,62 1,100 1,249 1,305 1,432 1,452 1,455 1,456 1,498 1,505 1,699 1,702 1,852 1}
+{70 1,245 1,277 1,290 1,351 1,410 1,481 1,494 1,498 1,500 1,501 1,504 1,505 1}
+{86 1,90 1,91 1,117 1,186 1,227 1,266 1,351 1,453 1,480 1,498 1,500 1,501 1,503 1,546 1}
+{95 1,152 1,153 1,245 1,278 1,290 1,403 1,421 1,480 1,494 1,498 1,500 1,501 1,504 1,546 1}
+{93 1,164 1,286 1,319 1,351 1,368 1,394 1,453 1,488 1,498 1,500 1,501 1,503 1,546 1}
+{90 1,91 1,93 1,155 1,278 1,288 1,292 1,296 1,407 1,498 1,500 1,501 1,503 1,505 1}
+{21 1,161 1,186 1,222 1,242 1,278 1,320 1,453 1,476 1,494 1,498 1,500 1,501 1,503 1,505 1}
+{93 1,101 1,118 1,266 1,351 1,428 1,480 1,498 1,501 1,504 1,505 1,553 1}
+{81 1,88 1,95 1,117 1,263 1,410 1,440 1,480 1,498 1,500 1,501 1,503 1,504 1}
+{46 1,70 1,153 1,261 1,368 1,422 1,498 1,500 1,501 1,505 1,546 1}
+{70 1,86 1,135 1,152 1,153 1,186 1,410 1,415 1,428 1,481 1,498 1,500 1,501 1,505 1,546 1}
+{114 1,145 1,154 1,176 1,262 1,281 1,333 1,362 1,468 1,484 1,498 1,534 1,674 1,677 1}
+{151 1,168 1,232 1,281 1,344 1,390 1,418 1,454 1,498 1,514 1,568 1,586 1,643 1}
+{18 1,43 1,69 1,74 1,158 1,191 1,261 1,298 1,366 1,422 1,498 1,501 1,511 1,568 1}
+{159 1,191 1,218 1,229 1,251 1,354 1,386 1,407 1,498 1,501 1,519 1,699 1}
+{321 1,330 1,340 1,343 1,375 1,404 1,444 1,498 1,511 1,526 1,628 1}
+{85 1,158 1,199 1,202 1,251 1,281 1,407 1,452 1,474 1,498 1,619 1,719 1,788 1}
+{65 1,300 1,351 1,369 1,453 1,489 1,496 1,497 1,498 1,505 1,561 1,643 1,670 1}
+{7 1,36 1,103 1,117 1,202 1,232 1,251 1,304 1,321 1,498 1,500 1,514 1,613 1,670 1}
+{32 1,206 1,321 1,351 1,386 1,388 1,418 1,450 1,471 1,498 1,500 1,505 1,568 1,586 1}
+{80 1,151 1,168 1,202 1,373 1,498 1,505 1,568 1,583 1,586 1}
+{37 1,51 1,62 1,113 1,249 1,308 1,317 1,345 1,444 1,467 1,498 1,504 1,557 1,630 1,801 1}
+{7 1,14 1,84 1,226 1,243 1,340 1,362 1,498 1,514 1,630 1,631 1,717 1}
+{9 1,28 1,31 1,211 1,249 1,345 1,362 1,375 1,456 1,498 1,505 1,514 1,630 1,649 1}
+{9 1,51 1,62 1,121 1,137 1,157 1,231 1,232 1,498 1,630 1,631 1,650 1,717 1}
+{21 1,32 1,58 1,137 1,157 1,182 1,200 1,268 1,299 1,384 1,498 1,505 1,630 1,633 1,801 1}
+{51 1,64 1,190 1,200 1,220 1,332 1,362 1,370 1,386 1,498 1,504 1,630 1,636 1,801 1}
+{73 1,99 1,157 1,215 1,298 1,322 1,349 1,402 1,407 1,445 1,498 1,630 1,631 1,649 1,650 1}
+{51 1,60 1,85 1,166 1,180 1,285 1,291 1,298 1,498 1,526 1,630 1,631 1,725 1}
+{53 1,60 1,137 1,187 1,200 1,227 1,291 1,416 1,446 1,498 1,526 1,630 1,631 1,691 1}
+{31 1,141 1,243 1,251 1,418 1,435 1,455 1,467 1,475 1,498 1,630 1,631 1,650 1,733 1}
+{22 1,69 1,136 1,164 1,166 1,222 1,280 1,355 1,498 1,501 1,505 1,581 1,792 1}
+{52 1,272 1,282 1,336 1,405 1,454 1,498 1,560 1,581 1,791 1}
+{98 1,197 1,267 1,363 1,405 1,432 1,498 1,501 1,791 1,857 1}
+{39 1,98 1,189 1,202 1,224 1,426 1,444 1,498 1,560 1,563 1,791 1,811 1}
+{73 1,190 1,264 1,269 1,274 1,427 1,498 1,581 1,791 1,857 1}
+{39 1,73 1,131 1,166 1,189 1,261 1,306 1,363 1,442 1,498 1,541 1,581 1}
+{40 1,101 1,103 1,162 1,203 1,251 1,280 1,428 1,443 1,494 1,498 1,501 1,562 1,571 1}
+{22 1,123 1,170 1,219 1,231 1,243 1,258 1,271 1,347 1,373 1,498 1,560 1,571 1,784 1}
+{90 1,224 1,257 1,267 1,338 1,351 1,383 1,480 1,498 1,501 1,581 1,719 1,791 1}
+{163 1,224 1,241 1,269 1,279 1,370 1,386 1,387 1,425 1,498 1,560 1,581 1,791 1}
+{261 1,351 1,446 1,494 1,498 1,501 1,531 1,532 1}
+{70 1,118 1,498 1,501 1,531 1,532 1}
+{135 1,155 1,281 1,415 1,488 1,498 1,501 1,531 1,532 1}
+{6 1,126 1,239 1,266 1,270 1,380 1,389 1,396 1,428 1,498 1,504 1,531 1,532 1}
+{101 1,118 1,135 1,498 1,531 1,532 1,542 1}
+{135 1,292 1,389 1,440 1,498 1,501 1,531 1,532 1}
+{93 1,97 1,101 1,118 1,155 1,351 1,440 1,498 1,500 1,531 1,532 1}
+{34 1,164 1,389 1,432 1,441 1,488 1,498 1,531 1,532 1,542 1}
+{50 1,58 1,81 1,196 1,304 1,395 1,440 1,446 1,489 1,498 1,531 1,532 1}
+{114 1,214 1,223 1,295 1,371 1,479 1,498 1,504 1,531 1,532 1}
+{51 1,69 1,101 1,118 1,120 1,130 1,165 1,425 1,498 1,501 1,511 1,581 1,633 1}
+{183 1,194 1,244 1,258 1,303 1,357 1,413 1,444 1,452 1,498 1,503 1,509 1,511 1,581 1}
+{3 1,59 1,105 1,129 1,191 1,211 1,288 1,335 1,372 1,384 1,498 1,503 1,509 1,511 1,581 1}
+{34 1,83 1,101 1,106 1,198 1,335 1,421 1,498 1,503 1,509 1,510 1,581 1}
+{82 1,97 1,214 1,291 1,292 1,370 1,373 1,498 1,503 1,509 1,511 1,581 1}
+{50 1,75 1,109 1,238 1,248 1,424 1,451 1,477 1,490 1,498 1,503 1,511 1}
+{81 1,190 1,399 1,498 1,503 1,509 1,511 1,581 1}
+{32 1,40 1,132 1,137 1,154 1,345 1,386 1,429 1,473 1,498 1,501 1,509 1,560 1,581 1}
+{83 1,189 1,263 1,278 1,292 1,355 1,384 1,426 1,498 1,501 1,503 1,511 1,581 1}
+{20 1,97 1,161 1,263 1,275 1,278 1,436 1,481 1,498 1,503 1,509 1,511 1,581 1}
+{67 1,73 1,146 1,157 1,196 1,211 1,292 1,304 1,404 1,429 1,498 1,546 1,680 1,771 1,862 1}
+{43 1,78 1,162 1,268 1,342 1,450 1,498 1,546 1,556 1,752 1,771 1}
+{54 1,146 1,159 1,257 1,269 1,375 1,437 1,448 1,467 1,498 1,514 1,519 1,752 1,771 1}
+{4 1,121 1,235 1,274 1,345 1,384 1,467 1,486 1,498 1,501 1,504 1,519 1}
+{103 1,132 1,245 1,268 1,422 1,429 1,440 1,454 1,498 1,500 1,501 1,549 1,812 1}
+{87 1,116 1,132 1,146 1,162 1,195 1,344 1,498 1,560 1,863 1,864 1}
+{27 1,108 1,158 1,409 1,419 1,422 1,473 1,493 1,498 1,560 1,597 1,598 1,807 1}
+{114 1,120 1,342 1,349 1,384 1,386 1,426 1,498 1,546 1,809 1}
+{25 1,32 1,226 1,232 1,243 1,249 1,268 1,373 1,450 1,498 1,505 1,546 1,560 1,594 1}
+{32 1,321 1,323 1,354 1,370 1,386 1,422 1,451 1,498 1,505 1,553 1,865 1}
+{99 1,106 1,121 1,196 1,303 1,366 1,384 1,446 1,486 1,498 1,511 1,520 1,866 1}
+{168 1,334 1,439 1,486 1,498 1,503 1,509 1,511 1,867 1}
+{12 1,44 1,97 1,132 1,255 1,261 1,262 1,304 1,407 1,434 1,498 1,501 1,503 1,867 1}
+{38 1,71 1,148 1,207 1,258 1,309 1,375 1,391 1,470 1,498 1,501 1,505 1,569 1,872 1}
+{28 1,35 1,130 1,144 1,215 1,239 1,247 1,313 1,332 1,467 1,498 1,505 1,652 1,868 1}
+{25 1,67 1,79 1,97 1,249 1,285 1,384 1,450 1,467 1,476 1,498 1,505 1,868 1}
+{57 1,187 1,196 1,249 1,345 1,426 1,467 1,498 1,872 1}
+{50 1,127 1,128 1,141 1,226 1,254 1,449 1,467 1,470 1,498 1,686 1,722 1,872 1}
+{207 1,217 1,248 1,318 1,332 1,350 1,353 1,376 1,402 1,479 1,498 1,511 1,867 1}
+{55 1,56 1,78 1,96 1,208 1,240 1,247 1,406 1,457 1,492 1,498 1,511 1,867 1}
