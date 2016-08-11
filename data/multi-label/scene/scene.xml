@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<labels xmlns="http://mulan.sourceforge.net/labels">
+<label name="Beach"></label>
+<label name="Sunset"></label>
+<label name="FallFoliage"></label>
+<label name="Field"></label>
+<label name="Mountain"></label>
+<label name="Urban"></label>
+</labels>
