@@ -9,3 +9,5 @@
 | birds.xml        | header file  |
 | birds-train.arff | training set |
 | birds-test.arff  | test set     |
+
+Original audio sound files can be obtained from <a href="https://www.kaggle.com/c/mlsp-2013-birds/data">the competition's page at Kaggle</a>.
