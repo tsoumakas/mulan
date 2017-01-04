@@ -15,34 +15,36 @@
  */
 
 /*
- *    ActivationSigmoid.java
+ *    ActivationReLU.java
  *    Copyright (C) 2009-2012 Aristotle University of Thessaloniki, Greece
  */
 package mulan.classifier.neural.model;
 
 /**
- * Implements the sigmoid activation function.
- * The function output values are from interval (0, 1).
+ * Implements the ReLU activation function.
+ * The function output values are from interval (0, +inf).
  * 
  * @author Ioannis Charitos
- * @version 2017.01.3
+ * @version 2017.01.4
  */
-public class ActivationSigmoid extends ActivationFunction {
+public class ActivationReLU extends ActivationFunction {
+
+	private static final long serialVersionUID = 2L;
 	
-	private static final long serialVersionUID = 1L;
-    /** Maximum value of function */
-    public final static double MAX = +1.0;
+	/** Maximum value of function */
+    public final static double MAX = Double.POSITIVE_INFINITY;
     /** Minimum value of function */
     public final static double MIN = 0.0;
 
 	@Override
 	public double activate(double input) {
-		return 1.0 / (1.0 + Math.exp(-input)) ;
+		return (input >= 0) ? input : 0;
 	}
 
 	@Override
 	public double derivative(double input) {
-		return activate(input) * (1 - activate(input));
+		throw new 
+		UnsupportedOperationException("Can't compute a derivative of the ReLU activation function.");
 	}
 
 	@Override
