@@ -1,10 +1,9 @@
-package MultiLabelHyperNetWork;
+package mulan.classifier.MultiLabelHyperNetWork;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
 
-import MultilabelCompetition.BaseFuction;
 import weka.core.Instance;
 
 public class HyperEdge {

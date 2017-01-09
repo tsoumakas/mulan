@@ -1,11 +1,10 @@
-package MultiLabelHyperNetWork;
+package mulan.classifier.MultiLabelHyperNetWork;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import MultilabelCompetition.BaseFuction;
 import mulan.classifier.InvalidDataException;
 import mulan.classifier.ModelInitializationException;
 import mulan.classifier.MultiLabelLearner;
