@@ -23,7 +23,7 @@ import weka.core.TechnicalInformation;
 import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
 /**
- * Class of implememtion of Multi-Label Hypernetwork for exploiting global and local label correlation
+ * Class of implementation of Multi-Label Hypernetwork for exploiting global and local label correlation
 * @author LB
 * @version 2017.01.10
 */
