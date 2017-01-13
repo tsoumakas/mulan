@@ -5,7 +5,11 @@ import java.util.Arrays;
 import java.util.Objects;
 
 import weka.core.Instance;
-
+/**
+ * Class of HyperEdge 
+ * @author LB
+ * @version 2017.01.10
+ */
 public class HyperEdge {
 
 	public static void main(String[] args) {
@@ -13,13 +17,13 @@ public class HyperEdge {
 
 	}
 	
-	private ArrayList<Boolean> valueTypeList=null;  //true denotes Integer ; false denotes Double
-	private ArrayList<Double> valueList=null;
+	private ArrayList<Boolean> valueTypeList=null;  //if true denotes the value of vertex is Integer; if false is Double
 	private ArrayList<Integer> vertexList=null;
+	private ArrayList<Double> valueList=null;  // value of vertex
 	private ArrayList<Integer> labelList=null;
 	private ArrayList<Double> weightList=null;
 	int order=-1;
-	int classIndex=-1;
+	int classIndex=-1;  //the index of instance that generates this hyperedge
 	Double fitness=Double.MIN_VALUE;
 	
 
@@ -65,9 +69,9 @@ public class HyperEdge {
 			valueTypeList.add(true);
 		}
 		
-		valueList=BaseFuction.getArrayList(valueArray);
-		vertexList=BaseFuction.getArrayList(vertexArray);
-		labelList=BaseFuction.getArrayList(labelArray);		
+		valueList=BaseFunction.getArrayList(valueArray);
+		vertexList=BaseFunction.getArrayList(vertexArray);
+		labelList=BaseFunction.getArrayList(labelArray);		
 		weightList=new ArrayList<Double>();
 		for(int i=0;i<labelArray.length;i++){
 			weightList.add(1.0);
@@ -87,7 +91,7 @@ public class HyperEdge {
 			valueTypeList.add(true);
 		}
 		
-		vertexList=BaseFuction.getArrayList(vertexArray);
+		vertexList=BaseFunction.getArrayList(vertexArray);
 		
 		valueList=new ArrayList<Double>();
 		for(int i=0;i<order;i++){
@@ -118,7 +122,7 @@ public class HyperEdge {
 			valueTypeList.add(valueTypeArray[i]);
 		}
 		
-		vertexList=BaseFuction.getArrayList(vertexArray);
+		vertexList=BaseFunction.getArrayList(vertexArray);
 		
 		valueList=new ArrayList<Double>();
 		for(int i=0;i<order;i++){
@@ -145,7 +149,6 @@ public class HyperEdge {
 				results[LabelNum-j]=1;
 			}
 		}
-		
 		return results;
 	}
 

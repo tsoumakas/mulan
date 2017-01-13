@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.math.BigDecimal;
@@ -16,17 +17,34 @@ import java.util.Random;
 import mulan.classifier.MultiLabelLearner;
 import mulan.data.MultiLabelInstances;
 import weka.classifiers.Classifier;
+import weka.clusterers.RandomizableClusterer;
 import weka.core.Instances;
 import weka.core.converters.ArffSaver;
 
-public class BaseFuction {
+/**
+<!-- globalinfo-start -->
+* The Basic Function that used in the MLHN-C model
+* <br>
+<!-- globalinfo-end -->
+*
+* @author LB
+* @version 2017.01.10
+*/
 
+public class BaseFunction {
+	
+	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		
 	}
 
-	// 得到分类器名称
+	/**
+	 * Returns the name of a classifier
+	 * 
+	 * @param classifier a classifier
+	 * @return the name of the classifier  
+	 **/
 	public static String Get_Classifier_name(Classifier classifier) {
 		String s = classifier.getClass().toString(); // s="class mulan.classifier.lazy.MLkNN"
 		int Si = s.lastIndexOf(".") + 1;
@@ -34,22 +52,38 @@ public class BaseFuction {
 		return s.substring(Si, Ei); // classifierName="MLkNN" 分类器名称
 	}
 
-	// 得到分类器名称
+	/**
+	 * Returns the name of a multiLabel learner
+	 * 
+	 * @param  classifier a multiLabel learner
+	 * @return the name of the multiLabel learner
+	 **/
 	public static String Get_Classifier_name(MultiLabelLearner classifier) {
 		String s = classifier.getClass().toString(); // s="class mulan.classifier.lazy.MLkNN"
 		int Si = s.lastIndexOf(".") + 1;
 		int Ei = s.length();
-		return s.substring(Si, Ei); // classifierName="MLkNN" 分类器名称
+		return s.substring(Si, Ei); // classifierName="MLkNN" 
 	}
 
-	// 四舍五入保留n位小数
-	public static double siSheWuRu(double x, int n) {
+	/**
+	 * Return a rounded double value with certain number of decimals
+	 * 
+	 * @param x double number be processed
+	 * @param n the number of decimals be saved
+	 * @return the rounded value of x with n decimals
+	 **/
+	public static double Round(double x, int n) {
 		BigDecimal b = new BigDecimal(x);
 		return b.setScale(n, BigDecimal.ROUND_HALF_UP).doubleValue();
 	}
 
-	
-	//读取CSV文件，每行记录在一个String[]中，返回List<String[]>
+	/**
+	 * Returns a list of String[], each String[] contain a line in CSV file 
+	 * 
+	 * @param CSVFileName the name of a csv file
+	 * @param split the sperator of each element in a line 
+	 * @return a list of String[] contained the content of the file
+	 */
 	public static List<String[]> readCSV(String CSVFileName,String split){		
 		List<String[]> list=null;
 		
@@ -77,7 +111,15 @@ public class BaseFuction {
 		}	
 	}
 
-	//将content中的内容写入CSV文件，
+	/**
+	 * Writes the content of List<String[]> to a CSV file
+	 * 
+	 * @param CSVFileName the name of a csv file
+	 * @param content a list of String[] whoes content is used to write
+	 * @param Is_add ture if the content is add to the end of the file, 
+	 * 				 otherwise the original content of the file would be covered 
+	 * @param codeType the name of a supported charset
+	 */
 	public static void writeCSV(String CSVFileName,List<String[]> content,boolean Is_add,String codeType){		
 		try 
 		{
@@ -118,21 +160,15 @@ public class BaseFuction {
 		
 	}
 
-	
-	
-	//文件完全名称fileallname，out输出内容,Is_add为true时在文件末尾添加内容，为false时覆盖原先内容
-	public static void Out_file(String fileallname,String out,boolean Is_add){
-		try{
-			FileWriter fout=new FileWriter(fileallname,Is_add);
-			fout.write(out);
-			fout.close();
-		}
-		catch (Exception e){
-			e.printStackTrace();
-		}
-	}
-	
-	//文件完全名称fileallname，out输出内容,codeType 为编码模式
+	/**
+	 * Writes a string to a CSV file
+	 * 
+	 * @param fileallname the name of a csv file
+	 * @param out a string is used to write
+	 * @param Is_add ture if the content is add to the end of the file, 
+	 * 				 otherwise the original content of the file would be covered 
+	 * @param codeType the name of a supported charset
+	 */
 	public static void Out_file(String fileallname,String out,boolean Is_add,String codeType){
 		try{
 			
@@ -149,9 +185,24 @@ public class BaseFuction {
 		}
 	}
 	
+	public static void Out_file(String fileallname,String out,boolean Is_add){
+		try{
+			FileWriter fout=new FileWriter(fileallname,Is_add);
+			fout.write(out);
+			fout.close();
+		}
+		catch (Exception e){
+			e.printStackTrace();
+		}
+	}
 	
-	
-	//样本集写入文件(arff文件)
+	/**
+	 * Writes an instances to a file
+	 * 
+	 * @param instances an instances to be saved
+	 * @param filename the name of file
+	 * @param filepath the path of file
+	 */
 	public static void Outfile_instances_arff(Instances instances,String filename, String filepath){	
 		//判断目录，若不存在则新建
         File file=new File(filepath);
@@ -175,7 +226,12 @@ public class BaseFuction {
 		System.out.println(file+"写入文件");	
 	}	
 	
-	
+	/**
+	 * Writes an instances to a file with suffix of "arff"
+	 * 
+	 * @param instances an instances to be saved
+	 * @param filename the whole name of file(including path)
+	 */
 	public static void Outfile_instances_arff(Instances instances,String filename){	
         
 		ArffSaver saver = new ArffSaver();
@@ -193,8 +249,13 @@ public class BaseFuction {
 	}	
 	
 	
-	//数组转ArrayList
-    public static ArrayList getArrayList(Object[] obj)throws Exception{
+	/**
+	 * Transforms an array to an ArrayList
+	 * @param obj an array  
+	 * @return an ArrayList transformed by obj
+	 * @throws Exception if transformation fails
+	 */
+    public static ArrayList getArrayList(Object[] obj) throws Exception{
     	ArrayList list = new ArrayList();
         for(int i=0;i<obj.length;i++)
             list.add(obj[i]);
@@ -202,14 +263,27 @@ public class BaseFuction {
     }
     
     
-	//返回一个在min和max之间的随机数（包括min和max）
+    /**
+     * Returns a random number in a certain range
+     * 
+     * @param min the minimum
+     * @param max the maximum
+     * @return a random number in the range of [min,max]
+     */
 	public static int randomInt(int min,int max){
 		Random r = new Random();
 		int i=Math.abs(r.nextInt())%(max-min+1)+min;
 		return i;
 	}
     
-	//返回一个在min和max之间的随机数组（包括min和max，不重复）
+    /**
+     * Returns an array of random number without replicated in a certain range
+     * 
+     * @param min the minimum
+     * @param max the maximum
+     * @param num the count of numbers that returns
+     * @return an array of random number in the range of [min,max]
+     */
 	public static int[] randomIntArray(int max,int min,int num){
 		int n[]=new int[num];
 		int lenght=max-min+1;
@@ -231,6 +305,7 @@ public class BaseFuction {
 	}
 	
 	//返回一个在min和max之间的随机数组（包括min和max，不重复）
+	
 	public static Integer[] randomIntegerArray(int max,int min,int num){
 		Integer n[]=new Integer[num];
 		int lenght=max-min+1;
@@ -252,6 +327,13 @@ public class BaseFuction {
 	}
 	
 	//返回数组的平均值
+	
+	/**
+	 * Returns the average of decimals in an array
+	 * 
+	 * @param A double array 
+	 * @return the average of decimals in A
+	 */
 	public static double Get_Average(double A[]){
 		if(A==null||A.length==0){
 			return 0;
@@ -265,6 +347,13 @@ public class BaseFuction {
 	}
 		
 	//返回数组的标准差
+	
+	/**
+	 * Returns the standard deviation of decimals in an array
+	 * 
+	 * @param A double array 
+	 * @return the standard deviation of decimals in A
+	 */
 	public static double Get_Std(double A[]){
 		if(A==null||A.length==0){
 			return 0;
@@ -286,6 +375,7 @@ public class BaseFuction {
 	}
 
 	//返回数组的平均值
+	
 	public static double Get_Average(List<Double> A){
 		if(A==null||A.size()==0){
 			return 0;
@@ -299,6 +389,7 @@ public class BaseFuction {
 	}
 		
 	//返回数组的标准差
+	
 	public static double Get_Std(List<Double> A){
 		if(A==null||A.size()==0){
 			return 0;
