@@ -1,4 +1,4 @@
-package mulan.classifier.MultiLabelHyperNetWork;
+package mulan.classifier.hypernet;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -49,7 +49,7 @@ public class BaseFunction {
 		String s = classifier.getClass().toString(); // s="class mulan.classifier.lazy.MLkNN"
 		int Si = s.lastIndexOf(".") + 1;
 		int Ei = s.length();
-		return s.substring(Si, Ei); // classifierName="MLkNN" 分类器名称
+		return s.substring(Si, Ei); // classifierName="MLkNN" 
 	}
 
 	/**
@@ -81,7 +81,7 @@ public class BaseFunction {
 	 * Returns a list of String[], each String[] contain a line in CSV file 
 	 * 
 	 * @param CSVFileName the name of a csv file
-	 * @param split the sperator of each element in a line 
+	 * @param split the separator of each element in a line 
 	 * @return a list of String[] contained the content of the file
 	 */
 	public static List<String[]> readCSV(String CSVFileName,String split){		
@@ -204,11 +204,10 @@ public class BaseFunction {
 	 * @param filepath the path of file
 	 */
 	public static void Outfile_instances_arff(Instances instances,String filename, String filepath){	
-		//判断目录，若不存在则新建
         File file=new File(filepath);
         if  (!file .exists()  && !file .isDirectory())      
         {       
-            System.out.println("//不存在"+filepath+"需创建");  
+            System.out.println("//Do not exsit"+filepath+"Need to bulid");  
             file .mkdir();    
         }
         
@@ -223,7 +222,7 @@ public class BaseFunction {
 			e.printStackTrace();
 		}
 			 
-		System.out.println(file+"写入文件");	
+		System.out.println(file+"is writing to file");	
 	}	
 	
 	/**
@@ -245,7 +244,7 @@ public class BaseFunction {
 			e.printStackTrace();
 		}
 			 
-		System.out.println(file_entire_name+"写入文件");	
+		System.out.println(file_entire_name+"is writing to file");	
 	}	
 	
 	
@@ -290,7 +289,7 @@ public class BaseFunction {
 		int tag[]=new int[lenght];
 		
 		for(int i=0;i<lenght;i++){
-			tag[i]=0; //0为未被选中
+			tag[i]=0; 
 		}
 		int r;
 		for(int i=0;i<num;i++){
@@ -304,15 +303,21 @@ public class BaseFunction {
 		return n;
 	}
 	
-	//返回一个在min和max之间的随机数组（包括min和max，不重复）
-	
+	/**
+     * Returns an array of random number without replicated in a certain range
+     * 
+     * @param min the minimum
+     * @param max the maximum
+     * @param num the count of numbers that returns
+     * @return an array of random number in the range of [min,max]
+     */
 	public static Integer[] randomIntegerArray(int max,int min,int num){
 		Integer n[]=new Integer[num];
 		int lenght=max-min+1;
 		int tag[]=new int[lenght];
 		
 		for(int i=0;i<lenght;i++){
-			tag[i]=0; //0为未被选中
+			tag[i]=0; 
 		}
 		int r;
 		for(int i=0;i<num;i++){
@@ -326,7 +331,6 @@ public class BaseFunction {
 		return n;
 	}
 	
-	//返回数组的平均值
 	
 	/**
 	 * Returns the average of decimals in an array
@@ -346,7 +350,6 @@ public class BaseFunction {
 		return d/A.length;
 	}
 		
-	//返回数组的标准差
 	
 	/**
 	 * Returns the standard deviation of decimals in an array
@@ -374,7 +377,6 @@ public class BaseFunction {
 		return Math.sqrt(result);
 	}
 
-	//返回数组的平均值
 	
 	public static double Get_Average(List<Double> A){
 		if(A==null||A.size()==0){
@@ -388,7 +390,6 @@ public class BaseFunction {
 		return d/A.size();
 	}
 		
-	//返回数组的标准差
 	
 	public static double Get_Std(List<Double> A){
 		if(A==null||A.size()==0){

@@ -341,6 +341,7 @@ public abstract class MultiLabelLearnerTestBase {
         MultiLabelInstances mlDataSet = DataSetBuilder.CreateDataSet(DATA_SET);
         MultiLabelLearnerBase learner = getLearner();
 
+        
         Assert.assertNull(learner.labelIndices);
         Assert.assertNull(learner.featureIndices);
         Assert.assertEquals(0, learner.numLabels);

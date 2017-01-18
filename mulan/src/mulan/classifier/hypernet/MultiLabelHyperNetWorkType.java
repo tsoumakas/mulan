@@ -1,4 +1,4 @@
-package mulan.classifier.MultiLabelHyperNetWork;
+package mulan.classifier.hypernet;
 
 
 

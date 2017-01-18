@@ -1,9 +1,8 @@
-package mulan.classifier.MultiLabelHyperNetWork;
+package mulan.classifier.hypernet;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.List;
 
 import mulan.classifier.InvalidDataException;
 import mulan.classifier.ModelInitializationException;
@@ -12,8 +11,6 @@ import mulan.classifier.MultiLabelLearnerBase;
 import mulan.classifier.MultiLabelOutput;
 import mulan.classifier.transformation.BinaryRelevance;
 import mulan.data.MultiLabelInstances;
-import mulan.evaluation.Evaluation;
-import mulan.evaluation.Evaluator;
 import weka.classifiers.trees.J48;
 import weka.core.Attribute;
 import weka.core.DenseInstance;
@@ -219,7 +216,7 @@ public class MLHNLabelCorrelation extends MultiLabelLearnerBase{
 	
 	private void initialize() throws Exception{
 		this.E=new ArrayList<HyperEdge>();
-		//different type need different initialize function
+		//different types need different initialize functions
 		switch(type){
 		case MLHN_GC: 
 			initializeGC(); break;
@@ -372,7 +369,6 @@ public class MLHNLabelCorrelation extends MultiLabelLearnerBase{
 					aveFit+=d;
 				}
 				aveFit/=numLabels;
-				//ave_fit和max_fit加权相加
 				e.setFitness(maxFit*0.5+aveFit*0.5);
 				E.set(i, e);
 			}

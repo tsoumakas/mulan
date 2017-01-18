@@ -1,5 +1,6 @@
-package mulan.classifier.MultiLabelHyperNetWork;
+package mulan.classifier.hypernet;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
@@ -10,8 +11,8 @@ import weka.core.Instance;
  * @author LB
  * @version 2017.01.10
  */
-public class HyperEdge {
-
+public class HyperEdge implements Serializable{
+	private static final long serialVersionUID = 12345L;
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 
@@ -175,8 +176,6 @@ public class HyperEdge {
 	}
 	
 	public void updateWeigth(double weigthChangeArray[]){
-/*		if(weightList.size()!=weigthChangeArray.length)
-			return;*/
 		for(int i=0;i<weightList.size();i++){
 			weightList.set(i,weightList.get(i)+weigthChangeArray[i]);
 		}
