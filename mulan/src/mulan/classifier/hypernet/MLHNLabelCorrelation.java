@@ -31,6 +31,14 @@ public class MLHNLabelCorrelation extends MultiLabelLearnerBase{
 	private static final long serialVersionUID = 1L;
 
 	private ArrayList<HyperEdge> E=null;
+	private Instances processTrainDataset=null;
+	private double labelUnbalanced[]=null;
+	private int preTrainLabel[][]=null;
+	private double preConfidence[][]=null;
+	private ArrayList<ArrayList<Integer>> TrainMatchIndex=null;   
+	//record the index of hyperedge than is matched with processed training data
+	private double preThreld[]=null;
+	private int labelValue[][]=null; // Ensure correct predictions both for class values {0,1} and {1,0}
 	
 	//parameters
 	private MultiLabelLearner baseLeaner=new BinaryRelevance(new J48()); 
@@ -45,15 +53,6 @@ public class MLHNLabelCorrelation extends MultiLabelLearnerBase{
 	private MultiLabelHyperNetWorkType type=MultiLabelHyperNetWorkType.MLHN_GLC;
 	private boolean isProcessedData=false;  //true if the input data is processed, 
 				    //false if the input data is unprocessed and should be learned by base leaner at first 
-		
-	public Instances processTrainDataset=null;
-	private double labelUnbalanced[]=null;
-	private int preTrainLabel[][]=null;
-	private double preConfidence[][]=null;
-	private ArrayList<ArrayList<Integer>> TrainMatchIndex=null;   
-	//record the index of hyperedge than is matched with processed training data
-	private double preThreld[]=null;
-	private int labelValue[][]=null; // Ensure correct predictions both for class values {0,1} and {1,0}
 	private long seed=1L;
 	
 	public MLHNLabelCorrelation() {
