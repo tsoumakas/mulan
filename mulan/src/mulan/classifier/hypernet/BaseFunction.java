@@ -33,12 +33,17 @@ import weka.core.converters.ArffSaver;
 
 public class BaseFunction {
 	
+	private static long seed=1L;
+	private static Random rand=new Random(seed);
+	
 	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		System.out.println("BaseFunction Main");
 	}
-
+	
+	
+	
 	/**
 	 * Returns the name of a classifier
 	 * 
@@ -262,6 +267,15 @@ public class BaseFunction {
     }
     
     
+    public static void reSetRand(long s){
+    	seed=s;
+    	rand=new Random(seed);
+    }
+    
+    public static void reSetRand(){
+    	rand=new Random(seed);
+    }
+    
     /**
      * Returns a random number in a certain range
      * 
@@ -270,8 +284,7 @@ public class BaseFunction {
      * @return a random number in the range of [min,max]
      */
 	public static int randomInt(int min,int max){
-		Random r = new Random();
-		int i=Math.abs(r.nextInt())%(max-min+1)+min;
+		int i=Math.abs(rand.nextInt())%(max-min+1)+min;
 		return i;
 	}
     
@@ -407,5 +420,23 @@ public class BaseFunction {
 		return Math.sqrt(result);
 	}
 
+	
+	public static void printArrays(int a[][]){
+		for(int i=0;i<a.length;i++){
+			for(int j=0;j<a[i].length;j++){
+				System.out.print(a[i][j]+",");
+			}
+			System.out.println();
+		}
+	}
+	
+	public static void printArrays(double a[][]){
+		for(int i=0;i<a.length;i++){
+			for(int j=0;j<a[i].length;j++){
+				System.out.print(a[i][j]+",");
+			}
+			System.out.println();
+		}
+	}
 
 }

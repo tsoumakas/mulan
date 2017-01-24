@@ -165,6 +165,7 @@ public abstract class MultiLabelLearnerTestBase {
         MultiLabelLearner learner2 = learner1.makeCopy();
         learner1.build(trainDataSet);
         learner2.build(trainDataSet2);
+        
         for (int i = 0; i < testDataSet.getDataSet().numInstances(); i++) {
             MultiLabelOutput mlo1 = learner1.makePrediction(testDataSet.getDataSet().instance(i));
             MultiLabelOutput mlo2 = learner2.makePrediction(testDataSet2.getDataSet().instance(i));
@@ -341,7 +342,6 @@ public abstract class MultiLabelLearnerTestBase {
         MultiLabelInstances mlDataSet = DataSetBuilder.CreateDataSet(DATA_SET);
         MultiLabelLearnerBase learner = getLearner();
 
-        
         Assert.assertNull(learner.labelIndices);
         Assert.assertNull(learner.featureIndices);
         Assert.assertEquals(0, learner.numLabels);

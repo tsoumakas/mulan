@@ -829,4 +829,62 @@ public class MultiLabelInstances implements Serializable {
         }
         return loader.getNextInstance(dataSet);
     }
+    
+    /**
+     * LB's new methods
+     */
+    
+    /**
+     * Returns the array contains imbalance ratios of labels.
+     * 
+     * @return the array contains imbalance ratios of labels
+     */
+    public double[] getImbalanceRatios(){
+    	int numInstances = dataSet.numInstances();
+        int numLabels = labelsMetaData.getNumLabels();
+    	
+    	double imbalanceRatios[] = new double[numLabels];
+        int[] labelIndices = getLabelIndices();
+
+        for (int j = 0; j < numLabels; j++) {
+        	double c1=0;  //count the number of instance has value 1 for jth label
+        	for (int i = 0; i < numInstances; i++) {
+                if (dataSet.instance(i).stringValue(labelIndices[j]).equals("1")) {
+                    c1++;
+                }
+            }
+        	imbalanceRatios[j]=c1*1.0/numInstances;
+        }
+        return imbalanceRatios;
+    }
+    
+    /**
+     * Returns the imbalance ratios of a subset of labels.
+     * 
+     * @param the array of indexes of a subset of label (index from 0 to number of labels -1)
+     * @return the imbalance ratios of a subset of labels
+     */
+    public double[] getImbalanceRatio(int arrayLabelIndex[]){
+    	int numInstances = dataSet.numInstances();
+        int numLabels = labelsMetaData.getNumLabels();
+        int[] labelIndices = getLabelIndices();
+        
+    	double imbalanceRatios[]=new double[arrayLabelIndex.length];
+
+        for (int j = 0; j < arrayLabelIndex.length; j++) {
+        	if(arrayLabelIndex[j]>=numLabels){ //index is out of range
+        		imbalanceRatios[j]=-1;  
+        	}
+        	else{
+        		double c1=0;  //count the number of instance has value 1 for jth label
+            	for (int i = 0; i < numInstances; i++) {
+                    if (dataSet.instance(i).stringValue(labelIndices[arrayLabelIndex[j]]).equals("1")) {
+                        c1++;
+                    }
+                }
+            	imbalanceRatios[j]=c1*1.0/numInstances;
+        	}
+        }
+        return imbalanceRatios;
+    }
 }

@@ -27,7 +27,6 @@ public class HyperEdge implements Serializable{
 	int classIndex=-1;  //the index of instance that generates this hyperedge
 	Double fitness=Double.MIN_VALUE;
 	
-
 	
 	public int getLabel(int labelIndex){
 		return labelList.get(labelIndex);
@@ -49,9 +48,7 @@ public class HyperEdge implements Serializable{
 		this.fitness=fitness;
 	}
 	
-	
-	
-	
+
 	
 	HyperEdge(){
 		
@@ -162,13 +159,13 @@ public class HyperEdge implements Serializable{
 			if(valueTypeList.get(i)) //Integer
 			{
 				if(valueList.get(i)!=(data.value(vertexList.get(i)))){
-					flag=false;
+					return false;
 				}
 			}
 			else  //Double
 			{
 				if(Math.abs((valueList.get(i)-(data.value(vertexList.get(i)))))>matchThreshold){
-					flag=false;
+					return false;
 				}
 			}
 		}
@@ -184,4 +181,18 @@ public class HyperEdge implements Serializable{
 	public void updateWeigth(double weigthChange,int index){
 		weightList.set(index,weightList.get(index)+weigthChange);
 	}	
+	
+	
+	public String toString(){
+		String str="classIndex:"+classIndex+";";
+		for(int i=0;i<order;i++){
+			str+=(valueTypeList.get(i)?"y":"fy")+vertexList.get(i)+"("+valueList.get(i)+") ";
+		}
+		str+=";";
+		for(int i=0;i<labelList.size();i++){
+			str+=labelList.get(i)+"("+weightList.get(i)+")";
+		}
+		return str;
+	}
+
 }

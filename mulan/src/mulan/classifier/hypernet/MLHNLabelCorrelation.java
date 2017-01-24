@@ -3,6 +3,7 @@ package mulan.classifier.hypernet;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Enumeration;
 
 import mulan.classifier.InvalidDataException;
 import mulan.classifier.ModelInitializationException;
@@ -45,16 +46,15 @@ public class MLHNLabelCorrelation extends MultiLabelLearnerBase{
 	private boolean isProcessedData=false;  //true if the input data is processed, 
 				    //false if the input data is unprocessed and should be learned by base leaner at first 
 		
-	private Instances processTrainDataset=null;
-	//private int numLabels=-1; 
+	public Instances processTrainDataset=null;
 	private double labelUnbalanced[]=null;
-	
 	private int preTrainLabel[][]=null;
 	private double preConfidence[][]=null;
 	private ArrayList<ArrayList<Integer>> TrainMatchIndex=null;   
 	//record the index of hyperedge than is matched with processed training data
 	private double preThreld[]=null;
-	
+	private int labelValue[][]=null; // Ensure correct predictions both for class values {0,1} and {1,0}
+	private long seed=1L;
 	
 	public MLHNLabelCorrelation() {
 		
@@ -105,6 +105,10 @@ public class MLHNLabelCorrelation extends MultiLabelLearnerBase{
 	public void setAlpha(double a){
 		this.alpha=a;
 	}
+	public void setSeed(long seed){
+		this.seed=seed;
+	}
+	
 	
 	public int getEachNum(){
 		return this.EachNum;
@@ -133,6 +137,10 @@ public class MLHNLabelCorrelation extends MultiLabelLearnerBase{
 	public double getAlpha(){
 		return this.alpha;
 	}
+	public long getSeed(){
+		return seed;
+	}
+	
 	
 	/**
 	 * Bulids the processed trianing data set if the isProcessedData is false
@@ -167,6 +175,7 @@ public class MLHNLabelCorrelation extends MultiLabelLearnerBase{
 		 Instances trainIns=train.getDataSet();
 		 //numLabels=train.getNumLabels(); //Initialize numLabels
 		 int labelIndeics[]=train.getLabelIndices();
+		 
 		 for(int i=0; i<train.getNumInstances();i++){
 			 MultiLabelOutput output=baseLeaner.makePrediction(trainIns.get(i));
 			 double attriValue[]=new double[3*numLabels];
@@ -175,9 +184,9 @@ public class MLHNLabelCorrelation extends MultiLabelLearnerBase{
 			 //predicting label
 			 for(int j=0;j<numLabels;j++){
 				 if(preLabel[j])
-					 attriValue[j]=1;
+					 attriValue[j]=labelValue[j][1]; //1
 				 else
-					 attriValue[j]=0;
+					 attriValue[j]=labelValue[j][0]; //0
 			 }
 			//predicting confidence
 			 for(int j=0;j<numLabels;j++){
@@ -185,10 +194,7 @@ public class MLHNLabelCorrelation extends MultiLabelLearnerBase{
 			 }
 			//truth label
 			 for(int j=0;j<numLabels;j++){
-				 if(Math.abs(trainIns.get(i).value(labelIndeics[j])-1.0)<1e-8)
-					 attriValue[2*numLabels+j]=1;
-				 else
-					 attriValue[2*numLabels+j]=0;
+				 attriValue[2*numLabels+j]=trainIns.get(i).value(labelIndeics[j]);
 			 }
 			 processTrainDataset.add(new DenseInstance(1.0,attriValue));
 		 }
@@ -196,6 +202,18 @@ public class MLHNLabelCorrelation extends MultiLabelLearnerBase{
 	 
 	@Override
 	protected void buildInternal(MultiLabelInstances train) throws Exception{
+		
+		BaseFunction.reSetRand(seed);
+		
+		labelValue=new int[numLabels][2];
+		Instances trainIns=train.getDataSet();
+		int labelIndeics[]=train.getLabelIndices();
+		for(int j=0;j<numLabels;j++){
+			 Attribute attri=trainIns.attribute(labelIndeics[j]);
+			 labelValue[j][0]=Integer.parseInt(attri.value(0));
+			 labelValue[j][1]=Integer.parseInt(attri.value(1));
+		}
+		
 		
 		if(isProcessedData){
 			processTrainDataset=train.getDataSet();
@@ -213,6 +231,7 @@ public class MLHNLabelCorrelation extends MultiLabelLearnerBase{
 		gradientDescent();
 	 }
 	 
+	
 	
 	private void initialize() throws Exception{
 		this.E=new ArrayList<HyperEdge>();
@@ -325,7 +344,7 @@ public class MLHNLabelCorrelation extends MultiLabelLearnerBase{
 		 for(int i=0;i<processTrainDataset.numInstances();i++){
 			 Instance data=processTrainDataset.get(i);
 			 for(int j=0;j<numLabels;j++){
-				 if(data.value(2*numLabels+j)==1.0){
+				 if(data.value(2*numLabels+j)==(double)labelValue[j][1]){
 					 labelUnbalanced[j]+=1;
 				 }
 			 }
@@ -333,7 +352,7 @@ public class MLHNLabelCorrelation extends MultiLabelLearnerBase{
 		 
 		 for(int j=0;j<numLabels;j++){
 			 if(labelUnbalanced[j]!=0.0)
-				 labelUnbalanced[j]/=(processTrainDataset.numInstances()-labelUnbalanced[j])/labelUnbalanced[j];
+				 labelUnbalanced[j]=(processTrainDataset.numInstances()-labelUnbalanced[j])/labelUnbalanced[j];
 		 }
 	 }
 	 
@@ -357,7 +376,7 @@ public class MLHNLabelCorrelation extends MultiLabelLearnerBase{
 				maxFit=aveFit=0;
 				for(int j=0;j<numLabels;j++){
 					double d;
-					if(e.getLabel(j)==1&&labelUnbalanced[j]>1.0){
+					if(e.getLabel(j)==labelValue[j][1]&&labelUnbalanced[j]>1.0){
 						d=matchRightNum[j]*labelUnbalanced[j]/(matchNum+matchRightNum[j]*(labelUnbalanced[j]-1));
 					}
 					else{
@@ -423,7 +442,6 @@ public class MLHNLabelCorrelation extends MultiLabelLearnerBase{
 	}
 	
 	private void makePredictionTrain(){
-		
 		ArrayList<Integer> matchList=null;
 		for(int i=0;i<processTrainDataset.size();i++){
 			Instance data=processTrainDataset.get(i);
@@ -434,7 +452,7 @@ public class MLHNLabelCorrelation extends MultiLabelLearnerBase{
 			for(int index:matchList){
 				HyperEdge e=E.get(index);
 				for(int j=0;j<numLabels;j++){
-					if(e.getLabel(j)==1){
+					if(e.getLabel(j)==labelValue[j][1]){
 						w1[j]+=e.getWeight(j);
 					}
 					else{
@@ -449,15 +467,16 @@ public class MLHNLabelCorrelation extends MultiLabelLearnerBase{
 					d=w1[j]/(w1[j]+w0[j]);
 				}
 				
-				preConfidence[i][j]=data.value(numLabels+j)*alpha+d*(1-alpha);	
+				preConfidence[i][j]=data.value(numLabels+j)*alpha+d*(1-alpha);
 			}
 		}
-		
 		
 		for(int i=0;i<processTrainDataset.size();i++){
 			for(int j=0;j<numLabels;j++){
 				if(preConfidence[i][j]>preThreld[j])
-					preTrainLabel[i][j]=1;
+					preTrainLabel[i][j]=labelValue[j][1];
+				else
+					preTrainLabel[i][j]=labelValue[j][0];
 			}
 		}
 	}
@@ -465,7 +484,6 @@ public class MLHNLabelCorrelation extends MultiLabelLearnerBase{
 	private void gradientDescent(){
 		initialTrainMatchIndex();
 		ArrayList<Integer> matchList=null;
-		double changeW[]=new double[numLabels];
 		for(int t=0;t<learnNumGD;t++){
 			makePredictionTrain();
 			for(int i=0;i<processTrainDataset.size();i++){
@@ -486,7 +504,7 @@ public class MLHNLabelCorrelation extends MultiLabelLearnerBase{
 						int truthLabel=(int) data.value(2*numLabels+j);
 						if(truthLabel==e.getLabel(j))
 						{
-							if(truthLabel==1){
+							if(truthLabel==labelValue[j][1]){
 								 e.updateWeigth(learnRate*(1-preConfidence[i][j]), j);
 							 }
 							 else{
@@ -501,8 +519,7 @@ public class MLHNLabelCorrelation extends MultiLabelLearnerBase{
 		makePredictionTrain();  //caculate preThreld
 	 }
 	
-
-	 
+ 
 
 	private MultiLabelOutput makePredictionbyMLHN(Instance processedTest){
 		boolean[] bipartition = new boolean[numLabels];
@@ -513,7 +530,7 @@ public class MLHNLabelCorrelation extends MultiLabelLearnerBase{
 	    for(HyperEdge e:E){
 	    	if(e.isMatch(processedTest, matchThreshold)){
 	    		for(int j=0;j<numLabels;j++){
-	    			if(e.getLabel(j)==1){
+	    			if(e.getLabel(j)==labelValue[j][1]){
 	    				w1[j]+=e.getWeight(j);
 	    			}
 	    			else{
@@ -557,9 +574,9 @@ public class MLHNLabelCorrelation extends MultiLabelLearnerBase{
 			
 			for(int j=0;j<numLabels;j++){
 				 if(baseBipartition[j])
-					 processedTest.setValue(j, 1);
+					 processedTest.setValue(j, labelValue[j][1]);
 				 else
-					 processedTest.setValue(j, 0);
+					 processedTest.setValue(j, labelValue[j][0]);
 			 }
 			//predicting confidence
 			 for(int j=0;j<numLabels;j++){
@@ -567,10 +584,7 @@ public class MLHNLabelCorrelation extends MultiLabelLearnerBase{
 			 }
 			//truth label
 			 for(int j=0;j<numLabels;j++){
-				 if(Math.abs(test.value(featureNum+j)-1.0)<1e-8)
-					 processedTest.setValue(2*numLabels+j, 1);
-				 else
-					 processedTest.setValue(2*numLabels+j, 1);
+				 processedTest.setValue(2*numLabels+j, test.value(featureNum+j));
 			 } 
 	    }
 
