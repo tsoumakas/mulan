@@ -30,7 +30,6 @@ package mulan.classifier.neural.model;
 public class ActivationReLU extends ActivationFunction {
 
 	private static final long serialVersionUID = 2L;
-	
 	/** Maximum value of function */
     public final static double MAX = Double.POSITIVE_INFINITY;
     /** Minimum value of function */

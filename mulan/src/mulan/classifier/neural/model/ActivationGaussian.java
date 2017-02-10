@@ -21,16 +21,15 @@
 package mulan.classifier.neural.model;
 
 /**
- * Implements the sigmoid activation function.
+ * Implements the gaussian activation function.
  * The function output values are from interval (0, 1).
  * 
  * @author Ioannis Charitos
- * @version 2017.01.3
+ * @version 2017.02.10
  */
-public class ActivationSigmoid extends ActivationFunction {
+public class ActivationGaussian extends ActivationFunction {
 	
-	
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 5L;
     /** Maximum value of function */
     public final static double MAX = + 1.0;
     /** Minimum value of function */
@@ -38,12 +37,12 @@ public class ActivationSigmoid extends ActivationFunction {
 
 	@Override
 	public double activate(double input) {
-		return 1.0 / (1.0 + Math.exp(-input)) ;
+		return Math.exp(-(input * input));
 	}
 
 	@Override
 	public double derivative(double input) {
-		return activate(input) * (1 - activate(input));
+		return -2.0 * input * activate(input);
 	}
 
 	@Override
