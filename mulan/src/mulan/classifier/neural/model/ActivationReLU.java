@@ -33,7 +33,7 @@ public class ActivationReLU extends ActivationFunction {
 	/** Maximum value of function */
     public final static double MAX = Double.POSITIVE_INFINITY;
     /** Minimum value of function */
-    public final static double MIN = 0.0;
+    public final static double MIN = 0;
 
 	@Override
 	public double activate(double input) {

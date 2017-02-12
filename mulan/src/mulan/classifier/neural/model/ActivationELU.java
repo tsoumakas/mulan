@@ -71,7 +71,7 @@ public class ActivationELU extends ActivationFunction {
 	}
 	
 	public void setslope(double slope){
-		if (slope < 0.0)
+		if (slope <= 0)
 			throw new IllegalArgumentException("Slope value must be greater than 0");
 		else
 			this.slope = slope;
