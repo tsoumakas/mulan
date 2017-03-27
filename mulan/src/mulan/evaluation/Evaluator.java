@@ -30,11 +30,7 @@ import mulan.classifier.MultiLabelLearner;
 import mulan.classifier.MultiLabelOutput;
 import mulan.classifier.clus.ClusWrapperClassification;
 import mulan.data.MultiLabelInstances;
-import mulan.evaluation.measure.AverageMAE;
 import mulan.evaluation.measure.AveragePrecision;
-import mulan.evaluation.measure.AverageRMSE;
-import mulan.evaluation.measure.AverageRelativeMAE;
-import mulan.evaluation.measure.AverageRelativeRMSE;
 import mulan.evaluation.measure.Coverage;
 import mulan.evaluation.measure.ErrorSetSize;
 import mulan.evaluation.measure.ExampleBasedAccuracy;
@@ -64,6 +60,12 @@ import mulan.evaluation.measure.MicroSpecificity;
 import mulan.evaluation.measure.OneError;
 import mulan.evaluation.measure.RankingLoss;
 import mulan.evaluation.measure.SubsetAccuracy;
+import mulan.evaluation.measure.regression.example.ExampleBasedRMaxSE;
+import mulan.evaluation.measure.regression.macro.MacroMAE;
+import mulan.evaluation.measure.regression.macro.MacroRMSE;
+import mulan.evaluation.measure.regression.macro.MacroRMaxSE;
+import mulan.evaluation.measure.regression.macro.MacroRelMAE;
+import mulan.evaluation.measure.regression.macro.MacroRelRMSE;
 import weka.core.Instance;
 import weka.core.Instances;
 import clus.Clus;
@@ -102,7 +104,7 @@ public class Evaluator {
      * @throws Exception when evaluation fails
      */
     public Evaluation evaluate(MultiLabelLearner learner, MultiLabelInstances mlTestData,
-            List<Measure> measures) throws Exception {
+                               List<Measure> measures) throws Exception {
         checkLearner(learner);
         checkData(mlTestData);
         checkMeasures(measures);
@@ -186,7 +188,7 @@ public class Evaluator {
      * @throws Exception when evaluation fails
      */
     public Evaluation evaluate(MultiLabelLearner learner, MultiLabelInstances mlTestData,
-            MultiLabelInstances mlTrainData) throws IllegalArgumentException, Exception {
+                               MultiLabelInstances mlTrainData) throws IllegalArgumentException, Exception {
         checkLearner(learner);
         checkData(mlTestData);
 
@@ -200,7 +202,7 @@ public class Evaluator {
     }
 
     private List<Measure> prepareMeasures(MultiLabelLearner learner,
-            MultiLabelInstances mlTestData, MultiLabelInstances mlTrainData) {
+                                          MultiLabelInstances mlTestData, MultiLabelInstances mlTrainData) {
         List<Measure> measures = new ArrayList<Measure>();
 
         MultiLabelOutput prediction;
@@ -255,10 +257,13 @@ public class Evaluator {
             }
             // add regression measures if applicable
             if (prediction.hasPvalues()) {
-                measures.add(new AverageRMSE(numOfLabels));
-                measures.add(new AverageRelativeRMSE(numOfLabels, mlTrainData, mlTestData));
-                measures.add(new AverageMAE(numOfLabels));
-                measures.add(new AverageRelativeMAE(numOfLabels, mlTrainData, mlTestData));
+                measures.add(new MacroRMSE(numOfLabels));
+                measures.add(new MacroRelRMSE(mlTrainData, mlTestData));
+                measures.add(new MacroMAE(numOfLabels));
+                measures.add(new MacroRelMAE(mlTrainData, mlTestData));
+                measures.add(new MacroRMaxSE(numOfLabels));
+                measures.add(new ExampleBasedRMaxSE());
+
             }
         } catch (Exception ex) {
             Logger.getLogger(Evaluator.class.getName()).log(Level.SEVERE, null, ex);
@@ -306,7 +311,7 @@ public class Evaluator {
      * @return a {@link MultipleEvaluation} object holding the results
      */
     public MultipleEvaluation crossValidate(MultiLabelLearner learner, MultiLabelInstances data,
-            int someFolds) {
+                                            int someFolds) {
         checkLearner(learner);
         checkData(data);
         checkFolds(someFolds);
@@ -325,7 +330,7 @@ public class Evaluator {
      * @return a {@link MultipleEvaluation} object holding the results
      */
     public MultipleEvaluation crossValidate(MultiLabelLearner learner, MultiLabelInstances data,
-            List<Measure> measures, int someFolds) {
+                                            List<Measure> measures, int someFolds) {
         checkLearner(learner);
         checkData(data);
         checkMeasures(measures);
@@ -334,7 +339,7 @@ public class Evaluator {
     }
 
     private MultipleEvaluation innerCrossValidate(MultiLabelLearner learner,
-            MultiLabelInstances data, boolean hasMeasures, List<Measure> measures, int someFolds) {
+                                                  MultiLabelInstances data, boolean hasMeasures, List<Measure> measures, int someFolds) {
         Evaluation[] evaluation = new Evaluation[someFolds];
 
         Instances workingSet = new Instances(data.getDataSet());
@@ -375,7 +380,7 @@ public class Evaluator {
      * @throws Exception when evaluation fails
      */
     public Evaluation evaluate(ClusWrapperClassification learner, MultiLabelInstances testData,
-            List<Measure> measures) throws Exception {
+                               List<Measure> measures) throws Exception {
 
         boolean isEnsemble = learner.isEnsemble();
         boolean isRuleBased = learner.isRuleBased();
@@ -482,7 +487,7 @@ public class Evaluator {
                         if (j >= (testData.getNumLabels() * 5 + 1)) {
                             predictionsPerSample[k] = predictionInstance.value(j)
                                     / (predictionInstance.value(j) + predictionInstance
-                                            .value(j + 1));
+                                    .value(j + 1));
                             j++;
                             k++;
                         }

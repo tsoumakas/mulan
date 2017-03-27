@@ -24,7 +24,7 @@ import weka.filters.unsupervised.attribute.Remove;
  * For more information, see:<br>
  * <em>E. Spyromitros-Xioufis, G. Tsoumakas, W. Groves, I. Vlahavas. 2014. Multi-label Classification Methods for
  * Multi-target Regression. <a href="http://arxiv.org/abs/1211.6581">arXiv e-prints</a></em>.
- * 
+ *
  * @author Eleftherios Spyromitros-Xioufis
  * @version 2014.04.01
  */
@@ -43,7 +43,7 @@ public class MultiTargetStacking extends TransformationBasedMultiTargetRegressor
         /**
          * Using the full training set.
          */
-        TRAIN,
+        INSAMPLE,
         /**
          * Using the true target values.
          */
@@ -57,7 +57,7 @@ public class MultiTargetStacking extends TransformationBasedMultiTargetRegressor
     /**
      * The method used to obtain the values of the meta features. TRAIN is used by default.
      */
-    private metaType meta = metaType.TRAIN;
+    private metaType meta = metaType.INSAMPLE;
 
     /**
      * The number of folds to use in internal k fold cross-validation. 3 folds are used by default.
@@ -100,7 +100,7 @@ public class MultiTargetStacking extends TransformationBasedMultiTargetRegressor
 
     /**
      * Creates a new instance with the given base regressor at both stages.
-     * 
+     *
      * @param baseRegressor the base regression algorithm that will be used in both stages
      * @throws Exception Potential exception thrown. To be handled in an upper level.
      */
@@ -111,13 +111,13 @@ public class MultiTargetStacking extends TransformationBasedMultiTargetRegressor
 
     /**
      * Creates a new instance with a different base regressor at each stage.
-     * 
+     *
      * @param firstStageBaseRegressor the base regression algorithm that will be used in the first stage
      * @param secondStageBaseRegressor the base regression algorithm that will be used in the second stage
      * @throws Exception Potential exception thrown. To be handled in an upper level.
      */
     public MultiTargetStacking(Classifier firstStageBaseRegressor,
-            Classifier secondStageBaseRegressor) throws Exception {
+                               Classifier secondStageBaseRegressor) throws Exception {
         super(firstStageBaseRegressor);
         this.secondStageBaseRegressor = secondStageBaseRegressor;
     }
@@ -139,7 +139,7 @@ public class MultiTargetStacking extends TransformationBasedMultiTargetRegressor
 
     /**
      * Builds the first stage regressors and populates the {@link #metaFeatures} field.
-     * 
+     *
      * @param trainSet
      * @throws Exception Potential exception thrown. To be handled in an upper level.
      */
@@ -189,7 +189,7 @@ public class MultiTargetStacking extends TransformationBasedMultiTargetRegressor
                     System.out.println("Something went wrong: indices size is " + indices.size()
                             + " instead of " + trainSet.numInstances());
                 }
-            } else if (meta == metaType.TRAIN) {
+            } else if (meta == metaType.INSAMPLE) {
                 // Make prediction for each in the training set instance
                 for (int i = 0; i < firstStageTrainSet.numInstances(); i++) {
                     double score = firstStageRegressors[targetIndex]
@@ -222,7 +222,7 @@ public class MultiTargetStacking extends TransformationBasedMultiTargetRegressor
 
     /**
      * Builds the second stage regressors.
-     * 
+     *
      * @throws Exception Potential exception thrown. To be handled in an upper level.
      */
     private void buildSecondStage(Instances trainSet) throws Exception {
@@ -286,42 +286,6 @@ public class MultiTargetStacking extends TransformationBasedMultiTargetRegressor
             // debug("Building classifier for meta training set " + targetIndex);
             secondStageRegressors[targetIndex].buildClassifier(secondStageTrainsets[targetIndex]);
             secondStageTrainsets[targetIndex].delete();
-
-            String output = secondStageRegressors[targetIndex].toString();
-            // if this is a classifier that performs attribute selection (i.e.
-            // AttributeSelectedClassifier or InfoTheoreticFeatureSelectionClassifier)
-            if (output.contains("Selected attributes: ")) {
-                // gather and output information about which feature and which target attributes
-                // were selected
-                String selectedString = output.split("Selected attributes: ")[1].split(" :")[0];
-                String[] selectedIndicesString = selectedString.split(",");
-                for (int j = 0; j < selectedIndicesString.length; j++) {
-                    int selectedIndex = Integer.parseInt(selectedIndicesString[j]) - 1;
-                    boolean isTarget = false;
-                    for (int k = 0; k < numLabels; k++) {
-                        String nameOfKthTarget = trainSet.attribute(labelIndices[k]).name();
-                        String nameOfSelectedAttribute = secondStageTrainsets[targetIndex]
-                                .attribute(selectedIndex).name();
-                        if (nameOfKthTarget.equals(nameOfSelectedAttribute)) {
-                            selectedTargetIndices[targetIndex].add(labelIndices[k]);
-                            isTarget = true;
-                            break;
-                        }
-                    }
-                    if (!isTarget) {
-                        selectedFeatureIndices[targetIndex].add(selectedIndex);
-                    }
-                }
-
-                System.err.println("# selected feature attributes for target " + targetIndex + ": "
-                        + selectedFeatureIndices[targetIndex].size());
-                System.err.println(selectedFeatureIndices[targetIndex].toString());
-                System.err.println("# selected target attributes for target " + targetIndex + ": "
-                        + selectedTargetIndices[targetIndex].size());
-                System.err.println(selectedTargetIndices[targetIndex].toString());
-                System.err.flush();
-            }
-
         }
     }
 
@@ -397,7 +361,7 @@ public class MultiTargetStacking extends TransformationBasedMultiTargetRegressor
 
     /**
      * Sets the value of {@link #includeFeatures}.
-     * 
+     *
      * @param includeAttrs the setter value
      */
     public void setIncludeAttrs(boolean includeAttrs) {
@@ -406,7 +370,7 @@ public class MultiTargetStacking extends TransformationBasedMultiTargetRegressor
 
     /**
      * Sets the value of {@link #meta}.
-     * 
+     *
      * @param meta the setter value
      */
     public void setMeta(metaType meta) {

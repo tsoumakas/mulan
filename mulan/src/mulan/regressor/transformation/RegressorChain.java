@@ -26,7 +26,7 @@ import weka.filters.unsupervised.instance.Resample;
  * For more information, see:<br>
  * <em>E. Spyromitros-Xioufis, G. Tsoumakas, W. Groves, I. Vlahavas. 2014. Multi-label Classification Methods for
  * Multi-target Regression. <a href="http://arxiv.org/abs/1211.6581">arXiv e-prints</a></em>.
- * 
+ *
  * @author Eleftherios Spyromitros-Xioufis
  * @version 2014.04.01
  */
@@ -45,7 +45,7 @@ public class RegressorChain extends TransformationBasedMultiTargetRegressor {
         /**
          * Using the full training set.
          */
-        TRAIN,
+        INSAMPLE,
         /**
          * Using the true target values.
          */
@@ -108,7 +108,7 @@ public class RegressorChain extends TransformationBasedMultiTargetRegressor {
     /**
      * Creates a new instance with the given base regressor. If {@link #chainSeed} == 0, the default chain is
      * used. Otherwise, a random chain is created using the given seed.
-     * 
+     *
      * @param baseRegressor the base regression algorithm that will be used
      * @throws Exception Potential exception thrown. To be handled in an upper level.
      */
@@ -118,7 +118,7 @@ public class RegressorChain extends TransformationBasedMultiTargetRegressor {
 
     /**
      * Creates a new instance with the given base regressor and chain ordering.
-     * 
+     *
      * @param baseRegressor the base regression algorithm that will be used
      * @param aChain a chain ordering
      * @throws Exception Potential exception thrown. To be handled in an upper level.
@@ -204,42 +204,6 @@ public class RegressorChain extends TransformationBasedMultiTargetRegressor {
             chainRegressors[targetIndex].buildClassifier(chainRegressorsTrainSets[targetIndex]);
             // =========================== REGRESSOR TRAINING ENDED =============================
 
-            String output = chainRegressors[targetIndex].toString();
-            // if this is a classifier that performs attribute selection (i.e.
-            // AttributeSelectedClassifier or InfoTheoreticFeatureSelectionClassifier)
-            if (output.contains("Selected attributes: ")) {
-                // gather and output information about which feature and which target attributes
-                // were selected
-                String selectedString = output.split("Selected attributes: ")[1].split(" :")[0];
-                String[] selectedIndicesString = selectedString.split(",");
-                for (int j = 0; j < selectedIndicesString.length; j++) {
-                    int selectedIndex = Integer.parseInt(selectedIndicesString[j]) - 1;
-                    boolean isTarget = false;
-                    for (int k = 0; k < numLabels; k++) {
-                        String nameOfKthTarget = trainSet.getDataSet().attribute(labelIndices[k])
-                                .name();
-                        String nameOfSelectedAttribute = chainRegressorsTrainSets[targetIndex]
-                                .attribute(selectedIndex).name();
-                        if (nameOfKthTarget.equals(nameOfSelectedAttribute)) {
-                            selectedTargetIndices[targetIndex].add(labelIndices[k]);
-                            isTarget = true;
-                            break;
-                        }
-                    }
-                    if (!isTarget) {
-                        selectedFeatureIndices[targetIndex].add(selectedIndex);
-                    }
-                }
-
-                System.err.println("# selected feature attributes for target " + targetIndex + ": "
-                        + selectedFeatureIndices[targetIndex].size());
-                System.err.println(selectedFeatureIndices[targetIndex].toString());
-                System.err.println("# selected target attributes for target " + targetIndex + ": "
-                        + selectedTargetIndices[targetIndex].size());
-                System.err.println(selectedTargetIndices[targetIndex].toString());
-                System.err.flush();
-            }
-
             // ============================ META FEATURE CREATION START ============================
             // we do not need a meta feature for the last target in the chain
             if (targetIndex < numLabels - 1) {
@@ -297,7 +261,7 @@ public class RegressorChain extends TransformationBasedMultiTargetRegressor {
                     remove.setInputFormat(chainRegressorsTrainSets[targetIndex]);
                     chainRegressorsTrainSets[targetIndex] = Filter.useFilter(
                             chainRegressorsTrainSets[targetIndex], remove);
-                } else if (meta == metaType.TRAIN) {
+                } else if (meta == metaType.INSAMPLE) {
                     // Make prediction for each in the training set instance
                     for (int i = 0; i < chainRegressorsTrainSets[targetIndex].numInstances(); i++) {
                         double score = chainRegressors[targetIndex]

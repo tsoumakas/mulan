@@ -6,5 +6,9 @@
 	<classpathentry kind="lib" path="lib/test/junit-4.10.jar"/>
 	<classpathentry kind="lib" path="lib/Clus.jar"/>
 	<classpathentry kind="lib" path="lib/weka-3.7.12.jar"/>
+	<classpathentry kind="lib" path="lib/matlabcontrol-4.1.0.jar"/>
+    <classpathentry kind="lib" path="lib/partialLeastSquares-1.0.1.jar"/>
+    <classpathentry kind="lib" path="lib/LibLINEAR-1.9.8.jar"/>
+    <classpathentry kind="lib" path="lib/liblinear-java-1.96-SNAPSHOT.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

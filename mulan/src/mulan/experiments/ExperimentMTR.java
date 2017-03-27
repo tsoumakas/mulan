@@ -12,8 +12,8 @@ import mulan.data.MultiLabelInstances;
 import mulan.evaluation.Evaluation;
 import mulan.evaluation.Evaluator;
 import mulan.evaluation.MultipleEvaluation;
-import mulan.evaluation.measure.AverageRelativeRMSE;
 import mulan.evaluation.measure.Measure;
+import mulan.evaluation.measure.regression.macro.MacroRelRMSE;
 import mulan.regressor.clus.ClusRandomForest;
 import mulan.regressor.transformation.EnsembleOfRegressorChains;
 import mulan.regressor.transformation.MultiTargetStacking;
@@ -101,7 +101,7 @@ public class ExperimentMTR {
         }
 
         List<Measure> measures = new ArrayList<Measure>();
-        measures.add(new AverageRelativeRMSE(numTargets, full, full));
+        measures.add(new MacroRelRMSE(full, full));
 
         MultiLabelLearnerBase mtMethodPtr = null;
 
@@ -136,7 +136,7 @@ public class ExperimentMTR {
             } else if (mtMethodChoice.equals("MTS")) {
                 MultiTargetStacking MTS = new MultiTargetStacking(baseLearner, baseLearner);
                 MTS.setIncludeAttrs(true);
-                MTS.setMeta(MultiTargetStacking.metaType.TRAIN);
+                MTS.setMeta(MultiTargetStacking.metaType.INSAMPLE);
                 mtMethodPtr = MTS;
             } else if (mtMethodChoice.equals("MTSC")) {
                 MultiTargetStacking MTSC = new MultiTargetStacking(baseLearner, baseLearner);
@@ -178,7 +178,7 @@ public class ExperimentMTR {
                 long endEval = System.currentTimeMillis();
                 long endEvalCPU = getCpuTime();
 
-                AverageRelativeRMSE arrmse = (AverageRelativeRMSE) results.getMeasures().get(1);
+                MacroRelRMSE arrmse = (MacroRelRMSE) results.getMeasures().get(1);
 
                 // print static information
                 outResults.write(fileStem + "\t" + evalType + "\t" + mtMethodChoice + "\t"
@@ -224,13 +224,13 @@ public class ExperimentMTR {
                 int[][] nonMissingInstances = new int[numTargets][numFolds];
 
                 for (int t = 0; t < evals.size(); t++) { // for each fold!
-                    AverageRelativeRMSE arrmse = ((AverageRelativeRMSE) evals.get(t).getMeasures()
+                    MacroRelRMSE arrmse = ((MacroRelRMSE) evals.get(t).getMeasures()
                             .get(1));
                     for (int r = 0; r < numTargets; r++) {
                         totalSEs[r][t] = arrmse.getTotalSE(r);
                         trainMeanTotalSEs[r][t] = arrmse.getTrainMeanTotalSE(r);
                         // either measure can be used for getting the num non-missing
-                        nonMissingInstances[r][t] = arrmse.getNumNonMissing(r);
+                        nonMissingInstances[r][t] = arrmse.getNonMissing(r);
                     }
                 }
 
@@ -292,7 +292,7 @@ public class ExperimentMTR {
         return stLearner;
     }
 
-    /** 
+    /**
      * Get CPU time in milliseconds.
      * @return the CPU time in ms
      */
