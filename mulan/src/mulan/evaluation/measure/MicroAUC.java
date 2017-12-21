@@ -45,10 +45,4 @@ public class MicroAUC extends LabelBasedAUC {
         Instances result = tc.getCurve(all_Predictions, 1);
         return ThresholdCurve.getROCArea(result);
     }
-    
-    
-    @Override
-    public boolean handlesMissingValues(){
-    	return true;
-    }
 }

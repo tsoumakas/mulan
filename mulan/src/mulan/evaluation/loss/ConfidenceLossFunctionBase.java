@@ -34,7 +34,7 @@ public abstract class ConfidenceLossFunctionBase implements ConfidenceLossFuncti
         }
     }
 
-    private void checkLength(double[] confidences, Boolean[] groundTruth) {
+    private void checkLength(double[] confidences, boolean[] groundTruth) {
         if (confidences.length != groundTruth.length) {
             throw new IllegalArgumentException("The dimensions of the "
                     + "confidences and the ground truth array do not match");
@@ -42,7 +42,7 @@ public abstract class ConfidenceLossFunctionBase implements ConfidenceLossFuncti
     }
 
     @Override
-    public final double computeLoss(MultiLabelOutput prediction, Boolean[] groundTruth) {
+    public final double computeLoss(MultiLabelOutput prediction, boolean[] groundTruth) {
         double[] confidences = prediction.getConfidences();
         checkConfidences(confidences);
         checkLength(confidences, groundTruth);
@@ -50,5 +50,5 @@ public abstract class ConfidenceLossFunctionBase implements ConfidenceLossFuncti
     }
 
     @Override
-    abstract public double computeLoss(double[] confidences, Boolean[] groundTruth);
+    abstract public double computeLoss(double[] confidences, boolean[] groundTruth);
 }

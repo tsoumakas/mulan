@@ -43,7 +43,7 @@ public class ClassifierChain extends TransformationBasedMultiLabelLearner {
     /**
      * The new chain ordering of the label indices
      */
-    protected int[] chain;
+    private int[] chain;
     /**
      * The ensemble of binary relevance models. These are Weka
      * FilteredClassifier objects, where the filter corresponds to removing all

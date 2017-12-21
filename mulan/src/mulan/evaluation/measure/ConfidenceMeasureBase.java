@@ -26,7 +26,7 @@ import mulan.core.ArgumentNullException;
 public abstract class ConfidenceMeasureBase extends ClassificationMeasureBase {
 
     @Override
-    protected void updateInternal(MultiLabelOutput prediction, Boolean[] truth) {
+    protected void updateInternal(MultiLabelOutput prediction, boolean[] truth) {
         double[] confidences = prediction.getConfidences();
         if (confidences == null) {
             throw new ArgumentNullException("Bipartition is null");
@@ -44,5 +44,5 @@ public abstract class ConfidenceMeasureBase extends ClassificationMeasureBase {
      * @param confidences the confidences output by the learner for the example
      * @param truth the ground truth of the example
      */
-    abstract protected void updateConfidence(double[] confidences, Boolean[] truth);
+    abstract protected void updateConfidence(double[] confidences, boolean[] truth);
 }

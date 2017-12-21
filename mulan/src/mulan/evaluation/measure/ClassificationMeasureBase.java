@@ -63,7 +63,7 @@ public abstract class ClassificationMeasureBase implements Measure, Serializable
      * @param prediction the output of the algorithm for the example
      * @param truth the ground truth of the example
      */
-    protected abstract void updateInternal(MultiLabelOutput prediction, Boolean[] truth);
+    protected abstract void updateInternal(MultiLabelOutput prediction, boolean[] truth);
 
     public Measure makeCopy() throws Exception {
         return (Measure) new SerializedObject(this).getObject();
@@ -71,7 +71,7 @@ public abstract class ClassificationMeasureBase implements Measure, Serializable
     
     /**
      * By default, classification measures do not handle missing ground truth values. This method
-     * should be overridden if a particular measure's implementation can handle missing ground truth
+     * should be overridden if a particular measure's implementation can handle missing ground thuth
      * values.
      */
     public boolean handlesMissingValues() {

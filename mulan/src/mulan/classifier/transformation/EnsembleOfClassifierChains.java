@@ -18,11 +18,8 @@ package mulan.classifier.transformation;
 import java.util.Arrays;
 import java.util.Random;
 import mulan.classifier.InvalidDataException;
-import mulan.classifier.ModelInitializationException;
 import mulan.classifier.MultiLabelOutput;
 import mulan.data.MultiLabelInstances;
-import mulan.evaluation.measure.InformationRetrievalMeasures;
-import mulan.sampling.ClassifierChainUnderSampling;
 import weka.classifiers.Classifier;
 import weka.classifiers.trees.J48;
 import weka.core.Instance;
@@ -48,15 +45,6 @@ public class EnsembleOfClassifierChains extends TransformationBasedMultiLabelLea
      */
     protected int numOfModels;
     /**
-	 * @return the numOfModels
-	 */
-	public int getNumOfModels() {
-		return numOfModels;
-	}
-
-
-
-	/**
      * An array of ClassifierChain models
      */
     protected ClassifierChain[] ensemble;
@@ -81,70 +69,6 @@ public class EnsembleOfClassifierChains extends TransformationBasedMultiLabelLea
     protected int BagSizePercent = 100;
 
     /**
-     * The size of each sample, as a percentage of the training size Used when
-     * useSamplingWithReplacement is false
-     */
-    protected double samplingPercentage = 67;
-    
-    
-    /**
-     * Whether use the ClassiferChainUnderSampling instead of ClassiferChain in the model
-     */
-    protected boolean useClassiferChainUnderSampling=false;
-    
-    /**
-     * The under Sampling Percent of ClassiferChainUnderSampling, it will be used when useClassiferChainUnderSampling is true
-     **/
-    protected double underSamplingPercent=1.0;
-    
-    
-	protected boolean useFmeasureOptimizationThreshold=false;
-    
-    double thresholds[]=null;
-    
-
-	public double getUnderSamplingPercent() {
-		return underSamplingPercent;
-	}
-
-
-	public void setUnderSamplingPercent(double underSamplingPercent) {
-		this.underSamplingPercent = underSamplingPercent;
-	}
-
-
-    /**
-	 * @return the useFmeasureOptimizationThreshold
-	 */
-	public boolean isUseFmeasureOptimizationThreshold() {
-		return useFmeasureOptimizationThreshold;
-	}
-
-	/**
-	 * @param useFmeasureOptimizationThreshold the useFmeasureOptimizationThreshold to set
-	 */
-	public void setUseFmeasureOptimizationThreshold(boolean useFmeasureOptimizationThreshold) {
-		this.useFmeasureOptimizationThreshold = useFmeasureOptimizationThreshold;
-	}
-
-	/**
-	 * @return the useClassiferChainUnderSampling
-	 */
-	public boolean isUseClassiferChainUnderSampling() {
-		return useClassiferChainUnderSampling;
-	}
-
-	/**
-	 * @param useClassiferChainUnderSampling the useClassiferChainUnderSampling to set
-	 */
-	public void setUseClassiferChainUnderSampling(boolean useClassiferChainUnderSampling) {
-		this.useClassiferChainUnderSampling = useClassiferChainUnderSampling;
-	}
-
-	
-	
-	
-	/**
      * Returns the size of each bag sample, as a percentage of the training size
      *
      * @return the size of each bag sample, as a percentage of the training size
@@ -180,7 +104,11 @@ public class EnsembleOfClassifierChains extends TransformationBasedMultiLabelLea
     public void setSamplingPercentage(double samplingPercentage) {
         this.samplingPercentage = samplingPercentage;
     }
-
+    /**
+     * The size of each sample, as a percentage of the training size Used when
+     * useSamplingWithReplacement is false
+     */
+    protected double samplingPercentage = 67;
 
     /**
      * Default constructor
@@ -216,7 +144,6 @@ public class EnsembleOfClassifierChains extends TransformationBasedMultiLabelLea
             debug("ECC Building Model:" + (i + 1) + "/" + numOfModels);
             Instances sampledDataSet;
             dataSet.randomize(rand);
-            
             if (useSamplingWithReplacement) {
                 int bagSize = dataSet.numInstances() * BagSizePercent / 100;
                 // create the in-bag dataset
@@ -231,8 +158,6 @@ public class EnsembleOfClassifierChains extends TransformationBasedMultiLabelLea
                 rmvp.setInputFormat(dataSet);
                 sampledDataSet = Filter.useFilter(dataSet, rmvp);
             }
-            
-            
             MultiLabelInstances train = new MultiLabelInstances(sampledDataSet, trainingSet.getLabelsMetaData());
 
             int[] chain = new int[numLabels];
@@ -251,66 +176,13 @@ public class EnsembleOfClassifierChains extends TransformationBasedMultiLabelLea
             // INDICES
             // BUT IN THE PAPER IT DID NOT MENTION SOMETHING LIKE THAT
             // IT JUST SIMPLY SAY A RANDOM CHAIN ORDERING OF L
-            if(useClassiferChainUnderSampling)
-            	ensemble[i] = new ClassifierChainUnderSampling(baseClassifier, chain,underSamplingPercent);
-            else
-            	ensemble[i]= new ClassifierChain(baseClassifier, chain);
+
+            ensemble[i] = new ClassifierChain(baseClassifier, chain);
             ensemble[i].build(train);
         }
-        
-       
-        if(useFmeasureOptimizationThreshold){
-        	calculateThresholds(trainingSet);         	
-        }
+
     }
-    
-    //calculate the thresholds to distinguish the relative and irrelative instances of each label based on optimizaiton of Macro F-measure
-    protected void calculateThresholds(MultiLabelInstances trainingSet) throws Exception{
-    	
-    	thresholds=new double[numLabels];
-    	
-    	this.useFmeasureOptimizationThreshold=false;
-    	double predictConfidences[][]=new double [trainingSet.getNumInstances()][trainingSet.getNumLabels()];
-    	for(int i=0;i<trainingSet.getNumInstances();i++){
-    		Instance data=trainingSet.getDataSet().get(i);
-    		MultiLabelOutput mlo=this.makePredictionInternal(data);
-    		predictConfidences[i]=Arrays.copyOf(mlo.getConfidences(),numLabels); 
-    	}
-    	this.useFmeasureOptimizationThreshold=true;
-    	     
-    	for(int j=0;j<numLabels;j++){
-    		double maxF=Double.MIN_VALUE;
-    		boolean truelabels[]=new boolean[trainingSet.getNumInstances()];
-    		for(int i=0;i<trainingSet.getNumInstances();i++){
-        		truelabels[i]=trainingSet.getDataSet().get(i).stringValue(labelIndices[j]).equals("1");
-        	}
-        	for(double d=0.05D;d<1.0D;d+=0.05D){
-        		int tp=0,fp=0,fn=0;
-        		for(int i=0;i<trainingSet.getNumInstances();i++){
-        			boolean preidctLabel=predictConfidences[i][j]>=d;
-        			if(preidctLabel){
-        				if(truelabels[i])
-        					tp++;
-        				else
-        					fp++;
-        			}
-        			else{
-        				if(truelabels[i]){
-        					fn++;
-        				}
-        			}
-        		}				 
-        		double f=InformationRetrievalMeasures.fMeasure(tp,fp,fn,1.0);
-        		if(f>maxF){
-        			maxF=f;
-        			thresholds[j]=d;
-        		}
-        	}
-    	}  
-    }
-    
-    
-    
+
     @Override
     protected MultiLabelOutput makePredictionInternal(Instance instance) throws Exception,
             InvalidDataException {
@@ -340,19 +212,8 @@ public class EnsembleOfClassifierChains extends TransformationBasedMultiLabelLea
                 confidence[j] = sumVotes[j] / (double) numOfModels;
             }
         }
-        
-        MultiLabelOutput mlo;
-        if(!useFmeasureOptimizationThreshold){
-        	mlo = new MultiLabelOutput(confidence, 0.5);
-        }
-        else{
-        	boolean bipartition[]=new boolean[numLabels];
-        	for(int j=0;j<numLabels;j++){
-        		bipartition[j]=confidence[j]>=thresholds[j];
-        	}
-        	mlo=new MultiLabelOutput(bipartition, confidence);
-        }
-        
+
+        MultiLabelOutput mlo = new MultiLabelOutput(confidence, 0.5);
         return mlo;
     }
 }
