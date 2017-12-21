@@ -61,12 +61,9 @@ public abstract class LabelBasedAUC extends ConfidenceMeasureBase {
     }
    
     @Override
-    protected void updateConfidence(double[] confidences, Boolean[] truth) {
+    protected void updateConfidence(double[] confidences, boolean[] truth) {
         for (int labelIndex = 0; labelIndex < numOfLabels; labelIndex++) {
-        	if(truth[labelIndex]==null){
-        		continue;
-        	}
-        	
+
             int classValue;
             boolean actual = truth[labelIndex];
             if (actual) {

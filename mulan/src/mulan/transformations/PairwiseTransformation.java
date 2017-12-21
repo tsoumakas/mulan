@@ -69,7 +69,7 @@ public class PairwiseTransformation implements Serializable {
     }
 
     /**
-     * Keeps the predictors and adds one binary attribute
+     * Keeps the predictors and adds one binary attrinute
      *
      * @param instance the instance to be transformed
      * @return transformed Instance

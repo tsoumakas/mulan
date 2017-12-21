@@ -31,16 +31,12 @@ public class OneMinusAveragePrecision extends RankingLossFunctionBase {
     }
 
     @Override
-    public double computeLoss(int[] ranking, Boolean[] groundTruth) {
+    public double computeLoss(int[] ranking, boolean[] trueLabels) {
         double avgP = 0;
-        int numLabels = groundTruth.length;
+        int numLabels = trueLabels.length;
         List<Integer> relevant = new ArrayList<Integer>();
         for (int index = 0; index < numLabels; index++) {
-        	if(groundTruth[index]==null)
-            	continue;
-
-        	
-        	if (groundTruth[index]) {
+            if (trueLabels[index]) {
                 relevant.add(index);
             }
         }

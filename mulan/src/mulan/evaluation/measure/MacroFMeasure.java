@@ -72,11 +72,5 @@ public class MacroFMeasure extends LabelBasedFMeasure implements MacroAverageMea
                 falsePositives[labelIndex],
                 falseNegatives[labelIndex], beta);
     }
-    
-    
-    @Override
-    public boolean handlesMissingValues(){
-    	return true;
-    }
 
 }

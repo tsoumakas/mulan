@@ -37,7 +37,7 @@ public abstract class LossBasedRankingMeasureBase extends RankingMeasureBase {
     }
 
     @Override
-    protected void updateRanking(int[] ranking, Boolean[] truth) {
+    protected void updateRanking(int[] ranking, boolean[] truth) {
         sum += loss.computeLoss(ranking, truth);
         count++;
     }

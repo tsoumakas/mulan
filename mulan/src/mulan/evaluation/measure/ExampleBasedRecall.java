@@ -29,15 +29,12 @@ public class ExampleBasedRecall extends ExampleBasedBipartitionMeasureBase {
     }
 
     @Override
-    protected void updateBipartition(boolean[] bipartition, Boolean[] truth) {
+    protected void updateBipartition(boolean[] bipartition, boolean[] truth) {
         double tp = 0;
         double fp = 0;
         double fn = 0;
         for (int i = 0; i < truth.length; i++) {
-        	if(truth[i]==null)
-        		continue;
-
-        	if (bipartition[i]) {
+            if (bipartition[i]) {
                 if (truth[i]) {
                     tp++;
                 } else {
