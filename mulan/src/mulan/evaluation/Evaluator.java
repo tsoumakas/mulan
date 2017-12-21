@@ -45,6 +45,7 @@ import mulan.evaluation.measure.HierarchicalLoss;
 import mulan.evaluation.measure.IsError;
 import mulan.evaluation.measure.LogLoss;
 import mulan.evaluation.measure.MacroAUC;
+import mulan.evaluation.measure.MacroAUCPR;
 import mulan.evaluation.measure.MacroFMeasure;
 import mulan.evaluation.measure.MacroPrecision;
 import mulan.evaluation.measure.MacroRecall;
@@ -250,6 +251,7 @@ public class Evaluator {
                 measures.add(new MicroAUC(numOfLabels));
                 measures.add(new MacroAUC(numOfLabels));
                 measures.add(new LogLoss());
+                measures.add(new MacroAUCPR(numOfLabels));
             }
             // add hierarchical measures if applicable
             if (mlTestData.getLabelsMetaData().isHierarchy()) {
@@ -263,7 +265,6 @@ public class Evaluator {
                 measures.add(new MacroRelMAE(mlTrainData, mlTestData));
                 measures.add(new MacroRMaxSE(numOfLabels));
                 measures.add(new ExampleBasedRMaxSE());
-
             }
         } catch (Exception ex) {
             Logger.getLogger(Evaluator.class.getName()).log(Level.SEVERE, null, ex);
@@ -272,13 +273,22 @@ public class Evaluator {
         return measures;
     }
 
-    private boolean[] getTrueLabels(Instance instance, int numLabels, int[] labelIndices) {
+    private Boolean[] getTrueLabels(Instance instance, int numLabels, int[] labelIndices) {
 
-        boolean[] trueLabels = new boolean[numLabels];
+    	Boolean[] trueLabels = new Boolean[numLabels];
         for (int counter = 0; counter < numLabels; counter++) {
             int classIdx = labelIndices[counter];
-            String classValue = instance.attribute(classIdx).value((int) instance.value(classIdx));
-            trueLabels[counter] = classValue.equals("1");
+            if(instance.isMissing(classIdx)){
+            	trueLabels[counter]=(Boolean)null;
+            }
+            else{
+                String classValue = instance.attribute(classIdx).value((int) instance.value(classIdx));
+                if(classValue.equals("1"))
+                	trueLabels[counter]=true;
+                else if(classValue.equals("0"))
+                	trueLabels[counter]=false;
+            }
+
         }
 
         return trueLabels;
@@ -443,7 +453,7 @@ public class Evaluator {
                 labelsMissing.setMissing(testData.getLabelIndices()[i]);
             }
             GroundTruth truth;
-            boolean[] trueLabels = new boolean[numLabels];
+            Boolean[] trueLabels = new Boolean[numLabels];
             double[] trueValues = new double[numLabels];
             // clus way
             Instance predictionInstance = predictionInstances.instance(instanceIndex);

@@ -36,13 +36,10 @@ public class BaseFunction {
 	private static long seed=1L;
 	private static Random rand=new Random(seed);
 	
-	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		System.out.println("BaseFunction Main");
 	}
-	
-	
 	
 	/**
 	 * Returns the name of a classifier
@@ -177,6 +174,19 @@ public class BaseFunction {
 	public static void Out_file(String fileallname,String out,boolean Is_add,String codeType){
 		try{
 			
+			String []filePaths=fileallname.split("//");
+			String filePath="";
+			for(int i=0;i<filePaths.length-1;i++){
+				filePath+=filePaths[i]+"//";
+				File file=new File(filePath);
+		        if  (!file .exists()  && !file .isDirectory())      
+		        {       
+		            System.out.println("//Do not exsit"+filePath+"Need to bulid");  
+		            file .mkdir();    
+		        }
+			}
+			
+			
 			FileOutputStream fos = new FileOutputStream(fileallname,Is_add); 
 	        OutputStreamWriter osw = new OutputStreamWriter(fos, codeType); 
 	        osw.write(out); 
@@ -192,6 +202,20 @@ public class BaseFunction {
 	
 	public static void Out_file(String fileallname,String out,boolean Is_add){
 		try{
+			
+			String []filePaths=fileallname.split("//");
+			String filePath="";
+			for(int i=0;i<filePaths.length-1;i++){
+				filePath+=filePaths[i]+"//";
+				File file=new File(filePath);
+		        if  (!file .exists()  && !file .isDirectory())      
+		        {       
+		            System.out.println("//Do not exsit"+filePath+"Need to bulid");  
+		            file .mkdir();    
+		        }
+			}
+			
+			
 			FileWriter fout=new FileWriter(fileallname,Is_add);
 			fout.write(out);
 			fout.close();
@@ -208,17 +232,25 @@ public class BaseFunction {
 	 * @param filename the name of file
 	 * @param filepath the path of file
 	 */
-	public static void Outfile_instances_arff(Instances instances,String filename, String filepath){	
-        File file=new File(filepath);
-        if  (!file .exists()  && !file .isDirectory())      
-        {       
-            System.out.println("//Do not exsit"+filepath+"Need to bulid");  
-            file .mkdir();    
-        }
+	public static void Outfile_instances_arff(Instances instances,String filename, String filePath){	
+        
+		String []filePaths=filePath.split("//");
+		filePath="";
+		for(int i=0;i<filePaths.length;i++){
+			filePath+=filePaths[i]+"//";
+			File file=new File(filePath);
+	        if  (!file .exists()  && !file .isDirectory())      
+	        {       
+	            System.out.println("//Do not exsit"+filePath+"Need to bulid");  
+	            file .mkdir();    
+	        }
+		}
+		
+		
         
 		ArffSaver saver = new ArffSaver();
      	saver.setInstances(instances);
-		String file_entire_name=filepath+filename;
+		String file_entire_name=filePath+filename;
 		try{
 			saver.setFile(new File(file_entire_name));
 			saver.writeBatch();
@@ -227,7 +259,7 @@ public class BaseFunction {
 			e.printStackTrace();
 		}
 			 
-		System.out.println(file+"is writing to file");	
+		System.out.println(file_entire_name+" is writing to file");	
 	}	
 	
 	/**
@@ -238,6 +270,21 @@ public class BaseFunction {
 	 */
 	public static void Outfile_instances_arff(Instances instances,String filename){	
         
+		
+		
+		String []filePaths=filename.split("//");
+		String filePath="";
+		for(int i=0;i<filePaths.length-1;i++){
+			filePath+=filePaths[i]+"//";
+			File file=new File(filePath);
+	        if  (!file .exists()  && !file .isDirectory())      
+	        {       
+	            System.out.println("//Do not exsit"+filePath+"Need to bulid");  
+	            file .mkdir();    
+	        }
+		}
+		
+		
 		ArffSaver saver = new ArffSaver();
      	saver.setInstances(instances);
 		String file_entire_name=filename;

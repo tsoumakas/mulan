@@ -56,4 +56,10 @@ public class MicroFMeasure extends LabelBasedFMeasure {
     public String getName() {
         return "Micro-averaged F-Measure";
     }
+    
+    
+    @Override
+    public boolean handlesMissingValues(){
+    	return true;
+    }
 }

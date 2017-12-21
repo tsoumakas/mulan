@@ -39,5 +39,5 @@ public interface MultiLabelLossFunction {
      * @param groundTruth the ground truth of the example
      * @return the value of the loss function
      */
-    public double computeLoss(MultiLabelOutput prediction, boolean[] groundTruth);
+    public double computeLoss(MultiLabelOutput prediction, Boolean[] groundTruth);
 }

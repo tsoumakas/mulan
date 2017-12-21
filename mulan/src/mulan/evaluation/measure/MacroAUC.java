@@ -15,6 +15,7 @@
  */
 package mulan.evaluation.measure;
 
+import weka.classifiers.evaluation.NominalPrediction;
 import weka.classifiers.evaluation.ThresholdCurve;
 import weka.core.Instances;
 import weka.core.Utils;
@@ -46,8 +47,24 @@ public class MacroAUC extends LabelBasedAUC implements MacroAverageMeasure {
         double[] labelAUC = new double[numOfLabels];
         for (int i = 0; i < numOfLabels; i++) {
             ThresholdCurve tc = new ThresholdCurve();
-            Instances result = tc.getCurve(m_Predictions[i], 1);
-            labelAUC[i] = ThresholdCurve.getROCArea(result);
+            try{
+            	Instances result = tc.getCurve(m_Predictions[i], 1);
+            	 // When the "m_Predictions[i].size()==0" is true, the return of "getCurve" function is "null" 
+            	labelAUC[i] = ThresholdCurve.getROCArea(result);
+            }
+            catch(Exception e){ //when "result" is "null"
+            	/*e.printStackTrace();
+            	System.out.println(m_Predictions[i].size());
+            	System.out.println(((NominalPrediction) m_Predictions[i].get(0)).distribution().length);
+            	System.out.println();
+            	*/
+            	labelAUC[i]=0.5;
+            }          
+            
+            //when the AUC is NaN (true labels only contain "1" or "0" values)
+            if(Double.isNaN(labelAUC[i])){
+            	labelAUC[i]=0.5;       
+            }
         }
         return Utils.mean(labelAUC);
     }
@@ -61,8 +78,20 @@ public class MacroAUC extends LabelBasedAUC implements MacroAverageMeasure {
     @Override
     public double getValue(int labelIndex) {
         ThresholdCurve tc = new ThresholdCurve();
-        Instances result = tc.getCurve(m_Predictions[labelIndex], 1);
-        return ThresholdCurve.getROCArea(result);  
+        try{
+        	Instances result = tc.getCurve(m_Predictions[labelIndex], 1);
+        	return ThresholdCurve.getROCArea(result);
+        	
+        }
+        catch (Exception e){
+        	//e.printStackTrace();
+        	return 0.5;
+        }
     }
-
+    
+    
+    @Override
+    public boolean handlesMissingValues(){
+    	return true;
+    }
 }

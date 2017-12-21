@@ -10,17 +10,26 @@ package mulan.evaluation;
  */
 public class GroundTruth {
 
-    private boolean[] trueLabels;
+    private Boolean[] trueLabels;
 
     private double[] trueValues;
 
-    public GroundTruth(boolean[] trueLabels) {
+    public GroundTruth(Boolean[] trueLabels) {
         this.trueLabels = trueLabels;
     }
 
+    public GroundTruth(boolean[] trueLabels) {
+        this.trueLabels = new Boolean[trueLabels.length];
+        for(int i=0;i<trueLabels.length;i++){
+        	trueLabels[i]=trueLabels[i];
+        }
+    }
+    
     public GroundTruth(double[] trueValues) {
         this.trueValues = trueValues;
     }
+    
+    
 
     /**
      * Determines whether the {@link GroundTruth} is for a classification problem.
@@ -40,7 +49,7 @@ public class GroundTruth {
         return (trueValues != null);
     }
 
-    public boolean[] getTrueLabels() {
+    public Boolean[] getTrueLabels() {
         return trueLabels;
     }
 

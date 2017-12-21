@@ -40,11 +40,14 @@ public class AveragePrecision extends RankingMeasureBase {
     }
 
     @Override
-    protected void updateRanking(int[] ranking, boolean[] trueLabels) {
+    protected void updateRanking(int[] ranking, Boolean[] trueLabels) {
         double avgP = 0;
         int numLabels = trueLabels.length;
         List<Integer> relevant = new ArrayList<>();
         for (int index = 0; index < numLabels; index++) {
+        	if(trueLabels[index]==null)
+        		continue;
+        	
             if (trueLabels[index]) {
                 relevant.add(index);
             }
