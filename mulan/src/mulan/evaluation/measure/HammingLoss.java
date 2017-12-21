@@ -30,9 +30,4 @@ public class HammingLoss extends LossBasedBipartitionMeasureBase {
     public HammingLoss() {
         super(new mulan.evaluation.loss.HammingLoss());
     }
-    
-    @Override
-    public boolean handlesMissingValues(){
-    	return true;
-    }
 }

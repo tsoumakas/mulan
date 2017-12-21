@@ -30,5 +30,4 @@ public class RankingLoss extends LossBasedRankingMeasureBase {
     public RankingLoss() {
         super(new mulan.evaluation.loss.RankingLoss());
     }
-    
 }

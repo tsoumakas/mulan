@@ -30,5 +30,5 @@ public interface BipartitionLossFunction extends MultiLabelLossFunction {
      * @param groundTruth the ground truth of the example
      * @return the value of the loss function
      */
-    public double computeLoss(boolean[] bipartition, Boolean[] groundTruth);
+    public double computeLoss(boolean[] bipartition, boolean[] groundTruth);
 }

@@ -34,7 +34,7 @@ public class Coverage extends RankingMeasureBase {
     }
 
     @Override
-    protected void updateRanking(int[] ranking, Boolean[] trueLabels) {
+    protected void updateRanking(int[] ranking, boolean[] trueLabels) {
         int howDeep = 0;
         int numLabels = trueLabels.length;
         for (int rank = numLabels; rank >= 1; rank--) {
@@ -44,10 +44,6 @@ public class Coverage extends RankingMeasureBase {
                     break;
                 }
             }
-            
-            if(trueLabels[indexOfRank]==null)
-            	continue;
-            
             if (trueLabels[indexOfRank]) {
                 howDeep = rank - 1;
                 break;

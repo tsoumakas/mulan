@@ -34,16 +34,12 @@ public class IsError extends RankingLossFunctionBase {
     }
 
     @Override
-    public double computeLoss(int[] ranking, Boolean[] groundTruth) {
+    public double computeLoss(int[] ranking, boolean[] groundTruth) {
         List<Integer> relevant = new ArrayList<Integer>();
         List<Integer> irrelevant = new ArrayList<Integer>();
         int numLabels = groundTruth.length;
         for (int index = 0; index < numLabels; index++) {
-        	if(groundTruth[index]==null)
-            	continue;
-
-        	
-        	if (groundTruth[index]) {
+            if (groundTruth[index]) {
                 relevant.add(index);
             } else {
                 irrelevant.add(index);

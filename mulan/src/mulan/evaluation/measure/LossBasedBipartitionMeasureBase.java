@@ -37,7 +37,7 @@ public abstract class LossBasedBipartitionMeasureBase extends ExampleBasedBipart
     }
 
     @Override
-    public void updateBipartition(boolean[] bipartition, Boolean[] truth) {
+    public void updateBipartition(boolean[] bipartition, boolean[] truth) {
         sum += loss.computeLoss(bipartition, truth);
         count++;
     }

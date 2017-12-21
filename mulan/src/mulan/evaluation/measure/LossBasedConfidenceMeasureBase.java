@@ -38,7 +38,7 @@ public abstract class LossBasedConfidenceMeasureBase extends ExampleBasedConfide
     }
 
     @Override
-    public void updateConfidence(double[] confidences, Boolean[] truth) {
+    public void updateConfidence(double[] confidences, boolean[] truth) {
         sum += loss.computeLoss(confidences, truth);
         count++;
     }

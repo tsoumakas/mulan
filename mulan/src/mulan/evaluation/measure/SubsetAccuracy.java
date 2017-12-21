@@ -35,13 +35,10 @@ public class SubsetAccuracy extends ExampleBasedBipartitionMeasureBase {
     }
 
     @Override
-    protected void updateBipartition(boolean[] bipartition, Boolean[] truth) {
+    protected void updateBipartition(boolean[] bipartition, boolean[] truth) {
         double value = 1;
         for (int i = 0; i < truth.length; i++) {
-        	if(truth[i]==null)
-        		continue;
-
-        	if (bipartition[i] != truth[i]) {
+            if (bipartition[i] != truth[i]) {
                 value = 0;
                 break;
             }

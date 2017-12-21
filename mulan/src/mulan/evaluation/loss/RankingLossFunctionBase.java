@@ -33,19 +33,19 @@ public abstract class RankingLossFunctionBase implements RankingLossFunction, Se
         }
     }
 
-    private void checkLength(int[] ranking, Boolean[] groundTruth) {
+    private void checkLength(int[] ranking, boolean[] groundTruth) {
         if (ranking.length != groundTruth.length) {
             throw new IllegalArgumentException("The dimensions of the " +
                     "ranking and the ground truth array do not match");
         }
     }
 
-    public final double computeLoss(MultiLabelOutput prediction, Boolean[] groundTruth) {
+    public final double computeLoss(MultiLabelOutput prediction, boolean[] groundTruth) {
         int[] ranking = prediction.getRanking();
         checkRanking(ranking);
         checkLength(ranking, groundTruth);
         return computeLoss(ranking, groundTruth);
     }
 
-    abstract public double computeLoss(int[] ranking, Boolean[] groundTruth);
+    abstract public double computeLoss(int[] ranking, boolean[] groundTruth);
 }

@@ -30,5 +30,5 @@ public interface RankingLossFunction extends MultiLabelLossFunction {
      * @param groundTruth the ground truth of the example
      * @return the value of the loss function
      */
-    public double computeLoss(int[] ranking, Boolean[] groundTruth);
+    public double computeLoss(int[] ranking, boolean[] groundTruth);
 }

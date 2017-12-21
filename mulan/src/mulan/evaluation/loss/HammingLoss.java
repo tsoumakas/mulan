@@ -15,8 +15,6 @@
  */
 package mulan.evaluation.loss;
 
-import mulan.classifier.MultiLabelOutput;
-
 /**
  * Implementation of the hamming loss function. It is basically
  * the symmetric difference between the predicted and ground truth labels
@@ -33,28 +31,14 @@ public class HammingLoss extends BipartitionLossFunctionBase {
 
   
     @Override
-    public double computeLoss(boolean[] bipartition, Boolean[] groundTruth) {
+    public double computeLoss(boolean[] bipartition, boolean[] groundTruth) {
         double symmetricDifference = 0;
-        int c=0;
         for (int i = 0; i < groundTruth.length; i++) {
-            if(groundTruth[i]==null){
-            	continue;
-            }
-            c++;
-            	
-        	if (bipartition[i] != groundTruth[i]) {
+            if (bipartition[i] != groundTruth[i]) {
                 symmetricDifference++;
             }
         }
-        if(c==0){  //all of groundTruth are null (missing)
-        	return 0;
-        }
-        else{
-        	return symmetricDifference / c;
-        }
-        
+        return symmetricDifference / groundTruth.length;
     }
-
-	
 
 }

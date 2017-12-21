@@ -35,16 +35,12 @@ public class LogLoss extends ConfidenceLossFunctionBase {
     }
 
     @Override
-    public double computeLoss(double[] confidences, Boolean[] groundTruth) {
+    public double computeLoss(double[] confidences, boolean[] groundTruth) {
 
         double sumOfProductsL = 0.0;
         double sumlogLoss;
         for (int labelIndex = 0; labelIndex < groundTruth.length; labelIndex++) {
-        	if(groundTruth[labelIndex]==null)
-            	continue;
-
-        	
-        	double prediction = confidences[labelIndex];
+            double prediction = confidences[labelIndex];
             if (prediction > (1 - epsilon)) {
                 prediction = 1 - epsilon;
             }
