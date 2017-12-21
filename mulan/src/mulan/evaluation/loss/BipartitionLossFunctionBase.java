@@ -33,19 +33,19 @@ public abstract class BipartitionLossFunctionBase implements BipartitionLossFunc
         }
     }
 
-    private void checkLength(boolean[] bipartition, boolean[] groundTruth) {
+    private void checkLength(boolean[] bipartition, Boolean[] groundTruth) {
         if (bipartition.length != groundTruth.length) {
             throw new IllegalArgumentException("The dimensions of the " +
                     "bipartition and the ground truth array do not match");
         }
     }
 
-    public final double computeLoss(MultiLabelOutput prediction, boolean[] groundTruth) {
+    public final double computeLoss(MultiLabelOutput prediction, Boolean[] groundTruth) {
         boolean[] bipartition = prediction.getBipartition();
         checkBipartition(bipartition);
         checkLength(bipartition, groundTruth);
         return computeLoss(bipartition, groundTruth);
     }
 
-    abstract public double computeLoss(boolean[] bipartition, boolean[] groundTruth);
+    abstract public double computeLoss(boolean[] bipartition, Boolean[] groundTruth);
 }

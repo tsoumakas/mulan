@@ -25,7 +25,7 @@ import mulan.core.ArgumentNullException;
  */
 public abstract class BipartitionMeasureBase extends ClassificationMeasureBase {
 
-    protected void updateInternal(MultiLabelOutput prediction, boolean[] truth) {
+    protected void updateInternal(MultiLabelOutput prediction, Boolean[] truth) {
         boolean[] bipartition = prediction.getBipartition();
         if (bipartition == null) {
             throw new ArgumentNullException("Bipartition is null");
@@ -43,6 +43,6 @@ public abstract class BipartitionMeasureBase extends ClassificationMeasureBase {
      * @param bipartition the predicted bipartition
      * @param truth the ground truth
      */
-    protected abstract void updateBipartition(boolean[] bipartition, boolean[] truth);
+    protected abstract void updateBipartition(boolean[] bipartition, Boolean[] truth);
 
 }

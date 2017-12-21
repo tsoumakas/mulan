@@ -33,12 +33,16 @@ public class RankingLoss extends ErrorSetSize {
     }
 
     @Override
-    public double computeLoss(int[] ranking, boolean[] groundTruth) {
+    public double computeLoss(int[] ranking, Boolean[] groundTruth) {
         int numLabels = groundTruth.length;
         ArrayList<Integer> trueIndexes = new ArrayList<Integer>();
         ArrayList<Integer> falseIndexes = new ArrayList<Integer>();
         for (int labelIndex = 0; labelIndex < numLabels; labelIndex++) {
-            if (groundTruth[labelIndex]) {
+        	if(groundTruth[labelIndex]==null)
+            	continue;
+
+        	
+        	if (groundTruth[labelIndex]) {
                 trueIndexes.add(labelIndex);
             } else {
                 falseIndexes.add(labelIndex);

@@ -40,8 +40,8 @@ public class BinaryRelevance extends TransformationBasedMultiLabelLearner {
     /**
      * The correspondence between ensemble models and labels
      */
-    private String[] correspondence;
-    private BinaryRelevanceTransformation brt;
+    protected String[] correspondence;
+    protected BinaryRelevanceTransformation brt;
 
     /**
      * Creates a new instance

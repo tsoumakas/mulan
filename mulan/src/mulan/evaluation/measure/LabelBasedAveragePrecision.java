@@ -45,9 +45,13 @@ public abstract class LabelBasedAveragePrecision extends ConfidenceMeasureBase {
     }
 
     @Override
-    protected void updateConfidence(double[] confidences, boolean[] truth) {
+    protected void updateConfidence(double[] confidences, Boolean[] truth) {
         for (int labelIndex = 0; labelIndex < numOfLabels; labelIndex++) {
-            boolean actual = truth[labelIndex];
+        	if(truth[labelIndex]==null){
+        		continue;
+        	}
+        	
+        	boolean actual = truth[labelIndex];
             // boolean predicted = bipartition[labelIndex];
             double confidence = confidences[labelIndex];
             // another metric...
