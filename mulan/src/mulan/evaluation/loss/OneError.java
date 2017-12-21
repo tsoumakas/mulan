@@ -31,11 +31,14 @@ public class OneError extends RankingLossFunctionBase {
     }
 
     @Override
-    public double computeLoss(int[] ranking, boolean[] groundTruth) {
+    public double computeLoss(int[] ranking, Boolean[] groundTruth) {
         double oneError = 0;
         int numLabels = groundTruth.length;
         for (int topRated = 0; topRated < numLabels; topRated++) {
-            if (ranking[topRated] == 1) {
+        	if(groundTruth[topRated]==null)
+            	continue;
+        	
+        	if (ranking[topRated] == 1) {
                 if (!groundTruth[topRated]) {
                     oneError++;
                 }

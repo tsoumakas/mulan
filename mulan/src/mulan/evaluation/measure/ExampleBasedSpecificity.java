@@ -34,12 +34,15 @@ public class ExampleBasedSpecificity extends ExampleBasedBipartitionMeasureBase 
     }
 
     @Override
-    protected void updateBipartition(boolean[] bipartition, boolean[] truth) {
+    protected void updateBipartition(boolean[] bipartition, Boolean[] truth) {
         double tn = 0;
         double fp = 0;
         double fn = 0;
         for (int i = 0; i < truth.length; i++) {
-            if (!truth[i]) {
+        	if(truth[i]==null)
+        		continue;
+        	
+        	if (!truth[i]) {
                 if (!bipartition[i]) {
                     tn++;
                 } else {

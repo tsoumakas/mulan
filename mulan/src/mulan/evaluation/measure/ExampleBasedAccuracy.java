@@ -52,10 +52,14 @@ public class ExampleBasedAccuracy extends ExampleBasedBipartitionMeasureBase {
     }
 
     @Override
-    protected void updateBipartition(boolean[] bipartition, boolean[] truth) {
+    protected void updateBipartition(boolean[] bipartition, Boolean[] truth) {
         double intersection = 0;
         double union = 0;
         for (int i = 0; i < truth.length; i++) {
+        	if(truth[i]==null){
+        		continue;
+        	}
+        	
             if (bipartition[i] && truth[i]) {
                 intersection++;
             }

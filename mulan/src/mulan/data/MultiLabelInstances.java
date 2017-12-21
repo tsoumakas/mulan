@@ -830,61 +830,121 @@ public class MultiLabelInstances implements Serializable {
         return loader.getNextInstance(dataSet);
     }
     
-    /**
-     * LB's new methods
-     */
+    
+    
+    
     
     /**
-     * Returns the array contains imbalance ratios of labels.
-     * 
-     * @return the array contains imbalance ratios of labels
+     * Get the measurement of imbalanced level of multi-label instances
      */
-    public double[] getImbalanceRatios(){
-    	int numInstances = dataSet.numInstances();
-        int numLabels = labelsMetaData.getNumLabels();
+    
+    private boolean IsCaculatedIMMeasure=false;  //if IsCaculatedIMMeasure is false, the IRLbls can not be obtained unless the caculateIRLbls function should be execute in advance 
+    private double IRLbls[]=null;  //the array contains IRLbl of each label
+    private double ImRs[]=null;  //#0/#1
+    
+    /**
+     * calculate the imbalanced measurements: IRLbl and ImR
+     */
+    public void caculateImbalancedMeasurements(){
+    	int numInstances = this.getNumInstances();
+        int numLabels = this.getNumLabels();
     	
-    	double imbalanceRatios[] = new double[numLabels];
+    	IRLbls = new double[numLabels];
+    	ImRs = new double[numLabels];
+        int[] c1=new int[numLabels];
+    	int mc=0;
         int[] labelIndices = getLabelIndices();
-
-        for (int j = 0; j < numLabels; j++) {
-        	double c1=0;  //count the number of instance has value 1 for jth label
-        	for (int i = 0; i < numInstances; i++) {
-                if (dataSet.instance(i).stringValue(labelIndices[j]).equals("1")) {
-                    c1++;
+        
+        
+        for (int i = 0; i < numInstances; i++) {
+        	Instance ins=dataSet.get(i);
+        	for (int j = 0; j < numLabels; j++) {    
+        		/*
+        		 * Returns the value of a nominal, string, date, 
+        		 * or relational attribute for the instance as a string.
+        		 */
+        		if (ins.stringValue(labelIndices[j]).equals("1")) 
+        		{
+                    c1[j]++;
                 }
             }
-        	imbalanceRatios[j]=c1*1.0/numInstances;
         }
-        return imbalanceRatios;
+        
+        //calculate IRLbls
+        for (int j = 0; j < numLabels; j++) {
+        	if(c1[j]>mc){
+        		mc=c1[j];
+        	}
+        }
+        if(mc==0){
+        	for (int j = 0; j < numLabels; j++) {
+        		IRLbls[j]=-1.0;
+            }
+        }
+        else{
+        	for (int j = 0; j < numLabels; j++) {
+        		IRLbls[j]=mc*1.0/c1[j];
+            }
+        }
+        
+        //calculate ImR
+        for (int j = 0; j < numLabels; j++) {
+    		if(c1[j]==0){
+    			ImRs[j]=Integer.MAX_VALUE;
+    		}
+    		else{
+    			ImRs[j]=(numInstances-c1[j])*1.0/c1[j];
+    		}
+        }   
+        
+        IsCaculatedIMMeasure=true;
+    }
+      
+    
+    public double[] getIRLbls() throws Exception{
+    	return IRLbls;
+    }  
+    
+    /**
+     * Returns the IRBbl of a subset of labels.
+     * 
+     * @param the array of indexes of a subset of label (the range of indexes is from 0 to number of labels -1)
+     * @return the IRBbl of a subset of labels
+     */
+    public double[] getIRLbls(int labelIndexes[]){
+    	double subIRLbls[]=new double[labelIndexes.length];
+    	for(int i=0;i<labelIndexes.length;i++){
+    		subIRLbls[i]=IRLbls[labelIndexes[i]];
+    	}
+        return subIRLbls;
     }
     
     /**
-     * Returns the imbalance ratios of a subset of labels.
+     * Returns the IRLbl of the label whose index is labelindex.
      * 
-     * @param the array of indexes of a subset of label (index from 0 to number of labels -1)
-     * @return the imbalance ratios of a subset of labels
+     * @param the index of a label (the range of indexes is from 0 to number of labels -1)
+     * @return the IRLbl of the label whose index is labelindex.
      */
-    public double[] getImbalanceRatio(int arrayLabelIndex[]){
-    	int numInstances = dataSet.numInstances();
-        int numLabels = labelsMetaData.getNumLabels();
-        int[] labelIndices = getLabelIndices();
-        
-    	double imbalanceRatios[]=new double[arrayLabelIndex.length];
+    public double getIRLbls(int labelIndex){
+        return IRLbls[labelIndex];
+    }
+     
+    public double getMeanIR(){
+    	double meanIR=0;
+    	for(int i=0;i<IRLbls.length;i++){
+    		meanIR+=IRLbls[i];
+    	}
+    	meanIR/=this.getNumLabels();
+    	return meanIR;
+    }
 
-        for (int j = 0; j < arrayLabelIndex.length; j++) {
-        	if(arrayLabelIndex[j]>=numLabels){ //index is out of range
-        		imbalanceRatios[j]=-1;  
-        	}
-        	else{
-        		double c1=0;  //count the number of instance has value 1 for jth label
-            	for (int i = 0; i < numInstances; i++) {
-                    if (dataSet.instance(i).stringValue(labelIndices[arrayLabelIndex[j]]).equals("1")) {
-                        c1++;
-                    }
-                }
-            	imbalanceRatios[j]=c1*1.0/numInstances;
-        	}
-        }
-        return imbalanceRatios;
+    public double getCVIR(){
+    	double meanIR=getMeanIR();
+    	double s=0;
+    	for(double d:IRLbls){
+    		s+=Math.pow((d-meanIR), 2.0);
+    	}
+    	s=Math.sqrt(s/(getNumLabels()-1));
+    	return s/meanIR;
     }
 }

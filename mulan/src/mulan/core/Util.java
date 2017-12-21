@@ -63,6 +63,33 @@ public class Util {
             return maxIndexes[choose];
         }
     }
+    
+    
+    public static int RandomIndexOfMin(double array[], Random rand) {
+
+        int[] minIndexes = new int[array.length];
+        double min = array[0];
+        minIndexes[0] = 0;
+        int counter = 1;
+
+        for (int i = 1; i < array.length; i++) {
+            if (array[i] == min) {
+                minIndexes[counter] = i;
+                counter++;
+            } else if (array[i] < min) {
+            	min = array[i];
+            	minIndexes[0] = i;
+                counter = 1;
+            }
+        }
+
+        if (counter == 1) {
+            return minIndexes[0];
+        } else {
+            int choose = rand.nextInt(counter);
+            return minIndexes[choose];
+        }
+    }
 
     /**
      * Returns a correct new line separator string for the underlying operating system.

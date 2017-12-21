@@ -45,7 +45,7 @@ public abstract class RankingMeasureBase extends ClassificationMeasureBase {
     }
 
     @Override
-    protected void updateInternal(MultiLabelOutput prediction, boolean[] truth) {
+    protected void updateInternal(MultiLabelOutput prediction, Boolean[] truth) {
         int[] ranking = prediction.getRanking();
         if (ranking == null) {
             throw new ArgumentNullException("Bipartition is null");
@@ -63,6 +63,6 @@ public abstract class RankingMeasureBase extends ClassificationMeasureBase {
      * @param ranking the predicted ranking
      * @param truth the ground truth
      */
-    protected abstract void updateRanking(int[] ranking, boolean[] truth);
+    protected abstract void updateRanking(int[] ranking, Boolean[] truth);
 
 }

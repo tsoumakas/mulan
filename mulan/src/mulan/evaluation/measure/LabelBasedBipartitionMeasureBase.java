@@ -35,7 +35,64 @@ public abstract class LabelBasedBipartitionMeasureBase extends BipartitionMeasur
      * the number of true positives for each label
      */
     protected double[] truePositives;
+    
     /**
+	 * @return the falseNegatives
+	 */
+	public double[] getFalseNegatives() {
+		return falseNegatives;
+	}
+
+	/**
+	 * @return the truePositives
+	 */
+	public double[] getTruePositives() {
+		return truePositives;
+	}
+
+	/**
+	 * @return the falsePositives
+	 */
+	public double[] getFalsePositives() {
+		return falsePositives;
+	}
+
+	/**
+	 * @return the trueNegatives
+	 */
+	public double[] getTrueNegatives() {
+		return trueNegatives;
+	}
+
+	/**
+	 * @param falseNegatives the falseNegatives to set
+	 */
+	public void setFalseNegatives(double[] falseNegatives) {
+		this.falseNegatives = falseNegatives;
+	}
+
+	/**
+	 * @param truePositives the truePositives to set
+	 */
+	public void setTruePositives(double[] truePositives) {
+		this.truePositives = truePositives;
+	}
+
+	/**
+	 * @param falsePositives the falsePositives to set
+	 */
+	public void setFalsePositives(double[] falsePositives) {
+		this.falsePositives = falsePositives;
+	}
+
+	/**
+	 * @param trueNegatives the trueNegatives to set
+	 */
+	public void setTrueNegatives(double[] trueNegatives) {
+		this.trueNegatives = trueNegatives;
+	}
+
+	/**
      * the number of false positives for each label
      */
     protected double[] falsePositives;
@@ -58,9 +115,13 @@ public abstract class LabelBasedBipartitionMeasureBase extends BipartitionMeasur
     }
 
     @Override
-    public void updateBipartition(boolean[] bipartition, boolean[] truth) {
+    public void updateBipartition(boolean[] bipartition, Boolean[] truth) {
         for (int labelIndex = 0; labelIndex < numOfLabels; labelIndex++) {
-            boolean actual = truth[labelIndex];
+        	if(truth[labelIndex]==null)
+        		continue;
+
+        	
+        	Boolean actual = truth[labelIndex];
             boolean predicted = bipartition[labelIndex];
 
             if (actual) {

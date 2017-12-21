@@ -29,12 +29,15 @@ public class SquaredError extends ConfidenceLossFunctionBase {
     }
 
     @Override
-    public double computeLoss(double[] confidences, boolean[] groundTruth) {
+    public double computeLoss(double[] confidences, Boolean[] groundTruth) {
 
         double sumOfSqL = 0.0;
 
         for (int labelIndex = 0; labelIndex < groundTruth.length; labelIndex++) {
-            double prediction = confidences[labelIndex];
+        	if(groundTruth[labelIndex]==null)
+            	continue;
+
+        	double prediction = confidences[labelIndex];
             double y = 0.0;
             if (groundTruth[labelIndex]) {
                 y = 1.0;

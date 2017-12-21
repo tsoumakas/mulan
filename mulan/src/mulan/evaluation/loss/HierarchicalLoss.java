@@ -58,7 +58,7 @@ public class HierarchicalLoss extends BipartitionLossFunctionBase {
     }
 
     @Override
-    public double computeLoss(boolean[] bipartition, boolean[] truth) {
+    public double computeLoss(boolean[] bipartition, Boolean[] truth) {
         loss = 0;
         calculateHLoss(bipartition, truth, metaData.getRootLabels());
         return loss;
@@ -71,7 +71,7 @@ public class HierarchicalLoss extends BipartitionLossFunctionBase {
      * @param truth the ground truth
      * @param children the children of the current node
      */
-    private void calculateHLoss(boolean[] bipartition, boolean[] truth, Set<LabelNode> children) {
+    private void calculateHLoss(boolean[] bipartition, Boolean[] truth, Set<LabelNode> children) {
         for (LabelNode child : children) {
             int labelPos = labelPosition.get(child.getName());
             if (bipartition[labelPos] == truth[labelPos]) {

@@ -75,7 +75,12 @@ public abstract class MMPUpdateRuleBase implements ModelUpdateRule {
         MultiLabelOutput mlOut = new MultiLabelOutput(confidences);
 
         // get a lossFunction measure of a model for given example
-        double loss = lossFunction.computeLoss(mlOut.getRanking(), example.getOutputBoolean());
+        Boolean exampleOutput[]=new Boolean[example.getOutputBoolean().length];
+        for(int i=0;i<exampleOutput.length;i++){
+        	exampleOutput[i]=example.getOutputBoolean()[i];
+        }
+        
+        double loss = lossFunction.computeLoss(mlOut.getRanking(), exampleOutput);
         if (loss != 0) {
             // update update parameters for perceptrons
             double[] updateParams = computeUpdateParameters(example, confidences, loss);

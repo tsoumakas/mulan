@@ -53,11 +53,13 @@ public class ExampleBasedFMeasure extends ExampleBasedBipartitionMeasureBase {
     }
 
     @Override
-    protected void updateBipartition(boolean[] bipartition, boolean[] truth) {
+    protected void updateBipartition(boolean[] bipartition, Boolean[] truth) {
         double tp = 0;
         double fp = 0;
         double fn = 0;
         for (int i = 0; i < truth.length; i++) {
+        	if(truth[i]==null)
+        		continue;
             if (bipartition[i] && truth[i]) {
                 tp++;
             }
