@@ -171,6 +171,17 @@ The following multi-label datasets are properly formatted for use with Mulan. We
               <td align="right" nowrap="nowrap">54</td>
             </tr>
             <tr style="background-color:#f7f7f7">
+              <td nowrap="nowrap">foodtruck</td>
+              <td align="center" nowrap="nowrap">other</td>
+              <td align="right" nowrap="nowrap">407</td>
+              <td align="right" nowrap="nowrap">4</td>
+              <td align="right" nowrap="nowrap">17</td>
+              <td align="right" nowrap="nowrap">12</td>
+              <td align="right" nowrap="nowrap">2.289</td>
+              <td align="right" nowrap="nowrap">0.191</td>
+              <td align="right" nowrap="nowrap">116</td>
+            </tr>
+            <tr style="background-color:#f0f0f0">
               <td nowrap="nowrap" style="height: 23px">genbase</td>
               <td align="center" nowrap="nowrap" style="height: 23px">biology</td>
               <td align="right" nowrap="nowrap" style="height: 23px">662</td>
@@ -181,7 +192,7 @@ The following multi-label datasets are properly formatted for use with Mulan. We
               <td align="right" nowrap="nowrap" style="height: 23px">0.046</td>
               <td align="right" nowrap="nowrap" style="height: 23px">32</td>
             </tr>
-            <tr style="background-color:#f0f0f0">
+            <tr style="background-color:#f7f7f7">
               <td nowrap="nowrap">mediamill</td>
               <td align="center" nowrap="nowrap">video</td>
               <td align="right" nowrap="nowrap">43907</td>
@@ -192,7 +203,7 @@ The following multi-label datasets are properly formatted for use with Mulan. We
               <td align="right" nowrap="nowrap">0.043</td>
               <td align="right" nowrap="nowrap">6555</td>
             </tr>
-            <tr style="background-color:#f7f7f7">
+            <tr style="background-color:#f0f0f0">
               <td nowrap="nowrap">medical</td>
               <td align="center" nowrap="nowrap">text</td>
               <td align="right" nowrap="nowrap">978</td>

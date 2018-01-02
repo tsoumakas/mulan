@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<labels xmlns="http://mulan.sourceforge.net/labels">
+<label name="street_food"></label>
+<label name="gourmet"></label>
+<label name="italian_food"></label>
+<label name="brazilian_food"></label>
+<label name="mexican_food"></label>
+<label name="chinese_food"></label>
+<label name="japanese_food"></label>
+<label name="arabic_food"></label>
+<label name="snacks"></label>
+<label name="healthy_food"></label>
+<label name="fitness_food"></label>
+<label name="sweets_desserts"></label>
+</labels>
