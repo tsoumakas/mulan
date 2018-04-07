@@ -20,8 +20,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import mulan.data.DataUtils;
 import mulan.data.MultiLabelInstances;
+import weka.core.DenseInstance;
 import weka.core.Instance;
 import weka.core.Instances;
+import weka.core.SparseInstance;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.Add;
 import weka.filters.unsupervised.attribute.Remove;
@@ -35,9 +37,13 @@ import weka.filters.unsupervised.attribute.Remove;
 public class BinaryRelevanceTransformation implements Serializable {
 
     private MultiLabelInstances data;
-    private Instances shell;
+    private Instances shellBinary;
+    private Instances shellNumeric;
     private Remove remove;
-    private Add add;
+    private Add addBinary;
+    private Add addNumeric;
+    private boolean isContainBianry=false;
+    private boolean isContainNumeric=false;
 
     /**
      * Constructor
@@ -51,17 +57,47 @@ public class BinaryRelevanceTransformation implements Serializable {
             int[] labelIndices = data.getLabelIndices();
             int[] indices = new int[labelIndices.length];
             System.arraycopy(labelIndices, 0, indices, 0, labelIndices.length);
-            remove.setAttributeIndicesArray(indices);
-            remove.setInvertSelection(false);
-            remove.setInputFormat(data.getDataSet());
-            shell = Filter.useFilter(data.getDataSet(), remove);
-            add = new Add();
-            add.setAttributeIndex("last");
-            add.setNominalLabels("0,1");
-            add.setAttributeName("BinaryRelevanceLabel");
-            add.setInputFormat(shell);
-            shell = Filter.useFilter(shell, add);
-            shell.setClassIndex(shell.numAttributes() - 1);
+            
+            for(int i:labelIndices){
+            	if(data.getDataSet().get(0).attribute(i).isNominal()){
+            		isContainBianry=true;
+            	}
+            	if(data.getDataSet().get(0).attribute(i).isNumeric()){
+            		isContainNumeric=true;
+            	}
+            	if(isContainBianry&&isContainNumeric){
+            		break;
+            	}
+            }
+            if(isContainBianry){
+                remove.setAttributeIndicesArray(indices);
+                remove.setInvertSelection(false);
+                remove.setInputFormat(data.getDataSet());
+                shellBinary = Filter.useFilter(data.getDataSet(), remove);
+                
+                addBinary = new Add();
+                addBinary.setAttributeIndex("last");
+                addBinary.setNominalLabels("0,1");  
+                addBinary.setAttributeName("BinaryRelevanceLabel");
+                addBinary.setInputFormat(shellBinary);
+                shellBinary = Filter.useFilter(shellBinary, addBinary);
+                
+                shellBinary.setClassIndex(shellBinary.numAttributes() - 1);
+            }
+            if(isContainNumeric){
+                remove.setAttributeIndicesArray(indices);
+                remove.setInvertSelection(false);
+                remove.setInputFormat(data.getDataSet());
+                shellNumeric = Filter.useFilter(data.getDataSet(), remove);
+                
+                addNumeric = new Add();
+                addNumeric.setAttributeIndex("last");
+                addNumeric.setAttributeName("SignleTargetRegressorLabel");
+                addNumeric.setInputFormat(shellNumeric);
+                shellNumeric = Filter.useFilter(shellNumeric, addNumeric);
+                
+                shellNumeric.setClassIndex(shellNumeric.numAttributes() - 1);
+            }
         } catch (Exception ex) {
             Logger.getLogger(BinaryRelevanceTransformation.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -75,18 +111,28 @@ public class BinaryRelevanceTransformation implements Serializable {
      * @return transformed Instance
      */
     public Instance transformInstance(Instance instance, int labelToKeep) {
-        Instance transformedInstance;
+    	int[] labelIndices = data.getLabelIndices();
+    	
+    	Instance transformedInstance;
         remove.input(instance);
         transformedInstance = remove.output();
-        add.input(transformedInstance);
-        transformedInstance = add.output();
-        transformedInstance.setDataset(shell);
-
-        int[] labelIndices = data.getLabelIndices();
-        if (data.getDataSet().attribute(labelIndices[labelToKeep]).value(0).equals("1")) {
-            transformedInstance.setValue(shell.numAttributes() - 1, 1 - instance.value(labelIndices[labelToKeep]));
-        } else {
-            transformedInstance.setValue(shell.numAttributes() - 1, instance.value(labelIndices[labelToKeep]));
+        
+        if(instance.attribute(labelIndices[labelToKeep]).isNominal()){
+        	 addBinary.input(transformedInstance);
+             transformedInstance = addBinary.output();
+             transformedInstance.setDataset(shellBinary);
+             if (data.getDataSet().attribute(labelIndices[labelToKeep]).value(0).equals("1")) {
+                 transformedInstance.setValue(shellBinary.numAttributes() - 1, 1 - instance.value(labelIndices[labelToKeep]));
+             } else {
+                 transformedInstance.setValue(shellBinary.numAttributes() - 1, instance.value(labelIndices[labelToKeep]));
+             }
+        }
+        else if(instance.attribute(labelIndices[labelToKeep]).isNumeric()){
+       	 	addNumeric.input(transformedInstance);
+            transformedInstance = addNumeric.output(); 
+            transformedInstance.setDataset(shellNumeric);
+            transformedInstance.setValue(shellNumeric.numAttributes() - 1, instance.value(labelIndices[labelToKeep]));
+            
         }
         return transformedInstance;
     }
@@ -99,20 +145,29 @@ public class BinaryRelevanceTransformation implements Serializable {
      * @throws Exception when removal fails
      */
     public Instances transformInstances(int labelToKeep) throws Exception {
-        Instances shellCopy = new Instances(this.shell);
-        boolean order10 = false;
-        int[] labelIndices = data.getLabelIndices();
-        if (data.getDataSet().attribute(labelIndices[labelToKeep]).value(0).equals("1")) {
-            order10 = true;
-        }
-        for (int j = 0; j < shellCopy.numInstances(); j++) {
-            if (order10) {
-                shellCopy.instance(j).setValue(shellCopy.numAttributes() - 1, 1 - data.getDataSet().instance(j).value(labelIndices[labelToKeep]));
-            } else {
-                shellCopy.instance(j).setValue(shellCopy.numAttributes() - 1, data.getDataSet().instance(j).value(labelIndices[labelToKeep]));
+    	int[] labelIndices = data.getLabelIndices();
+    	Instances shellCopy=null;
+    	
+    	if(data.getDataSet().get(0).attribute(labelIndices[labelToKeep]).isNominal()){
+    		shellCopy= new Instances(this.shellBinary);
+    		boolean order10 = false;
+            if (data.getDataSet().attribute(labelIndices[labelToKeep]).value(0).equals("1")) {
+                order10 = true;
             }
-        }
-
+            for (int j = 0; j < shellCopy.numInstances(); j++) {
+                if (order10) {
+                    shellCopy.instance(j).setValue(shellCopy.numAttributes() - 1, 1 - data.getDataSet().instance(j).value(labelIndices[labelToKeep]));
+                } else {
+                    shellCopy.instance(j).setValue(shellCopy.numAttributes() - 1, data.getDataSet().instance(j).value(labelIndices[labelToKeep]));
+                }
+            }
+    	}
+    	else if(data.getDataSet().get(0).attribute(labelIndices[labelToKeep]).isNumeric()){
+    		shellCopy= new Instances(this.shellNumeric);
+    		for (int j = 0; j < shellCopy.numInstances(); j++) {
+    			shellCopy.instance(j).setValue(shellCopy.numAttributes() - 1, data.getDataSet().instance(j).value(labelIndices[labelToKeep]));
+    		}
+    	}
         return shellCopy;
     }
 
