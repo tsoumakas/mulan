@@ -15,18 +15,17 @@
  */
 package mulan.transformations;
 
-import java.io.Serializable;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import mulan.data.DataUtils;
 import mulan.data.MultiLabelInstances;
-import weka.core.DenseInstance;
 import weka.core.Instance;
 import weka.core.Instances;
-import weka.core.SparseInstance;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.Add;
 import weka.filters.unsupervised.attribute.Remove;
+
+import java.io.Serializable;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Class that implements the binary relevance transformation
@@ -185,7 +184,6 @@ public class BinaryRelevanceTransformation implements Serializable {
 
         train.setClassIndex(indexToKeep);
 
-
         // Indices of attributes to remove
         int[] indicesToRemove = new int[numLabels - 1];
         int counter2 = 0;
@@ -199,9 +197,7 @@ public class BinaryRelevanceTransformation implements Serializable {
         Remove remove = new Remove();
         remove.setAttributeIndicesArray(indicesToRemove);
         remove.setInputFormat(train);
-        remove.setInvertSelection(true);
-        Instances result = Filter.useFilter(train, remove);
-        return result;
+        return Filter.useFilter(train, remove);
     }
 
     /**
@@ -234,7 +230,6 @@ public class BinaryRelevanceTransformation implements Serializable {
             isLabel = false;
         }
 
-        Instance transformedInstance = DataUtils.createInstance(instance, 1, transformedValues);
-        return transformedInstance;
+        return DataUtils.createInstance(instance, 1, transformedValues);
     }
 }
