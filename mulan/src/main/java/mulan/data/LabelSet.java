@@ -240,9 +240,9 @@ public class LabelSet implements Serializable, Comparable<LabelSet> {
      */
     public int compareTo(LabelSet o) {
         if (o.size() < size()) {
-            return -1;
-        } else if (o.size() > size()) {
             return 1;
+        } else if (o.size() > size()) {
+            return -1;
         } else {
             return 0;
         }
