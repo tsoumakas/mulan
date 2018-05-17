@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="http://mulan.sourceforge.net/labels"
+		   xmlns:xs="http://www.w3.org/2001/XMLSchema"
+		   targetNamespace="http://mulan.sourceforge.net/labels">
+		
+	<xs:element name="labels" type="labelsRootType">
+		<xs:unique name="labelName">
+			<xs:selector xpath=".//label" />
+			<xs:field xpath="@name"></xs:field>
+		</xs:unique>
+	</xs:element>
+	<xs:element name="label" type="labelType" />
+	
+	<xs:complexType name="labelsRootType">
+		<xs:sequence> 
+			<xs:element ref="label" minOccurs="1" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="labelType">
+	   	<xs:sequence>
+	   		<xs:element ref="label" minOccurs="0" maxOccurs="unbounded" />
+	   	</xs:sequence>
+	   	<xs:attribute name="name" type="xs:string" use="required" />
+	</xs:complexType>
+	  
+</xs:schema>
