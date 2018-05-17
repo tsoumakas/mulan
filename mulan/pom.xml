@@ -34,30 +34,12 @@
             <version>3.7.12</version>
         </dependency>
 
-        <!--
-        <dependency>
-            <groupId>weka</groupId>
-            <artifactId>weka</artifactId>
-            <version>3.7.2</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/local_libs/weka-3.7.12.jar</systemPath>
-        </dependency> -->
-
         <!-- https://mvnrepository.com/artifact/emma/emma -->
         <dependency>
             <groupId>emma</groupId>
             <artifactId>emma</artifactId>
             <version>2.1.5320</version>
         </dependency>
-
-        <!--
-        <dependency>
-            <groupId>emma</groupId>
-            <artifactId>emma</artifactId>
-            <version>2.1.5320</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/local_libs/test/emma.jar</systemPath>
-        </dependency> -->
 
         <!-- https://mvnrepository.com/artifact/emma/emma_ant -->
         <dependency>
@@ -67,15 +49,6 @@
             <scope>test</scope>
         </dependency>
 
-        <!--
-        <dependency>
-            <groupId>emma_ant</groupId>
-            <artifactId>emma_ant</artifactId>
-            <version>2.1.5320</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/local_libs/test/emma_ant.jar</systemPath>
-        </dependency> -->
-
         <!-- https://mvnrepository.com/artifact/junit/junit -->
         <dependency>
             <groupId>junit</groupId>
@@ -83,16 +56,6 @@
             <version>4.10</version>
             <scope>test</scope>
         </dependency>
-
-        <!--
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.10</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/local_libs/test/junit-4.10.jar</systemPath>
-        </dependency> -->
-
 
         <dependency>
             <groupId>clus</groupId>
@@ -109,25 +72,6 @@
             <version>1.9.7</version>
         </dependency>
 
-        <!--
-        <dependency>
-            <groupId>liblinear</groupId>
-            <artifactId>liblinear</artifactId>
-            <version>1.9.8</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/local_libs/LibLINEAR-1.9.8.jar</systemPath>
-        </dependency> -->
-
-        <!--
-        <dependency>
-            <groupId>liblinear</groupId>
-            <artifactId>liblinear-snap</artifactId>
-            <version>1.96</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/local_libs/liblinear-java-1.96-SNAPSHOT.jar</systemPath>
-        </dependency> -->
-
-
         <!-- https://mvnrepository.com/artifact/com.diffplug.matsim/matlabcontrol -->
         <dependency>
             <groupId>com.diffplug.matsim</groupId>
@@ -135,30 +79,12 @@
             <version>0.0.1</version>
         </dependency>
 
-<!--
-        <dependency>
-            <groupId>matlabcontrol</groupId>
-            <artifactId>matlabcontrol</artifactId>
-            <version>4.1.0</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/local_libs/matlabcontrol-4.1.0.jar</systemPath>
-        </dependency> -->
-
         <!-- https://mvnrepository.com/artifact/nz.ac.waikato.cms.weka/partialLeastSquares -->
         <dependency>
             <groupId>nz.ac.waikato.cms.weka</groupId>
             <artifactId>partialLeastSquares</artifactId>
             <version>1.0.1</version>
         </dependency>
-
-        <!--
-        <dependency>
-            <groupId>partialLeastSquares</groupId>
-            <artifactId>partialLeastSquares</artifactId>
-            <version>1.0.1</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/local_libs/partialLeastSquares-1.0.1.jar</systemPath>
-        </dependency> -->
 
 
     </dependencies>
