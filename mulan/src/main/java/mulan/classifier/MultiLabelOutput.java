@@ -15,9 +15,9 @@
  */
 package mulan.classifier;
 
-import java.util.Arrays;
-
 import mulan.core.ArgumentNullException;
+
+import java.util.Arrays;
 
 /**
  * Class representing the output of a {@link MultiLabelLearner}.
@@ -29,17 +29,26 @@ import mulan.core.ArgumentNullException;
  */
 public class MultiLabelOutput {
 
-    /** a bipartition of the labels into relevant and irrelevant */
+    /**
+     * a bipartition of the labels into relevant and irrelevant
+     */
     private boolean[] bipartition;
-    /** the rank of each label, ranging from 1 to array length */
+    /**
+     * the rank of each label, ranging from 1 to array length
+     */
     private int[] ranking;
-    /** the probability of each label being positive */
+    /**
+     * the probability of each label being positive
+     */
     private double[] confidences;
-    /** the predicted values for continuous target variables (regression) */
+    /**
+     * the predicted values for continuous target variables (regression)
+     */
     private double[] pValues;
 
     /**
      * Creates a new instance of {@link MultiLabelOutput}.
+     *
      * @param bipartition bipartition of labels
      * @throws ArgumentNullException if bipartitions is null.
      */
@@ -52,6 +61,7 @@ public class MultiLabelOutput {
 
     /**
      * Creates a new instance of {@link MultiLabelOutput}.
+     *
      * @param ranking ranking of labels
      * @throws ArgumentNullException if ranking is null
      */
@@ -67,7 +77,7 @@ public class MultiLabelOutput {
      * based on the probabilities and a bipartition based on a threshold for the probabilities.
      *
      * @param probabilities score of each label
-     * @param threshold threshold to output bipartition based on probabilities
+     * @param threshold     threshold to output bipartition based on probabilities
      * @throws ArgumentNullException if probabilities is null
      */
     public MultiLabelOutput(double[] probabilities, double threshold) {
@@ -101,10 +111,11 @@ public class MultiLabelOutput {
 
     /**
      * Creates a new instance of {@link MultiLabelOutput}.
-     * @param bipartition bipartition of labels
+     *
+     * @param bipartition     bipartition of labels
      * @param someConfidences values of labels
      * @throws ArgumentNullException if either of the input parameters is null or
-     * their dimensions do not match
+     *                               their dimensions do not match
      */
     public MultiLabelOutput(boolean[] bipartition, double[] someConfidences) {
         this(bipartition);
@@ -119,13 +130,13 @@ public class MultiLabelOutput {
         confidences = Arrays.copyOf(someConfidences, someConfidences.length);
         ranking = ranksFromValues(someConfidences);
     }
-    
+
     /**
      * Creates a new instance of {@link MultiLabelOutput}.
-     * 
-     * @param pValues predicted values for continuous targets
+     *
+     * @param pValues      predicted values for continuous targets
      * @param isRegression this argument is just used to make the signature of this constructor
-     *            different from {@link #MultiLabelOutput(double[])}
+     *                     different from {@link #MultiLabelOutput(double[])}
      * @throws ArgumentNullException if pValues is null.
      */
     public MultiLabelOutput(double[] pValues, boolean isRegression) {
@@ -136,7 +147,8 @@ public class MultiLabelOutput {
     }
 
     /**
-     * Gets bipartition of labels. 
+     * Gets bipartition of labels.
+     *
      * @return the bipartition
      */
     public boolean[] getBipartition() {
@@ -145,6 +157,7 @@ public class MultiLabelOutput {
 
     /**
      * Determines whether the {@link MultiLabelOutput} has bipartition of labels.
+     *
      * @return <code>true</code> if has bipartition; otherwise <code>false</code>
      */
     public boolean hasBipartition() {
@@ -153,6 +166,7 @@ public class MultiLabelOutput {
 
     /**
      * Gets ranking of labels.
+     *
      * @return the ranking
      */
     public int[] getRanking() {
@@ -161,6 +175,7 @@ public class MultiLabelOutput {
 
     /**
      * Determines whether the {@link MultiLabelOutput} has ranking of labels.
+     *
      * @return <code>true</code> if has ranking; otherwise <code>false</code>
      */
     public boolean hasRanking() {
@@ -169,6 +184,7 @@ public class MultiLabelOutput {
 
     /**
      * Gets confidences of labels.
+     *
      * @return the confidences
      */
     public double[] getConfidences() {
@@ -177,14 +193,16 @@ public class MultiLabelOutput {
 
     /**
      * Determines whether the {@link MultiLabelOutput} has confidences of labels.
+     *
      * @return <code>true</code> if has confidences; otherwise <code>false</code>
      */
     public boolean hasConfidences() {
         return (confidences != null);
     }
-    
+
     /**
      * Gets predicted values of continuous targets.
+     *
      * @return the predicted values
      */
     public double[] getPvalues() {
@@ -193,6 +211,7 @@ public class MultiLabelOutput {
 
     /**
      * Determines whether the {@link MultiLabelOutput} has predicted values of continuous targets.
+     *
      * @return <code>true</code> if has pValues; otherwise <code>false</code>
      */
     public boolean hasPvalues() {
@@ -201,7 +220,7 @@ public class MultiLabelOutput {
 
     /**
      * Creates a ranking form specified values/confidences.
-     * 
+     *
      * @param values the values/confidences to be converted to ranking
      * @return the ranking of given values/confidences
      */
@@ -216,7 +235,7 @@ public class MultiLabelOutput {
 
     /**
      * Tests if two MultiLabelOutput objects are equal
-     * 
+     *
      * @param mlo a MultiLabelOutput object
      * @return true if the given object represents a MultiLabelOutput equivalent to this MultiLabelOutput, false otherwise
      */
@@ -282,7 +301,7 @@ public class MultiLabelOutput {
                 }
             }
         }
-        
+
         //check predicted values
         if (pValues == null) {
             if (((MultiLabelOutput) mlo).pValues != null) {

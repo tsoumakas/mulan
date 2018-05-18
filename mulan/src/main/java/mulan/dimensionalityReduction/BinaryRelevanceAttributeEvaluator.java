@@ -15,13 +15,14 @@
  */
 package mulan.dimensionalityReduction;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import mulan.data.MultiLabelInstances;
 import mulan.transformations.BinaryRelevanceTransformation;
 import weka.attributeSelection.ASEvaluation;
 import weka.attributeSelection.AttributeEvaluator;
 import weka.core.Instances;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @author George Traianos
@@ -106,11 +107,11 @@ public class BinaryRelevanceAttributeEvaluator extends ASEvaluation implements A
     }
 
     /**
-     * @param ase the evaluator type (weka type)
-     * @param mlData multi-label instances for evaluation
+     * @param ase     the evaluator type (weka type)
+     * @param mlData  multi-label instances for evaluation
      * @param combapp combination approach mode ("max", "avg", "min")
-     * @param norm normalization mode ("dl", "dm", "none")
-     * @param mode scoring mode ("eval", "rank")
+     * @param norm    normalization mode ("dl", "dm", "none")
+     * @param mode    scoring mode ("eval", "rank")
      */
     public BinaryRelevanceAttributeEvaluator(ASEvaluation ase, MultiLabelInstances mlData, String combapp, String norm, String mode) {
         CombApprMode = combapp;
@@ -220,7 +221,7 @@ public class BinaryRelevanceAttributeEvaluator extends ASEvaluation implements A
      * highest score combination approach
      *
      * @param scoreList all attributes' score lists
-     * @param index the index of a specific attribute's score
+     * @param index     the index of a specific attribute's score
      * @return the highest score achieved in any of the the input score lists
      */
     public double highest(double scoreList[][], int index) {
@@ -237,7 +238,7 @@ public class BinaryRelevanceAttributeEvaluator extends ASEvaluation implements A
      * lowest score combination approach
      *
      * @param scoreList all attributes' score lists
-     * @param index the index of a specific attribute's score
+     * @param index     the index of a specific attribute's score
      * @return the lowest score achieved in all of the input score lists
      */
     public double lowest(double scoreList[][], int index) {
@@ -254,7 +255,7 @@ public class BinaryRelevanceAttributeEvaluator extends ASEvaluation implements A
      * average score combination approach
      *
      * @param scoreList all attributes' score lists
-     * @param index the index of a specific attribute's score
+     * @param index     the index of a specific attribute's score
      * @return the average score achieved in all the score lists
      */
     public double average(double scoreList[][], int index) {

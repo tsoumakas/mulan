@@ -1,18 +1,17 @@
 package mulan.regressor.clus;
 
+import mulan.data.MultiLabelInstances;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 
-import mulan.data.MultiLabelInstances;
-
 /**
  * This class is a wrapper for the Multi-Target Random Forest (MORF) algorithm implemented in <a
  * href="https://dtai.cs.kuleuven.be/clus/">CLUS</a> library.
- * 
+ *
  * @author Eleftherios Spyromitros-Xioufis
  * @version 2013.04.01
- * 
  */
 public class ClusRandomForest extends ClusWrapperRegression {
 
@@ -24,10 +23,10 @@ public class ClusRandomForest extends ClusWrapperRegression {
 
     /**
      * Constructor.
-     * 
+     *
      * @param clusWorkingDir the working directory
-     * @param datasetName the dataset name
-     * @param numTrees the number of trees
+     * @param datasetName    the dataset name
+     * @param numTrees       the number of trees
      */
     public ClusRandomForest(String clusWorkingDir, String datasetName, int numTrees) {
         super(clusWorkingDir, datasetName);
@@ -44,7 +43,7 @@ public class ClusRandomForest extends ClusWrapperRegression {
     /**
      * This method creates a CLUS settings file that corresponds to the MORF algorithm and writes it in
      * clusWorkingDir.
-     * 
+     *
      * @throws Exception Potential exception thrown. To be handled in an upper level.
      */
     private void createSettingsFile() throws Exception {

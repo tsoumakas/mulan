@@ -21,10 +21,10 @@
 package mulan.classifier.neural.model;
 
 /**
- * Implements the linear activation function. The input is simply passed to the output. 
- * This activation function is commonly used for input units of networks, which serves 
- * as a place holders for input pattern and forwards them for processing. 
- * 
+ * Implements the linear activation function. The input is simply passed to the output.
+ * This activation function is commonly used for input units of networks, which serves
+ * as a place holders for input pattern and forwards them for processing.
+ *
  * @author Jozef Vilcek
  * @version 2012.02.27
  */

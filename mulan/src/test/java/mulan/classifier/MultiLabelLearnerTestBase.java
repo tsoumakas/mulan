@@ -21,17 +21,14 @@ import mulan.data.MultiLabelInstances;
 import mulan.data.generation.Attribute;
 import mulan.data.generation.DataSetBuilder;
 import mulan.data.generation.DataSetDefinition;
-
 import org.junit.Ignore;
 import org.junit.Test;
-
 import weka.core.Instances;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.Reorder;
 import weka.filters.unsupervised.instance.SparseToNonSparse;
 
 /**
- *
  * @author Grigorios Tsoumakas
  * @version 2013.07.05
  */
@@ -59,7 +56,7 @@ public abstract class MultiLabelLearnerTestBase {
         DATA_SET = new DataSetDefinition("GeneralDataSet");
         DATA_SET.addAttribute(Attribute.createNumericAttribute("feature_1"));
         DATA_SET.addAttribute(Attribute.createNumericAttribute("feature_2"));
-        DATA_SET.addAttribute(Attribute.createNominalAttribute("feature_3", 
+        DATA_SET.addAttribute(Attribute.createNominalAttribute("feature_3",
                 new String[]{"n1", "n2", "n3", "n4"}));
         DATA_SET.addAttribute(Attribute.createLabelAttribute("label_1"));
         DATA_SET.addAttribute(Attribute.createLabelAttribute("label_2"));
@@ -127,7 +124,7 @@ public abstract class MultiLabelLearnerTestBase {
         DataSetDefinition definition = new DataSetDefinition("MissingValuesDataSet");
         definition.addAttribute(Attribute.createNumericAttribute("feature_1")
                 .setMissingValuesProbability(0.3));
-        definition.addAttribute(Attribute.createNominalAttribute("feature_2", 
+        definition.addAttribute(Attribute.createNominalAttribute("feature_2",
                 new String[]{"n1", "n2", "n3", "n4"}));
         definition.addAttribute(Attribute.createLabelAttribute("label_1")
                 .setMissingValuesProbability(0.3));
@@ -139,6 +136,7 @@ public abstract class MultiLabelLearnerTestBase {
         MultiLabelInstances mlDataSet = DataSetBuilder.CreateDataSet(definition);
         getLearner().build(mlDataSet);
     }
+
     /**
      * Tests if the learner produces the same output when the label attributes
      * are defined as {1,0} instead of {0,1}
@@ -165,7 +163,7 @@ public abstract class MultiLabelLearnerTestBase {
         MultiLabelLearner learner2 = learner1.makeCopy();
         learner1.build(trainDataSet);
         learner2.build(trainDataSet2);
-        
+
         for (int i = 0; i < testDataSet.getDataSet().numInstances(); i++) {
             MultiLabelOutput mlo1 = learner1.makePrediction(testDataSet.getDataSet().instance(i));
             MultiLabelOutput mlo2 = learner2.makePrediction(testDataSet2.getDataSet().instance(i));
@@ -174,7 +172,7 @@ public abstract class MultiLabelLearnerTestBase {
 
         /*
          * Evaluator eval = new Evaluator(); Evaluation results;
-         * 
+         *
          * MultiLabelLearnerBase learner = getLearner();
          * learner.build(trainDataSet); results = eval.evaluate(learner,
          * testDataSet); String firstRunResults = results.toString();
@@ -182,7 +180,7 @@ public abstract class MultiLabelLearnerTestBase {
          * testDataSet2); String secondRunResults = results.toString();
          * //System.out.println(firstRunResults);
          * //System.out.println(secondRunResults);
-         * 
+         *
          * Assert.assertTrue(firstRunResults.equals(secondRunResults));
          */
 
@@ -274,9 +272,9 @@ public abstract class MultiLabelLearnerTestBase {
          * ranking is obtained from scores, solving the ties through
          * weka.core.StableSort. Different orderings of the labels will produce
          * small variations in ranking measures
-         * 
+         *
          * Evaluator eval = new Evaluator(); Evaluation results;
-         * 
+         *
          * results = eval.evaluate(learner1,testDataSet); String OriginalResults
          * = results.toString(); results = eval.evaluate(learner2,
          * transformedTestDataSet); String resultsAfterTransformation =

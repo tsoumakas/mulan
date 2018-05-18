@@ -1,7 +1,5 @@
 package mulan.regressor.malsar;
 
-import java.util.Arrays;
-
 import matlabcontrol.MatlabProxy;
 import matlabcontrol.extensions.MatlabNumericArray;
 import matlabcontrol.extensions.MatlabTypeConverter;
@@ -16,23 +14,30 @@ import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.NominalToBinary;
 import weka.filters.unsupervised.attribute.ReplaceMissingValues;
 
+import java.util.Arrays;
+
 /**
  * Common root class for all MALSAR methods
- * 
- * @author Eleftherios Spyromitros-Xioufis
  *
+ * @author Eleftherios Spyromitros-Xioufis
  */
-public abstract class MalsarWrapper extends MultiLabelLearnerBase{
+public abstract class MalsarWrapper extends MultiLabelLearnerBase {
 
     /**
      * The type of normalization to apply.
      */
     public enum normalizationType {
-        /** no normalization */
+        /**
+         * no normalization
+         */
         none,
-        /** z-score normalization */
+        /**
+         * z-score normalization
+         */
         zScore,
-        /** maximum feature value normalization */
+        /**
+         * maximum feature value normalization
+         */
         maxFeatureValue
     }
 
@@ -56,7 +61,9 @@ public abstract class MalsarWrapper extends MultiLabelLearnerBase{
          * the field .W0 is not specified, then .init will be forced to the default value.
          */
         one(1),
-        /** (default). If 2 is specified, then the starting point will be a zero matrix. */
+        /**
+         * (default). If 2 is specified, then the starting point will be a zero matrix.
+         */
         two(2);
 
         private final int value;
@@ -75,7 +82,9 @@ public abstract class MalsarWrapper extends MultiLabelLearnerBase{
      * optimization algorithms."
      */
     public enum optsTFlag {
-        zero(0), /** (default). */
+        zero(0), /**
+         * (default).
+         */
         one(1), two(2), three(3);
 
         private final int value;
@@ -94,11 +103,14 @@ public abstract class MalsarWrapper extends MultiLabelLearnerBase{
      */
     protected final String xCellArrayMatName = "X";
 
-    protected final String yCellArrayMatName = "Y";;
+    protected final String yCellArrayMatName = "Y";
+    ;
 
-    protected final String paramArrayMatName = "W";;
+    protected final String paramArrayMatName = "W";
+    ;
 
-    protected final String optsMatName = "opts";;
+    protected final String optsMatName = "opts";
+    ;
 
     protected normalizationType normalization = normalizationType.none;
 
@@ -107,7 +119,9 @@ public abstract class MalsarWrapper extends MultiLabelLearnerBase{
 
     protected optsTFlag optTFlag = optsTFlag.one;
 
-    /** tolerance */
+    /**
+     * tolerance
+     */
     protected double optTol = 0.0001;
     /**
      * From MALSAR: "When the tolerance and/or termination condition is not properly set, the
@@ -117,7 +131,9 @@ public abstract class MalsarWrapper extends MultiLabelLearnerBase{
      * not satisfied."
      */
     protected int optMaxIter = 1000;
-    /** whether a bias column should be added to the data */
+    /**
+     * whether a bias column should be added to the data
+     */
     protected boolean addBias = false;
     /**
      * The full path to the root folder of Malsar's Matlab implementation. This is required for
@@ -130,14 +146,22 @@ public abstract class MalsarWrapper extends MultiLabelLearnerBase{
      */
     protected MatlabProxy proxy;
 
-    /** the learned parameter matrix (model) */
+    /**
+     * the learned parameter matrix (model)
+     */
     protected double[][] W;
-    /** feature column means used when z-score normalization is applied */
+    /**
+     * feature column means used when z-score normalization is applied
+     */
     protected double[] means;
 
-    /** feature column standard deviations used when z-score normalization is applied */
+    /**
+     * feature column standard deviations used when z-score normalization is applied
+     */
     protected double[] stds;
-    /** stores the maximum value of each feature in the training set */
+    /**
+     * stores the maximum value of each feature in the training set
+     */
     protected double[] maxFeatureValues;
 
     protected int maxNumCompThreads;
@@ -208,54 +232,54 @@ public abstract class MalsarWrapper extends MultiLabelLearnerBase{
         debug("Performing pre-processing");
 
         switch (normalization) {
-        case none:
-            // do nothing
-            break;
-        case zScore:
-            means = new double[numFeatures];
-            stds = new double[numFeatures];
-            for (int i = 0; i < numFeatures; i++) { // do not normalize the bias feature!
-                for (int j = 0; j < dataNotMissing.numInstances(); j++) { // mean calculation
-                    means[i] += X[j][i];
-                }
-                means[i] /= dataNotMissing.numInstances();
-                for (int j = 0; j < dataNotMissing.numInstances(); j++) { // std calculation
-                    double diff = X[j][i] - means[i];
-                    stds[i] += diff * diff;
-                }
-                stds[i] = Math.sqrt(stds[i] / dataNotMissing.numInstances());
-                for (int j = 0; j < dataNotMissing.numInstances(); j++) { // normalization
-                    if (stds[i] != 0) { // check feature not constant
-                        X[j][i] = (X[j][i] - means[i]) / stds[i];
-                    } else {
-                        X[j][i] = 0; // as done in Matlab
+            case none:
+                // do nothing
+                break;
+            case zScore:
+                means = new double[numFeatures];
+                stds = new double[numFeatures];
+                for (int i = 0; i < numFeatures; i++) { // do not normalize the bias feature!
+                    for (int j = 0; j < dataNotMissing.numInstances(); j++) { // mean calculation
+                        means[i] += X[j][i];
+                    }
+                    means[i] /= dataNotMissing.numInstances();
+                    for (int j = 0; j < dataNotMissing.numInstances(); j++) { // std calculation
+                        double diff = X[j][i] - means[i];
+                        stds[i] += diff * diff;
+                    }
+                    stds[i] = Math.sqrt(stds[i] / dataNotMissing.numInstances());
+                    for (int j = 0; j < dataNotMissing.numInstances(); j++) { // normalization
+                        if (stds[i] != 0) { // check feature not constant
+                            X[j][i] = (X[j][i] - means[i]) / stds[i];
+                        } else {
+                            X[j][i] = 0; // as done in Matlab
+                        }
                     }
                 }
-            }
-            // System.out.println(Arrays.toString(means));
-            // System.out.println(Arrays.toString(stds));
-            break;
-        case maxFeatureValue:
-            // determine maxFeatureValues in one pass and then normalize
-            maxFeatureValues = new double[numFeatures];
-            Arrays.fill(maxFeatureValues, Double.NEGATIVE_INFINITY);
-            for (int j = 0; j < numFeatures; j++) {
-                for (int i = 0; i < dataNotMissing.numInstances(); i++) {
-                    if (Math.abs(X[i][j]) > maxFeatureValues[j]) {
-                        maxFeatureValues[j] = Math.abs(X[i][j]);
+                // System.out.println(Arrays.toString(means));
+                // System.out.println(Arrays.toString(stds));
+                break;
+            case maxFeatureValue:
+                // determine maxFeatureValues in one pass and then normalize
+                maxFeatureValues = new double[numFeatures];
+                Arrays.fill(maxFeatureValues, Double.NEGATIVE_INFINITY);
+                for (int j = 0; j < numFeatures; j++) {
+                    for (int i = 0; i < dataNotMissing.numInstances(); i++) {
+                        if (Math.abs(X[i][j]) > maxFeatureValues[j]) {
+                            maxFeatureValues[j] = Math.abs(X[i][j]);
+                        }
                     }
                 }
-            }
-            for (int j = 0; j < numFeatures; j++) {
-                for (int i = 0; i < dataNotMissing.numInstances(); i++) {
-                    if (maxFeatureValues[j] > 0) {
-                        X[i][j] /= maxFeatureValues[j];
-                    } else {
-                        // do nothing
+                for (int j = 0; j < numFeatures; j++) {
+                    for (int i = 0; i < dataNotMissing.numInstances(); i++) {
+                        if (maxFeatureValues[j] > 0) {
+                            X[i][j] /= maxFeatureValues[j];
+                        } else {
+                            // do nothing
+                        }
                     }
                 }
-            }
-            break;
+                break;
         }
         debug("Pre-processing completed");
         // --- data preparation finished ---
@@ -266,7 +290,7 @@ public abstract class MalsarWrapper extends MultiLabelLearnerBase{
         proxy.eval("addpath(genpath('" + malsarMatlabPath + "'));"); // add Malsar to Matlab's path
         proxy.eval("rng('default');"); // reset Matlab's random generator
         proxy.eval("maxNumCompThreads(" + maxNumCompThreads + ")");// setting the maximum number of
-                                                                   // computational threads
+        // computational threads
 
         // send the arrays to MATLAB
         MatlabTypeConverter processor = new MatlabTypeConverter(proxy);
@@ -297,6 +321,7 @@ public abstract class MalsarWrapper extends MultiLabelLearnerBase{
 
     /**
      * All Malsar methods should implement their specific behavior in this method.
+     *
      * @throws Exception
      */
     protected abstract void buildInternalSpecific(Instances trainingSet) throws Exception;
@@ -332,25 +357,25 @@ public abstract class MalsarWrapper extends MultiLabelLearnerBase{
         }
 
         switch (normalization) {
-        case none:
-            // do nothing
-            break;
-        case zScore:
-            for (int i = 0; i < numFeatures; i++) {
-                if (stds[i] != 0) {// feature not constant
-                    X[i] = (X[i] - means[i]) / stds[i];
-                } else {
-                    X[i] = 0;
+            case none:
+                // do nothing
+                break;
+            case zScore:
+                for (int i = 0; i < numFeatures; i++) {
+                    if (stds[i] != 0) {// feature not constant
+                        X[i] = (X[i] - means[i]) / stds[i];
+                    } else {
+                        X[i] = 0;
+                    }
                 }
-            }
-            break;
-        case maxFeatureValue:
-            for (int i = 0; i < numFeatures; i++) {
-                if (maxFeatureValues[i] > 0) {
-                    X[i] /= maxFeatureValues[i];
+                break;
+            case maxFeatureValue:
+                for (int i = 0; i < numFeatures; i++) {
+                    if (maxFeatureValues[i] > 0) {
+                        X[i] /= maxFeatureValues[i];
+                    }
                 }
-            }
-            break;
+                break;
         }
 
         // get the prediction for each target via a simple multiplication with the corresponding

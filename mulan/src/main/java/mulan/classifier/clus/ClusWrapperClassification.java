@@ -15,12 +15,6 @@
  */
 package mulan.classifier.clus;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-
 import mulan.classifier.InvalidDataException;
 import mulan.classifier.MultiLabelLearnerBase;
 import mulan.classifier.MultiLabelOutput;
@@ -31,13 +25,14 @@ import weka.core.TechnicalInformation;
 import weka.filters.Filter;
 import weka.filters.unsupervised.instance.SparseToNonSparse;
 
+import java.io.*;
+
 /**
  * This class implements a wrapper for the multi-label classification methods included in <a
  * href="https://dtai.cs.kuleuven.be/clus/">CLUS</a> library.
- * 
+ *
  * @author Eleftherios Spyromitros-Xioufis
  * @version 2013.04.01
- * 
  */
 public class ClusWrapperClassification extends MultiLabelLearnerBase {
 
@@ -66,9 +61,9 @@ public class ClusWrapperClassification extends MultiLabelLearnerBase {
     /**
      * Constructor with 2 arguments. This constructor is used when the settings file that is required by CLUS
      * will be created inside the class.
-     * 
+     *
      * @param clusWorkingDir the working directory for clus
-     * @param datasetName the name of the dataset
+     * @param datasetName    the name of the dataset
      */
     public ClusWrapperClassification(String clusWorkingDir, String datasetName) {
         this.clusWorkingDir = clusWorkingDir;
@@ -77,9 +72,9 @@ public class ClusWrapperClassification extends MultiLabelLearnerBase {
 
     /**
      * Constructor with 3 arguments. This constructor is used when an existing settings file will be used.
-     * 
-     * @param clusWorkingDir the working directory for clus
-     * @param datasetName the name of the dataset
+     *
+     * @param clusWorkingDir   the working directory for clus
+     * @param datasetName      the name of the dataset
      * @param settingsFilePath the path for settings file
      */
     public ClusWrapperClassification(String clusWorkingDir, String datasetName, String settingsFilePath) {
@@ -158,9 +153,9 @@ public class ClusWrapperClassification extends MultiLabelLearnerBase {
 
     /**
      * Takes a dataset as a MultiLabelInstances object and writes an arff file that is compliant with CLUS.
-     * 
+     *
      * @param mlDataset the dataset as a MultiLabelInstances object
-     * @param fileName the name of the generated arff file
+     * @param fileName  the name of the generated arff file
      * @throws Exception Potential exception thrown. To be handled in an upper level.
      */
     public static void makeClusCompliant(MultiLabelInstances mlDataset, String fileName) throws Exception {

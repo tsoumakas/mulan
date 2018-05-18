@@ -17,7 +17,7 @@ package mulan.evaluation.measure;
 
 /**
  * Implementation of the macro-averaged precision measure.
- * 
+ *
  * @author Grigorios Tsoumakas
  * @version 2010.11.05
  */
@@ -25,7 +25,7 @@ public class MacroPrecision extends LabelBasedPrecision implements MacroAverageM
 
     /**
      * Constructs a new object with given number of labels
-     * 
+     *
      * @param numOfLabels the number of labels
      */
     public MacroPrecision(int numOfLabels) {

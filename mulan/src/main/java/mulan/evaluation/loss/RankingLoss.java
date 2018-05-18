@@ -21,7 +21,7 @@ import java.util.ArrayList;
  * Implementation of the "ranking loss" ranking loss function. It is basically
  * the size of the error set divided by all possible pairs of relevant and
  * irrelevant labels
- * 
+ *
  * @author Grigorios Tsoumakas
  * @version 2010.11.05
  */

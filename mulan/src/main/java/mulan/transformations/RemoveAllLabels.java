@@ -15,17 +15,17 @@
  */
 package mulan.transformations;
 
-import mulan.data.MultiLabelInstances;
 import mulan.data.DataUtils;
+import mulan.data.MultiLabelInstances;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.Remove;
 
 /**
- * This transformation removes all the label attributes from a 
+ * This transformation removes all the label attributes from a
  * multi-label dataset
- * 
+ *
  * @author Stavros Mpakirtzoglou
  * @author Grigorios Tsoumakas
  * @version 2012.02.02
@@ -33,7 +33,6 @@ import weka.filters.unsupervised.attribute.Remove;
 public class RemoveAllLabels {
 
     /**
-     * 
      * @param mlData multi-label data
      * @return transformed instances
      * @throws Exception Potential exception thrown. To be handled in an upper level.
@@ -46,8 +45,8 @@ public class RemoveAllLabels {
 
     /**
      * Removes the labels from a set of instances
-     * 
-     * @param dataSet a multi-label dataset
+     *
+     * @param dataSet      a multi-label dataset
      * @param labelIndices the indices of the labels
      * @return the transformed dataset
      * @throws Exception Potential exception thrown. To be handled in an upper level.
@@ -61,9 +60,8 @@ public class RemoveAllLabels {
     }
 
     /**
-     * 
-     * @param instance the instance to be transformed
-     * @param labelIndices the indices of labels to transform 
+     * @param instance     the instance to be transformed
+     * @param labelIndices the indices of labels to transform
      * @return tranformed instance
      */
     public static Instance transformInstance(Instance instance, int[] labelIndices) {

@@ -1,10 +1,5 @@
 package mulan.regressor.transformation;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Random;
-
 import mulan.classifier.InvalidDataException;
 import mulan.classifier.MultiLabelOutput;
 import mulan.data.MultiLabelInstances;
@@ -16,12 +11,17 @@ import weka.core.Instances;
 import weka.filters.Filter;
 import weka.filters.unsupervised.instance.Resample;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Random;
+
 /**
  * This class implements the Ensemble of Regressor Chains (ERC) method.<br>
  * For more information, see:<br>
  * <em>E. Spyromitros-Xioufis, G. Tsoumakas, W. Groves, I. Vlahavas. 2014. Multi-label Classification Methods for
  * Multi-target Regression. <a href="http://arxiv.org/abs/1211.6581">arXiv e-prints</a></em>.
- * 
+ *
  * @author Eleftherios Spyromitros-Xioufis
  * @version 2014.04.01
  */
@@ -39,7 +39,9 @@ public class EnsembleOfRegressorChains extends TransformationBasedMultiTargetReg
      */
     private RegressorChain[] ensemble;
 
-    /** The seed to use in random number generators. Default = 1. **/
+    /**
+     * The seed to use in random number generators. Default = 1.
+     **/
     private int seed = 1;
 
     /**
@@ -47,7 +49,9 @@ public class EnsembleOfRegressorChains extends TransformationBasedMultiTargetReg
      */
     public enum SamplingMethod {
         None, WithReplacement, WithoutReplacement,
-    };
+    }
+
+    ;
 
     /**
      * The method used to obtain the values of the meta features. TRUE is used by default.
@@ -79,7 +83,7 @@ public class EnsembleOfRegressorChains extends TransformationBasedMultiTargetReg
 
     /**
      * Default constructor.
-     * 
+     *
      * @throws Exception Potential exception thrown. To be handled in an upper level.
      */
     public EnsembleOfRegressorChains() throws Exception {
@@ -88,14 +92,14 @@ public class EnsembleOfRegressorChains extends TransformationBasedMultiTargetReg
 
     /**
      * Constructor.
-     * 
+     *
      * @param baseRegressor the base regression algorithm that will be used
-     * @param numOfModels the number of models in the ensemble
-     * @param sampling the sampling method
+     * @param numOfModels   the number of models in the ensemble
+     * @param sampling      the sampling method
      * @throws Exception Potential exception thrown. To be handled in an upper level.
      */
     public EnsembleOfRegressorChains(Classifier baseRegressor, int numOfModels,
-            SamplingMethod sampling) throws Exception {
+                                     SamplingMethod sampling) throws Exception {
         super(baseRegressor);
         this.numOfModels = numOfModels;
         this.sampling = sampling;

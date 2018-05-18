@@ -37,14 +37,14 @@ public class TrainTestExperiment {
     /**
      * Executes this example
      *
-     * @param args command-line arguments -path, -filestem and -percentage 
-     * (training set), e.g. -path dataset/ -filestem emotions -percentage 67
+     * @param args command-line arguments -path, -filestem and -percentage
+     *             (training set), e.g. -path dataset/ -filestem emotions -percentage 67
      */
     public static void main(String[] args) {
         try {
-            String path = Utils.getOption("path", args); 
-            String filestem = Utils.getOption("filestem", args); 
-            String percentage = Utils.getOption("percentage", args);  
+            String path = Utils.getOption("path", args);
+            String filestem = Utils.getOption("filestem", args);
+            String percentage = Utils.getOption("percentage", args);
 
             System.out.println("Loading the dataset");
             MultiLabelInstances mlDataSet = new MultiLabelInstances(path + filestem + ".arff", path + filestem + ".xml");

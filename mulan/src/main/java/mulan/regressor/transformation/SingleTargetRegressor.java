@@ -31,7 +31,7 @@ import weka.filters.unsupervised.attribute.Remove;
  * For more information, see:<br>
  * <em>E. Spyromitros-Xioufis, G. Tsoumakas, W. Groves, I. Vlahavas. 2014. Multi-label Classification Methods for
  * Multi-target Regression. <a href="http://arxiv.org/abs/1211.6581">arXiv e-prints</a></em>.
- * 
+ *
  * @author Eleftherios Spyromitros-Xioufis
  * @version 2014.04.01
  */
@@ -47,7 +47,7 @@ public class SingleTargetRegressor extends TransformationBasedMultiTargetRegress
 
     /**
      * Constructor.
-     * 
+     *
      * @param regressor the base regression algorithm that will be used
      */
     public SingleTargetRegressor(Classifier regressor) {

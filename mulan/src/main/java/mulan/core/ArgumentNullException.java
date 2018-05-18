@@ -17,15 +17,19 @@ package mulan.core;
 
 /**
  * This exception is raised when a null reference is passed to a method that does not accept
- * a null reference for an argument. 
- * 
+ * a null reference for an argument.
+ *
  * @author Jozef Vilcek
  */
 public class ArgumentNullException extends MulanRuntimeException {
 
-    /** Version UID for serialization */
+    /**
+     * Version UID for serialization
+     */
     private static final long serialVersionUID = -555866519789329786L;
-    /** The name of the parameter which caused the exception */
+    /**
+     * The name of the parameter which caused the exception
+     */
     private final String paramName;
 
     /**
@@ -41,7 +45,7 @@ public class ArgumentNullException extends MulanRuntimeException {
      * Creates a new instance of {@link ArgumentNullException} with detailed message
      * for specified parameter.
      *
-     * @param message the detailed message.
+     * @param message   the detailed message.
      * @param paramName the name of the parameter which caused {@link ArgumentNullException}.
      */
     public ArgumentNullException(String paramName, String message) {

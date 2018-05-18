@@ -4,7 +4,7 @@ import mulan.classifier.MultiLabelOutput;
 
 /**
  * Computes the Root Max Squared Error (RMaxSE) in an example-based fashion.
- * 
+ *
  * @author Eleftherios Spyromitros-Xioufis
  * @version 2014.11.07
  */

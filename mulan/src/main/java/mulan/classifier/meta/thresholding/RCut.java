@@ -15,8 +15,6 @@
  */
 package mulan.classifier.meta.thresholding;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import mulan.classifier.InvalidDataException;
 import mulan.classifier.MultiLabelLearner;
 import mulan.classifier.MultiLabelOutput;
@@ -37,12 +35,15 @@ import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
 import weka.core.Utils;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
- * <p>Classs that implements RCut(Rank-based cut). It selects the k top ranked 
- * labels for each instance, where k is a parameter provided by the user or 
- * automatically tuned. For more information, see <em> Yiming Yang: A study of 
- * thresholding strategies for text categorization. In: Proceedings of the 24th 
- * annual international ACM SIGIR conference on Research and development in 
+ * <p>Classs that implements RCut(Rank-based cut). It selects the k top ranked
+ * labels for each instance, where k is a parameter provided by the user or
+ * automatically tuned. For more information, see <em> Yiming Yang: A study of
+ * thresholding strategies for text categorization. In: Proceedings of the 24th
+ * annual international ACM SIGIR conference on Research and development in
  * information retrieval, 137 - 145, 2001.</em></p>
  *
  * @author Marios Ioannou
@@ -89,8 +90,8 @@ public class RCut extends MultiLabelMetaLearner {
      * Creates a new instance of RCut
      *
      * @param baseLearner the underlying multi-label learner
-     * @param aMeasure measure to optimize
-     * @param someFolds cross-validation folds
+     * @param aMeasure    measure to optimize
+     * @param someFolds   cross-validation folds
      */
     public RCut(MultiLabelLearner baseLearner, BipartitionMeasureBase aMeasure, int someFolds) {
         super(baseLearner);
@@ -107,7 +108,7 @@ public class RCut extends MultiLabelMetaLearner {
      * Creates a new instance of RCut
      *
      * @param baseLearner the underlying multi-label learner
-     * @param aMeasure measure to optimize
+     * @param aMeasure    measure to optimize
      */
     public RCut(MultiLabelLearner baseLearner, BipartitionMeasureBase aMeasure) {
         super(baseLearner);
@@ -119,9 +120,9 @@ public class RCut extends MultiLabelMetaLearner {
      * evaluated using cross-validation
      *
      * @param measure performance is evaluated based on this parameter
-     * @param folds number of cross-validation folds
+     * @param folds   number of cross-validation folds
      * @throws InvalidDataFormatException
-     * @throws Exception Potential exception thrown. To be handled in an upper level.
+     * @throws Exception                  Potential exception thrown. To be handled in an upper level.
      */
     private void autoTuneThreshold(MultiLabelInstances trainingData, BipartitionMeasureBase measure, int folds) throws InvalidDataFormatException, Exception {
         if (folds < 2) {
@@ -148,7 +149,7 @@ public class RCut extends MultiLabelMetaLearner {
     /**
      * Evaluates the performance of different threshold values
      *
-     * @param data the test data to evaluate different thresholds
+     * @param data    the test data to evaluate different thresholds
      * @param measure the evaluation is based on this parameter
      * @return the sum of differences from the optimal value of the measure for
      * each instance and threshold
@@ -157,10 +158,10 @@ public class RCut extends MultiLabelMetaLearner {
     private double[] computeThreshold(MultiLabelLearner learner, MultiLabelInstances data, BipartitionMeasureBase measure) throws Exception {
         double[] diff = new double[numLabels + 1];
         Measure[] measures = new Measure[numLabels + 1];
-        for (int i=0; i<numLabels+1; i++) {
+        for (int i = 0; i < numLabels + 1; i++) {
             measures[i] = measure.makeCopy();
         }
-               
+
         for (int j = 0; j < data.getNumInstances(); j++) {
             Instance instance = data.getDataSet().instance(j);
 
@@ -189,11 +190,11 @@ public class RCut extends MultiLabelMetaLearner {
                 measures[threshold].update(mlo, new GroundTruth(trueLabels));
             }
         }
-        
-        for (int i=0; i<numLabels+1; i++) {
-            diff[i] = Math.abs(measures[i].getIdealValue()-measures[i].getValue());
+
+        for (int i = 0; i < numLabels + 1; i++) {
+            diff[i] = Math.abs(measures[i].getIdealValue() - measures[i].getValue());
         }
-            
+
         return diff;
     }
 

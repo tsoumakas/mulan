@@ -15,8 +15,6 @@
  */
 package mulan.classifier.lazy;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import mulan.classifier.MultiLabelOutput;
 import mulan.data.MultiLabelInstances;
 import weka.core.Instance;
@@ -25,6 +23,9 @@ import weka.core.TechnicalInformation;
 import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
 import weka.core.Utils;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * <p>Class implementing the DML-kNN (Dependent Multi-Label k Nearest
@@ -75,7 +76,7 @@ public class DMLkNN extends MultiLabelKNN {
 
     /**
      * @param numOfNeighbors : the number of neighbors
-     * @param smooth : the smoothing factor
+     * @param smooth         : the smoothing factor
      */
     public DMLkNN(int numOfNeighbors, double smooth) {
         super(numOfNeighbors);
@@ -269,7 +270,7 @@ public class DMLkNN extends MultiLabelKNN {
 
     /**
      * Returns the value of the delta parameter
-     * 
+     *
      * @return delta the value of the delta parameter
      */
     public int getDelta() {
@@ -278,7 +279,7 @@ public class DMLkNN extends MultiLabelKNN {
 
     /**
      * Sets the value of the delta parameter
-     * 
+     *
      * @param delta a value for the delta parameter
      */
     public void setDelta(int delta) {

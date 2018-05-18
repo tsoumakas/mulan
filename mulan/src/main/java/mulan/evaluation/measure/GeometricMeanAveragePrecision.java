@@ -17,7 +17,7 @@ package mulan.evaluation.measure;
 
 /**
  * Implementation of GMAP (Geometric Mean Average Precision)
- * 
+ *
  * @author Eleftherios Spyromitros-Xioufis
  * @version 2010.12.10
  */
@@ -25,7 +25,7 @@ public class GeometricMeanAveragePrecision extends MeanAveragePrecision {
 
     /**
      * Creates a new instance of this class
-     * 
+     *
      * @param numOfLabels the number of labels
      */
     public GeometricMeanAveragePrecision(int numOfLabels) {

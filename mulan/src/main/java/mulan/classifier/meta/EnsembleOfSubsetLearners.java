@@ -15,7 +15,6 @@
  */
 package mulan.classifier.meta;
 
-import java.util.*;
 import mulan.classifier.MultiLabelLearner;
 import mulan.classifier.MultiLabelOutput;
 import mulan.classifier.transformation.BinaryRelevance;
@@ -28,17 +27,19 @@ import weka.classifiers.trees.J48;
 import weka.core.Instance;
 import weka.core.TechnicalInformation;
 
+import java.util.*;
+
 /**
- <!-- globalinfo-start -->
+ * <!-- globalinfo-start -->
  * A class for gathering several different SubsetLearners into a composite ensemble model. &lt;br&gt; &lt;br&gt; The label set partitions for participation in ensemble are selected using their dependence weight from the large number of randomly generated possible partitions. The type of the learned dependencies is determined by the {&#64;link mulan.data.LabelPairsDependenceIdentifier} supplied to the class constructor. Two strategies for selecting ensemble partitions exists: (1) to select the highly weighted ones and (2) to select most different from the highly weighted ones. The strategy to be used is determined by the {&#64;link #selectDiverseModels} parameter which is 'true' by default.<br>
  * <br>
  * For more information, see<br>
  * <br>
  * Lena Tenenboim-Chekina, Lior Rokach,, Bracha Shapira: Identification of Label Dependencies for Multi-label Classification. In: , Haifa, Israel, 53--60, 2010.
  * <br>
- <!-- globalinfo-end --> 
- * 
- <!-- technical-bibtex-start -->
+ * <!-- globalinfo-end -->
+ * <p>
+ * <!-- technical-bibtex-start -->
  * BibTeX:
  * <pre>
  * &#64;inproceedings{LenaTenenboim-Chekina2010,
@@ -51,8 +52,8 @@ import weka.core.TechnicalInformation;
  * }
  * </pre>
  * <br>
- <!-- technical-bibtex-end -->
- * 
+ * <!-- technical-bibtex-end -->
+ *
  * @author Lena Chekina (lenat@bgu.ac.il)
  * @version 30.11.2010
  */
@@ -113,7 +114,6 @@ public class EnsembleOfSubsetLearners extends MultiLabelMetaLearner {
 
     /**
      * Default constructor. Can be used for accessing class utility methods.
-     *
      */
     public EnsembleOfSubsetLearners() {
         this(new BinaryRelevance(new J48()), new J48(), new ConditionalDependenceIdentifier(new J48()), 10);
@@ -124,15 +124,15 @@ public class EnsembleOfSubsetLearners extends MultiLabelMetaLearner {
      * method for labels dependence identification and number of models to
      * constitute the ensemble.
      *
-     * @param aMultiLabelLearner the learner for multilabel classification
-     * @param aSingleLabelLearner the learner for single label classification
+     * @param aMultiLabelLearner    the learner for multilabel classification
+     * @param aSingleLabelLearner   the learner for single label classification
      * @param aDependenceIdentifier the method for label pairs dependence
-     * identification
-     * @param models the number of models
+     *                              identification
+     * @param models                the number of models
      */
     public EnsembleOfSubsetLearners(MultiLabelLearner aMultiLabelLearner,
-            Classifier aSingleLabelLearner, LabelPairsDependenceIdentifier aDependenceIdentifier,
-            int models) {
+                                    Classifier aSingleLabelLearner, LabelPairsDependenceIdentifier aDependenceIdentifier,
+                                    int models) {
         super(aMultiLabelLearner);
         singleLabelLearner = aSingleLabelLearner;
         dependenceIdentifier = aDependenceIdentifier;
@@ -213,7 +213,7 @@ public class EnsembleOfSubsetLearners extends MultiLabelMetaLearner {
      * partitions consisting of the specified number of labels..
      *
      * @param numLabels - number of labels
-     * @param numSets - number of random partitions to generate
+     * @param numSets   - number of random partitions to generate
      * @return a list of generated partitions
      */
     public List<int[][]> createRandomSets(int numLabels, int numSets) {
@@ -274,15 +274,15 @@ public class EnsembleOfSubsetLearners extends MultiLabelMetaLearner {
     /**
      * Creates a matrix containing dependence score for each labels pair.
      *
-     * @param pairsList the list of labels pairs and their dependence scores
-     * @param critical the statistic critical value
-     * @param n the size of the matrix (i.e. the number of labels)
+     * @param pairsList  the list of labels pairs and their dependence scores
+     * @param critical   the statistic critical value
+     * @param n          the size of the matrix (i.e. the number of labels)
      * @param normalized indicates if to apply normalization using chiCritical
-     * value
+     *                   value
      * @return a matrix containing dependence score for each labels pair.
      */
     private static double[][] createDependenceWeightsMatrix(LabelsPair[] pairsList,
-            double critical, int n, boolean normalized) {
+                                                            double critical, int n, boolean normalized) {
         double[][] matrix = new double[n][n];
         for (LabelsPair pair : pairsList) {
             Double value = pair.getScore();
@@ -307,8 +307,8 @@ public class EnsembleOfSubsetLearners extends MultiLabelMetaLearner {
     /**
      * Generates random permutations of values from 0 to n-1.
      *
-     * @param n indicates the length of a permutation: each permutation will
-     * contain 'n' numbers from 0 to n-1 (inclusive)
+     * @param n   indicates the length of a permutation: each permutation will
+     *            contain 'n' numbers from 0 to n-1 (inclusive)
      * @param num the number of permutations to be generated
      * @return arrays of random permutations of values from 0 to n-1.
      */
@@ -357,7 +357,7 @@ public class EnsembleOfSubsetLearners extends MultiLabelMetaLearner {
      * Converts random permutations to list of various label set partitions.
      *
      * @param permutations the arrays of permutations
-     * @param numLabels the number of labels
+     * @param numLabels    the number of labels
      * @return a list of various label set partitions
      */
     private static List<int[][]> convertToSets(int[][] permutations, int numLabels) {
@@ -373,7 +373,7 @@ public class EnsembleOfSubsetLearners extends MultiLabelMetaLearner {
      * Converts a random permutation to list of label subsets.
      *
      * @param permutation the array of permutation
-     * @param numLabels the number of labels
+     * @param numLabels   the number of labels
      * @return a list of label subsets
      */
     private static List<Integer[]> extractGroups(int[] permutation, int numLabels) {
@@ -421,13 +421,13 @@ public class EnsembleOfSubsetLearners extends MultiLabelMetaLearner {
      * Computes 'dependence' score of each partition and store it in a list of
      * weighted subsets.
      *
-     * @param partitions the label set partitions
+     * @param partitions    the label set partitions
      * @param weightsMatrix the matrix containing dependence score for each
-     * labels pair
+     *                      labels pair
      * @return a list of weighted label subsets
      */
     private ArrayList<LabelSubsetsWeight> setWeights(List<int[][]> partitions,
-            double[][] weightsMatrix) {
+                                                     double[][] weightsMatrix) {
         ArrayList<LabelSubsetsWeight> weightedList = new ArrayList<LabelSubsetsWeight>(partitions.size());
         for (int[][] partition : partitions) {
             Double weight = computeWeight(partition, weightsMatrix, numLabels); // compute 'dependence' score of a partition
@@ -440,10 +440,10 @@ public class EnsembleOfSubsetLearners extends MultiLabelMetaLearner {
     /**
      * Computes 'dependence' score of a partition.
      *
-     * @param partition the label set partition
+     * @param partition     the label set partition
      * @param weightsMatrix the matrix containing dependence score for each
-     * labels pair
-     * @param numLabels the number of labels
+     *                      labels pair
+     * @param numLabels     the number of labels
      * @return value indicating a 'dependence' score of the partition
      */
     private static Double computeWeight(int[][] partition, double[][] weightsMatrix, int numLabels) {
@@ -488,10 +488,10 @@ public class EnsembleOfSubsetLearners extends MultiLabelMetaLearner {
      * Summarizes the weights of pairs of the label with other labels.
      *
      * @param otherLabels the set of labels which pair-weight with the specified
-     * label should be summarized
-     * @param label the label which pair-weight with other labels should be
-     * summarized
-     * @param matrix the matrix containing dependence score for each labels pair
+     *                    label should be summarized
+     * @param label       the label which pair-weight with other labels should be
+     *                    summarized
+     * @param matrix      the matrix containing dependence score for each labels pair
      * @return sum of the weights of pairs of the label with each one of the
      * other labels
      */
@@ -514,7 +514,7 @@ public class EnsembleOfSubsetLearners extends MultiLabelMetaLearner {
      * partitions with the same weight are identical.
      *
      * @param orderedList the list of weighted label subsets ordered by subset
-     * weight
+     *                    weight
      * @return a list of distinct weighted label subsets
      */
     private static List<LabelSubsetsWeight> getDistinctSets(List<LabelSubsetsWeight> orderedList) {
@@ -534,12 +534,12 @@ public class EnsembleOfSubsetLearners extends MultiLabelMetaLearner {
      * Returns the specified number of highly weighted partitions.
      *
      * @param orderedList the list of weighted label subsets ordered by subset
-     * weight in descending order
-     * @param number the number of partitions to return
+     *                    weight in descending order
+     * @param number      the number of partitions to return
      * @return the specified number of highly weighted partitions.
      */
     private static List<LabelSubsetsWeight> getHighOrdered(List<LabelSubsetsWeight> orderedList,
-            int number) {
+                                                           int number) {
         List<LabelSubsetsWeight> highest = new ArrayList<LabelSubsetsWeight>();
         int count = 0;
         for (LabelSubsetsWeight subset : orderedList) {
@@ -555,8 +555,8 @@ public class EnsembleOfSubsetLearners extends MultiLabelMetaLearner {
     /**
      * Computes a distance between the two label set partitions.
      *
-     * @param set1 the label set partition 1
-     * @param set2 the label set partition 2
+     * @param set1      the label set partition 1
+     * @param set2      the label set partition 2
      * @param numLabels the number of labels
      * @return a distance between the two label set partitions
      */
@@ -579,7 +579,7 @@ public class EnsembleOfSubsetLearners extends MultiLabelMetaLearner {
      * Represents a partition as a matrix: if two labels are in the same group
      * the relatesd entry of the matrix is 1, otherwise 0.
      *
-     * @param set the label set partition to be represented by a matrix
+     * @param set       the label set partition to be represented by a matrix
      * @param numLabels the number of labels
      * @return a matrix representing the partition
      */
@@ -608,7 +608,7 @@ public class EnsembleOfSubsetLearners extends MultiLabelMetaLearner {
      * {@link #selectDiverseModels} parameter is 'true'.
      *
      * @param sets the list of weighted label subsets ordered by subset weight
-     * in descending order
+     *             in descending order
      * @return most different from the highly weighted label set partitions
      */
     private List<LabelSubsetsWeight> selectByDiversity(List<LabelSubsetsWeight> sets) {
@@ -638,13 +638,13 @@ public class EnsembleOfSubsetLearners extends MultiLabelMetaLearner {
      * "selected" partitions. If a partition is within the "selected" it's
      * minimal distance is 0.
      *
-     * @param allSets the list of all label set partitions
+     * @param allSets  the list of all label set partitions
      * @param selected the list of selected label set partitions
      * @return an array containing the minimal distance from each label set
      * partition to the "selected" partitions
      */
     private SubsetsDistance[] minDistToSelected(List<LabelSubsetsWeight> allSets,
-            List<LabelSubsetsWeight> selected) {
+                                                List<LabelSubsetsWeight> selected) {
         // an array of minimal distances from each partition to those in selected
         SubsetsDistance[] minDists = new SubsetsDistance[allSets.size()];
         // an array of distances from a partition to each one in selected
@@ -678,7 +678,7 @@ public class EnsembleOfSubsetLearners extends MultiLabelMetaLearner {
          * Initialize a LabelSubsetsWeight object using labels set partition and
          * its weight.
          *
-         * @param v the partition dependence weight
+         * @param v    the partition dependence weight
          * @param comb the label set partition
          */
         public LabelSubsetsWeight(double v, int[][] comb) {
@@ -759,7 +759,7 @@ public class EnsembleOfSubsetLearners extends MultiLabelMetaLearner {
          * and its distance value.
          *
          * @param _id the partition identifier
-         * @param v the partition's distance
+         * @param v   the partition's distance
          */
         public SubsetsDistance(int _id, int v) {
             subsetsId = _id;
@@ -843,7 +843,6 @@ public class EnsembleOfSubsetLearners extends MultiLabelMetaLearner {
     }
 
     /**
-     * 
      * @param rnd random generator
      */
     public void setRnd(Random rnd) {
@@ -851,7 +850,6 @@ public class EnsembleOfSubsetLearners extends MultiLabelMetaLearner {
     }
 
     /**
-     * 
      * @param threshold the threshold for ensemble voting
      */
     public void setThreshold(double threshold) {
@@ -859,7 +857,6 @@ public class EnsembleOfSubsetLearners extends MultiLabelMetaLearner {
     }
 
     /**
-     * 
      * @param dependenceIdentifier the type of dependence identification process
      */
     public void setDependenceIdentifier(LabelPairsDependenceIdentifier dependenceIdentifier) {
@@ -867,7 +864,6 @@ public class EnsembleOfSubsetLearners extends MultiLabelMetaLearner {
     }
 
     /**
-     * 
      * @param x seed value
      */
     public void setSeed(int x) {
@@ -876,7 +872,6 @@ public class EnsembleOfSubsetLearners extends MultiLabelMetaLearner {
     }
 
     /**
-     * 
      * @param models the number of models
      */
     public void setNumModels(int models) {
@@ -884,7 +879,6 @@ public class EnsembleOfSubsetLearners extends MultiLabelMetaLearner {
     }
 
     /**
-     * 
      * @return Number of models
      */
     public int getNumModels() {
@@ -892,7 +886,6 @@ public class EnsembleOfSubsetLearners extends MultiLabelMetaLearner {
     }
 
     /**
-     * 
      * @return Most different from the highly weighted partitions
      */
     public boolean isSelectDiverseModels() {
@@ -900,7 +893,6 @@ public class EnsembleOfSubsetLearners extends MultiLabelMetaLearner {
     }
 
     /**
-     * 
      * @param selectDiverseModels whether to select most different from the highly weighted partitions
      */
     public void setSelectDiverseModels(boolean selectDiverseModels) {
@@ -908,7 +900,6 @@ public class EnsembleOfSubsetLearners extends MultiLabelMetaLearner {
     }
 
     /**
-     * 
      * @param useSubsetcache whether to use Subset caching
      */
     public void setUseSubsetLearnerCache(boolean useSubsetcache) {
@@ -916,7 +907,6 @@ public class EnsembleOfSubsetLearners extends MultiLabelMetaLearner {
     }
 
     /**
-     * 
      * @param numOfRandomPartitions number of randomly generated possible label set partitions
      */
     public static void setNumOfRandomPartitions(int numOfRandomPartitions) {
@@ -924,22 +914,20 @@ public class EnsembleOfSubsetLearners extends MultiLabelMetaLearner {
     }
 
     /**
-     * 
-     * @param numOfPartitionsForDiversity  number of highly weighted partitions used for selecting the 'enough' different among them
+     * @param numOfPartitionsForDiversity number of highly weighted partitions used for selecting the 'enough' different among them
      */
     public static void setNumOfPartitionsForDiversity(int numOfPartitionsForDiversity) {
         EnsembleOfSubsetLearners.numOfPartitionsForDiversity = numOfPartitionsForDiversity;
     }
 
     /**
-     * 
      * @param dynamicDiversityThreshold parameter used to dynamically define the threshold of 'enough' different
-     * partition
+     *                                  partition
      */
     public static void setDynamicDiversityThreshold(double dynamicDiversityThreshold) {
         EnsembleOfSubsetLearners.dynamicDiversityThreshold = dynamicDiversityThreshold;
     }
-    
+
     public String globalInfo() {
         StringBuilder sb = new StringBuilder();
         sb.append("A class for gathering several different SubsetLearners ");

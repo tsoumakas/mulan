@@ -15,8 +15,6 @@
  */
 package mulan.classifier.transformation;
 
-import java.util.Arrays;
-import java.util.Random;
 import mulan.classifier.InvalidDataException;
 import mulan.classifier.MultiLabelOutput;
 import mulan.data.MultiLabelInstances;
@@ -26,6 +24,9 @@ import weka.core.Instance;
 import weka.core.Instances;
 import weka.filters.Filter;
 import weka.filters.unsupervised.instance.RemovePercentage;
+
+import java.util.Arrays;
+import java.util.Random;
 
 /**
  * <p>Implementation of the Ensemble of Classifier Chains(ECC) algorithm.</p>
@@ -81,7 +82,7 @@ public class EnsembleOfClassifierChains extends TransformationBasedMultiLabelLea
      * Sets the size of each bag sample, as a percentage of the training size
      *
      * @param bagSizePercent the size of each bag sample, as a percentage of the
-     * training size
+     *                       training size
      */
     public void setBagSizePercent(int bagSizePercent) {
         BagSizePercent = bagSizePercent;
@@ -104,6 +105,7 @@ public class EnsembleOfClassifierChains extends TransformationBasedMultiLabelLea
     public void setSamplingPercentage(double samplingPercentage) {
         this.samplingPercentage = samplingPercentage;
     }
+
     /**
      * The size of each sample, as a percentage of the training size Used when
      * useSamplingWithReplacement is false
@@ -120,13 +122,13 @@ public class EnsembleOfClassifierChains extends TransformationBasedMultiLabelLea
     /**
      * Creates a new object
      *
-     * @param classifier the base classifier for each ClassifierChain model
-     * @param aNumOfModels the number of models
-     * @param doUseConfidences whether to use confidences or not
-     * @param doUseSamplingWithReplacement whether to use sampling with replacement or not 
+     * @param classifier                   the base classifier for each ClassifierChain model
+     * @param aNumOfModels                 the number of models
+     * @param doUseConfidences             whether to use confidences or not
+     * @param doUseSamplingWithReplacement whether to use sampling with replacement or not
      */
     public EnsembleOfClassifierChains(Classifier classifier, int aNumOfModels,
-            boolean doUseConfidences, boolean doUseSamplingWithReplacement) {
+                                      boolean doUseConfidences, boolean doUseSamplingWithReplacement) {
         super(classifier);
         numOfModels = aNumOfModels;
         useConfidences = doUseConfidences;

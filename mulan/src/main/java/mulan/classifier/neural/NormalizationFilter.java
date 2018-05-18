@@ -20,28 +20,31 @@
  */
 package mulan.classifier.neural;
 
-import java.io.Serializable;
-import java.util.Hashtable;
-import java.util.Set;
 import mulan.data.MultiLabelInstances;
 import weka.core.Attribute;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.experiment.Stats;
 
+import java.io.Serializable;
+import java.util.Hashtable;
+import java.util.Set;
+
 
 /**
  * Performs a normalization of numeric attributes of the data set.
- * It is initialized based on given {@link MultiLabelInstances} data set and then can 
- * be used to normalize {@link Instance} instances which conform to the format of the 
- * data set the {@link NormalizationFilter} was initialized from. 
- * 
+ * It is initialized based on given {@link MultiLabelInstances} data set and then can
+ * be used to normalize {@link Instance} instances which conform to the format of the
+ * data set the {@link NormalizationFilter} was initialized from.
+ *
  * @author Jozef Vilcek
  * @version 2012.02.27
  */
 public class NormalizationFilter implements Serializable {
 
-    /** Serial UID for serialization */
+    /**
+     * Serial UID for serialization
+     */
     private static final long serialVersionUID = -2575012048861337275L;
     private final double maxValue;
     private final double minValue;
@@ -50,12 +53,12 @@ public class NormalizationFilter implements Serializable {
     /**
      * Creates a new instance of {@link NormalizationFilter} class for given data set.
      *
-     * @param mlData the {@link MultiLabelInstances} data set from which normalizer
-     * should be initialized.
+     * @param mlData               the {@link MultiLabelInstances} data set from which normalizer
+     *                             should be initialized.
      * @param performNormalization indicates whether normalization of instances contained
-     * in the data set used for initialization should be performed
-     * @param minValue the minimum value of the normalization range for numerical attributes
-     * @param maxValue the maximum value of the normalization range for numerical attributes
+     *                             in the data set used for initialization should be performed
+     * @param minValue             the minimum value of the normalization range for numerical attributes
+     * @param maxValue             the maximum value of the normalization range for numerical attributes
      */
     public NormalizationFilter(MultiLabelInstances mlData, boolean performNormalization, double minValue, double maxValue) {
         if (mlData == null) {
@@ -64,7 +67,7 @@ public class NormalizationFilter implements Serializable {
         if (maxValue <= minValue) {
             throw new IllegalArgumentException(
                     String.format("Parameters 'minValue=%f' and 'maxValue=%f' does not define valid range.",
-                    minValue, maxValue));
+                            minValue, maxValue));
         }
 
         this.minValue = minValue;
@@ -87,10 +90,10 @@ public class NormalizationFilter implements Serializable {
      * The normalizer will be initialized to perform normalization to the default
      * range &lt;-1,1&gt;.
      *
-     * @param mlData the {@link MultiLabelInstances} data set from which normalizer
-     * should be initialized.
+     * @param mlData               the {@link MultiLabelInstances} data set from which normalizer
+     *                             should be initialized.
      * @param performNormalization indicates whether normalization of instances contained
-     * in the data set used for initialization should be performed
+     *                             in the data set used for initialization should be performed
      */
     public NormalizationFilter(MultiLabelInstances mlData, boolean performNormalization) {
         this(mlData, performNormalization, -1, 1);
@@ -100,6 +103,7 @@ public class NormalizationFilter implements Serializable {
      * Performs a normalization of numerical attributes on given instance.
      * The instance must conform to format of instances data the {@link NormalizationFilter}
      * was initialized with.
+     *
      * @param instance the instance to be normalized
      */
     public void normalize(Instance instance) {

@@ -15,9 +15,6 @@
  */
 package mulan.transformations;
 
-import java.io.Serializable;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import mulan.data.MultiLabelInstances;
 import weka.core.DenseInstance;
 import weka.core.Instance;
@@ -26,6 +23,10 @@ import weka.core.SparseInstance;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.Add;
 import weka.filters.unsupervised.attribute.Remove;
+
+import java.io.Serializable;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Class that implements the pairwise transformation
@@ -85,7 +86,7 @@ public class PairwiseTransformation implements Serializable {
     }
 
     /**
-     * Prepares the training data for two labels. 
+     * Prepares the training data for two labels.
      *
      * @param label1 first label
      * @param label2 second label
@@ -121,8 +122,7 @@ public class PairwiseTransformation implements Serializable {
                 tempInstance.setDataset(transformed);
                 if (value1 == true) {
                     tempInstance.setClassValue(1);
-                } 
-                else {
+                } else {
                     tempInstance.setClassValue(0);
                 }
                 transformed.add(tempInstance);

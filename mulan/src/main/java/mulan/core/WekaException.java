@@ -18,10 +18,10 @@ package mulan.core;
 /**
  * The convenience exception, which can be used to wrap up checked general {@link Exception}
  * commonly thrown by underlying Weka library into anonymous runtime exception.
- * <br><br> 
- * Note: The preferred way of handling Weka exceptional states is to define custom typed 
- * exception thrown by Mulan, which specifies a context about failure reason. 
- * 
+ * <br><br>
+ * Note: The preferred way of handling Weka exceptional states is to define custom typed
+ * exception thrown by Mulan, which specifies a context about failure reason.
+ *
  * @author Jozef Vilcek
  */
 public class WekaException extends MulanRuntimeException {
@@ -30,6 +30,7 @@ public class WekaException extends MulanRuntimeException {
 
     /**
      * Creates a new instance of {@link WekaException} with detail mesage.
+     *
      * @param message the detail message
      */
     public WekaException(String message) {
@@ -41,7 +42,7 @@ public class WekaException extends MulanRuntimeException {
      * and nested exception.
      *
      * @param message the detail message
-     * @param cause the nested exception
+     * @param cause   the nested exception
      */
     public WekaException(String message, Throwable cause) {
         super(message, cause);

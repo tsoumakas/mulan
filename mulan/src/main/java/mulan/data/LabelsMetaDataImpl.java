@@ -20,31 +20,18 @@
  */
 package mulan.data;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.io.Serializable;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
-
 import mulan.core.ArgumentNullException;
 import mulan.core.MulanRuntimeException;
 import mulan.core.WekaException;
 import weka.core.SerializedObject;
 
+import javax.xml.bind.annotation.*;
+import java.io.*;
+import java.util.*;
+
 /**
- * Implementation of {@link LabelsMetaData} info about labels and their structure. 
- * 
+ * Implementation of {@link LabelsMetaData} info about labels and their structure.
+ *
  * @author Jozef Vilcek
  * @see LabelsMetaData
  */
@@ -82,7 +69,7 @@ public class LabelsMetaDataImpl implements LabelsMetaData, Serializable, Externa
         if (rootLabelNodes.contains(rootNode)) {
             throw new IllegalArgumentException(
                     String.format("The root label node '%s' is already added.",
-                    rootNode.getName()));
+                            rootNode.getName()));
         }
 
         rootLabelNodes.add(rootNode);
@@ -202,16 +189,16 @@ public class LabelsMetaDataImpl implements LabelsMetaData, Serializable, Externa
         Remove
     }
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-		rootLabelNodes = (Set<LabelNode>)in.readObject();
-		doReInit();
-		
-	}
+    @SuppressWarnings("unchecked")
+    @Override
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        rootLabelNodes = (Set<LabelNode>) in.readObject();
+        doReInit();
 
-	@Override
-	public void writeExternal(ObjectOutput out) throws IOException {
-		out.writeObject(this.rootLabelNodes);
-	}
+    }
+
+    @Override
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(this.rootLabelNodes);
+    }
 }

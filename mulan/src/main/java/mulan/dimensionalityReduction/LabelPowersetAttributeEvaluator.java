@@ -15,13 +15,14 @@
  */
 package mulan.dimensionalityReduction;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import mulan.data.MultiLabelInstances;
 import mulan.transformations.LabelPowersetTransformation;
 import weka.attributeSelection.ASEvaluation;
 import weka.attributeSelection.AttributeEvaluator;
 import weka.core.Instances;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * <p> Performs attribute evaluation using the label powerset transformation.
@@ -34,11 +35,15 @@ import weka.core.Instances;
  */
 public class LabelPowersetAttributeEvaluator extends ASEvaluation implements AttributeEvaluator {
 
-    /** The single-label attribute evaluator to use underneath */
+    /**
+     * The single-label attribute evaluator to use underneath
+     */
     private ASEvaluation baseAttributeEvaluator;
 
-    /** Constructor that uses an evaluator on a multi-label dataset
-     * @param x the evaluator type (weka type)
+    /**
+     * Constructor that uses an evaluator on a multi-label dataset
+     *
+     * @param x      the evaluator type (weka type)
      * @param mlData multi-label instances for evaluation
      */
     public LabelPowersetAttributeEvaluator(ASEvaluation x, MultiLabelInstances mlData) {

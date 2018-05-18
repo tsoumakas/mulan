@@ -19,7 +19,7 @@ import mulan.classifier.meta.MultiLabelMetaLearnerTest;
 
 /**
  * Unit test routines for {@link ExampleBasedFMeasureOptimizer}.
- * 
+ *
  * @author Eleftherios Spyromitros-Xioufis
  */
 public class ExampleBasedFMeasureOptimizerTest extends MultiLabelMetaLearnerTest {

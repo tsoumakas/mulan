@@ -17,7 +17,8 @@ package mulan.classifier.transformation;
 
 import mulan.classifier.MultiLabelOutput;
 import weka.classifiers.Classifier;
-import weka.core.*;
+import weka.core.Instance;
+import weka.core.Utils;
 
 /**
  * <p>Implementation of the Calibrated Label Ranking (CLR) algorithm.</p> <p>For
@@ -56,7 +57,7 @@ public class CalibratedLabelRanking extends BinaryAndPairwise {
      * Sets whether to consider the outputs as soft [0..1] or hard {0,1}
      *
      * @param value <code>true</code> for setting soft outputs and
-     * <code>false</code> for hard outputs
+     *              <code>false</code> for hard outputs
      */
     public void setSoft(boolean value) {
         soft = value;
@@ -156,7 +157,7 @@ public class CalibratedLabelRanking extends BinaryAndPairwise {
      * Fuernkranz, J. (2009) Efficient voting prediction for pairwise multilabel
      * classification. In Proceedings of 17th European Symposium on Artificial
      * Neural Networks (ESANN 2009), Bruges (Belgium), April 2009
-     *
+     * <p>
      * This method reduces the number of classifier evaluations and guarantees
      * the same Multilabel Output as ordinary Voting. But: the estimated
      * confidences are only approximated. Therefore, ranking-based performances
@@ -283,7 +284,7 @@ public class CalibratedLabelRanking extends BinaryAndPairwise {
      * Fuernkranz, J. (2009) Efficient voting prediction for pairwise multilabel
      * classification. In Proceedings of 17th European Symposium on Artificial
      * Neural Networks (ESANN 2009), Bruges (Belgium), April 2009
-     *
+     * <p>
      * This method reduces the number of classifier evaluations and guarantees
      * the same Multilabel Output as ordinary Voting. But: the estimated
      * confidences are only approximated. Therefore, ranking-based performances

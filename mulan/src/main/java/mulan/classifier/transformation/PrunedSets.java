@@ -15,14 +15,15 @@
  */
 package mulan.classifier.transformation;
 
-import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import mulan.data.DataUtils;
 import mulan.data.LabelSet;
 import weka.classifiers.Classifier;
 import weka.classifiers.trees.J48;
 import weka.core.Instance;
+
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * <p>Implementation of he Pruned Sets (PS) algorithm.</p> <p>For more
@@ -49,7 +50,9 @@ public class PrunedSets extends LabelsetPruning {
          * Strategy B: keep all subsets of size greater than b
          */
         B;
-    };
+    }
+
+    ;
     /**
      * strategy for processing infrequent labelsets
      */
@@ -71,9 +74,9 @@ public class PrunedSets extends LabelsetPruning {
      * strategy for processing infrequent labelsets
      *
      * @param classifier base single-label classification algorithm
-     * @param aP number of instances required for a labelset to be included.
-     * @param aStrategy strategy for processing infrequent labelsets
-     * @param aB parameter of the strategy for processing infrequent labelsets
+     * @param aP         number of instances required for a labelset to be included.
+     * @param aStrategy  strategy for processing infrequent labelsets
+     * @param aB         parameter of the strategy for processing infrequent labelsets
      */
     public PrunedSets(Classifier classifier, int aP, Strategy aStrategy, int aB) {
         super(classifier, aP);

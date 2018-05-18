@@ -20,18 +20,14 @@
  */
 package mulan.data;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-
-import java.util.ArrayList;
-import java.util.Arrays;
 import weka.core.Attribute;
 import weka.core.DenseInstance;
 import weka.core.Instance;
 import weka.core.Instances;
+
+import java.io.*;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * <p>Class that converts a dataset that is originally in the format of the
@@ -51,8 +47,8 @@ public class ConverterCLUS {
      * Converts the original dataset to mulan compatible dataset.
      *
      * @param sourceFilename the source file name
-     * @param arffFilename the converted arff name
-     * @param xmlFilename the xml name
+     * @param arffFilename   the converted arff name
+     * @param xmlFilename    the xml name
      * @throws java.lang.Exception Potential exception thrown. To be handled in an upper level.
      */
     public static void convert(String sourceFilename, String arffFilename, String xmlFilename) throws Exception {

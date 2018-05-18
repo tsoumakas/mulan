@@ -15,8 +15,6 @@
  */
 package mulan.classifier.meta;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import mulan.classifier.InvalidDataException;
 import mulan.classifier.ModelInitializationException;
 import mulan.classifier.MultiLabelLearner;
@@ -24,13 +22,16 @@ import mulan.classifier.MultiLabelOutput;
 import mulan.core.MulanRuntimeException;
 import mulan.data.MultiLabelInstances;
 import mulan.transformations.ColumnSubsetSelection;
-import weka.core.matrix.Matrix;
 import weka.core.Instance;
+import weka.core.matrix.Matrix;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 /**
- * <p>Algorithm for selecting a small subset of labels that can approximately 
- * span the original label space. For more information see: <em>Bi, W., Kwok, J. 
+ * <p>Algorithm for selecting a small subset of labels that can approximately
+ * span the original label space. For more information see: <em>Bi, W., Kwok, J.
  * (2013) Efficient Multi-label Classification with Many Labels, JMLR W&quot;CP
  * 28(3):405-413, 2013</em></p>
  *
@@ -48,9 +49,9 @@ public class MLCSSP extends MultiLabelMetaLearner {
 
     /**
      * Constructs a learner object
-     * 
+     *
      * @param learner the underlying multi-label learner
-     * @param aKappa the number of labels to keep
+     * @param aKappa  the number of labels to keep
      */
     public MLCSSP(MultiLabelLearner learner, int aKappa) {
         super(learner);
@@ -58,9 +59,9 @@ public class MLCSSP extends MultiLabelMetaLearner {
     }
 
     /**
-     * Constructs a learner object. The number of labels to keep will be set to 
+     * Constructs a learner object. The number of labels to keep will be set to
      * 0.1 of the total number of labels
-     * 
+     *
      * @param learner the underlying multi-label learner.
      */
     public MLCSSP(MultiLabelLearner learner) {
@@ -71,12 +72,12 @@ public class MLCSSP extends MultiLabelMetaLearner {
     @Override
     protected void buildInternal(MultiLabelInstances train) throws Exception {
         // check whether labels have missing values
-        for (int i=0; i< numLabels; i++) {
+        for (int i = 0; i < numLabels; i++) {
             if (train.getDataSet().attributeStats(labelIndices[i]).missingCount > 0) {
                 throw new MulanRuntimeException("Algorithm does not work when labels have missing values");
             }
         }
-        
+
         // autoselect 10% of labels of label count is not defined
         if (kappa == 0) {
             this.kappa = (int) Math.round(0.1 * (double) train.getNumLabels());

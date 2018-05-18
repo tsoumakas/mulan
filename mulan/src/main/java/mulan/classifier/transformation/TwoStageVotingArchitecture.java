@@ -18,7 +18,8 @@ package mulan.classifier.transformation;
 import mulan.classifier.MultiLabelOutput;
 import weka.classifiers.Classifier;
 import weka.classifiers.trees.J48;
-import weka.core.*;
+import weka.core.Instance;
+import weka.core.Instances;
 
 /**
  * <p>Implementation of the Two Stage Voting Architecture (TSVA) algorithm.</p>

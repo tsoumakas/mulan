@@ -17,7 +17,7 @@ package mulan.core;
 
 /**
  * Represents a root base class for checked exceptions thrown within Mulan library.
- * 
+ *
  * @author Jozef Vilcek
  */
 public class MulanException extends Exception {
@@ -39,7 +39,7 @@ public class MulanException extends Exception {
      * detail message and nested exception.
      *
      * @param message the detail message
-     * @param cause the nested exception
+     * @param cause   the nested exception
      */
     public MulanException(String message, Throwable cause) {
         super(message, cause);

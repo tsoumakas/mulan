@@ -15,9 +15,10 @@
  */
 package mulan.evaluation.loss;
 
-import java.io.Serializable;
 import mulan.classifier.MultiLabelOutput;
 import mulan.core.ArgumentNullException;
+
+import java.io.Serializable;
 
 /**
  * Base class for bipartition loss functions
@@ -25,7 +26,7 @@ import mulan.core.ArgumentNullException;
  * @author GrigoriosTsoumakas
  * @version 2010.11.10
  */
-public abstract class BipartitionLossFunctionBase implements BipartitionLossFunction, Serializable  {
+public abstract class BipartitionLossFunctionBase implements BipartitionLossFunction, Serializable {
 
     private void checkBipartition(boolean[] bipartition) {
         if (bipartition == null) {

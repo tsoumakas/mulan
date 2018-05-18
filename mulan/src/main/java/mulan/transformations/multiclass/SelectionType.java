@@ -21,7 +21,6 @@
 package mulan.transformations.multiclass;
 
 /**
- *
  * @author Grigorios Tsoumakas
  * @version 2012.02.02
  */

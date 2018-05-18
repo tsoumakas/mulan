@@ -25,9 +25,9 @@ public class MLCSSPTest extends MultiLabelMetaLearnerTest {
         BinaryRelevance br = new BinaryRelevance(new J48());
         learner = new MLCSSP(br);
     }
-    
+
     @Override
-    public void testBuild_WithMissingValues()  {        
+    public void testBuild_WithMissingValues() {
     }
 
 }

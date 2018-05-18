@@ -27,16 +27,17 @@ import weka.core.SparseInstance;
 
 /**
  * Utility class for data related manipulation functions.
- * 
+ *
  * @author Jozef Vilcek
  */
 public class DataUtils {
 
     /**
      * Creates a new {@link Instance}. The actual type is determined based on passed instance object.
+     *
      * @param typeProvider the instance from which type for new instance is determined
-     * @param weight the weight of a new instance
-     * @param attrValues attribute values for a new instance
+     * @param weight       the weight of a new instance
+     * @param attrValues   attribute values for a new instance
      * @return A new {@link Instance}.
      */
     public static Instance createInstance(Instance typeProvider, double weight, double[] attrValues) {
@@ -47,14 +48,15 @@ public class DataUtils {
         } else {
             throw new MulanRuntimeException(
                     String.format("Can not create a new Instance from supplied type '%s'.",
-                    typeProvider.getClass().getName()));
+                            typeProvider.getClass().getName()));
         }
 
     }
 
     /**
      * Creates a new {@link Instance}. The actual type is determined based on passed instance object.
-     * @param typeProvider the instance from which type for new instance is determined
+     *
+     * @param typeProvider  the instance from which type for new instance is determined
      * @param numAttributes number of attributes for new instance
      * @return A new {@link Instance}.
      */
@@ -66,7 +68,7 @@ public class DataUtils {
         } else {
             throw new MulanRuntimeException(
                     String.format("Can not create a new Instance from supplied type '%s'.",
-                    typeProvider.getClass().getName()));
+                            typeProvider.getClass().getName()));
         }
     }
 }

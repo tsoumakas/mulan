@@ -15,20 +15,21 @@
  */
 package mulan.classifier.meta;
 
-import java.util.*;
 import weka.classifiers.rules.DecisionTableHashKey;
 import weka.clusterers.NumberOfClustersRequestable;
 import weka.clusterers.RandomizableClusterer;
-import weka.core.Capabilities.Capability;
 import weka.core.*;
+import weka.core.Capabilities.Capability;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.ReplaceMissingValues;
 
+import java.util.*;
+
 /**
- <!-- globalinfo-start -->
+ * <!-- globalinfo-start -->
  * Cluster data using the constrained k means algorithm
  * <br>
- <!-- globalinfo-end -->
+ * <!-- globalinfo-end -->
  *
  * @author Mark Hall
  * @author Eibe Frank
@@ -39,7 +40,7 @@ import weka.filters.unsupervised.attribute.ReplaceMissingValues;
 public class ConstrainedKMeans extends RandomizableClusterer implements NumberOfClustersRequestable, WeightedInstancesHandler {
 
     /**
-     * for serialization 
+     * for serialization
      */
     static final long serialVersionUID = -3235809600124455376L;
     private ArrayList[] bucket;
@@ -56,6 +57,7 @@ public class ConstrainedKMeans extends RandomizableClusterer implements NumberOf
 
         /**
          * Sets the distances to other instances
+         *
          * @param x distances
          */
         public void setDistances(double[] x) {
@@ -64,7 +66,6 @@ public class ConstrainedKMeans extends RandomizableClusterer implements NumberOf
         }
 
         /**
-         * 
          * @param x the distance
          */
         public void setDistance(double x) {
@@ -72,7 +73,6 @@ public class ConstrainedKMeans extends RandomizableClusterer implements NumberOf
         }
 
         /**
-         * 
          * @return distances
          */
         public double[] getDistances() {
@@ -80,7 +80,6 @@ public class ConstrainedKMeans extends RandomizableClusterer implements NumberOf
         }
 
         /**
-         * 
          * @return distance
          */
         public double getDistance() {
@@ -98,6 +97,7 @@ public class ConstrainedKMeans extends RandomizableClusterer implements NumberOf
             }
         }
     }
+
     /**
      * replace missing values in training instances
      */
@@ -179,7 +179,6 @@ public class ConstrainedKMeans extends RandomizableClusterer implements NumberOf
     }
 
     /**
-     * 
      * @param x max iterations
      */
     public void setMaxIterations(int x) {
@@ -325,7 +324,7 @@ public class ConstrainedKMeans extends RandomizableClusterer implements NumberOf
     /**
      * clusters an instance that has been through the filters
      *
-     * @param instance the instance to assign a cluster to
+     * @param instance     the instance to assign a cluster to
      * @param updateErrors if true, update the within clusters sum of errors
      * @return a cluster number
      */
@@ -395,7 +394,7 @@ public class ConstrainedKMeans extends RandomizableClusterer implements NumberOf
     /**
      * Calculates the distance between two instances
      *
-     * @param first the first instance
+     * @param first  the first instance
      * @param second the second instance
      * @return the distance between the two given instances, between 0 and 1
      */
@@ -403,7 +402,7 @@ public class ConstrainedKMeans extends RandomizableClusterer implements NumberOf
         double distance = 0;
         int firstI, secondI;
         for (int p1 = 0, p2 = 0;
-                p1 < first.numValues() || p2 < second.numValues();) {
+             p1 < first.numValues() || p2 < second.numValues(); ) {
             if (p1 >= first.numValues()) {
                 firstI = m_ClusterCentroids.numAttributes();
             } else {
@@ -445,8 +444,8 @@ public class ConstrainedKMeans extends RandomizableClusterer implements NumberOf
      * Computes the difference between two given attribute values.
      *
      * @param index the attribute index
-     * @param val1 the first value
-     * @param val2 the second value
+     * @param val1  the first value
+     * @param val2  the second value
      * @return the difference
      */
     private double difference(int index, double val1, double val2) {
@@ -535,7 +534,7 @@ public class ConstrainedKMeans extends RandomizableClusterer implements NumberOf
      *
      * @return the number of clusters generated for a training dataset.
      * @throws Exception if number of clusters could not be returned
-     * successfully
+     *                   successfully
      */
     public int numberOfClusters() throws Exception {
         return m_NumClusters;

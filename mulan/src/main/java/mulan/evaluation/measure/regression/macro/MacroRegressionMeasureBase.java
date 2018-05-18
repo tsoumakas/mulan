@@ -1,9 +1,9 @@
 package mulan.evaluation.measure.regression.macro;
 
-import java.util.Arrays;
-
 import mulan.evaluation.measure.MacroAverageMeasure;
 import mulan.evaluation.measure.regression.RegressionMeasureBase;
+
+import java.util.Arrays;
 
 public abstract class MacroRegressionMeasureBase extends RegressionMeasureBase implements
         MacroAverageMeasure {
@@ -12,7 +12,9 @@ public abstract class MacroRegressionMeasureBase extends RegressionMeasureBase i
      * holds the (total or max) squared or absolute or logistic error per target
      */
     protected double[] error;
-    /** counts the number of non-missing values per target */
+    /**
+     * counts the number of non-missing values per target
+     */
     protected int[] nonMissingCounter;
 
     public MacroRegressionMeasureBase(int numOfLabels) {
@@ -20,7 +22,9 @@ public abstract class MacroRegressionMeasureBase extends RegressionMeasureBase i
         nonMissingCounter = new int[numOfLabels];
     }
 
-    /** returns the number of non missing values for this target **/
+    /**
+     * returns the number of non missing values for this target
+     **/
     public int getNonMissing(int labelIndex) {
         return nonMissingCounter[labelIndex];
     }

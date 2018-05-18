@@ -5,7 +5,7 @@ import mulan.evaluation.measure.MacroAverageMeasure;
 
 /**
  * Implementation of macro-averaged Mean Absolute Error (MAE) measure.
- * 
+ *
  * @author Eleftherios Spyromitros-Xioufis
  * @version 2014.11.07
  */

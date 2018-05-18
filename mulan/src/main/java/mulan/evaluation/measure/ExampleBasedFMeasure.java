@@ -27,7 +27,6 @@ public class ExampleBasedFMeasure extends ExampleBasedBipartitionMeasureBase {
 
     /**
      * Creates a new object
-     *
      */
     public ExampleBasedFMeasure() {
         this(1.0);

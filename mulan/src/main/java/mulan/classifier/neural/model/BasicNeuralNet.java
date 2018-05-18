@@ -20,18 +20,19 @@
  */
 package mulan.classifier.neural.model;
 
-import java.io.Serializable;
-import java.util.*;
 import mulan.core.ArgumentNullException;
 
+import java.io.Serializable;
+import java.util.*;
+
 /**
- * Implementation of basic neural network. The network consists of one input layer, 
- * zero or more hidden layers and one output layer. Each layer contains 1 or more 
- * {@link Neuron} units. The input layer is used just to store and forward input 
- * pattern of the network to first hidden layer for processing. 
- * Input layer do not process input pattern. Neurons of input layer have one input weight 
+ * Implementation of basic neural network. The network consists of one input layer,
+ * zero or more hidden layers and one output layer. Each layer contains 1 or more
+ * {@link Neuron} units. The input layer is used just to store and forward input
+ * pattern of the network to first hidden layer for processing.
+ * Input layer do not process input pattern. Neurons of input layer have one input weight
  * equal to 1, bias weight equal to 0 and use linear activation function.
- * 
+ *
  * @author Jozef Vilcek
  * @version 2012.02.27
  */
@@ -43,21 +44,21 @@ public class BasicNeuralNet implements NeuralNet, Serializable {
     private final int netInputDim;
     private final int netOutputDim;
 
-    
+
     /**
      * Creates a new {@link BasicNeuralNet} instance.
      *
-     * @param netTopology defines a topology of the network. The array length corresponds
-     * 		to number of network layers. The values of the array corresponds to number
-     * 		of neurons in each particular layer.
-     * @param biasInput the bias input value for neurons of the neural network.
+     * @param netTopology        defines a topology of the network. The array length corresponds
+     *                           to number of network layers. The values of the array corresponds to number
+     *                           of neurons in each particular layer.
+     * @param biasInput          the bias input value for neurons of the neural network.
      * @param activationFunction the type of activation function to be used by network elements
-     * @param random the pseudo-random generator instance to be used for computations involving randomness. 
-     * 	This parameter can be null. In this case, new random instance with default seed will be constructed where needed.
+     * @param random             the pseudo-random generator instance to be used for computations involving randomness.
+     *                           This parameter can be null. In this case, new random instance with default seed will be constructed where needed.
      * @throws IllegalArgumentException if network topology is incorrect of activation function class is null.
      */
     public BasicNeuralNet(int[] netTopology, double biasInput,
-            Class<? extends ActivationFunction> activationFunction, Random random) {
+                          Class<? extends ActivationFunction> activationFunction, Random random) {
 
         if (netTopology == null || netTopology.length < 2) {
             throw new IllegalArgumentException("The topology for neural network is not specified " +

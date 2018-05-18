@@ -15,72 +15,72 @@
  */
 package mulan.data.generation;
 
-public class Attribute{
-	private final AttributeType type;
-	private final String name;
-	private boolean isLabelAttribute = false;
-	private double missingValuesProbability = 0;
-	
-	public static Attribute createNominalAttribute(String name, String[] values){
-		return new NominalAttribute(name, values);
-	}
-	
-	public static Attribute createLabelAttribute(String name){
-		NominalAttribute attr = new NominalAttribute(name, new String[]{"0", "1"});
-		attr.setIsLabelAttribute(true);
-		return attr;
-	}
-	
-	public static Attribute createNumericAttribute(String name, double min, double max){
-		return new NumericAttribute(name, min, max);
-	}
-	
-	public static Attribute createNumericAttribute(String name){
-		return new NumericAttribute(name);
-	}
-	
-	public static Attribute createStringAttribute(String name){
-		return new Attribute(name, AttributeType.String);
-	}
-	
-	public Attribute(String name, AttributeType type){
-		this.name = name;
-		this.type = type;
-	}
-	
-	public AttributeType getType(){
-		return type;
-	}
-	
-	public String getName(){
-		return name;
-	}
-	
-	public Attribute setIsLabelAttribute(boolean value){
-		isLabelAttribute = value;
-		return this;
-	}
-	
-	public boolean isLabelAttribute(){
-		return isLabelAttribute;
-	}
-	
-	public double getMissingValuesProbability(){
-		return missingValuesProbability;
-	}
-	
-	public Attribute setMissingValuesProbability(double probability){
-		if(probability < 0 || probability > 1){
-			throw new IllegalArgumentException("Probability must be form interval <0,1>.");
-		}
-		missingValuesProbability = probability;
-		return this;
-	}
-	
-	
-	public enum AttributeType{
-		Nominal,
-		Numeric,
-		String,
-	}
+public class Attribute {
+    private final AttributeType type;
+    private final String name;
+    private boolean isLabelAttribute = false;
+    private double missingValuesProbability = 0;
+
+    public static Attribute createNominalAttribute(String name, String[] values) {
+        return new NominalAttribute(name, values);
+    }
+
+    public static Attribute createLabelAttribute(String name) {
+        NominalAttribute attr = new NominalAttribute(name, new String[]{"0", "1"});
+        attr.setIsLabelAttribute(true);
+        return attr;
+    }
+
+    public static Attribute createNumericAttribute(String name, double min, double max) {
+        return new NumericAttribute(name, min, max);
+    }
+
+    public static Attribute createNumericAttribute(String name) {
+        return new NumericAttribute(name);
+    }
+
+    public static Attribute createStringAttribute(String name) {
+        return new Attribute(name, AttributeType.String);
+    }
+
+    public Attribute(String name, AttributeType type) {
+        this.name = name;
+        this.type = type;
+    }
+
+    public AttributeType getType() {
+        return type;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Attribute setIsLabelAttribute(boolean value) {
+        isLabelAttribute = value;
+        return this;
+    }
+
+    public boolean isLabelAttribute() {
+        return isLabelAttribute;
+    }
+
+    public double getMissingValuesProbability() {
+        return missingValuesProbability;
+    }
+
+    public Attribute setMissingValuesProbability(double probability) {
+        if (probability < 0 || probability > 1) {
+            throw new IllegalArgumentException("Probability must be form interval <0,1>.");
+        }
+        missingValuesProbability = probability;
+        return this;
+    }
+
+
+    public enum AttributeType {
+        Nominal,
+        Numeric,
+        String,
+    }
 }

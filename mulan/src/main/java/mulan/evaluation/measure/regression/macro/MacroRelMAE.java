@@ -10,7 +10,7 @@ import mulan.data.MultiLabelInstances;
  * implemented, one computes target means on the training set and the other on
  * the union of the training set and the test set. The first version is the
  * default one.
- * 
+ *
  * @author Eleftherios Spyromitros-Xioufis
  * @version 2014.11.07
  */

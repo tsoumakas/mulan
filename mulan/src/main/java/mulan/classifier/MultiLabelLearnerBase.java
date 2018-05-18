@@ -15,11 +15,12 @@
  */
 package mulan.classifier;
 
-import java.io.Serializable;
-import java.util.Date;
 import mulan.core.ArgumentNullException;
 import mulan.data.MultiLabelInstances;
 import weka.core.*;
+
+import java.io.Serializable;
+import java.util.Date;
 
 /**
  * Common root base class for all multi-label learner types.
@@ -58,7 +59,9 @@ public abstract class MultiLabelLearnerBase
      * {@link Instances} object of the training data in increasing order.
      */
     protected int[] featureIndices;
-    /** Whether debugging is on/off */
+    /**
+     * Whether debugging is on/off
+     */
     private boolean isDebug = false;
 
     public boolean isUpdatable() {
@@ -95,6 +98,7 @@ public abstract class MultiLabelLearnerBase
     /**
      * Gets whether learner's model is initialized by {@link #build(MultiLabelInstances)}.
      * This is used to check if {@link #makePrediction(weka.core.Instance)} can be processed.
+     *
      * @return isModelInitialized returns true if the model has been initialized
      */
     protected boolean isModelInitialized() {
@@ -119,9 +123,9 @@ public abstract class MultiLabelLearnerBase
      * initialization and apply common handling/behavior.
      *
      * @param instance the data instance to predict on
-     * @throws Exception if an error occurs while making the prediction.
-     * @throws InvalidDataException if specified instance data is invalid and can not be processed by the learner
      * @return the output of the learner for the given instance
+     * @throws Exception            if an error occurs while making the prediction.
+     * @throws InvalidDataException if specified instance data is invalid and can not be processed by the learner
      */
     protected abstract MultiLabelOutput makePredictionInternal(Instance instance) throws Exception, InvalidDataException;
 
@@ -168,6 +172,6 @@ public abstract class MultiLabelLearnerBase
      *
      * @return the technical information about this class
      */
-    abstract public TechnicalInformation getTechnicalInformation();    
-    
+    abstract public TechnicalInformation getTechnicalInformation();
+
 }

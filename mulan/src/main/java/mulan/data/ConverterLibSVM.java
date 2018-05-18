@@ -20,11 +20,12 @@
  */
 package mulan.data;
 
+import weka.core.*;
+
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.StringTokenizer;
-import weka.core.*;
 
 /**
  * Class that converts LibSVM multi-label data sets to Mulan compatible format <p>
@@ -36,13 +37,13 @@ public class ConverterLibSVM {
 
     /**
      * Converts a multi-label dataset from LibSVM format to the format
-     * that is compatible with Mulan. It constructs one ARFF and one XML file. 
+     * that is compatible with Mulan. It constructs one ARFF and one XML file.
      *
-     * @param path the directory that contains the source file and will contain 
-     * the target files
+     * @param path           the directory that contains the source file and will contain
+     *                       the target files
      * @param sourceFilename the name of the source file
-     * @param relationName the relation name of the arff file that will be 
-     * constructed
+     * @param relationName   the relation name of the arff file that will be
+     *                       constructed
      * @param targetFilestem the filestem for the target files (.arff and .xml)
      */
     public static void convertFromLibSVM(String path, String sourceFilename, String targetFilestem, String relationName) {

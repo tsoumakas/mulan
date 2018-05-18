@@ -38,7 +38,7 @@ public class MicroFMeasure extends LabelBasedFMeasure {
      * Full constructor
      *
      * @param numOfLabels the number of labels
-     * @param beta the beta parameter
+     * @param beta        the beta parameter
      */
     public MicroFMeasure(int numOfLabels, double beta) {
         super(numOfLabels, beta);

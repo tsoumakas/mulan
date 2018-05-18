@@ -15,10 +15,7 @@
  */
 package mulan.transformations;
 
-import java.io.Serializable;
-import java.util.Random;
 import mulan.core.MulanRuntimeException;
-
 import mulan.data.MultiLabelInstances;
 import weka.core.Instance;
 import weka.core.Instances;
@@ -26,6 +23,9 @@ import weka.core.matrix.Matrix;
 import weka.core.matrix.SingularValueDecomposition;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.Remove;
+
+import java.io.Serializable;
+import java.util.Random;
 
 /**
  * <p>Class that solves the column subset selection problem via random sampling.
@@ -47,7 +47,7 @@ public class ColumnSubsetSelection implements Serializable {
     private int[] selectedIndicesInt;
     private Object[] sampledIndicesObj;
     private static int[] indicesToRemove;
-    private java.util.Set sampledIndiceSet;   
+    private java.util.Set sampledIndiceSet;
 
     public MultiLabelInstances transform(MultiLabelInstances data, int kappa, long seed) {
         try {
@@ -130,7 +130,7 @@ public class ColumnSubsetSelection implements Serializable {
 
             // run column-sampling loop
             int sampling_count = 0;
-            
+
             Random generator = new Random(seed);
             while (sampledIndiceSet.size() < kappa) // ...loop until knapsack gets filled...
             {
@@ -279,7 +279,7 @@ public class ColumnSubsetSelection implements Serializable {
             transformed = Filter.useFilter(data.getDataSet(), remove);
 
             this.sampledIndicesObj = indicesToKeep.toArray();
-            
+
             return data.reintegrateModifiedDataSet(transformed);
 
         } catch (Exception ex) {

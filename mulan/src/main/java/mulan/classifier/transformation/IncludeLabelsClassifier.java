@@ -26,7 +26,7 @@ import weka.core.Instances;
  * A multilabel classifier based on the include labels transformation. The
  * multiple label attributes are mapped to two attributes: <ul> <li>a) one
  * nominal attribute containing the class</li> <li>b) one binary attribute
- * containing whether it is true.</li> </ul> 
+ * containing whether it is true.</li> </ul>
  *
  * @author Robert Friberg
  * @author Grigorios Tsoumakas

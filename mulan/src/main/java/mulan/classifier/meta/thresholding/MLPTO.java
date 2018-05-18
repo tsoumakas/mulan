@@ -15,9 +15,6 @@
  */
 package mulan.classifier.meta.thresholding;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import mulan.classifier.MultiLabelLearner;
 import mulan.classifier.MultiLabelOutput;
 import mulan.classifier.meta.MultiLabelMetaLearner;
@@ -31,6 +28,10 @@ import weka.core.Instance;
 import weka.core.TechnicalInformation;
 import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 /**
  * <p> Class that implements the Multi Label Probabilistic Threshold Optimizer
@@ -54,12 +55,12 @@ public class MLPTO extends MultiLabelMetaLearner {
 
     /**
      * @param baseLearner the underlying multi-label learner
-     * @param EBBM the measure function to be optimized. The measure is
-     * optimized minimizing the distance to its ideal value (using IdealValue()
-     * method). For measures with 1 as ideal value, like F1 or Accuracy, this
-     * algorithm searches for the highest value (the nearest to 1). For measures
-     * with 0 as ideal value, like Hamming, this algorithm searches for the
-     * lowest value (the nearest to 0).
+     * @param EBBM        the measure function to be optimized. The measure is
+     *                    optimized minimizing the distance to its ideal value (using IdealValue()
+     *                    method). For measures with 1 as ideal value, like F1 or Accuracy, this
+     *                    algorithm searches for the highest value (the nearest to 1). For measures
+     *                    with 0 as ideal value, like Hamming, this algorithm searches for the
+     *                    lowest value (the nearest to 0).
      */
     public MLPTO(MultiLabelLearner baseLearner, ExampleBasedBipartitionMeasureBase EBBM) {
         super(baseLearner);
@@ -71,8 +72,8 @@ public class MLPTO extends MultiLabelMetaLearner {
      * function
      *
      * @param orderedProbabilities a descending ordered array with the
-     * probabilities of the labels
-     * @param EBBM the measure function to be optimized.
+     *                             probabilities of the labels
+     * @param EBBM                 the measure function to be optimized.
      * @return the number of labels to optimize the loss function
      * @throws Exception Potential exception thrown. To be handled in an upper level.
      */

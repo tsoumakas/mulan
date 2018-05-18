@@ -20,19 +20,20 @@
  */
 package mulan.classifier.neural;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import mulan.core.ArgumentNullException;
 import mulan.data.MultiLabelInstances;
 import weka.core.Attribute;
 import weka.core.Instance;
 import weka.core.Instances;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 /**
- * Class for representation of a data-pair instance. The data pair contains 
+ * Class for representation of a data-pair instance. The data pair contains
  * an input pattern and respected true or expected output pattern for the input pattern.
- * 
+ *
  * @author Jozef Vilcek
  * @version 2012.02.27
  */
@@ -44,8 +45,9 @@ public class DataPair {
 
     /**
      * Creates a {@link DataPair} instance.
+     *
      * @param inputPattern the input pattern
-     * @param trueOutput the true/expected output pattern for the input
+     * @param trueOutput   the true/expected output pattern for the input
      */
     public DataPair(final double[] inputPattern, final double[] trueOutput) {
         if (inputPattern == null) {
@@ -60,6 +62,7 @@ public class DataPair {
 
     /**
      * Gets the input pattern.
+     *
      * @return the input pattern
      */
     public double[] getInput() {
@@ -68,6 +71,7 @@ public class DataPair {
 
     /**
      * Gets the ideal/expected output pattern.
+     *
      * @return the output pattern
      */
     public double[] getOutput() {
@@ -102,15 +106,15 @@ public class DataPair {
      * of instance values (by double values), which is useful when iteration over the data and its
      * values.
      *
-     * @param mlDataSet the {@link MultiLabelInstances} which content has to be
-     * 			converted to list of {@link DataPair}
+     * @param mlDataSet     the {@link MultiLabelInstances} which content has to be
+     *                      converted to list of {@link DataPair}
      * @param bipolarOutput indicates whether output values should be converted
-     * 			to bipolar values, or left intact as binary
+     *                      to bipolar values, or left intact as binary
      * @return the list of data pairs
      */
     // TODO: this method should be in some kind of "data utils".
     public static List<DataPair> createDataPairs(MultiLabelInstances mlDataSet,
-            boolean bipolarOutput) {
+                                                 boolean bipolarOutput) {
 
         Instances data = mlDataSet.getDataSet();
         int[] featureIndices = mlDataSet.getFeatureIndices();

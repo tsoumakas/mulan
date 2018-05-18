@@ -23,16 +23,20 @@ package mulan.classifier.neural.model;
 /**
  * Implements the hyperbolic tangent activation function.
  * The function output values are from interval &lt;-1,1&gt;.
- * 
+ *
  * @author Jozef Vilcek
  * @version 2012.02.27
  */
 public class ActivationTANH extends ActivationFunction {
 
     private static final long serialVersionUID = -8707244320811304601L;
-    /** Maximum value of function */
+    /**
+     * Maximum value of function
+     */
     public final static double MAX = +1.0;
-    /** Minimum value of function */
+    /**
+     * Minimum value of function
+     */
     public final static double MIN = -1.0;
 
     public double activate(final double input) {

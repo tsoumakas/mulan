@@ -18,47 +18,47 @@ package mulan.data.generation;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DataSetDefinition{
-	
-	private final List<Attribute> attributes;
-	private int examplesCount = 100;
-	private final String name;
-	
-	public DataSetDefinition(String dataSetName){
-		name = dataSetName;
-		attributes = new ArrayList<Attribute>();
-	}
-	
-	public DataSetDefinition addAttribute(Attribute attribute){
-		attributes.add(attribute);
-		return this;
-	}
-	
-	protected List<Attribute> getAttributes(){
-		return attributes;
-	}
-	
-	public DataSetDefinition setExamplesCount(int examplesCount){
-		this.examplesCount = examplesCount;
-		return this;
-	}
-	
-	protected int getExamplesCount(){
-		return examplesCount;
-	}
-	
-	protected String getName(){
-		return name;
-	}
-	
-	public int getLabelsCount(){
-		int numLabels = 0;
-		for(Attribute attribute : attributes){
-			if(attribute.isLabelAttribute()){
-				numLabels++;
-			}
-		}
-		return numLabels;
-	}
-	
+public class DataSetDefinition {
+
+    private final List<Attribute> attributes;
+    private int examplesCount = 100;
+    private final String name;
+
+    public DataSetDefinition(String dataSetName) {
+        name = dataSetName;
+        attributes = new ArrayList<Attribute>();
+    }
+
+    public DataSetDefinition addAttribute(Attribute attribute) {
+        attributes.add(attribute);
+        return this;
+    }
+
+    protected List<Attribute> getAttributes() {
+        return attributes;
+    }
+
+    public DataSetDefinition setExamplesCount(int examplesCount) {
+        this.examplesCount = examplesCount;
+        return this;
+    }
+
+    protected int getExamplesCount() {
+        return examplesCount;
+    }
+
+    protected String getName() {
+        return name;
+    }
+
+    public int getLabelsCount() {
+        int numLabels = 0;
+        for (Attribute attribute : attributes) {
+            if (attribute.isLabelAttribute()) {
+                numLabels++;
+            }
+        }
+        return numLabels;
+    }
+
 }

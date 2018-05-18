@@ -15,10 +15,6 @@
  */
 package mulan.classifier.transformation;
 
-import java.util.Arrays;
-import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import mulan.classifier.MultiLabelOutput;
 import mulan.core.Util;
 import mulan.data.LabelSet;
@@ -27,6 +23,11 @@ import mulan.transformations.LabelPowersetTransformation;
 import weka.classifiers.Classifier;
 import weka.core.Instance;
 import weka.core.Instances;
+
+import java.util.Arrays;
+import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * <p>Implementation of the label powerset (LP) algorithm.</p>

@@ -1,18 +1,17 @@
 package mulan.regressor.malsar;
 
-import java.util.Arrays;
-
 import matlabcontrol.MatlabProxy;
 import matlabcontrol.extensions.MatlabTypeConverter;
 import weka.core.Instances;
 
+import java.util.Arrays;
+
 /**
  * TODO Add publication info for this method!
- * 
- * @author Eleftherios Spyromitros-Xioufis
  *
+ * @author Eleftherios Spyromitros-Xioufis
  */
-public class Dirty extends MalsarWrapper{
+public class Dirty extends MalsarWrapper {
 
     /**
      * Number of internal cv folds used for parameter optimization
@@ -23,7 +22,7 @@ public class Dirty extends MalsarWrapper{
      * The values of the constant c used in computation of regularization weights lambda_b and
      * lambda_s. The following values were selected based on Jalali et al.
      */
-    protected double[] c = { 0.01, 0.1, 1, 10, 100 }; // Jalali
+    protected double[] c = {0.01, 0.1, 1, 10, 100}; // Jalali
 
     protected int numScalingSteps = 5;
 

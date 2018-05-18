@@ -20,9 +20,10 @@
  */
 package mulan.data;
 
+import weka.core.Utils;
+
 import java.io.Serializable;
 import java.util.ArrayList;
-import weka.core.Utils;
 
 /**
  * Class that handles labelsets <p>
@@ -76,6 +77,7 @@ public class LabelSet implements Serializable, Comparable<LabelSet> {
             return false; //could perhaps allow comparison with double array
         }
     }
+
     /**
      * A cached count of the set size. Observe that the set
      * size is not the same as the size of the double array.
@@ -85,6 +87,7 @@ public class LabelSet implements Serializable, Comparable<LabelSet> {
     /**
      * The number of set members. Calculated on first call and
      * cached for subsequent calls.
+     *
      * @return The number of set members
      */
     public int size() {
@@ -97,6 +100,7 @@ public class LabelSet implements Serializable, Comparable<LabelSet> {
 
     /**
      * Get an array representation of this set.
+     *
      * @return a copy of the underlying array.
      */
     public double[] toDoubleArray() {
@@ -109,6 +113,7 @@ public class LabelSet implements Serializable, Comparable<LabelSet> {
 
     /**
      * Get an array representation of this set.
+     *
      * @return a copy of the underlying array.
      */
     public boolean[] toBooleanArray() {
@@ -137,6 +142,7 @@ public class LabelSet implements Serializable, Comparable<LabelSet> {
 
     /**
      * Constructs a bitstring from the current labelset.
+     *
      * @return the bitstring.
      */
     public String toBitString() {
@@ -210,7 +216,6 @@ public class LabelSet implements Serializable, Comparable<LabelSet> {
     }
 
     /**
-     *
      * @param l1 a labelset
      * @param l2 another labelset
      * @return their interesection

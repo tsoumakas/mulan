@@ -25,7 +25,7 @@ import weka.core.Instances;
 
 /**
  * The interface for single-label multi-class transformations.
- * 
+ *
  * @author Stavros Bakirtzoglou
  * @version 2012.02.02
  */
@@ -33,7 +33,7 @@ public interface MultiClassTransformation {
 
     /**
      * Transforms a multi-label dataset to a multi-class single label dataset
-     * 
+     *
      * @param dataSet a multi-label dataset
      * @return a single-label multi-class dataset
      * @throws java.lang.Exception Potential exception thrown. To be handled in an upper level.

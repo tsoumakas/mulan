@@ -17,8 +17,8 @@ package mulan.classifier.meta.thresholding;
 
 import mulan.classifier.meta.MultiLabelMetaLearnerTest;
 import mulan.classifier.transformation.CalibratedLabelRanking;
-import weka.classifiers.trees.M5P;
 import weka.classifiers.trees.J48;
+import weka.classifiers.trees.M5P;
 
 public class ThresholdPredictionTest extends MultiLabelMetaLearnerTest {
 

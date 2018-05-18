@@ -23,37 +23,41 @@ package mulan.classifier.neural.model;
 /**
  * Implements the ReLU activation function.
  * The function output values are from interval (0, +inf).
- * 
+ *
  * @author Ioannis Charitos
  * @version 2017.01.4
  */
 public class ActivationReLU extends ActivationFunction {
 
-	private static final long serialVersionUID = 2L;
-	/** Maximum value of function */
+    private static final long serialVersionUID = 2L;
+    /**
+     * Maximum value of function
+     */
     public final static double MAX = Double.POSITIVE_INFINITY;
-    /** Minimum value of function */
+    /**
+     * Minimum value of function
+     */
     public final static double MIN = 0;
 
-	@Override
-	public double activate(double input) {
-		return (input >= 0) ? input : 0;
-	}
+    @Override
+    public double activate(double input) {
+        return (input >= 0) ? input : 0;
+    }
 
-	@Override
-	public double derivative(double input) {
-		throw new 
-		UnsupportedOperationException("Can't compute a derivative of the ReLU activation function.");
-	}
+    @Override
+    public double derivative(double input) {
+        throw new
+                UnsupportedOperationException("Can't compute a derivative of the ReLU activation function.");
+    }
 
-	@Override
-	public double getMax() {
-		return MAX;
-	}
+    @Override
+    public double getMax() {
+        return MAX;
+    }
 
-	@Override
-	public double getMin() {
-		return MIN;
-	}
+    @Override
+    public double getMin() {
+        return MIN;
+    }
 
 }

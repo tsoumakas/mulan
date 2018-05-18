@@ -20,7 +20,6 @@
  */
 package mulan.classifier.neural;
 
-import java.util.*;
 import mulan.classifier.InvalidDataException;
 import mulan.classifier.MultiLabelLearnerBase;
 import mulan.classifier.MultiLabelOutput;
@@ -40,14 +39,16 @@ import weka.core.TechnicalInformation.Type;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.NominalToBinary;
 
+import java.util.*;
+
 /**
  * <!-- globalinfo-start --> The implementation of Back-Propagation Multi-Label Learning (BPMLL) learner. The
  * learned model is stored in {@link NeuralNet} neural network. The models of the learner built by
  * {@link BPMLLAlgorithm} from given training data set. <br>
  * <!-- globalinfo-end -->
- *
+ * <p>
  * <!-- technical-bibtex-start --> BibTeX:
- * 
+ *
  * <pre>
  * &#64;article{Zhang2006,
  *    author = {Zhang, M.L., Zhou, Z.H.},
@@ -58,13 +59,13 @@ import weka.filters.unsupervised.attribute.NominalToBinary;
  *    year = {2006}
  * }
  * </pre>
- * 
+ *
  * <br>
  * <!-- technical-bibtex-end -->
  *
- * @see BPMLLAlgorithm
  * @author Jozef Vilcek
  * @version 2012.02.27
+ * @see BPMLLAlgorithm
  */
 public class BPMLL extends MultiLabelLearnerBase {
 
@@ -94,6 +95,7 @@ public class BPMLL extends MultiLabelLearnerBase {
 
     /**
      * Creates a new instance of {@link BPMLL} learner.
+     *
      * @param randomnessSeed the seed value for pseudo-random generator
      */
     public BPMLL(long randomnessSeed) {
@@ -150,6 +152,7 @@ public class BPMLL extends MultiLabelLearnerBase {
 
     /**
      * Gets the learning rate. The default value is 0.05.
+     *
      * @return learning rate
      */
     public double getLearningRate() {
@@ -175,6 +178,7 @@ public class BPMLL extends MultiLabelLearnerBase {
 
     /**
      * Gets a value of the regularization cost term for weights decay.
+     *
      * @return regularization cost
      */
     public double getWeightsDecayRegularization() {
@@ -199,6 +203,7 @@ public class BPMLL extends MultiLabelLearnerBase {
     /**
      * Gets number of training epochs.
      * Default value is 100.
+     *
      * @return training epochs
      */
     public int getTrainingEpochs() {
@@ -223,6 +228,7 @@ public class BPMLL extends MultiLabelLearnerBase {
     /**
      * Gets a value if normalization of nominal attributes should take place.
      * Default value is true.
+     *
      * @return a value if normalization of nominal attributes should take place
      */
     public boolean getNormalizeAttributes() {
@@ -279,7 +285,7 @@ public class BPMLL extends MultiLabelLearnerBase {
                 + "{@link NeuralNet} neural network. The models of the learner "
                 + "built by {@link BPMLLAlgorithm} from given training data set.";
     }
-    
+
     @Override
     public TechnicalInformation getTechnicalInformation() {
         TechnicalInformation technicalInfo = new TechnicalInformation(Type.ARTICLE);
@@ -361,7 +367,7 @@ public class BPMLL extends MultiLabelLearnerBase {
      * are numeric or nominal. Nominal attributes are transformed to binary by use of
      * {@link NominalToBinary} filter.
      *
-     * @param dataSet instances data to be checked
+     * @param dataSet         instances data to be checked
      * @param inputAttributes input/feature attributes which format need to be checked
      * @return data set if it passed checks; otherwise <code>null</code>
      */

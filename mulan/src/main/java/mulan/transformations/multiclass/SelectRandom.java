@@ -20,15 +20,17 @@
  */
 package mulan.transformations.multiclass;
 
-import java.util.List;
+import mulan.transformations.RemoveAllLabels;
 import weka.core.Instance;
+
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import mulan.transformations.RemoveAllLabels;
 
 /**
  * Class that implement the Select-Random transformation method
+ *
  * @author Stavros Bakirtzoglou
  * @version 2012.02.02
  */
@@ -37,7 +39,7 @@ public class SelectRandom extends MultiClassTransformationBase {
     /**
      * Transforms a multi-label example to a list containing a single-label
      * multi-class example by randomly selecting one of the labels
-     * 
+     *
      * @param instance the multi-label example
      * @return the list with the single-label multi-class example
      */

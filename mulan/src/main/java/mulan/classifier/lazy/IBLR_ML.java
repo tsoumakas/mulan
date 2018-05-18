@@ -15,27 +15,28 @@
  */
 package mulan.classifier.lazy;
 
-import java.util.ArrayList;
 import mulan.classifier.MultiLabelOutput;
 import mulan.data.DataUtils;
 import mulan.data.MultiLabelInstances;
 import weka.classifiers.Classifier;
 import weka.classifiers.functions.Logistic;
+import weka.core.*;
 import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
-import weka.core.*;
+
+import java.util.ArrayList;
 
 /**
- <!-- globalinfo-start -->
+ * <!-- globalinfo-start -->
  * This class is an implementation of the "IBLR-ML" and "IBLR-ML+" methods for the MULAN package.<br>
  * <br>
  * For more information, see<br>
  * <br>
  * Weiwei Cheng, Eyke Hullermeier (2009). Combining instance-based learning and logistic regression for multilabel classification. Machine Learning. 76(2-3):211-225.
  * <br>
- <!-- globalinfo-end -->
- * 
- <!-- technical-bibtex-start -->
+ * <!-- globalinfo-end -->
+ * <p>
+ * <!-- technical-bibtex-start -->
  * BibTeX:
  * <pre>
  * &#64;article{Cheng2009,
@@ -51,7 +52,7 @@ import weka.core.*;
  * }
  * </pre>
  * <br>
- <!-- technical-bibtex-end -->
+ * <!-- technical-bibtex-end -->
  *
  * @author Weiwei Cheng
  * @author Eleftherios Spyromitros-Xioufis
@@ -66,7 +67,7 @@ public class IBLR_ML extends MultiLabelKNN {
      */
     private Classifier[] classifier;
     /**
-     * By default, IBLR-ML is used. One can change to IBLR-ML+ through the 
+     * By default, IBLR-ML is used. One can change to IBLR-ML+ through the
      * constructor
      */
     private boolean addFeatures = false;
@@ -90,7 +91,7 @@ public class IBLR_ML extends MultiLabelKNN {
      * Full constructor
      *
      * @param numNeighbors the number of nearest neighbors considered
-     * @param addFeatures when true, IBLR-ML+ is used
+     * @param addFeatures  when true, IBLR-ML+ is used
      */
     public IBLR_ML(int numNeighbors, boolean addFeatures) {
         super(numNeighbors);
@@ -134,8 +135,8 @@ public class IBLR_ML extends MultiLabelKNN {
         if (this.getDebug())
             debug("Creating meta-instances");
         for (int i = 0; i < train.numInstances(); i++) {
-            if (this.getDebug() & (i+1) % 100 == 0)
-                debug("Creating meta-instances " + (i+1) + "/" + train.numInstances());
+            if (this.getDebug() & (i + 1) % 100 == 0)
+                debug("Creating meta-instances " + (i + 1) + "/" + train.numInstances());
 
             Instances knn = new Instances(lnn.kNearestNeighbours(train.instance(i), numOfNeighbors));
             /*
@@ -189,7 +190,7 @@ public class IBLR_ML extends MultiLabelKNN {
         // for every label create a corresponding classifier.
         for (int i = 0; i < numLabels; i++) {
             if (this.getDebug())
-                debug("Builing classifier " + (i+1) + "/" + numLabels);
+                debug("Builing classifier " + (i + 1) + "/" + numLabels);
             classifier[i] = new Logistic();
             classifier[i].buildClassifier(trainingDataForLabel[i]);
         }

@@ -15,12 +15,14 @@
  */
 package mulan.classifier.meta;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import mulan.data.*;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import weka.clusterers.EM;
+import weka.core.Attribute;
+import weka.core.Instance;
+import weka.core.Instances;
+import weka.core.converters.ArffSaver;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -30,23 +32,12 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-
-import mulan.data.InvalidDataFormatException;
-import mulan.data.LabelNode;
-import mulan.data.LabelNodeImpl;
-import mulan.data.LabelsMetaData;
-import mulan.data.LabelsMetaDataImpl;
-import mulan.data.MultiLabelInstances;
-import mulan.data.DataUtils;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
-import weka.clusterers.EM;
-import weka.core.Attribute;
-import weka.core.Instance;
-import weka.core.Instances;
-import weka.core.converters.ArffSaver;
+import java.io.File;
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Class that builds a hierarchy on flat labels of given multi-label data.
@@ -64,9 +55,9 @@ public class HierarchyBuilder implements Serializable {
 
     /**
      * Constructs a new instance based on given number of partitions and method
-     * 
+     *
      * @param partitions the number of partitions
-     * @param method the partitioning method
+     * @param method     the partitioning method
      */
     public HierarchyBuilder(int partitions, Method method) {
         numPartitions = partitions;
@@ -151,10 +142,10 @@ public class HierarchyBuilder implements Serializable {
 
     /**
      * Builds the hierarchy and constructs auxiliary files
-     * 
-     * @param mlData the flat training data
+     *
+     * @param mlData   the flat training data
      * @param arffName the name of the hierachical data
-     * @param xmlName the filename for the hirearchy
+     * @param xmlName  the filename for the hirearchy
      * @return the hierarchical data
      * @throws Exception Potential exception thrown. To be handled in an upper level.
      */
@@ -231,7 +222,7 @@ public class HierarchyBuilder implements Serializable {
         int[] labelIndices = mlData.getLabelIndices();
         for (int i = 0; i < labels.size(); i++) {
             int index = -1;
-            for (int k=0; k<labelIndices.length; k++) {
+            for (int k = 0; k < labelIndices.length; k++) {
                 if (mlData.getDataSet().attribute(labelIndices[k]).name().equals(labels.get(i))) {
                     index = labelIndices[k];
                 }
@@ -302,7 +293,7 @@ public class HierarchyBuilder implements Serializable {
      * Creates the hierarchical dataset according to the original multilabel
      * instances object and the constructed label hierarchy
      *
-     * @param mlData the original multilabel instances
+     * @param mlData   the original multilabel instances
      * @param metaData the metadata of the constructed label hierarchy
      * @return the produced dataset
      * @throws InvalidDataFormatException In case of unexpected data format, checked exception due to instantiated MutlilabelInstances.
@@ -322,7 +313,7 @@ public class HierarchyBuilder implements Serializable {
             atts.add(dataSet.attribute(i));
         }
 
-        ArrayList<String>  labelValues = new ArrayList<String> ();
+        ArrayList<String> labelValues = new ArrayList<String>();
         labelValues.add("0");
         labelValues.add("1");
 
@@ -425,11 +416,17 @@ public class HierarchyBuilder implements Serializable {
      * The different types of distributing labels to children nodes
      */
     public enum Method {
-        /** random balanced distribution of labels */
+        /**
+         * random balanced distribution of labels
+         */
         Random,
-        /** distribution based on label similarity */ 
+        /**
+         * distribution based on label similarity
+         */
         Clustering,
-        /** balanced distribution based on label similarity */
+        /**
+         * balanced distribution based on label similarity
+         */
         BalancedClustering
     }
 }

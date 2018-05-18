@@ -20,24 +20,18 @@
  */
 package mulan.data;
 
+import mulan.core.ArgumentNullException;
+
+import javax.xml.bind.annotation.*;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
-
-import mulan.core.ArgumentNullException;
-
 /**
- * Implementation of {@link LabelNode}, representing a label attribute and its connection 
- * within a hierarchy of labels. 
- * 
+ * Implementation of {@link LabelNode}, representing a label attribute and its connection
+ * within a hierarchy of labels.
+ *
  * @author Jozef Vilcek
  */
 @XmlRootElement(name = "label", namespace = LabelsBuilder.LABELS_SCHEMA_NAMESPACE)
@@ -54,6 +48,7 @@ public class LabelNodeImpl implements LabelNode, Serializable {
 
     /**
      * Creates a new instance of {@link LabelNodeImpl}.
+     *
      * @param name the name of the label attribute this node represents
      */
     public LabelNodeImpl(String name) {
@@ -82,7 +77,7 @@ public class LabelNodeImpl implements LabelNode, Serializable {
      *
      * @param node the {@link LabelNode} to be removed
      * @return true if node was actually removed; false node was not in child nodes set
-     * @throws ArgumentNullException if specified {@link LabelNode} parameter is null
+     * @throws ArgumentNullException    if specified {@link LabelNode} parameter is null
      * @throws IllegalArgumentException if {@link LabelNode} being added has same name as this {@link LabelNode} instance (parent)
      */
     public boolean addChildNode(LabelNode node) {

@@ -21,18 +21,18 @@ package mulan.data;
 
 /**
  * An interface for various label clustering algorithms.
- * 
+ *
  * @author Lena Chekina (lenat@bgu.ac.il)
  * @version 05.05.2011
  */
 public interface LabelClustering {
 
-	/**
-	 * Returns a label set partitioning into clusters
-	 * 
-	 * @param trainingSet a set of training examples
-	 * @return a label set partitioning
-	 */
-	public int[][] determineClusters(MultiLabelInstances trainingSet);
+    /**
+     * Returns a label set partitioning into clusters
+     *
+     * @param trainingSet a set of training examples
+     * @return a label set partitioning
+     */
+    public int[][] determineClusters(MultiLabelInstances trainingSet);
 
 }

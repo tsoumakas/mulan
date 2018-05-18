@@ -20,15 +20,16 @@ import mulan.evaluation.GroundTruth;
 
 /**
  * Interface for a measure, used to evaluate the performance of a multi-label learner
- * on when performing multi-label learning task. Various measures capture different 
- * characteristics of a learning task performance. 
- * 
+ * on when performing multi-label learning task. Various measures capture different
+ * characteristics of a learning task performance.
+ *
  * @author Jozef Vilcek
  */
 public interface Measure {
 
     /**
      * Gets the name of a measure.
+     *
      * @return the name of a measure.
      */
     String getName();
@@ -57,7 +58,7 @@ public interface Measure {
      * a measure is	returned and result is added to the cumulated measure value.
      *
      * @param prediction the prediction for which measure has to be computed
-     * @param truth ground truth for given prediction
+     * @param truth      ground truth for given prediction
      * @see Measure#getValue()
      */
     void update(MultiLabelOutput prediction, GroundTruth truth);
@@ -66,7 +67,7 @@ public interface Measure {
      * Creates a deep copy of the given measure using serialization.
      *
      * @return a deep copy of the measure
-     * @exception Exception if an error occurs while making copy of the measure.
+     * @throws Exception if an error occurs while making copy of the measure.
      */
     public Measure makeCopy() throws Exception;
 
@@ -75,10 +76,10 @@ public interface Measure {
      * from beginning (e.g. for a new series of outputs from learning task).
      */
     void reset();
-    
+
     /**
      * Returns true if the measure handles missing ground truth values, false otherwise.
-     * 
+     *
      * @return true if missing values are handled, false otherwise
      */
     public boolean handlesMissingValues();

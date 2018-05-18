@@ -26,13 +26,13 @@ import java.util.List;
 /**
  * Common interface for interaction with a neural network representation.
  * <br>
- * Neural Network structure is composed of neurons organized into layers. 
+ * Neural Network structure is composed of neurons organized into layers.
  * There is one input layer, zero or more hidden layers and one output layer.
  * The input layer is used just to store and forward input pattern of the network to the first
- * hidden layer for processing. Input layer typically do not process input pattern. 
- * Neurons of input layer are assumed to have one input weight equal to 1, bias weight 
+ * hidden layer for processing. Input layer typically do not process input pattern.
+ * Neurons of input layer are assumed to have one input weight equal to 1, bias weight
  * equal to 0 and use linear activation function.
- * 
+ *
  * @author Jozef Vilcek
  * @version 2012.02.27
  */
@@ -89,7 +89,7 @@ public interface NeuralNet {
      * which is a result of last processed input pattern.
      *
      * @return the output of the network.
-     * 			Returns null if network is reset or no input pattern was processed
+     * Returns null if network is reset or no input pattern was processed
      */
     double[] getOutput();
 

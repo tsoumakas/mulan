@@ -15,12 +15,13 @@
  */
 package mulan.transformations;
 
-import java.io.Serializable;
-import java.util.ArrayList;
 import mulan.data.MultiLabelInstances;
 import weka.core.Attribute;
 import weka.core.Instance;
 import weka.core.Instances;
+
+import java.io.Serializable;
+import java.util.ArrayList;
 
 /**
  * Class that implements the PT6 transformation
@@ -34,7 +35,6 @@ public class IncludeLabelsTransformation implements Serializable {
     private int[] labelIndices;
 
     /**
-     *
      * @param mlData multi-label data
      * @return transformed instances
      * @throws Exception Potential exception thrown. To be handled in an upper level.

@@ -15,16 +15,17 @@
  */
 package mulan.evaluation.loss;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
 import mulan.data.LabelNode;
 import mulan.data.LabelsMetaData;
 import mulan.data.MultiLabelInstances;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
 /**
- * Implementation of the hierarchical loss function. 
- * 
+ * Implementation of the hierarchical loss function.
+ *
  * @author George Saridis
  * @author Grigorios Tsoumakas
  * @version 2010.12.10
@@ -68,8 +69,8 @@ public class HierarchicalLoss extends BipartitionLossFunctionBase {
      * Recursively calculates the hierarchical loss
      *
      * @param bipartition the bipartition
-     * @param truth the ground truth
-     * @param children the children of the current node
+     * @param truth       the ground truth
+     * @param children    the children of the current node
      */
     private void calculateHLoss(boolean[] bipartition, boolean[] truth, Set<LabelNode> children) {
         for (LabelNode child : children) {

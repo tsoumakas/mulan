@@ -34,8 +34,8 @@ public interface MultiLabelLossFunction {
 
     /**
      * Computes the loss function
-     * 
-     * @param prediction the prediction of the learner for an example
+     *
+     * @param prediction  the prediction of the learner for an example
      * @param groundTruth the ground truth of the example
      * @return the value of the loss function
      */

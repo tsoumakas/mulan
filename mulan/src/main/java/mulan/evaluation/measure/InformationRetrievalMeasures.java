@@ -34,9 +34,9 @@ public class InformationRetrievalMeasures {
      * truth nor the algorithm's prediction is the empty set and their
      * intersection is empty, then we consider F equal to 0.
      *
-     * @param tp true positives
-     * @param fp false positives
-     * @param fn false negatives
+     * @param tp   true positives
+     * @param fp   false positives
+     * @param fn   false negatives
      * @param beta controls the relative importance of recall versus precision
      * @return the value of the f-measure
      */

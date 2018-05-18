@@ -15,8 +15,6 @@
  */
 package mulan.examples;
 
-import java.util.Arrays;
-import java.util.List;
 import mulan.classifier.MultiLabelLearner;
 import mulan.classifier.meta.EnsembleOfSubsetLearners;
 import mulan.classifier.meta.SubsetLearner;
@@ -26,6 +24,9 @@ import mulan.evaluation.Evaluation;
 import mulan.evaluation.Evaluator;
 import weka.classifiers.trees.J48;
 import weka.core.Utils;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * A main class with examples for SubsetLearner, GreedyLabelClustering and
@@ -40,7 +41,7 @@ public class SubsetLearnerExamples {
      * Executes this example
      *
      * @param args command-line arguments -path, -filestem,
-     * e.g. -path dataset/ -filestem emotions
+     *             e.g. -path dataset/ -filestem emotions
      * @throws Exception exceptions not caught
      */
     public static void main(String[] args) throws Exception {
@@ -66,8 +67,8 @@ public class SubsetLearnerExamples {
          * for Conditional labels dependence identification.
          */
         String[] methodsToCompare = {"GreedyLabelClustering-U", "EnsembleOfSubsetLearners-U",
-            "GreedyLabelClustering-C", "EnsembleOfSubsetLearners-C", "SubsetLearner",
-            "UnconditionalLDI", "ConditionalLDI"};
+                "GreedyLabelClustering-C", "EnsembleOfSubsetLearners-C", "SubsetLearner",
+                "UnconditionalLDI", "ConditionalLDI"};
         Evaluator eval = new Evaluator();
         Evaluation results;
         long s1, s2, s3;

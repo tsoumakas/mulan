@@ -16,7 +16,7 @@
 package mulan.classifier.transformation;
 
 public class AdaBoostMHTest extends TransformationBasedMultiLabelLearnerTest {
-    
+
     @Override
     public void setUp() {
         learner = new AdaBoostMH();

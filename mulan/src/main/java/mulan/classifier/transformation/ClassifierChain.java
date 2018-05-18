@@ -63,8 +63,8 @@ public class ClassifierChain extends TransformationBasedMultiLabelLearner {
      * Creates a new instance
      *
      * @param classifier the base-level classification algorithm that will be
-     * used for training each of the binary models
-     * @param aChain contains the order of the label indexes [0..numLabels-1] 
+     *                   used for training each of the binary models
+     * @param aChain     contains the order of the label indexes [0..numLabels-1]
      */
     public ClassifierChain(Classifier classifier, int[] aChain) {
         super(classifier);
@@ -75,7 +75,7 @@ public class ClassifierChain extends TransformationBasedMultiLabelLearner {
      * Creates a new instance
      *
      * @param classifier the base-level classification algorithm that will be
-     * used for training each of the binary models
+     *                   used for training each of the binary models
      */
     public ClassifierChain(Classifier classifier) {
         super(classifier);

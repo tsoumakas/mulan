@@ -15,9 +15,6 @@
  */
 package mulan.transformations.regression;
 
-import java.io.Serializable;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import mulan.data.DataUtils;
 import mulan.data.MultiLabelInstances;
 import weka.core.Instance;
@@ -26,9 +23,13 @@ import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.Add;
 import weka.filters.unsupervised.attribute.Remove;
 
+import java.io.Serializable;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  * Class that implements the single target transformation.
- * 
+ *
  * @author Eleftherios Spyromitros-Xioufis
  * @version 2014.04.01
  */
@@ -43,7 +44,7 @@ public class SingleTargetTransformation implements Serializable {
 
     /**
      * Constructor
-     * 
+     *
      * @param mlData a multi-target regression dataset
      */
     public SingleTargetTransformation(MultiLabelInstances mlData) {
@@ -73,8 +74,8 @@ public class SingleTargetTransformation implements Serializable {
 
     /**
      * Remove all target attributes except labelToKeep
-     * 
-     * @param instance the instance to be transformed
+     *
+     * @param instance     the instance to be transformed
      * @param targetToKeep the target to keep
      * @return transformed Instance
      */
@@ -95,7 +96,7 @@ public class SingleTargetTransformation implements Serializable {
 
     /**
      * Remove all target attributes except targetToKeep
-     * 
+     *
      * @param targetToKeep the target to keep
      * @return transformed Instances object
      * @throws Exception Potential exception thrown. To be handled in an upper level.
@@ -114,10 +115,10 @@ public class SingleTargetTransformation implements Serializable {
 
     /**
      * Remove all target attributes except that at indexToKeep.
-     * 
-     * @param train -
+     *
+     * @param train         -
      * @param targetIndices the target indices to tranform
-     * @param indexToKeep the target to keep
+     * @param indexToKeep   the target to keep
      * @return transformed Instances object
      * @throws Exception Potential exception thrown. To be handled in an upper level.
      */
@@ -147,10 +148,10 @@ public class SingleTargetTransformation implements Serializable {
 
     /**
      * Remove all target attributes except target at position indexToKeep.
-     * 
-     * @param instance the instance to be transformed
+     *
+     * @param instance      the instance to be transformed
      * @param targetIndices the target indices to transform
-     * @param indexToKeep the target to keep
+     * @param indexToKeep   the target to keep
      * @return transformed Instance
      */
     public static Instance transformInstance(Instance instance, int[] targetIndices, int indexToKeep) {

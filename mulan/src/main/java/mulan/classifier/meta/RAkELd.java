@@ -15,9 +15,6 @@
  */
 package mulan.classifier.meta;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Random;
 import mulan.classifier.MultiLabelLearner;
 import mulan.classifier.MultiLabelOutput;
 import mulan.classifier.transformation.BinaryRelevance;
@@ -31,16 +28,19 @@ import weka.core.TechnicalInformation.Type;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.Remove;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Random;
+
 /**
- *
- <!-- globalinfo-start -->
+ * <!-- globalinfo-start -->
  * Class implementing a generalized version of the RAkEL-d (RAndom k-labELsets) algorithm with disjoint labelsets. For more information, see<br>
  * <br>
  * Grigorios Tsoumakas, Ioannis Katakis, Ioannis Vlahavas (2011). Random k-Labelsets for Multi-Label Classification. IEEE Transactions on Knowledge and Data Engineering. 23(7):1079-1089.
  * <br>
- <!-- globalinfo-end -->
- *
- <!-- technical-bibtex-start -->
+ * <!-- globalinfo-end -->
+ * <p>
+ * <!-- technical-bibtex-start -->
  * BibTeX:
  * <pre>
  * &#64;article{Tsoumakas2011,
@@ -54,7 +54,7 @@ import weka.filters.unsupervised.attribute.Remove;
  * }
  * </pre>
  * <br>
- <!-- technical-bibtex-end -->
+ * <!-- technical-bibtex-end -->
  *
  * @author Ioannis Katakis
  * @author Grigorios Tsoumakas
@@ -110,7 +110,7 @@ public class RAkELd extends MultiLabelMetaLearner {
 
     /**
      * Construct a new instance based on the given multi-label learner
-     * 
+     *
      * @param baseLearner a multi-label learner
      */
     public RAkELd(MultiLabelLearner baseLearner) {
@@ -119,11 +119,11 @@ public class RAkELd extends MultiLabelMetaLearner {
     }
 
     /**
-     * Constructs a new instance based on the given multi-label learner and 
+     * Constructs a new instance based on the given multi-label learner and
      * size of subset
-     * 
+     *
      * @param baseLearner the multi-label learner
-     * @param subset the size of the subset
+     * @param subset      the size of the subset
      */
     public RAkELd(MultiLabelLearner baseLearner, int subset) {
         super(baseLearner);
@@ -134,7 +134,7 @@ public class RAkELd extends MultiLabelMetaLearner {
 
     /**
      * Sets the seed for random number generation
-     * 
+     *
      * @param x the seed
      */
     public void setSeed(int x) {
@@ -144,6 +144,7 @@ public class RAkELd extends MultiLabelMetaLearner {
 
     /**
      * Sets the size of the subsets
+     *
      * @param size size of subsets
      */
     public void setSizeOfSubset(int size) {
@@ -152,6 +153,7 @@ public class RAkELd extends MultiLabelMetaLearner {
 
     /**
      * Returns the size of the subsets
+     *
      * @return the size of the subsets
      */
     public int getSizeOfSubset() {
@@ -195,9 +197,9 @@ public class RAkELd extends MultiLabelMetaLearner {
 
     /**
      * Updates the current ensemble by training a specific classifier
-     * 
+     *
      * @param mlTrainData the training data
-     * @param model the model to train
+     * @param model       the model to train
      * @throws Exception Potential exception thrown. To be handled in an upper level.
      */
     public void updateClassifier(MultiLabelInstances mlTrainData, int model) throws Exception {
@@ -275,7 +277,8 @@ public class RAkELd extends MultiLabelMetaLearner {
 
     /**
      * Returns a string describing classifier
-     * @return a description suitable for displaying 
+     *
+     * @return a description suitable for displaying
      */
     public String globalInfo() {
 

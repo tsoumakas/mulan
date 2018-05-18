@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <labels xmlns="http://mulan.sourceforge.net/labels">
-<label name="city"></label>
-<label name="mountain"></label>
-<label name="sky"></label>
-<label name="sun"></label>
-<label name="water"></label>
-<label name="tree"></label>
+    <label name="city"></label>
+    <label name="mountain"></label>
+    <label name="sky"></label>
+    <label name="sun"></label>
+    <label name="water"></label>
+    <label name="tree"></label>
 </labels>

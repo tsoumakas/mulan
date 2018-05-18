@@ -20,7 +20,9 @@
  */
 package mulan.data;
 
-import java.io.*;
+import mulan.core.ArgumentNullException;
+import org.xml.sax.SAXException;
+
 import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -29,20 +31,21 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.helpers.DefaultValidationEventHandler;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
-import mulan.core.ArgumentNullException;
-import org.xml.sax.SAXException;
+import java.io.*;
 
 /**
- * The {@link LabelsBuilder} is responsible for creation of {@link LabelsMetaDataImpl} instance 
- * from specified XML file source. The builder ensures XML source validity against XML schema. 
- * 
+ * The {@link LabelsBuilder} is responsible for creation of {@link LabelsMetaDataImpl} instance
+ * from specified XML file source. The builder ensures XML source validity against XML schema.
+ *
  * @author Jozef Vilcek
  * @version 2012.02.26
  */
 public final class LabelsBuilder {
 
     private static final String LABELS_SCHEMA_SOURCE = "mulan/data/labels.xsd";
-    /** The namespace of the schema for label representation */
+    /**
+     * The namespace of the schema for label representation
+     */
     protected static final String LABELS_SCHEMA_NAMESPACE = "http://mulan.sourceforge.net/labels";
     //private static final String LABELS_SCHEMA_LOCATION_ID = "http://mulan.sourceforge.net/schemata/labels.xsd";
     private static final String SCHEMA_FULL_CHECKING_FEATURE = "http://apache.org/xml/features/validation/schema-full-checking";
@@ -52,9 +55,9 @@ public final class LabelsBuilder {
      *
      * @param xmlLabelsFilePath the path to XML file containing labels definition
      * @return the {@link LabelsMetaData} instance
-     * @throws ArgumentNullException if specified path to XML file is null
+     * @throws ArgumentNullException    if specified path to XML file is null
      * @throws IllegalArgumentException if file under specified path does not exists
-     * @throws LabelsBuilderException if specified file can not be read/opened
+     * @throws LabelsBuilderException   if specified file can not be read/opened
      */
     public static LabelsMetaData createLabels(String xmlLabelsFilePath) throws LabelsBuilderException {
 
@@ -76,7 +79,7 @@ public final class LabelsBuilder {
         } catch (FileNotFoundException e) {
             throw new LabelsBuilderException(
                     String.format("Error when creating input stream for the file under path: '%s'.",
-                    xmlLabelsFilePath));
+                            xmlLabelsFilePath));
         } finally {
             if (xmlFileInputStream != null) {
                 try {
@@ -94,9 +97,9 @@ public final class LabelsBuilder {
      *
      * @param inputStream the input stream containing labels definition in XML format
      * @return the {@link LabelsMetaData} instance
-     * @throws ArgumentNullException if specified input stream is null
+     * @throws ArgumentNullException  if specified input stream is null
      * @throws LabelsBuilderException if any error occur when validating XML against
-     * 	schema or when creating labels data form specified input stream
+     *                                schema or when creating labels data form specified input stream
      */
     public static LabelsMetaData createLabels(InputStream inputStream) throws LabelsBuilderException {
 
@@ -137,10 +140,10 @@ public final class LabelsBuilder {
      * Dumps specified labels meta-data into the file in XML format.
      * If the file already exists, the content will be overwritten.
      *
-     * @param labelsMetaData the meta-data which has to be dumped into the file
+     * @param labelsMetaData  the meta-data which has to be dumped into the file
      * @param xmlDumpFilePath the path to the file where meta-data should be dumped
      * @throws LabelsBuilderException if specified file can not be read/opened
-     * @throws ArgumentNullException if path to the file is not specified
+     * @throws ArgumentNullException  if path to the file is not specified
      */
     public static void dumpLabels(LabelsMetaData labelsMetaData, String xmlDumpFilePath) throws LabelsBuilderException {
 
@@ -176,10 +179,10 @@ public final class LabelsBuilder {
      * Dumps specified labels meta-data, in XML format, into the specified {@link OutputStream}.
      *
      * @param labelsMetaData the meta-data which has to be dumped
-     * @param outputStream the output stream where XML dup will be written
+     * @param outputStream   the output stream where XML dup will be written
      * @throws LabelsBuilderException if error occurs during the serialization of meta-data to
-     * 	the XML format of resulting XML is not valid against the schema
-     * @throws ArgumentNullException if specified output strema is null.
+     *                                the XML format of resulting XML is not valid against the schema
+     * @throws ArgumentNullException  if specified output strema is null.
      */
     public static void dumpLabels(LabelsMetaData labelsMetaData, OutputStream outputStream) throws LabelsBuilderException {
 

@@ -15,13 +15,14 @@
  */
 package mulan.dimensionalityReduction;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import mulan.data.MultiLabelInstances;
 import mulan.transformations.multiclass.MultiClassTransformation;
 import weka.attributeSelection.ASEvaluation;
 import weka.attributeSelection.AttributeEvaluator;
 import weka.core.Instances;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * <p> Performs attribute evaluation using single-label transformations. For
@@ -35,12 +36,16 @@ import weka.core.Instances;
  */
 public class MultiClassAttributeEvaluator extends ASEvaluation implements AttributeEvaluator {
 
-    /** The single-label attribute evaluator to use underneath */
+    /**
+     * The single-label attribute evaluator to use underneath
+     */
     private ASEvaluation baseAttributeEvaluator;
 
-    /** Constructor that uses an evaluator on a multi-label dataset using a transformation
-     * @param x the evaluator type (weka type)
-     * @param dt mutliclass transformation
+    /**
+     * Constructor that uses an evaluator on a multi-label dataset using a transformation
+     *
+     * @param x      the evaluator type (weka type)
+     * @param dt     mutliclass transformation
      * @param mlData multi-label instances for evaluation
      */
     public MultiClassAttributeEvaluator(ASEvaluation x, MultiClassTransformation dt, MultiLabelInstances mlData) {

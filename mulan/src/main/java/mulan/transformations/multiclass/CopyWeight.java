@@ -20,11 +20,13 @@
  */
 package mulan.transformations.multiclass;
 
-import java.util.List;
 import weka.core.Instance;
+
+import java.util.List;
 
 /**
  * Class that implement the Copy-Weight transformation method
+ *
  * @author Stavros Bakirtzoglou
  * @version 2012.02.02
  */

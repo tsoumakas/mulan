@@ -1,12 +1,5 @@
 package mulan.regressor.transformation;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import mulan.classifier.InvalidDataException;
 import mulan.classifier.MultiLabelOutput;
 import mulan.data.MultiLabelInstances;
@@ -19,12 +12,19 @@ import weka.core.matrix.LinearRegression;
 import weka.core.matrix.Matrix;
 import weka.filters.unsupervised.attribute.Remove;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  * <p>
  * Implementation of the Random Linear Target Combinations method.<br>
  * <em>G. Tsoumakas, E. Spyromitros-Xioufis, A. Vrekou, I. Vlahavas, "Multi-Target Regression via Random Linear Target Combinations", Proc. of ECML PKDD 2014, Springer, Nancy, France, 2014.</em>
  * </p>
- * 
+ *
  * @author Grigorios Tsoumakas
  * @author Aikaterini Vrekou
  * @author Eleftherios Spyromitros-Xioufis
@@ -32,24 +32,30 @@ import weka.filters.unsupervised.attribute.Remove;
  */
 public class RandomLinearCombinations extends TransformationBasedMultiTargetRegressor {
 
-    /** The ensemble models */
+    /**
+     * The ensemble models
+     */
     private FilteredClassifier[] models;
     private double[][] coefficients;
 
-    /** Matrix containing the coefficients for regression */
+    /**
+     * Matrix containing the coefficients for regression
+     */
     private Matrix coefficientsMatrix;
 
     private int numCombinations;
     private int nonZero;
     private Random generator;
 
-    /** for speeding up evaluation by training once and testing many */
+    /**
+     * for speeding up evaluation by training once and testing many
+     */
     private int numModels;
 
     private static final long serialVersionUID = 1L;
 
     public RandomLinearCombinations(int numCombinations, long aSeed, Classifier baseRegressor,
-            int nonZero) {
+                                    int nonZero) {
         super(baseRegressor);
         this.numCombinations = numCombinations;
         this.nonZero = nonZero;
@@ -60,9 +66,9 @@ public class RandomLinearCombinations extends TransformationBasedMultiTargetRegr
     /**
      * This function is used to speed-up experiments with different number of models, which we built only
      * once, but test multiple times.
-     * 
+     *
      * @param instance the instance to predict
-     * @param model the model to use
+     * @param model    the model to use
      * @return prediction of model on instance
      */
     public double getPredictionOfModel(Instance instance, int model) {
@@ -150,7 +156,7 @@ public class RandomLinearCombinations extends TransformationBasedMultiTargetRegr
 
     /**
      * Sets the number of models to use during prediction
-     * 
+     *
      * @param numModels the number of models to use
      */
     public void setNumModels(int numModels) {

@@ -24,7 +24,7 @@ import mulan.core.MulanException;
 
 /**
  * The exception is thrown when format of the data is not valid.
- * 
+ *
  * @author Jozef Vilcek
  */
 public class InvalidDataFormatException extends MulanException {
@@ -33,6 +33,7 @@ public class InvalidDataFormatException extends MulanException {
 
     /**
      * Creates a new instance of {@link InvalidDataFormatException} with detail mesage.
+     *
      * @param message the detail message
      */
     public InvalidDataFormatException(String message) {
@@ -44,7 +45,7 @@ public class InvalidDataFormatException extends MulanException {
      * and nested exception.
      *
      * @param message the detail message
-     * @param cause the nested exception
+     * @param cause   the nested exception
      */
     public InvalidDataFormatException(String message, Throwable cause) {
         super(message, cause);

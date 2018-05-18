@@ -1,11 +1,5 @@
 package mulan.regressor.transformation;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Random;
-
 import mulan.classifier.MultiLabelOutput;
 import mulan.data.DataUtils;
 import mulan.data.MultiLabelInstances;
@@ -19,6 +13,8 @@ import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.AddID;
 import weka.filters.unsupervised.attribute.Remove;
 import weka.filters.unsupervised.instance.Resample;
+
+import java.util.*;
 
 /**
  * This class implements the Regressor Chain (RC) method. 4 alternative methods to obtain the values of the
@@ -84,7 +80,9 @@ public class RegressorChain extends TransformationBasedMultiTargetRegressor {
      */
     private Instances[] chainRegressorsTrainSets;
 
-    /** The regressors of the chain. */
+    /**
+     * The regressors of the chain.
+     */
     private Classifier[] chainRegressors;
 
     /**
@@ -120,7 +118,7 @@ public class RegressorChain extends TransformationBasedMultiTargetRegressor {
      * Creates a new instance with the given base regressor and chain ordering.
      *
      * @param baseRegressor the base regression algorithm that will be used
-     * @param aChain a chain ordering
+     * @param aChain        a chain ordering
      * @throws Exception Potential exception thrown. To be handled in an upper level.
      */
     public RegressorChain(Classifier baseRegressor, int[] aChain) throws Exception {

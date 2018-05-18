@@ -15,9 +15,6 @@
  */
 package mulan.classifier.meta;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Random;
 import mulan.classifier.MultiLabelLearner;
 import mulan.classifier.MultiLabelOutput;
 import mulan.classifier.transformation.BinaryRelevance;
@@ -31,15 +28,19 @@ import weka.core.TechnicalInformation.Type;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.Remove;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Random;
+
 /**
- <!-- globalinfo-start -->
+ * <!-- globalinfo-start -->
  * Class implementing a generalized version of the RAkEL (RAndom k-labELsets) algorithm. For more information, see<br>
  * <br>
  * Grigorios Tsoumakas, Ioannis Katakis, Ioannis Vlahavas (2011). Random k-Labelsets for Multi-Label Classification. IEEE Transactions on Knowledge and Data Engineering. 23(7):1079-1089.
  * <br>
- <!-- globalinfo-end -->
- *
- <!-- technical-bibtex-start -->
+ * <!-- globalinfo-end -->
+ * <p>
+ * <!-- technical-bibtex-start -->
  * BibTeX:
  * <pre>
  * &#64;article{Tsoumakas2011,
@@ -53,7 +54,7 @@ import weka.filters.unsupervised.attribute.Remove;
  * }
  * </pre>
  * <br>
- <!-- technical-bibtex-end -->
+ * <!-- technical-bibtex-end -->
  *
  * @author Grigorios Tsoumakas
  * @version 2012.1.27
@@ -118,7 +119,7 @@ public class RAkEL extends MultiLabelMetaLearner {
 
     /**
      * Creates an instance based on a given multi-label learner
-     * 
+     *
      * @param baseLearner the multi-label learner
      */
     public RAkEL(MultiLabelLearner baseLearner) {
@@ -126,12 +127,12 @@ public class RAkEL extends MultiLabelMetaLearner {
     }
 
     /**
-     * Creates an instance given a specific multi-label learner, number of 
+     * Creates an instance given a specific multi-label learner, number of
      * models and size of subsets
-     * 
+     *
      * @param baseLearner a multi-label learner
-     * @param models a number of models
-     * @param subset a size of subsets
+     * @param models      a number of models
+     * @param subset      a size of subsets
      */
     public RAkEL(MultiLabelLearner baseLearner, int models, int subset) {
         super(baseLearner);
@@ -140,13 +141,13 @@ public class RAkEL extends MultiLabelMetaLearner {
     }
 
     /**
-     * Creates an instance given a specific multi-label learner, number of 
+     * Creates an instance given a specific multi-label learner, number of
      * models, size of subsets and threshold
-     * 
+     *
      * @param baseLearner a multi-label learner
-     * @param models a number of models
-     * @param subset a size of subsets
-     * @param threshold a threshold
+     * @param models      a number of models
+     * @param subset      a size of subsets
+     * @param threshold   a threshold
      */
     public RAkEL(MultiLabelLearner baseLearner, int models, int subset, double threshold) {
         super(baseLearner);
@@ -157,7 +158,7 @@ public class RAkEL extends MultiLabelMetaLearner {
 
     /**
      * Sets the seed for random number generation
-     * 
+     *
      * @param x the seed
      */
     public void setSeed(int x) {
@@ -166,7 +167,7 @@ public class RAkEL extends MultiLabelMetaLearner {
 
     /**
      * Sets the size of the subsets
-     * 
+     *
      * @param size the size of the subsets
      */
     public void setSizeOfSubset(int size) {
@@ -176,7 +177,7 @@ public class RAkEL extends MultiLabelMetaLearner {
 
     /**
      * Returns the size of the subsets
-     * 
+     *
      * @return the size of the subsets
      */
     public int getSizeOfSubset() {
@@ -185,7 +186,7 @@ public class RAkEL extends MultiLabelMetaLearner {
 
     /**
      * Sets the number of models
-     * 
+     *
      * @param models number of models
      */
     public void setNumModels(int models) {
@@ -194,7 +195,7 @@ public class RAkEL extends MultiLabelMetaLearner {
 
     /**
      * Returns the number of models
-     * 
+     *
      * @return number of models
      */
     public int getNumModels() {
@@ -203,7 +204,7 @@ public class RAkEL extends MultiLabelMetaLearner {
 
     /**
      * The binomial function
-     * 
+     *
      * @param n Binomial coefficient index
      * @param m Binomial coefficient index
      * @return The result of the binomial function

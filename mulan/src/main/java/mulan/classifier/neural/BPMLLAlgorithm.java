@@ -20,11 +20,12 @@
  */
 package mulan.classifier.neural;
 
-import java.util.ArrayList;
-import java.util.List;
 import mulan.classifier.neural.model.ActivationFunction;
 import mulan.classifier.neural.model.NeuralNet;
 import mulan.classifier.neural.model.Neuron;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The implementation of Back-Propagation Multi-Label Learning (BPMLL) algorithm for neural networks.
@@ -32,9 +33,9 @@ import mulan.classifier.neural.model.Neuron;
  * <br><br>
  * For more information see:
  * <br>
- * Zhang, M.L., Zhou, Z.H.: Multi-label neural networks with applications to functional genomics 
+ * Zhang, M.L., Zhou, Z.H.: Multi-label neural networks with applications to functional genomics
  * and text categorization. IEEE Transactions on Knowledge and Data Engineering 18 (2006) 1338-1351
- * 
+ *
  * @author Jozef Vilcek
  * @version 2012.02.27
  * @see NeuralNet
@@ -47,9 +48,9 @@ public class BPMLLAlgorithm {
     /**
      * Creates a {@link BPMLLAlgorithm} instance.
      *
-     * @param neuralNet the neural network model to learn
+     * @param neuralNet        the neural network model to learn
      * @param weightsDecayCost the weights decay cost term used for regularization.
-     * 					The value must be greater than 0 and no more than 1.
+     *                         The value must be greater than 0 and no more than 1.
      */
     public BPMLLAlgorithm(NeuralNet neuralNet, double weightsDecayCost) {
 
@@ -89,13 +90,13 @@ public class BPMLLAlgorithm {
      * assigned either all or non of the labels.
      * In this case, the function returns {@link Double#NaN}.
      *
-     * @param inputPattern the input pattern for the network
+     * @param inputPattern   the input pattern for the network
      * @param expectedLabels the ideal, expected values the network should output as a
-     * 		  response for the given input. If the i-th label class belongs to the input pattern
-     * 		  instance, then i-th value is +1, otherwise the value is -1.
-     * @param learningRate the learning rate used to update the neural network weights
+     *                       response for the given input. If the i-th label class belongs to the input pattern
+     *                       instance, then i-th value is +1, otherwise the value is -1.
+     * @param learningRate   the learning rate used to update the neural network weights
      * @return the error of the network response for the passed input
-     * 			or {@link Double#NaN} if the passed input can not be processed.
+     * or {@link Double#NaN} if the passed input can not be processed.
      */
     public double learn(double[] inputPattern, double[] expectedLabels, double learningRate) {
 
@@ -167,12 +168,12 @@ public class BPMLLAlgorithm {
      * assigned either all or non of labels.
      * In this case, the function returns {@link Double#NaN}.
      *
-     * @param inputPattern the input pattern to be processed
+     * @param inputPattern   the input pattern to be processed
      * @param expectedLabels the ideal, expected values the network should output as a
-     * 		  response for the given input. If the ith label class belongs to the input pattern
-     * 		  instance, then ith value is +1, otherwise the value is -1.
+     *                       response for the given input. If the ith label class belongs to the input pattern
+     *                       instance, then ith value is +1, otherwise the value is -1.
      * @return the error of the network response for the passed input
-     * 		   or {@link Double#NaN} if the passed input can not be processed
+     * or {@link Double#NaN} if the passed input can not be processed
      */
     public double getNetworkError(double[] inputPattern, double[] expectedLabels) {
 
@@ -257,13 +258,13 @@ public class BPMLLAlgorithm {
 
     /**
      * Computes errors for each output neurons separately according formula: <br><br>
-     *
+     * <p>
      * Ei = --- (1/|Yi|*|Yi'|)*SUM{exp(-(Ci - Cl))}   ... if ith is from Yi set (is label)
-     * 		|				where l is from Yi'
-     * 		|
-     * 		|-- (-1/|Yi|*|Yi'|)*SUM{exp(-(Ck - Ci))}  ... if ith is from Yi' set (is not label)
-     * 						where k is from Yi
-     *
+     * |				where l is from Yi'
+     * |
+     * |-- (-1/|Yi|*|Yi'|)*SUM{exp(-(Ck - Ci))}  ... if ith is from Yi' set (is not label)
+     * where k is from Yi
+     * <p>
      * Note that these are not error terms used in network weights updates.
      *
      * @param networkOutputs the output of the network, which represents network belief for labels assignment

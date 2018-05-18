@@ -20,20 +20,23 @@
  */
 package mulan.classifier.neural;
 
-import java.io.Serializable;
-import java.util.Arrays;
 import weka.core.Utils;
 import weka.core.matrix.Matrix;
 
+import java.io.Serializable;
+import java.util.Arrays;
+
 /**
- * Implementation of a threshold function. 
- *  
+ * Implementation of a threshold function.
+ *
  * @author Jozef Vilcek
  * @version 2012.02.27
  */
 public class ThresholdFunction implements Serializable {
 
-    /** Default serial version UID for serialization*/
+    /**
+     * Default serial version UID for serialization
+     */
     private static final long serialVersionUID = 5347411552628371402L;
     private double[] parameters;
 
@@ -41,7 +44,7 @@ public class ThresholdFunction implements Serializable {
      * Creates a new instance of {@link ThresholdFunction} and
      * builds the function based on input parameters.
      *
-     * @param idealLabels the ideal output for each input patterns, which a model should output
+     * @param idealLabels    the ideal output for each input patterns, which a model should output
      * @param modelOutLabels the real output of a model for each input pattern
      * @throws IllegalArgumentException if dimensions of input arrays does not match
      * @see ThresholdFunction#build(double[][], double[][])
@@ -56,7 +59,7 @@ public class ThresholdFunction implements Serializable {
      * @param labelsConfidences the labels confidences
      * @return the threshold value
      * @throws IllegalArgumentException if the dimension of labels confidences does not match
-     * 		   							the dimension of learned parameters of threshold function.
+     *                                  the dimension of learned parameters of threshold function.
      */
     public double computeThreshold(final double[] labelsConfidences) {
 
@@ -79,10 +82,10 @@ public class ThresholdFunction implements Serializable {
      * Build a threshold function for based on input data.
      * The threshold function is build for a particular model.
      *
-     * @param idealLabels the ideal output for each input patterns, which a model should output.
-     * 					  First index is expected to be number of examples and second is the label index.
+     * @param idealLabels    the ideal output for each input patterns, which a model should output.
+     *                       First index is expected to be number of examples and second is the label index.
      * @param modelOutLabels the real output of a model for each input pattern.
-     * 						 First index is expected to be number of examples and second is the label index.
+     *                       First index is expected to be number of examples and second is the label index.
      * @throws IllegalArgumentException if dimensions of input arrays does not match
      */
     public void build(final double[][] idealLabels, final double[][] modelOutLabels) {

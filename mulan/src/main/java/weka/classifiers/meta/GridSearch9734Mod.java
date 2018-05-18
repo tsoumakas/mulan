@@ -20,43 +20,12 @@
 
 package weka.classifiers.meta;
 
-import java.beans.PropertyDescriptor;
-import java.io.File;
-import java.io.Serializable;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.Random;
-import java.util.Vector;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-
 import weka.classifiers.AbstractClassifier;
 import weka.classifiers.Classifier;
 import weka.classifiers.Evaluation;
 import weka.classifiers.RandomizableSingleClassifierEnhancer;
 import weka.classifiers.functions.LinearRegression;
-import weka.core.AdditionalMeasureProducer;
-import weka.core.Capabilities;
-import weka.core.Debug;
-import weka.core.Instance;
-import weka.core.Instances;
-import weka.core.MathematicalExpression;
-import weka.core.Option;
-import weka.core.OptionHandler;
-import weka.core.PropertyPath;
-import weka.core.RevisionHandler;
-import weka.core.RevisionUtils;
-import weka.core.SelectedTag;
-import weka.core.SerializedObject;
-import weka.core.Summarizable;
-import weka.core.Tag;
-import weka.core.Utils;
-import weka.core.WekaException;
+import weka.core.*;
 import weka.core.Capabilities.Capability;
 import weka.filters.AllFilter;
 import weka.filters.Filter;
@@ -64,6 +33,14 @@ import weka.filters.supervised.attribute.PLSFilter;
 import weka.filters.unsupervised.attribute.MathExpression;
 import weka.filters.unsupervised.attribute.NumericCleaner;
 import weka.filters.unsupervised.instance.Resample;
+
+import java.beans.PropertyDescriptor;
+import java.io.File;
+import java.io.Serializable;
+import java.util.*;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * <!-- globalinfo-start --> Performs a grid search of parameter pairs for the a classifier (Y-axis,
@@ -92,10 +69,10 @@ import weka.filters.unsupervised.instance.Resample;
  * parallel, taking advantage of multi-cpu/core architectures.
  * <p/>
  * <!-- globalinfo-end -->
- * 
+ * <p>
  * <!-- options-start --> Valid options are:
  * <p/>
- * 
+ *
  * <pre>
  * -E &lt;CC|RMSE|RRSE|MAE|RAE|COMB|ACC|KAP|WAUC&gt;
  *  Determines the parameter used for evaluation:
@@ -110,37 +87,37 @@ import weka.filters.unsupervised.instance.Resample;
  *  KAP = Kappa
  *  (default: CC)
  * </pre>
- * 
+ *
  * <pre>
  * -y-property &lt;option&gt;
  *  The Y option to test (without leading dash).
  *  (default: classifier.ridge)
  * </pre>
- * 
+ *
  * <pre>
  * -y-min &lt;num&gt;
  *  The minimum for Y.
  *  (default: -10)
  * </pre>
- * 
+ *
  * <pre>
  * -y-max &lt;num&gt;
  *  The maximum for Y.
  *  (default: +5)
  * </pre>
- * 
+ *
  * <pre>
  * -y-step &lt;num&gt;
  *  The step size for Y.
  *  (default: 1)
  * </pre>
- * 
+ *
  * <pre>
  * -y-base &lt;num&gt;
  *  The base for Y.
  *  (default: 10)
  * </pre>
- * 
+ *
  * <pre>
  * -y-expression &lt;expr&gt;
  *  The expression for Y.
@@ -153,44 +130,44 @@ import weka.filters.unsupervised.instance.Resample;
  *   (from 'FROM' to 'TO' with stepsize 'STEP')
  *  (default: 'pow(BASE,I)')
  * </pre>
- * 
+ *
  * <pre>
  * -filter &lt;filter specification&gt;
- *  The filter to use (on X axis). Full classname of filter to include, 
+ *  The filter to use (on X axis). Full classname of filter to include,
  *  followed by scheme options.
  *  (default: weka.filters.supervised.attribute.PLSFilter)
  * </pre>
- * 
+ *
  * <pre>
  * -x-property &lt;option&gt;
  *  The X option to test (without leading dash).
  *  (default: filter.numComponents)
  * </pre>
- * 
+ *
  * <pre>
  * -x-min &lt;num&gt;
  *  The minimum for X.
  *  (default: +5)
  * </pre>
- * 
+ *
  * <pre>
  * -x-max &lt;num&gt;
  *  The maximum for X.
  *  (default: +20)
  * </pre>
- * 
+ *
  * <pre>
  * -x-step &lt;num&gt;
  *  The step size for X.
  *  (default: 1)
  * </pre>
- * 
+ *
  * <pre>
  * -x-base &lt;num&gt;
  *  The base for X.
  *  (default: 10)
  * </pre>
- * 
+ *
  * <pre>
  * -x-expression &lt;expr&gt;
  *  The expression for the X value.
@@ -203,128 +180,128 @@ import weka.filters.unsupervised.instance.Resample;
  *   (from 'FROM' to 'TO' with stepsize 'STEP')
  *  (default: 'pow(BASE,I)')
  * </pre>
- * 
+ *
  * <pre>
  * -extend-grid
  *  Whether the grid can be extended.
  *  (default: no)
  * </pre>
- * 
+ *
  * <pre>
  * -max-grid-extensions &lt;num&gt;
  *  The maximum number of grid extensions (-1 is unlimited).
  *  (default: 3)
  * </pre>
- * 
+ *
  * <pre>
  * -sample-size &lt;num&gt;
  *  The size (in percent) of the sample to search the inital grid with.
  *  (default: 100)
  * </pre>
- * 
+ *
  * <pre>
  * -traversal &lt;ROW-WISE|COLUMN-WISE&gt;
  *  The type of traversal for the grid.
  *  (default: COLUMN-WISE)
  * </pre>
- * 
+ *
  * <pre>
  * -log-file &lt;filename&gt;
  *  The log file to log the messages to.
  *  (default: none)
  * </pre>
- * 
+ *
  * <pre>
  * -num-slots &lt;num&gt;
  *  Number of execution slots.
  *  (default 1 - i.e. no parallelism)
  * </pre>
- * 
+ *
  * <pre>
  * -S &lt;num&gt;
  *  Random number seed.
  *  (default 1)
  * </pre>
- * 
+ *
  * <pre>
  * -D
  *  If set, classifier is run in debug mode and
  *  may output additional info to the console
  * </pre>
- * 
+ *
  * <pre>
  * -W
  *  Full name of base classifier.
  *  (default: weka.classifiers.functions.LinearRegression)
  * </pre>
- * 
+ *
  * <pre>
  * Options specific to classifier weka.classifiers.functions.LinearRegression:
  * </pre>
- * 
+ *
  * <pre>
  * -D
  *  Produce debugging output.
  *  (default no debugging output)
  * </pre>
- * 
+ *
  * <pre>
  * -S &lt;number of selection method&gt;
  *  Set the attribute selection method to use. 1 = None, 2 = Greedy.
  *  (default 0 = M5' method)
  * </pre>
- * 
+ *
  * <pre>
  * -C
  *  Do not try to eliminate colinear attributes.
  * </pre>
- * 
+ *
  * <pre>
  * -R &lt;double&gt;
  *  Set ridge parameter (default 1.0e-8).
  * </pre>
- * 
+ *
  * <pre>
  * Options specific to filter weka.filters.supervised.attribute.PLSFilter ('-filter'):
  * </pre>
- * 
+ *
  * <pre>
  * -D
  *  Turns on output of debugging information.
  * </pre>
- * 
+ *
  * <pre>
  * -C &lt;num&gt;
  *  The number of components to compute.
  *  (default: 20)
  * </pre>
- * 
+ *
  * <pre>
  * -U
  *  Updates the class attribute as well.
  *  (default: off)
  * </pre>
- * 
+ *
  * <pre>
  * -M
  *  Turns replacing of missing values on.
  *  (default: off)
  * </pre>
- * 
+ *
  * <pre>
  * -A &lt;SIMPLS|PLS1&gt;
  *  The algorithm to use.
  *  (default: PLS1)
  * </pre>
- * 
+ *
  * <pre>
  * -P &lt;none|center|standardize&gt;
  *  The type of preprocessing that is applied to the data.
  *  (default: center)
  * </pre>
- * 
+ * <p>
  * <!-- options-end -->
- *
+ * <p>
  * Examples:
  * <ul>
  * <li>
@@ -358,7 +335,7 @@ import weka.filters.unsupervised.instance.Resample;
  * </ul>
  * </li>
  * </ul>
- * 
+ * <p>
  * General notes:
  * <ul>
  * <li>Turn the <i>debug</i> flag on in order to see some progress output in the console</li>
@@ -376,22 +353,24 @@ import weka.filters.unsupervised.instance.Resample;
  * @see NumericCleaner
  */
 public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer implements
-        AdditionalMeasureProducer, Summarizable{
+        AdditionalMeasureProducer, Summarizable {
 
     /**
      * a serializable version of Point2D.Double.
-     * 
+     *
      * @see Double
      */
     protected static class PointDouble extends java.awt.geom.Point2D.Double implements
-            Serializable, RevisionHandler{
+            Serializable, RevisionHandler {
 
-        /** for serialization. */
+        /**
+         * for serialization.
+         */
         private static final long serialVersionUID = 7151661776161898119L;
 
         /**
          * the default constructor.
-         * 
+         *
          * @param x the x value of the point
          * @param y the y value of the point
          */
@@ -401,7 +380,7 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
 
         /**
          * Determines whether or not two points are equal.
-         * 
+         *
          * @param obj an object to be compared with this PointDouble
          * @return true if the object to be compared has the same values; false otherwise.
          */
@@ -415,7 +394,7 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
 
         /**
          * returns a string representation of the Point.
-         * 
+         *
          * @return the point as string
          */
         public String toString() {
@@ -424,7 +403,7 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
 
         /**
          * Returns the revision string.
-         * 
+         *
          * @return the revision
          */
         public String getRevision() {
@@ -434,17 +413,19 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
 
     /**
      * a serializable version of Point.
-     * 
+     *
      * @see java.awt.Point
      */
-    protected static class PointInt extends java.awt.Point implements Serializable, RevisionHandler{
+    protected static class PointInt extends java.awt.Point implements Serializable, RevisionHandler {
 
-        /** for serialization. */
+        /**
+         * for serialization.
+         */
         private static final long serialVersionUID = -5900415163698021618L;
 
         /**
          * the default constructor.
-         * 
+         *
          * @param x the x value of the point
          * @param y the y value of the point
          */
@@ -454,7 +435,7 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
 
         /**
          * returns a string representation of the Point.
-         * 
+         *
          * @return the point as string
          */
         public String toString() {
@@ -463,7 +444,7 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
 
         /**
          * Returns the revision string.
-         * 
+         *
          * @return the revision
          */
         public String getRevision() {
@@ -474,49 +455,71 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
     /**
      * for generating the parameter pairs in a grid.
      */
-    protected static class Grid implements Serializable, RevisionHandler{
+    protected static class Grid implements Serializable, RevisionHandler {
 
-        /** for serialization. */
+        /**
+         * for serialization.
+         */
         private static final long serialVersionUID = 7290732613611243139L;
 
-        /** the minimum on the X axis. */
+        /**
+         * the minimum on the X axis.
+         */
         protected double m_MinX;
 
-        /** the maximum on the X axis. */
+        /**
+         * the maximum on the X axis.
+         */
         protected double m_MaxX;
 
-        /** the step size for the X axis. */
+        /**
+         * the step size for the X axis.
+         */
         protected double m_StepX;
 
-        /** the label for the X axis. */
+        /**
+         * the label for the X axis.
+         */
         protected String m_LabelX;
 
-        /** the minimum on the Y axis. */
+        /**
+         * the minimum on the Y axis.
+         */
         protected double m_MinY;
 
-        /** the maximum on the Y axis. */
+        /**
+         * the maximum on the Y axis.
+         */
         protected double m_MaxY;
 
-        /** the step size for the Y axis. */
+        /**
+         * the step size for the Y axis.
+         */
         protected double m_StepY;
 
-        /** the label for the Y axis. */
+        /**
+         * the label for the Y axis.
+         */
         protected String m_LabelY;
 
-        /** the number of points on the X axis. */
+        /**
+         * the number of points on the X axis.
+         */
         protected int m_Width;
 
-        /** the number of points on the Y axis. */
+        /**
+         * the number of points on the Y axis.
+         */
         protected int m_Height;
 
         /**
          * initializes the grid.
-         * 
-         * @param minX the minimum on the X axis
-         * @param maxX the maximum on the X axis
+         *
+         * @param minX  the minimum on the X axis
+         * @param maxX  the maximum on the X axis
          * @param stepX the step size for the X axis
-         * @param minY the minimum on the Y axis
-         * @param maxY the maximum on the Y axis
+         * @param minY  the minimum on the Y axis
+         * @param maxY  the maximum on the Y axis
          * @param stepY the step size for the Y axis
          */
         public Grid(double minX, double maxX, double stepX, double minY, double maxY, double stepY) {
@@ -525,18 +528,18 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
 
         /**
          * initializes the grid.
-         * 
-         * @param minX the minimum on the X axis
-         * @param maxX the maximum on the X axis
-         * @param stepX the step size for the X axis
+         *
+         * @param minX   the minimum on the X axis
+         * @param maxX   the maximum on the X axis
+         * @param stepX  the step size for the X axis
          * @param labelX the label for the X axis
-         * @param minY the minimum on the Y axis
-         * @param maxY the maximum on the Y axis
-         * @param stepY the step size for the Y axis
+         * @param minY   the minimum on the Y axis
+         * @param maxY   the maximum on the Y axis
+         * @param stepY  the step size for the Y axis
          * @param labelY the label for the Y axis
          */
         public Grid(double minX, double maxX, double stepX, String labelX, double minY,
-                double maxY, double stepY, String labelY) {
+                    double maxY, double stepY, String labelY) {
 
             super();
 
@@ -576,7 +579,7 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
 
         /**
          * Tests itself against the provided grid object.
-         * 
+         *
          * @param o the grid object to compare against
          * @return if the two grids have the same setup
          */
@@ -596,7 +599,7 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
 
         /**
          * returns the left border.
-         * 
+         *
          * @return the left border
          */
         public double getMinX() {
@@ -605,7 +608,7 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
 
         /**
          * returns the right border.
-         * 
+         *
          * @return the right border
          */
         public double getMaxX() {
@@ -614,7 +617,7 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
 
         /**
          * returns the step size on the X axis.
-         * 
+         *
          * @return the step size
          */
         public double getStepX() {
@@ -623,7 +626,7 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
 
         /**
          * returns the label for the X axis.
-         * 
+         *
          * @return the label
          */
         public String getLabelX() {
@@ -632,7 +635,7 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
 
         /**
          * returns the bottom border.
-         * 
+         *
          * @return the bottom border
          */
         public double getMinY() {
@@ -641,7 +644,7 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
 
         /**
          * returns the top border.
-         * 
+         *
          * @return the top border
          */
         public double getMaxY() {
@@ -650,7 +653,7 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
 
         /**
          * returns the step size on the Y axis.
-         * 
+         *
          * @return the step size
          */
         public double getStepY() {
@@ -659,7 +662,7 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
 
         /**
          * returns the label for the Y axis.
-         * 
+         *
          * @return the label
          */
         public String getLabelY() {
@@ -668,7 +671,7 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
 
         /**
          * returns the number of points in the grid on the Y axis (incl. borders)
-         * 
+         *
          * @return the number of points in the grid on the Y axis
          */
         public int height() {
@@ -677,7 +680,7 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
 
         /**
          * returns the number of points in the grid on the X axis (incl. borders)
-         * 
+         *
          * @return the number of points in the grid on the X axis
          */
         public int width() {
@@ -686,7 +689,7 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
 
         /**
          * returns the values at the given point in the grid.
-         * 
+         *
          * @param x the x-th point on the X axis
          * @param y the y-th point on the Y axis
          * @return the value pair at the given position
@@ -704,7 +707,7 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
 
         /**
          * returns the closest index pair for the given value pair in the grid.
-         * 
+         *
          * @param values the values to get the indices for
          * @return the closest indices in the grid
          */
@@ -744,7 +747,7 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
 
         /**
          * checks whether the given values are on the border of the grid.
-         * 
+         *
          * @param values the values to check
          * @return true if the the values are on the border
          */
@@ -754,7 +757,7 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
 
         /**
          * checks whether the given location is on the border of the grid.
-         * 
+         *
          * @param location the location to check
          * @return true if the the location is on the border
          */
@@ -773,11 +776,11 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
 
         /**
          * returns a subgrid with the same step sizes, but different borders.
-         * 
-         * @param top the top index
-         * @param left the left index
+         *
+         * @param top    the top index
+         * @param left   the left index
          * @param bottom the bottom index
-         * @param right the right index
+         * @param right  the right index
          * @return the Sub-Grid
          */
         public Grid subgrid(int top, int left, int bottom, int right) {
@@ -789,7 +792,7 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
         /**
          * returns an extended grid that encompasses the given point (won't be on the border of the
          * grid).
-         * 
+         *
          * @param values the point that the grid should contain
          * @return the extended grid
          */
@@ -861,7 +864,7 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
 
         /**
          * returns an Enumeration over all pairs in the given row.
-         * 
+         *
          * @param y the row to retrieve
          * @return an Enumeration over all pairs
          * @see #getValues(int, int)
@@ -880,7 +883,7 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
 
         /**
          * returns an Enumeration over all pairs in the given column.
-         * 
+         *
          * @param x the column to retrieve
          * @return an Enumeration over all pairs
          * @see #getValues(int, int)
@@ -899,7 +902,7 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
 
         /**
          * returns a string representation of the grid.
-         * 
+         *
          * @return a string representation
          */
         public String toString() {
@@ -922,7 +925,7 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
 
         /**
          * Returns the revision string.
-         * 
+         *
          * @return the revision
          */
         public String getRevision() {
@@ -933,45 +936,65 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
     /**
      * A helper class for storing the performance of a values-pair. Can be sorted with the
      * PerformanceComparator class.
-     * 
+     *
      * @see PerformanceComparator
      */
-    protected static class Performance implements Serializable, RevisionHandler{
+    protected static class Performance implements Serializable, RevisionHandler {
 
-        /** for serialization. */
+        /**
+         * for serialization.
+         */
         private static final long serialVersionUID = -4374706475277588755L;
 
-        /** the value pair the classifier was built with. */
+        /**
+         * the value pair the classifier was built with.
+         */
         protected PointDouble m_Values;
 
-        /** the Correlation coefficient. */
+        /**
+         * the Correlation coefficient.
+         */
         protected double m_CC;
 
-        /** the Root mean squared error. */
+        /**
+         * the Root mean squared error.
+         */
         protected double m_RMSE;
 
-        /** the Root relative squared error. */
+        /**
+         * the Root relative squared error.
+         */
         protected double m_RRSE;
 
-        /** the Mean absolute error. */
+        /**
+         * the Mean absolute error.
+         */
         protected double m_MAE;
 
-        /** the Relative absolute error. */
+        /**
+         * the Relative absolute error.
+         */
         protected double m_RAE;
 
-        /** the Accuracy. */
+        /**
+         * the Accuracy.
+         */
         protected double m_ACC;
 
-        /** The weighted AUC value. */
+        /**
+         * The weighted AUC value.
+         */
         protected double m_wAUC;
 
-        /** the kappa value. */
+        /**
+         * the kappa value.
+         */
         protected double m_Kappa;
 
         /**
          * initializes the performance container.
-         * 
-         * @param values the values-pair
+         *
+         * @param values     the values-pair
          * @param evaluation the evaluation to extract the performance measures from
          * @throws Exception if retrieving of measures fails
          */
@@ -1009,7 +1032,7 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
 
         /**
          * returns the performance measure.
-         * 
+         *
          * @param evaluation the type of measure to return
          * @return the performance measure
          */
@@ -1019,36 +1042,36 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
             result = Double.NaN;
 
             switch (evaluation) {
-            case EVALUATION_CC:
-                result = m_CC;
-                break;
-            case EVALUATION_RMSE:
-                result = m_RMSE;
-                break;
-            case EVALUATION_RRSE:
-                result = m_RRSE;
-                break;
-            case EVALUATION_MAE:
-                result = m_MAE;
-                break;
-            case EVALUATION_RAE:
-                result = m_RAE;
-                break;
-            case EVALUATION_COMBINED:
-                result = (1 - StrictMath.abs(m_CC)) + m_RRSE + m_RAE;
-                break;
-            case EVALUATION_ACC:
-                result = m_ACC;
-                break;
-            case EVALUATION_KAPPA:
-                result = m_Kappa;
-                break;
-            case EVALUATION_WAUC:
-                result = m_wAUC;
-                break;
-            default:
-                throw new IllegalArgumentException("Evaluation type '" + evaluation
-                        + "' not supported!");
+                case EVALUATION_CC:
+                    result = m_CC;
+                    break;
+                case EVALUATION_RMSE:
+                    result = m_RMSE;
+                    break;
+                case EVALUATION_RRSE:
+                    result = m_RRSE;
+                    break;
+                case EVALUATION_MAE:
+                    result = m_MAE;
+                    break;
+                case EVALUATION_RAE:
+                    result = m_RAE;
+                    break;
+                case EVALUATION_COMBINED:
+                    result = (1 - StrictMath.abs(m_CC)) + m_RRSE + m_RAE;
+                    break;
+                case EVALUATION_ACC:
+                    result = m_ACC;
+                    break;
+                case EVALUATION_KAPPA:
+                    result = m_Kappa;
+                    break;
+                case EVALUATION_WAUC:
+                    result = m_wAUC;
+                    break;
+                default:
+                    throw new IllegalArgumentException("Evaluation type '" + evaluation
+                            + "' not supported!");
             }
 
             return result;
@@ -1056,7 +1079,7 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
 
         /**
          * returns the values-pair for this performance.
-         * 
+         *
          * @return the values-pair
          */
         public PointDouble getValues() {
@@ -1065,7 +1088,7 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
 
         /**
          * returns a string representation of this performance object.
-         * 
+         *
          * @param evaluation the type of performance to return
          * @return a string representation
          */
@@ -1080,7 +1103,7 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
 
         /**
          * returns a Gnuplot string of this performance object.
-         * 
+         *
          * @param evaluation the type of performance to return
          * @return the gnuplot string (x, y, z)
          */
@@ -1095,7 +1118,7 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
 
         /**
          * returns a string representation of this performance object.
-         * 
+         *
          * @return a string representation
          */
         public String toString() {
@@ -1116,7 +1139,7 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
 
         /**
          * Returns the revision string.
-         * 
+         *
          * @return the revision
          */
         public String getRevision() {
@@ -1126,24 +1149,27 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
 
     /**
      * A concrete Comparator for the Performance class.
-     * 
+     *
      * @see Performance
      */
     protected static class PerformanceComparator implements Comparator<Performance>, Serializable,
-            RevisionHandler{
+            RevisionHandler {
 
-        /** for serialization. */
+        /**
+         * for serialization.
+         */
         private static final long serialVersionUID = 6507592831825393847L;
 
         /**
          * the performance measure to use for comparison.
+         *
          * @see GridSearch#TAGS_EVALUATION
          */
         protected int m_Evaluation;
 
         /**
          * initializes the comparator with the given performance measure.
-         * 
+         *
          * @param evaluation the performance measure to use
          * @see GridSearch#TAGS_EVALUATION
          */
@@ -1155,7 +1181,7 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
 
         /**
          * returns the performance measure that's used to compare the objects.
-         * 
+         *
          * @return the performance measure
          * @see GridSearch#TAGS_EVALUATION
          */
@@ -1166,7 +1192,7 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
         /**
          * Compares its two arguments for order. Returns a negative integer, zero, or a positive
          * integer as the first argument is less than, equal to, or greater than the second.
-         * 
+         *
          * @param o1 the first performance
          * @param o2 the second performance
          * @return the order
@@ -1199,7 +1225,7 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
 
         /**
          * Indicates whether some other object is "equal to" this Comparator.
-         * 
+         *
          * @param obj the object to compare with
          * @return true if the same evaluation type is used
          */
@@ -1212,7 +1238,7 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
 
         /**
          * Returns the revision string.
-         * 
+         *
          * @return the revision
          */
         public String getRevision() {
@@ -1224,7 +1250,7 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
      * Generates a 2-dim array for the performances from a grid for a certain type. x-min/y-min is
      * in the bottom-left corner, i.e., getTable()[0][0] returns the performance for the x-min/y-max
      * pair.
-     * 
+     *
      * <pre>
      * x-min     x-max
      * |-------------|
@@ -1234,42 +1260,58 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
      *                - y-min
      * </pre>
      */
-    protected static class PerformanceTable implements Serializable, RevisionHandler{
+    protected static class PerformanceTable implements Serializable, RevisionHandler {
 
-        /** for serialization. */
+        /**
+         * for serialization.
+         */
         private static final long serialVersionUID = 5486491313460338379L;
 
-        /** the owning classifier. */
+        /**
+         * the owning classifier.
+         */
         protected GridSearch9734Mod m_Owner;
 
-        /** the corresponding grid. */
+        /**
+         * the corresponding grid.
+         */
         protected Grid m_Grid;
 
-        /** the performances. */
+        /**
+         * the performances.
+         */
         protected Vector<Performance> m_Performances;
 
-        /** the type of performance the table was generated for. */
+        /**
+         * the type of performance the table was generated for.
+         */
         protected int m_Type;
 
-        /** the table with the values. */
+        /**
+         * the table with the values.
+         */
         protected double[][] m_Table;
 
-        /** the minimum performance. */
+        /**
+         * the minimum performance.
+         */
         protected double m_Min;
 
-        /** the maximum performance. */
+        /**
+         * the maximum performance.
+         */
         protected double m_Max;
 
         /**
          * initializes the table.
-         * 
-         * @param owner the owning GridSearch
-         * @param grid the underlying grid
+         *
+         * @param owner        the owning GridSearch
+         * @param grid         the underlying grid
          * @param performances the performances
-         * @param type the type of performance
+         * @param type         the type of performance
          */
         public PerformanceTable(GridSearch9734Mod owner, Grid grid,
-                Vector<Performance> performances, int type) {
+                                Vector<Performance> performances, int type) {
             super();
 
             m_Owner = owner;
@@ -1313,7 +1355,7 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
 
         /**
          * returns the corresponding grid.
-         * 
+         *
          * @return the underlying grid
          */
         public Grid getGrid() {
@@ -1322,7 +1364,7 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
 
         /**
          * returns the underlying performances.
-         * 
+         *
          * @return the underlying performances
          */
         public Vector<Performance> getPerformances() {
@@ -1331,7 +1373,7 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
 
         /**
          * returns the type of performance.
-         * 
+         *
          * @return the type of performance
          */
         public int getType() {
@@ -1340,7 +1382,7 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
 
         /**
          * returns the generated table.
-         * 
+         *
          * @return the performance table
          * @see #m_Table
          * @see #generate()
@@ -1351,7 +1393,7 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
 
         /**
          * the minimum performance.
-         * 
+         *
          * @return the performance
          */
         public double getMin() {
@@ -1360,7 +1402,7 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
 
         /**
          * the maximum performance.
-         * 
+         *
          * @return the performance
          */
         public double getMax() {
@@ -1369,7 +1411,7 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
 
         /**
          * returns the table as string.
-         * 
+         *
          * @return the table as string
          */
         public String toString() {
@@ -1398,7 +1440,7 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
 
         /**
          * returns a string containing a gnuplot script+data file.
-         * 
+         *
          * @return the data in gnuplot format
          */
         public String toGnuplot() {
@@ -1442,7 +1484,7 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
 
         /**
          * Returns the revision string.
-         * 
+         *
          * @return the revision
          */
         public String getRevision() {
@@ -1453,18 +1495,22 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
     /**
      * Represents a simple cache for performance objects.
      */
-    protected static class PerformanceCache implements Serializable, RevisionHandler{
+    protected static class PerformanceCache implements Serializable, RevisionHandler {
 
-        /** for serialization. */
+        /**
+         * for serialization.
+         */
         private static final long serialVersionUID = 5838863230451530252L;
 
-        /** the cache for points in the grid that got calculated. */
+        /**
+         * the cache for points in the grid that got calculated.
+         */
         protected Hashtable m_Cache = new Hashtable();
 
         /**
          * returns the ID string for a cache item.
-         * 
-         * @param cv the number of folds in the cross-validation
+         *
+         * @param cv     the number of folds in the cross-validation
          * @param values the point in the grid
          * @return the ID string
          */
@@ -1474,8 +1520,8 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
 
         /**
          * checks whether the point was already calculated ones.
-         * 
-         * @param cv the number of folds in the cross-validation
+         *
+         * @param cv     the number of folds in the cross-validation
          * @param values the point in the grid
          * @return true if the value is already cached
          */
@@ -1485,8 +1531,8 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
 
         /**
          * returns a cached performance object, null if not yet in the cache.
-         * 
-         * @param cv the number of folds in the cross-validation
+         *
+         * @param cv     the number of folds in the cross-validation
          * @param values the point in the grid
          * @return the cached performance item, null if not in cache
          */
@@ -1496,9 +1542,9 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
 
         /**
          * adds the performance to the cache.
-         * 
+         *
          * @param cv the number of folds in the cross-validation
-         * @param p the performance object to store
+         * @param p  the performance object to store
          */
         public void add(int cv, Performance p) {
             m_Cache.put(getID(cv, p.getValues()), p);
@@ -1506,7 +1552,7 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
 
         /**
          * returns a string representation of the cache.
-         * 
+         *
          * @return the string representation of the cache
          */
         public String toString() {
@@ -1515,7 +1561,7 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
 
         /**
          * Returns the revision string.
-         * 
+         *
          * @return the revision
          */
         public String getRevision() {
@@ -1526,53 +1572,81 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
     /**
      * Helper class for generating the setups.
      */
-    protected static class SetupGenerator implements Serializable, RevisionHandler{
+    protected static class SetupGenerator implements Serializable, RevisionHandler {
 
-        /** for serialization. */
+        /**
+         * for serialization.
+         */
         private static final long serialVersionUID = -2517395033342543417L;
 
-        /** the owner. */
+        /**
+         * the owner.
+         */
         protected GridSearch9734Mod m_Owner;
 
-        /** the Y option to work on. */
+        /**
+         * the Y option to work on.
+         */
         protected String m_Y_Property;
 
-        /** the minimum of Y. */
+        /**
+         * the minimum of Y.
+         */
         protected double m_Y_Min;
 
-        /** the maximum of Y. */
+        /**
+         * the maximum of Y.
+         */
         protected double m_Y_Max;
 
-        /** the step size of Y. */
+        /**
+         * the step size of Y.
+         */
         protected double m_Y_Step;
 
-        /** the base for Y. */
+        /**
+         * the base for Y.
+         */
         protected double m_Y_Base;
 
-        /** The expression for the Y property. */
+        /**
+         * The expression for the Y property.
+         */
         protected String m_Y_Expression;
 
-        /** the X option to work on. */
+        /**
+         * the X option to work on.
+         */
         protected String m_X_Property;
 
-        /** the minimum of X. */
+        /**
+         * the minimum of X.
+         */
         protected double m_X_Min;
 
-        /** the maximum of X. */
+        /**
+         * the maximum of X.
+         */
         protected double m_X_Max;
 
-        /** the step size of X. */
+        /**
+         * the step size of X.
+         */
         protected double m_X_Step;
 
-        /** the base for X. */
+        /**
+         * the base for X.
+         */
         protected double m_X_Base;
 
-        /** The expression for the X property. */
+        /**
+         * The expression for the X property.
+         */
         protected String m_X_Expression;
 
         /**
          * Initializes the setup generator.
-         * 
+         *
          * @param owner the owning classifier
          */
         public SetupGenerator(GridSearch9734Mod owner) {
@@ -1597,9 +1671,9 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
 
         /**
          * evalutes the expression for the current iteration.
-         * 
+         *
          * @param value the current iteration value (from 'min' to 'max' with stepsize 'step')
-         * @param isX true if X is to be evaluated otherwise Y
+         * @param isX   true if X is to be evaluated otherwise Y
          * @return the generated value, NaN if the evaluation fails
          */
         public double evaluate(double value, boolean isX) {
@@ -1645,9 +1719,9 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
          * tries to set the value as double, integer (just casts it to int!) or boolean (false if 0,
          * otherwise true) in the object according to the specified path. float, char and long are
          * also supported.
-         * 
-         * @param o the object to modify
-         * @param path the property path
+         *
+         * @param o     the object to modify
+         * @param path  the property path
          * @param value the value to set
          * @return the modified object
          * @throws Exception if neither double nor int could be set
@@ -1662,19 +1736,19 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
             // float
             if ((c == Float.class) || (c == Float.TYPE))
                 PropertyPath.setValue(o, path, new Float((float) value));
-            // double
+                // double
             else if ((c == Double.class) || (c == Double.TYPE))
                 PropertyPath.setValue(o, path, new Double(value));
-            // char
+                // char
             else if ((c == Character.class) || (c == Character.TYPE))
                 PropertyPath.setValue(o, path, new Integer((char) value));
-            // int
+                // int
             else if ((c == Integer.class) || (c == Integer.TYPE))
                 PropertyPath.setValue(o, path, new Integer((int) value));
-            // long
+                // long
             else if ((c == Long.class) || (c == Long.TYPE))
                 PropertyPath.setValue(o, path, new Long((long) value));
-            // boolean
+                // boolean
             else if ((c == Boolean.class) || (c == Boolean.TYPE))
                 PropertyPath.setValue(o, path,
                         (value == 0 ? new Boolean(false) : new Boolean(true)));
@@ -1687,10 +1761,10 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
 
         /**
          * returns a fully configures object (a copy of the provided one).
-         * 
+         *
          * @param original the object to create a copy from and set the parameters
-         * @param valueX the current iteration value for X
-         * @param valueY the current iteration value for Y
+         * @param valueX   the current iteration value for X
+         * @param valueY   the current iteration value for Y
          * @return the configured classifier
          * @throws Exception if setup fails
          */
@@ -1720,7 +1794,7 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
 
         /**
          * Returns the revision string.
-         * 
+         *
          * @return the revision
          */
         public String getRevision() {
@@ -1731,44 +1805,60 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
     /**
      * Helper class for evaluating a setup.
      */
-    protected static class EvaluationTask implements Runnable, RevisionHandler{
+    protected static class EvaluationTask implements Runnable, RevisionHandler {
 
-        /** the owner. */
+        /**
+         * the owner.
+         */
         protected GridSearch9734Mod m_Owner;
 
-        /** for generating the setups. */
+        /**
+         * for generating the setups.
+         */
         protected SetupGenerator m_Generator;
 
-        /** the classifier to use. */
+        /**
+         * the classifier to use.
+         */
         protected Classifier m_Classifier;
 
-        /** the filter to use. */
+        /**
+         * the filter to use.
+         */
         protected Filter m_Filter;
 
-        /** the data to use for training. */
+        /**
+         * the data to use for training.
+         */
         protected Instances m_Data;
 
-        /** the values to use. */
+        /**
+         * the values to use.
+         */
         protected PointDouble m_Values;
 
-        /** the number of folds for cross-validation. */
+        /**
+         * the number of folds for cross-validation.
+         */
         protected int m_Folds;
 
-        /** the type of evaluation. */
+        /**
+         * the type of evaluation.
+         */
         protected int m_Evaluation;
 
         /**
          * Initializes the task.
          *
-         * @param owner the owning GridSearch classifier
+         * @param owner     the owning GridSearch classifier
          * @param generator the generator for the setips
-         * @param inst the data
-         * @param values the values in the grid
-         * @param folds the number of cross-validation folds
-         * @param eval the type of evaluation
+         * @param inst      the data
+         * @param values    the values in the grid
+         * @param folds     the number of cross-validation folds
+         * @param eval      the type of evaluation
          */
         public EvaluationTask(GridSearch9734Mod owner, SetupGenerator generator, Instances inst,
-                PointDouble values, int folds, int eval) {
+                              PointDouble values, int folds, int eval) {
 
             super();
 
@@ -1838,7 +1928,7 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
                             + ((filter != null) ? Utils.toCommandLine(filter) : "-no setup-"));
                     System.err.println("- Classifier: "
                             + ((classifier != null) ? Utils.toCommandLine(classifier)
-                                    : "-no setup-"));
+                            : "-no setup-"));
                     e.printStackTrace();
                 }
                 m_Owner.completedEvaluation(m_Values, e);
@@ -1851,7 +1941,7 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
 
         /**
          * Returns the revision string.
-         * 
+         *
          * @return the revision
          */
         public String getRevision() {
@@ -1859,28 +1949,50 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
         }
     }
 
-    /** for serialization. */
+    /**
+     * for serialization.
+     */
     private static final long serialVersionUID = -3034773968581595348L;
 
-    /** evaluation via: Correlation coefficient. */
+    /**
+     * evaluation via: Correlation coefficient.
+     */
     public static final int EVALUATION_CC = 0;
-    /** evaluation via: Root mean squared error. */
+    /**
+     * evaluation via: Root mean squared error.
+     */
     public static final int EVALUATION_RMSE = 1;
-    /** evaluation via: Root relative squared error. */
+    /**
+     * evaluation via: Root relative squared error.
+     */
     public static final int EVALUATION_RRSE = 2;
-    /** evaluation via: Mean absolute error. */
+    /**
+     * evaluation via: Mean absolute error.
+     */
     public static final int EVALUATION_MAE = 3;
-    /** evaluation via: Relative absolute error. */
+    /**
+     * evaluation via: Relative absolute error.
+     */
     public static final int EVALUATION_RAE = 4;
-    /** evaluation via: Combined = (1-CC) + RRSE + RAE. */
+    /**
+     * evaluation via: Combined = (1-CC) + RRSE + RAE.
+     */
     public static final int EVALUATION_COMBINED = 5;
-    /** evaluation via: Accuracy. */
+    /**
+     * evaluation via: Accuracy.
+     */
     public static final int EVALUATION_ACC = 6;
-    /** evaluation via: kappa statistic. */
+    /**
+     * evaluation via: kappa statistic.
+     */
     public static final int EVALUATION_KAPPA = 7;
-    /** evaluation via: weighted AUC */
+    /**
+     * evaluation via: weighted AUC
+     */
     public static final int EVALUATION_WAUC = 8;
-    /** evaluation. */
+    /**
+     * evaluation.
+     */
     public static final Tag[] TAGS_EVALUATION = {
             new Tag(EVALUATION_CC, "CC", "Correlation coefficient"),
             new Tag(EVALUATION_RMSE, "RMSE", "Root mean squared error"),
@@ -1890,35 +2002,55 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
             new Tag(EVALUATION_COMBINED, "COMB", "Combined = (1-abs(CC)) + RRSE + RAE"),
             new Tag(EVALUATION_ACC, "ACC", "Accuracy"),
             new Tag(EVALUATION_WAUC, "WAUC", "Weighted AUC"),
-            new Tag(EVALUATION_KAPPA, "KAP", "Kappa") };
+            new Tag(EVALUATION_KAPPA, "KAP", "Kappa")};
 
-    /** row-wise grid traversal. */
+    /**
+     * row-wise grid traversal.
+     */
     public static final int TRAVERSAL_BY_ROW = 0;
-    /** column-wise grid traversal. */
+    /**
+     * column-wise grid traversal.
+     */
     public static final int TRAVERSAL_BY_COLUMN = 1;
-    /** traversal. */
-    public static final Tag[] TAGS_TRAVERSAL = { new Tag(TRAVERSAL_BY_ROW, "row-wise", "row-wise"),
-            new Tag(TRAVERSAL_BY_COLUMN, "column-wise", "column-wise") };
+    /**
+     * traversal.
+     */
+    public static final Tag[] TAGS_TRAVERSAL = {new Tag(TRAVERSAL_BY_ROW, "row-wise", "row-wise"),
+            new Tag(TRAVERSAL_BY_COLUMN, "column-wise", "column-wise")};
 
-    /** the prefix to indicate that the option is for the classifier. */
+    /**
+     * the prefix to indicate that the option is for the classifier.
+     */
     public final static String PREFIX_CLASSIFIER = "classifier.";
 
-    /** the prefix to indicate that the option is for the filter. */
+    /**
+     * the prefix to indicate that the option is for the filter.
+     */
     public final static String PREFIX_FILTER = "filter.";
 
-    /** the Filter. */
+    /**
+     * the Filter.
+     */
     protected Filter m_Filter;
 
-    /** the Filter with the best setup. */
+    /**
+     * the Filter with the best setup.
+     */
     protected Filter m_BestFilter;
 
-    /** the Classifier with the best setup. */
+    /**
+     * the Classifier with the best setup.
+     */
     protected Classifier m_BestClassifier;
 
-    /** the best values. */
+    /**
+     * the best values.
+     */
     protected PointDouble m_Values = null;
 
-    /** the type of evaluation. */
+    /**
+     * the type of evaluation.
+     */
     protected int m_Evaluation = EVALUATION_CC;
 
     /**
@@ -1927,16 +2059,24 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
      */
     protected String m_Y_Property = PREFIX_CLASSIFIER + "ridge";
 
-    /** the minimum of Y. */
+    /**
+     * the minimum of Y.
+     */
     protected double m_Y_Min = -10;
 
-    /** the maximum of Y. */
+    /**
+     * the maximum of Y.
+     */
     protected double m_Y_Max = +5;
 
-    /** the step size of Y. */
+    /**
+     * the step size of Y.
+     */
     protected double m_Y_Step = 1;
 
-    /** the base for Y. */
+    /**
+     * the base for Y.
+     */
     protected double m_Y_Base = 10;
 
     /**
@@ -1948,7 +2088,7 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
      * <li>STEP</li>
      * <li>I - the current value (from 'from' to 'to' with stepsize 'step')</li>
      * </ul>
-     * 
+     *
      * @see MathematicalExpression
      * @see MathExpression
      */
@@ -1960,16 +2100,24 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
      */
     protected String m_X_Property = PREFIX_FILTER + "numComponents";
 
-    /** the minimum of X. */
+    /**
+     * the minimum of X.
+     */
     protected double m_X_Min = +5;
 
-    /** the maximum of X. */
+    /**
+     * the maximum of X.
+     */
     protected double m_X_Max = +20;
 
-    /** the step size of X. */
+    /**
+     * the step size of X.
+     */
     protected double m_X_Step = 1;
 
-    /** the base for X. */
+    /**
+     * the base for X.
+     */
     protected double m_X_Base = 10;
 
     /**
@@ -1981,52 +2129,80 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
      * <li>STEP</li>
      * <li>I - the current value (from 'from' to 'to' with stepsize 'step')</li>
      * </ul>
-     * 
+     *
      * @see MathematicalExpression
      * @see MathExpression
      */
     protected String m_X_Expression = "I";
 
-    /** whether the grid can be extended. */
+    /**
+     * whether the grid can be extended.
+     */
     protected boolean m_GridIsExtendable = false;
 
-    /** maximum number of grid extensions (-1 means unlimited). */
+    /**
+     * maximum number of grid extensions (-1 means unlimited).
+     */
     protected int m_MaxGridExtensions = 3;
 
-    /** the number of extensions performed. */
+    /**
+     * the number of extensions performed.
+     */
     protected int m_GridExtensionsPerformed = 0;
 
-    /** the sample size to search the initial grid with. */
+    /**
+     * the sample size to search the initial grid with.
+     */
     protected double m_SampleSize = 100;
 
-    /** the traversal. */
+    /**
+     * the traversal.
+     */
     protected int m_Traversal = TRAVERSAL_BY_COLUMN;
 
-    /** the log file to use. */
+    /**
+     * the log file to use.
+     */
     protected File m_LogFile = new File(System.getProperty("user.dir"));
 
-    /** the value-pairs grid. */
+    /**
+     * the value-pairs grid.
+     */
     protected Grid m_Grid;
 
-    /** the training data. */
+    /**
+     * the training data.
+     */
     protected Instances m_Data;
 
-    /** the cache for points in the grid that got calculated. */
+    /**
+     * the cache for points in the grid that got calculated.
+     */
     protected PerformanceCache m_Cache;
 
-    /** for storing the performances. */
+    /**
+     * for storing the performances.
+     */
     protected Vector<Performance> m_Performances;
 
-    /** whether all performances in the grid are the same. */
+    /**
+     * whether all performances in the grid are the same.
+     */
     protected boolean m_UniformPerformance = false;
 
-    /** The number of threads to have executing at any one time. */
+    /**
+     * The number of threads to have executing at any one time.
+     */
     protected int m_NumExecutionSlots = 1;
 
-    /** Pool of threads to train models with. */
+    /**
+     * Pool of threads to train models with.
+     */
     protected transient ThreadPoolExecutor m_ExecutorPool;
 
-    /** The number of setups completed so far. */
+    /**
+     * The number of setups completed so far.
+     */
     protected int m_Completed;
 
     /**
@@ -2034,23 +2210,33 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
      */
     protected int m_Failed;
 
-    /** the number of setups to evaluate. */
+    /**
+     * the number of setups to evaluate.
+     */
     protected int m_NumSetups;
 
-    /** the generator for generating the setups. */
+    /**
+     * the generator for generating the setups.
+     */
     protected SetupGenerator m_Generator;
 
-    /** for storing an exception that happened in one of the worker threads. */
+    /**
+     * for storing an exception that happened in one of the worker threads.
+     */
     protected transient Exception m_Exception;
 
-    /** number of folds for the initial grid search **/
+    /**
+     * number of folds for the initial grid search
+     **/
     private int initialNumFolds = 10;
 
     public void setInitialNumFolds(int initialNumFolds) {
         this.initialNumFolds = initialNumFolds;
     }
 
-    /** whether to stop after searching the initial grid */
+    /**
+     * whether to stop after searching the initial grid
+     */
     private boolean stopAfterFirstGrid = true;
 
     public void setStopAfterFirstGrid(boolean stopAfterFirstGrid) {
@@ -2090,7 +2276,7 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
 
     /**
      * Returns a string describing classifier.
-     * 
+     *
      * @return a description suitable for displaying in the explorer/experimenter gui
      */
     public String globalInfo() {
@@ -2125,7 +2311,7 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
 
     /**
      * String describing default classifier.
-     * 
+     *
      * @return the classname of the default classifier
      */
     protected String defaultClassifierString() {
@@ -2326,10 +2512,10 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
     /**
      * Parses the options for this object.
      * <p/>
-     *
+     * <p>
      * <!-- options-start --> Valid options are:
      * <p/>
-     * 
+     *
      * <pre>
      * -E &lt;CC|RMSE|RRSE|MAE|RAE|COMB|ACC|WAUC|KAP&gt;
      *  Determines the parameter used for evaluation:
@@ -2344,37 +2530,37 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
      *  KAP = Kappa
      *  (default: CC)
      * </pre>
-     * 
+     *
      * <pre>
      * -y-property &lt;option&gt;
      *  The Y option to test (without leading dash).
      *  (default: classifier.ridge)
      * </pre>
-     * 
+     *
      * <pre>
      * -y-min &lt;num&gt;
      *  The minimum for Y.
      *  (default: -10)
      * </pre>
-     * 
+     *
      * <pre>
      * -y-max &lt;num&gt;
      *  The maximum for Y.
      *  (default: +5)
      * </pre>
-     * 
+     *
      * <pre>
      * -y-step &lt;num&gt;
      *  The step size for Y.
      *  (default: 1)
      * </pre>
-     * 
+     *
      * <pre>
      * -y-base &lt;num&gt;
      *  The base for Y.
      *  (default: 10)
      * </pre>
-     * 
+     *
      * <pre>
      * -y-expression &lt;expr&gt;
      *  The expression for Y.
@@ -2387,44 +2573,44 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
      *   (from 'FROM' to 'TO' with stepsize 'STEP')
      *  (default: 'pow(BASE,I)')
      * </pre>
-     * 
+     *
      * <pre>
      * -filter &lt;filter specification&gt;
-     *  The filter to use (on X axis). Full classname of filter to include, 
+     *  The filter to use (on X axis). Full classname of filter to include,
      *  followed by scheme options.
      *  (default: weka.filters.supervised.attribute.PLSFilter)
      * </pre>
-     * 
+     *
      * <pre>
      * -x-property &lt;option&gt;
      *  The X option to test (without leading dash).
      *  (default: filter.numComponents)
      * </pre>
-     * 
+     *
      * <pre>
      * -x-min &lt;num&gt;
      *  The minimum for X.
      *  (default: +5)
      * </pre>
-     * 
+     *
      * <pre>
      * -x-max &lt;num&gt;
      *  The maximum for X.
      *  (default: +20)
      * </pre>
-     * 
+     *
      * <pre>
      * -x-step &lt;num&gt;
      *  The step size for X.
      *  (default: 1)
      * </pre>
-     * 
+     *
      * <pre>
      * -x-base &lt;num&gt;
      *  The base for X.
      *  (default: 10)
      * </pre>
-     * 
+     *
      * <pre>
      * -x-expression &lt;expr&gt;
      *  The expression for the X value.
@@ -2437,126 +2623,126 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
      *   (from 'FROM' to 'TO' with stepsize 'STEP')
      *  (default: 'pow(BASE,I)')
      * </pre>
-     * 
+     *
      * <pre>
      * -extend-grid
      *  Whether the grid can be extended.
      *  (default: no)
      * </pre>
-     * 
+     *
      * <pre>
      * -max-grid-extensions &lt;num&gt;
      *  The maximum number of grid extensions (-1 is unlimited).
      *  (default: 3)
      * </pre>
-     * 
+     *
      * <pre>
      * -sample-size &lt;num&gt;
      *  The size (in percent) of the sample to search the inital grid with.
      *  (default: 100)
      * </pre>
-     * 
+     *
      * <pre>
      * -traversal &lt;ROW-WISE|COLUMN-WISE&gt;
      *  The type of traversal for the grid.
      *  (default: COLUMN-WISE)
      * </pre>
-     * 
+     *
      * <pre>
      * -log-file &lt;filename&gt;
      *  The log file to log the messages to.
      *  (default: none)
      * </pre>
-     * 
+     *
      * <pre>
      * -num-slots &lt;num&gt;
      *  Number of execution slots.
      *  (default 1 - i.e. no parallelism)
      * </pre>
-     * 
+     *
      * <pre>
      * -S &lt;num&gt;
      *  Random number seed.
      *  (default 1)
      * </pre>
-     * 
+     *
      * <pre>
      * -D
      *  If set, classifier is run in debug mode and
      *  may output additional info to the console
      * </pre>
-     * 
+     *
      * <pre>
      * -W
      *  Full name of base classifier.
      *  (default: weka.classifiers.functions.LinearRegression)
      * </pre>
-     * 
+     *
      * <pre>
      * Options specific to classifier weka.classifiers.functions.LinearRegression:
      * </pre>
-     * 
+     *
      * <pre>
      * -D
      *  Produce debugging output.
      *  (default no debugging output)
      * </pre>
-     * 
+     *
      * <pre>
      * -S &lt;number of selection method&gt;
      *  Set the attribute selection method to use. 1 = None, 2 = Greedy.
      *  (default 0 = M5' method)
      * </pre>
-     * 
+     *
      * <pre>
      * -C
      *  Do not try to eliminate colinear attributes.
      * </pre>
-     * 
+     *
      * <pre>
      * -R &lt;double&gt;
      *  Set ridge parameter (default 1.0e-8).
      * </pre>
-     * 
+     *
      * <pre>
      * Options specific to filter weka.filters.supervised.attribute.PLSFilter ('-filter'):
      * </pre>
-     * 
+     *
      * <pre>
      * -D
      *  Turns on output of debugging information.
      * </pre>
-     * 
+     *
      * <pre>
      * -C &lt;num&gt;
      *  The number of components to compute.
      *  (default: 20)
      * </pre>
-     * 
+     *
      * <pre>
      * -U
      *  Updates the class attribute as well.
      *  (default: off)
      * </pre>
-     * 
+     *
      * <pre>
      * -M
      *  Turns replacing of missing values on.
      *  (default: off)
      * </pre>
-     * 
+     *
      * <pre>
      * -A &lt;SIMPLS|PLS1&gt;
      *  The algorithm to use.
      *  (default: PLS1)
      * </pre>
-     * 
+     *
      * <pre>
      * -P &lt;none|center|standardize&gt;
      *  The type of preprocessing that is applied to the data.
      *  (default: center)
      * </pre>
-     * 
+     * <p>
      * <!-- options-end -->
      *
      * @param options the options to use
@@ -2728,7 +2914,7 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
 
     /**
      * Returns the tip text for this property.
-     * 
+     *
      * @return tip text for this property suitable for displaying in the explorer/experimenter gui
      */
     public String filterTipText() {
@@ -2761,7 +2947,7 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
 
     /**
      * Returns the tip text for this property.
-     * 
+     *
      * @return tip text for this property suitable for displaying in the explorer/experimenter gui
      */
     public String evaluationTipText() {
@@ -2791,7 +2977,7 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
 
     /**
      * Returns the tip text for this property.
-     * 
+     *
      * @return tip text for this property suitable for displaying in the explorer/experimenter gui
      */
     public String YPropertyTipText() {
@@ -2818,7 +3004,7 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
 
     /**
      * Returns the tip text for this property.
-     * 
+     *
      * @return tip text for this property suitable for displaying in the explorer/experimenter gui
      */
     public String YMinTipText() {
@@ -2845,7 +3031,7 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
 
     /**
      * Returns the tip text for this property.
-     * 
+     *
      * @return tip text for this property suitable for displaying in the explorer/experimenter gui
      */
     public String YMaxTipText() {
@@ -2872,7 +3058,7 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
 
     /**
      * Returns the tip text for this property.
-     * 
+     *
      * @return tip text for this property suitable for displaying in the explorer/experimenter gui
      */
     public String YStepTipText() {
@@ -2899,7 +3085,7 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
 
     /**
      * Returns the tip text for this property.
-     * 
+     *
      * @return tip text for this property suitable for displaying in the explorer/experimenter gui
      */
     public String YBaseTipText() {
@@ -2926,7 +3112,7 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
 
     /**
      * Returns the tip text for this property.
-     * 
+     *
      * @return tip text for this property suitable for displaying in the explorer/experimenter gui
      */
     public String YExpressionTipText() {
@@ -2953,7 +3139,7 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
 
     /**
      * Returns the tip text for this property.
-     * 
+     *
      * @return tip text for this property suitable for displaying in the explorer/experimenter gui
      */
     public String XPropertyTipText() {
@@ -2980,7 +3166,7 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
 
     /**
      * Returns the tip text for this property.
-     * 
+     *
      * @return tip text for this property suitable for displaying in the explorer/experimenter gui
      */
     public String XMinTipText() {
@@ -3007,7 +3193,7 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
 
     /**
      * Returns the tip text for this property.
-     * 
+     *
      * @return tip text for this property suitable for displaying in the explorer/experimenter gui
      */
     public String XMaxTipText() {
@@ -3034,7 +3220,7 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
 
     /**
      * Returns the tip text for this property.
-     * 
+     *
      * @return tip text for this property suitable for displaying in the explorer/experimenter gui
      */
     public String XStepTipText() {
@@ -3061,7 +3247,7 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
 
     /**
      * Returns the tip text for this property.
-     * 
+     *
      * @return tip text for this property suitable for displaying in the explorer/experimenter gui
      */
     public String XBaseTipText() {
@@ -3088,7 +3274,7 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
 
     /**
      * Returns the tip text for this property.
-     * 
+     *
      * @return tip text for this property suitable for displaying in the explorer/experimenter gui
      */
     public String XExpressionTipText() {
@@ -3115,7 +3301,7 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
 
     /**
      * Returns the tip text for this property.
-     * 
+     *
      * @return tip text for this property suitable for displaying in the explorer/experimenter gui
      */
     public String gridIsExtendableTipText() {
@@ -3142,7 +3328,7 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
 
     /**
      * Returns the tip text for this property.
-     * 
+     *
      * @return tip text for this property suitable for displaying in the explorer/experimenter gui
      */
     public String maxGridExtensionsTipText() {
@@ -3169,7 +3355,7 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
 
     /**
      * Returns the tip text for this property.
-     * 
+     *
      * @return tip text for this property suitable for displaying in the explorer/experimenter gui
      */
     public String sampleSizePercentTipText() {
@@ -3196,7 +3382,7 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
 
     /**
      * Returns the tip text for this property.
-     * 
+     *
      * @return tip text for this property suitable for displaying in the explorer/experimenter gui
      */
     public String traversalTipText() {
@@ -3225,7 +3411,7 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
 
     /**
      * Returns the tip text for this property.
-     * 
+     *
      * @return tip text for this property suitable for displaying in the explorer/experimenter gui
      */
     public String logFileTipText() {
@@ -3283,7 +3469,7 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
      * least one setup failed.
      *
      * @param performance the performance to add
-     * @param folds the number of folds
+     * @param folds       the number of folds
      * @see #m_Failed
      */
     protected void addPerformance(Performance performance, int folds) {
@@ -3296,7 +3482,7 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
 
     /**
      * Returns the data currently in use.
-     * 
+     *
      * @return the data
      */
     protected Instances getData() {
@@ -3305,7 +3491,7 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
 
     /**
      * returns the best filter setup.
-     * 
+     *
      * @return the best filter setup
      */
     public Filter getBestFilter() {
@@ -3314,7 +3500,7 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
 
     /**
      * returns the best Classifier setup.
-     * 
+     *
      * @return the best Classifier setup
      */
     public Classifier getBestClassifier() {
@@ -3323,7 +3509,7 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
 
     /**
      * Returns an enumeration of the measure names.
-     * 
+     *
      * @return an enumeration of the measure names
      */
     public Enumeration enumerateMeasures() {
@@ -3340,7 +3526,7 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
 
     /**
      * Returns the value of the named measure.
-     * 
+     *
      * @param measureName the name of the measure to query for its value
      * @return the value of the named measure
      */
@@ -3357,7 +3543,7 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
 
     /**
      * returns the parameter pair that was found to work best.
-     * 
+     *
      * @return the best parameter combination
      */
     public PointDouble getValues() {
@@ -3367,7 +3553,7 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
     /**
      * returns the number of grid extensions that took place during the search (only applicable if
      * the grid was extendable).
-     * 
+     *
      * @return the number of grid extensions that were performed
      * @see #getGridIsExtendable()
      */
@@ -3419,7 +3605,7 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
     /**
      * prints the specified message to stdout if debug is on and can also dump the message to a log
      * file.
-     * 
+     *
      * @param message the message to print or store in a log file
      */
     protected void log(String message) {
@@ -3429,7 +3615,7 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
     /**
      * prints the specified message to stdout if debug is on and can also dump the message to a log
      * file.
-     * 
+     *
      * @param message the message to print or store in a log file
      * @param onlyLog if true the message will only be put into the log file but not to stdout
      */
@@ -3445,10 +3631,10 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
 
     /**
      * generates a table string for all the performances in the grid and returns that.
-     * 
-     * @param grid the current grid to align the performances to
+     *
+     * @param grid         the current grid to align the performances to
      * @param performances the performances to align
-     * @param type the type of performance
+     * @param type         the type of performance
      * @return the table string
      */
     protected String logPerformances(Grid grid, Vector<Performance> performances, Tag type) {
@@ -3468,8 +3654,8 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
 
     /**
      * aligns all performances in the grid and prints those tables to the log file.
-     * 
-     * @param grid the current grid to align the performances to
+     *
+     * @param grid         the current grid to align the performances to
      * @param performances the performances to align
      */
     protected void logPerformances(Grid grid, Vector performances) {
@@ -3526,7 +3712,7 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
      * Records the completion of the training of a single classifier. Unblocks if all classifiers
      * have been trained.
      *
-     * @param obj the classifier or setup values that was attempted to train
+     * @param obj       the classifier or setup values that was attempted to train
      * @param exception an optional exception. evaluation was successful if this is null
      */
     protected synchronized void completedEvaluation(Object obj, Exception exception) {
@@ -3556,10 +3742,10 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
 
     /**
      * determines the best values-pair for the given grid, using CV with specified number of folds.
-     * 
+     *
      * @param grid the grid to work on
      * @param inst the data to work with
-     * @param cv the number of folds for the cross-validation
+     * @param cv   the number of folds for the cross-validation
      * @return the best values pair
      * @throws Exception if setup or training fails
      */
@@ -3665,7 +3851,7 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
 
     /**
      * returns the best values-pair in the grid.
-     * 
+     *
      * @return the best values pair
      * @throws Exception if something goes wrong
      */
@@ -3762,7 +3948,7 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
 
     /**
      * builds the classifier.
-     * 
+     *
      * @param data the training instances
      * @throws Exception if something goes wrong
      */
@@ -3797,7 +3983,7 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
         m_Grid = new Grid(getXMin(), getXMax(), getXStep(), strX + ", property " + getXProperty()
                 + ", expr. " + getXExpression() + ", base " + getXBase(), getYMin(), getYMax(),
                 getYStep(), strY + ", property " + getYProperty() + ", expr. " + getYExpression()
-                        + ", base " + getYBase());
+                + ", base " + getYBase());
 
         log("\n" + this.getClass().getName() + "\n"
                 + this.getClass().getName().replaceAll(".", "=") + "\n" + "Options: "
@@ -3840,7 +4026,7 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
 
     /**
      * returns a string representation of the classifier.
-     * 
+     *
      * @return a string representation of the classifier
      */
     public String toString() {
@@ -3885,7 +4071,7 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
 
     /**
      * Returns the revision string.
-     * 
+     *
      * @return the revision
      */
     public String getRevision() {
@@ -3894,7 +4080,7 @@ public class GridSearch9734Mod extends RandomizableSingleClassifierEnhancer impl
 
     /**
      * Main method for running this classifier from commandline.
-     * 
+     *
      * @param args the options
      */
     public static void main(String[] args) {

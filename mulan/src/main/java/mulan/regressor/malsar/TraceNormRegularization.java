@@ -1,27 +1,28 @@
 package mulan.regressor.malsar;
 
-import java.util.Arrays;
-
 import matlabcontrol.MatlabInvocationException;
 import matlabcontrol.MatlabProxy;
 import matlabcontrol.extensions.MatlabTypeConverter;
 import weka.core.Instances;
 
+import java.util.Arrays;
+
 /**
  * TODO Add publication info for this method!
- * 
- * @author Eleftherios Spyromitros-Xioufis
  *
+ * @author Eleftherios Spyromitros-Xioufis
  */
-public class TraceNormRegularization extends MalsarWrapper{
+public class TraceNormRegularization extends MalsarWrapper {
 
-    /** The number of internal cv folds used for parameter optimization (from Malsar). */
+    /**
+     * The number of internal cv folds used for parameter optimization (from Malsar).
+     */
     protected int numCVFolds = 5;
     /**
      * The values of rho (rho controls the rank of W) that will be tested via internal cv (from
      * Malsar).
      */
-    protected double[] rho = { 0.001, 0.01, 0.1, 1, 10, 100, 1000 };
+    protected double[] rho = {0.001, 0.01, 0.1, 1, 10, 100, 1000};
 
     public TraceNormRegularization(String malsarPath, MatlabProxy proxy, int maxNumCompThreads) {
         super(malsarPath, proxy, maxNumCompThreads);

@@ -18,7 +18,7 @@ package mulan.evaluation.measure;
 /**
  * Implementation of the subset accuracy measure. This measure is the opposite
  * of the zero-one loss for multi-label classification.
- * 
+ *
  * @author Grigorios Tsoumakas
  * @version 2010.11.05
  */

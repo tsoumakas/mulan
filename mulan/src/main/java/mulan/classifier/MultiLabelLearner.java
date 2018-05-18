@@ -20,7 +20,7 @@ import weka.core.Instance;
 
 /**
  * Common root interface for all multi-label learner types.
- *  
+ *
  * @author Jozef Vilcek
  */
 public interface MultiLabelLearner {
@@ -48,7 +48,7 @@ public interface MultiLabelLearner {
      * The behavior is determined by the outcome of {@link MultiLabelLearner#isUpdatable()} method.
      *
      * @param instances set of training data, upon which the learner model should be built
-     * @throws Exception if learner model was not created successfully
+     * @throws Exception            if learner model was not created successfully
      * @throws InvalidDataException if specified instances data is invalid or not supported by the learner
      * @see MultiLabelLearner#isUpdatable()
      */
@@ -58,7 +58,7 @@ public interface MultiLabelLearner {
      * Creates a deep copy of the given learner using serialization.
      *
      * @return a deep copy of the learner
-     * @exception Exception if an error occurs while making copy of the learner.
+     * @throws Exception if an error occurs while making copy of the learner.
      */
     public MultiLabelLearner makeCopy() throws Exception;
 
@@ -67,8 +67,8 @@ public interface MultiLabelLearner {
      *
      * @param instance the input given to the learner in the form of {@link Instance}
      * @return a prediction of the learner in form of {@link MultiLabelOutput}.
-     * @throws Exception if an error occurs while making the prediction.
-     * @throws InvalidDataException if specified instance data is invalid and can not be processed by the learner
+     * @throws Exception                    if an error occurs while making the prediction.
+     * @throws InvalidDataException         if specified instance data is invalid and can not be processed by the learner
      * @throws ModelInitializationException if method is called before {@link MultiLabelLearner#build(MultiLabelInstances)}
      */
     public MultiLabelOutput makePrediction(Instance instance)
@@ -76,7 +76,7 @@ public interface MultiLabelLearner {
 
     /**
      * Sets whether debugging information should be output by the model
-     * 
+     *
      * @param debug True to show debug information, False not to
      */
     public void setDebug(boolean debug);

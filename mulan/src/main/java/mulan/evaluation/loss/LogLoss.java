@@ -17,7 +17,7 @@ package mulan.evaluation.loss;
 
 /**
  * Implementation of the LogLoss loss function.
- * 
+ *
  * @author Christina Papagiannopoulou
  * @version 2013.6.13
  */

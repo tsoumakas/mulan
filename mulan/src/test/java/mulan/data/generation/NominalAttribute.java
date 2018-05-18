@@ -15,15 +15,15 @@
  */
 package mulan.data.generation;
 
-public class NominalAttribute extends Attribute{
-	private String[] nominalValues;
-	
-	NominalAttribute(String name, String[] values){
-		super(name, AttributeType.Nominal);
-		this.nominalValues = values;
-	}
-	
-	public String[] getValues(){
-		return nominalValues;
-	}
+public class NominalAttribute extends Attribute {
+    private String[] nominalValues;
+
+    NominalAttribute(String name, String[] values) {
+        super(name, AttributeType.Nominal);
+        this.nominalValues = values;
+    }
+
+    public String[] getValues() {
+        return nominalValues;
+    }
 }

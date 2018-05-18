@@ -22,16 +22,16 @@ package mulan.data;
 
 /**
  * Interface for multi-label stratification methods
- * 
+ *
  * @author Grigorios Tsoumakas
  * @version 2012.05.08
  */
 public interface Stratification {
-    
+
     /**
      * Creates a number of folds via stratified sampling
-     * 
-     * @param data a multi-label dataset
+     *
+     * @param data  a multi-label dataset
      * @param folds the number of folds to sample
      * @return an array of multi-label datasets, one for each fold
      */

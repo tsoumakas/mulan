@@ -17,7 +17,7 @@ package mulan.evaluation.measure;
 
 /**
  * Implementation of GMAiP (Geometric Mean Average Interpolated Precision)
- * 
+ *
  * @author Fragkiskos Chatziasimidis
  * @author John Panagos
  * @author Eleftherios Spyromitros-Xioufis
@@ -27,8 +27,8 @@ public class GeometricMeanAverageInterpolatedPrecision extends MeanAverageInterp
 
     /**
      * Creates a new object
-     * 
-     * @param numOfLabels the number of labels
+     *
+     * @param numOfLabels  the number of labels
      * @param recallLevels the number of recall levels
      */
     public GeometricMeanAverageInterpolatedPrecision(int numOfLabels, int recallLevels) {

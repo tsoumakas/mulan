@@ -21,10 +21,6 @@
  */
 package mulan.classifier.neural;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
 import mulan.classifier.InvalidDataException;
 import mulan.classifier.MultiLabelLearnerBase;
 import mulan.classifier.MultiLabelOutput;
@@ -44,15 +40,20 @@ import weka.core.TechnicalInformation.Type;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.NominalToBinary;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+import java.util.Set;
+
 /**
- <!-- globalinfo-start -->
+ * <!-- globalinfo-start -->
  * Implementation of Multiclass Multilabel Perceptrons learner. For more information, see<br>
  * <br>
  * Koby Crammer, Yoram Singer (2003). A Family of Additive Online Algorithms for Category Ranking.. Journal of Machine Learning Research. 3(6):1025-1058.
  * <br>
- <!-- globalinfo-end -->
- * 
- <!-- technical-bibtex-start -->
+ * <!-- globalinfo-end -->
+ * <p>
+ * <!-- technical-bibtex-start -->
  * BibTeX:
  * <pre>
  * &#64;article{KobyCrammer2003,
@@ -65,16 +66,20 @@ import weka.filters.unsupervised.attribute.NominalToBinary;
  * }
  * </pre>
  * <br>
- <!-- technical-bibtex-end -->
- * 
+ * <!-- technical-bibtex-end -->
+ *
  * @author Jozef Vilcek
  * @version 2012.02.27
  */
 public class MMPLearner extends MultiLabelLearnerBase {
 
-    /** Version UID for serialization */
+    /**
+     * Version UID for serialization
+     */
     private static final long serialVersionUID = 2221778416856852684L;
-    /** The bias value for tempPerceptrons */
+    /**
+     * The bias value for tempPerceptrons
+     */
     private static final double PERCEP_BIAS = 1;
     /**
      * List of tempPerceptrons representing model of the learner. One for each label.
@@ -86,18 +91,28 @@ public class MMPLearner extends MultiLabelLearnerBase {
 //    /** Determines if feature attributes has to be normalized prior to learning */
 //    private boolean normalizeAttributes = true;
     private NormalizationFilter normalizer;
-    
-    /** The number of training epochs to perform with trainig data during the model learning / building */
+
+    /**
+     * The number of training epochs to perform with trainig data during the model learning / building
+     */
     private int epochs = 1;
-    /** Indicates whether any nominal attributes from input data set has to be converted to binary */
+    /**
+     * Indicates whether any nominal attributes from input data set has to be converted to binary
+     */
     private boolean convertNomToBin = true;
-    /** Filter used for conversion of nominal attributes to binary (if enabled) */
+    /**
+     * Filter used for conversion of nominal attributes to binary (if enabled)
+     */
     private NominalToBinary nomToBinFilter;
-    /** The measure to be used to judge the performance of ranking when learning the model */
+    /**
+     * The measure to be used to judge the performance of ranking when learning the model
+     */
     private final RankingLossFunction lossFunction;
-    /** The name of a model update rule used to update the model when learning from training data */
+    /**
+     * The name of a model update rule used to update the model when learning from training data
+     */
     private final MMPUpdateRuleType mmpUpdateRule;
-    
+
     /**
      * The flag indicating if initialization with of learner first learning data samples already
      * took place. This is because the {@link MMPLearner} is online and updatable.
@@ -111,12 +126,12 @@ public class MMPLearner extends MultiLabelLearnerBase {
     public MMPLearner() {
         this(new RankingLoss(), MMPUpdateRuleType.UniformUpdate);
     }
-    
+
     /**
      * Creates a new instance of {@link MMPLearner}.
      *
-     * @param lossMeasure the loss measure to be used when judging
-     * 	ranking performance in learning process
+     * @param lossMeasure     the loss measure to be used when judging
+     *                        ranking performance in learning process
      * @param modelUpdateRule the model update rule used to update the model when learning from training data
      */
     public MMPLearner(RankingLossFunction lossMeasure, MMPUpdateRuleType modelUpdateRule) {
@@ -135,10 +150,10 @@ public class MMPLearner extends MultiLabelLearnerBase {
     /**
      * Creates a new instance of {@link MMPLearner}.
      *
-     * @param lossMeasure the loss measure to be used when judging
-     * 	ranking performance in learning process
+     * @param lossMeasure     the loss measure to be used when judging
+     *                        ranking performance in learning process
      * @param modelUpdateRule the model update rule used to update the model when learning from training data
-     * @param randomnessSeed the seed value for pseudo-random generator
+     * @param randomnessSeed  the seed value for pseudo-random generator
      */
     public MMPLearner(RankingLossFunction lossMeasure, MMPUpdateRuleType modelUpdateRule, long randomnessSeed) {
         if (lossMeasure == null) {
@@ -171,12 +186,13 @@ public class MMPLearner extends MultiLabelLearnerBase {
     /**
      * Gets number of training epochs.
      * Default value is 1.
+     *
      * @return training epochs
      */
     public int getTrainingEpochs() {
         return epochs;
     }
-    
+
     /**
      * Sets whether nominal attributes from input data set has to be converted to binary
      * prior to learning (and respectively making a prediction).
@@ -197,7 +213,7 @@ public class MMPLearner extends MultiLabelLearnerBase {
         return convertNomToBin;
     }
 
-//    /**
+    //    /**
 //     * Sets whether feature attributes should be normalized prior to learning.
 //     * Normalization is performed on numeric attributes to the range <-1,1>.<br>
 //     * When making prediction, attributes of passed input instance are also
@@ -237,10 +253,10 @@ public class MMPLearner extends MultiLabelLearnerBase {
 
         ModelUpdateRule modelUpdateRule = getModelUpdateRule(lossFunction);
 
-        for(int iter = 0; iter < epochs; iter++){
-	        for (DataPair dataItem : trainData) {
-	            modelUpdateRule.process(dataItem, null);
-	        }
+        for (int iter = 0; iter < epochs; iter++) {
+            for (DataPair dataItem : trainData) {
+                modelUpdateRule.process(dataItem, null);
+            }
         }
     }
 
@@ -358,7 +374,7 @@ public class MMPLearner extends MultiLabelLearnerBase {
      *
      * @param attributes attributes to be checked
      * @return the string with indices of nominal attributes, which can by used for
-     * 	nominal to binary transformation of attributes
+     * nominal to binary transformation of attributes
      */
     private String ensureAttributesFormat(Set<Attribute> attributes) {
 
@@ -433,7 +449,7 @@ public class MMPLearner extends MultiLabelLearnerBase {
 
     public String globalInfo() {
         return "Implementation of Multiclass Multilabel Perceptrons learner." +
-               " For more information, see\n\n"
-               + getTechnicalInformation().toString();
+                " For more information, see\n\n"
+                + getTechnicalInformation().toString();
     }
 }

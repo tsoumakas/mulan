@@ -19,7 +19,7 @@ import mulan.evaluation.loss.ConfidenceLossFunction;
 
 /**
  * Base class for loss-based confidence measures
- * 
+ *
  * @author Christina Papagiannopoulou
  * @version 2013.6.13
  */

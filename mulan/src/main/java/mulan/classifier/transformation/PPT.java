@@ -15,10 +15,6 @@
  */
 package mulan.classifier.transformation;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import mulan.data.DataUtils;
 import mulan.data.LabelSet;
 import weka.classifiers.Classifier;
@@ -28,13 +24,18 @@ import weka.core.TechnicalInformation;
 import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  * <p>Implementation of the Pruned Problem Transformation algorithm (PPT).</p>
  * <p>For more information, see <em> Read, J. (2008) A Pruned Problem
  * Transformation Method for Multi-label classification. In: Proc. 2008 New
  * Zealand Computer Science Research Student Conference (NZCSRS 2008), pp.
- * 143-150.</em></p> 
- * 
+ * 143-150.</em></p>
+ *
  * @author Grigorios Tsoumakas
  * @version 2012.02.27
  */
@@ -53,7 +54,9 @@ public class PPT extends LabelsetPruning {
          * Reintroduce infrequent labelsets via subsets
          */
         NO_INFORMATION_LOSS;
-    };
+    }
+
+    ;
     /**
      * strategy for processing infrequent labelsets
      */
@@ -71,8 +74,8 @@ public class PPT extends LabelsetPruning {
      * strategy for processing infrequent labelsets
      *
      * @param classifier base single-label classification algorithm
-     * @param p number of instances required for a labelset to be included.
-     * @param aStrategy strategy for processing infrequent labelsets
+     * @param p          number of instances required for a labelset to be included.
+     * @param aStrategy  strategy for processing infrequent labelsets
      */
     public PPT(Classifier classifier, int p, Strategy aStrategy) {
         super(classifier, p);

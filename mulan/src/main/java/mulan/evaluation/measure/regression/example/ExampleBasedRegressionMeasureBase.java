@@ -4,10 +4,9 @@ import mulan.evaluation.measure.regression.RegressionMeasureBase;
 
 /**
  * Base class for example-based regression measures
- * 
+ *
  * @author Eleftherios Spyromitros-Xioufis
  * @version 2014.10.26
- *
  */
 public abstract class ExampleBasedRegressionMeasureBase extends RegressionMeasureBase {
 

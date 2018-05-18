@@ -15,21 +15,22 @@
  */
 package mulan.core;
 
+import weka.core.AllJavadoc;
+import weka.core.Utils;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import weka.core.AllJavadoc;
-import weka.core.Utils;
 
 /**
- <!-- globalinfo-start -->
+ * <!-- globalinfo-start -->
  * This class uses weka's Javadoc auto-generation classes to generate Javadoc<br>
  * comments and replaces the content between certain comment tags.
  * <br>
- <!-- globalinfo-end -->
- * 
+ * <!-- globalinfo-end -->
+ *
  * @author Eleftherios Spyromitros-Xioufis
  * @author Grigorios Tsoumakas
  * @version 2012.02.27

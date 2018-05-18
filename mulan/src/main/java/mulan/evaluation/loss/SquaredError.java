@@ -17,7 +17,7 @@ package mulan.evaluation.loss;
 
 /**
  * Implementation of the Squared Error loss function.
- * 
+ *
  * @author Christina Papagiannopoulou
  * @version 2013.6.13
  */

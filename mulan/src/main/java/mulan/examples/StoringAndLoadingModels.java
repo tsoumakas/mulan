@@ -15,9 +15,6 @@
  */
 package mulan.examples;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import mulan.classifier.transformation.BinaryRelevance;
 import mulan.data.MultiLabelInstances;
 import mulan.evaluation.Evaluation;
@@ -26,9 +23,12 @@ import weka.classifiers.trees.J48;
 import weka.core.SerializationHelper;
 import weka.core.Utils;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  * This example shows how you can store a learned model and load a stored model.
- * 
+ *
  * @author Grigorios Tsoumakas
  * @version 2012.02.06
  */
@@ -36,7 +36,7 @@ public class StoringAndLoadingModels {
 
     /**
      * Executes this example
-     * 
+     *
      * @param args command-line arguments -train, -test -labels and -model, e.g. -train emotions-train.arff -test emotions-test.arff -labels emotions.xml -model model.dat
      */
     public static void main(String[] args) {
