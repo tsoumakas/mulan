@@ -82,6 +82,15 @@ public class MMPLearner extends MultiLabelLearnerBase {
      */
     private static final double PERCEP_BIAS = 1;
     /**
+     * The measure to be used to judge the performance of ranking when learning the model
+     */
+    private final RankingLossFunction lossFunction;
+    /**
+     * The name of a model update rule used to update the model when learning from training data
+     */
+    private final MMPUpdateRuleType mmpUpdateRule;
+    private final Long randomnessSeed;
+    /**
      * List of tempPerceptrons representing model of the learner. One for each label.
      * They are ordered in same sequence as labels observed from training data.
      **/
@@ -91,7 +100,6 @@ public class MMPLearner extends MultiLabelLearnerBase {
 //    /** Determines if feature attributes has to be normalized prior to learning */
 //    private boolean normalizeAttributes = true;
     private NormalizationFilter normalizer;
-
     /**
      * The number of training epochs to perform with trainig data during the model learning / building
      */
@@ -105,20 +113,10 @@ public class MMPLearner extends MultiLabelLearnerBase {
      */
     private NominalToBinary nomToBinFilter;
     /**
-     * The measure to be used to judge the performance of ranking when learning the model
-     */
-    private final RankingLossFunction lossFunction;
-    /**
-     * The name of a model update rule used to update the model when learning from training data
-     */
-    private final MMPUpdateRuleType mmpUpdateRule;
-
-    /**
      * The flag indicating if initialization with of learner first learning data samples already
      * took place. This is because the {@link MMPLearner} is online and updatable.
      */
     private boolean isInitialized = false;
-    private final Long randomnessSeed;
 
     /**
      * Default constructor using RankingLoss and uniform update
@@ -169,6 +167,16 @@ public class MMPLearner extends MultiLabelLearnerBase {
     }
 
     /**
+     * Gets number of training epochs.
+     * Default value is 1.
+     *
+     * @return training epochs
+     */
+    public int getTrainingEpochs() {
+        return epochs;
+    }
+
+    /**
      * Sets the number of training epochs. Must be greater than 0.<br>
      * Default value is 1.
      *
@@ -184,13 +192,13 @@ public class MMPLearner extends MultiLabelLearnerBase {
     }
 
     /**
-     * Gets number of training epochs.
-     * Default value is 1.
+     * Gets a value indication whether conversion of nominal attributes from input data
+     * set to binary takes place prior to learning (and respectively making a prediction).
      *
-     * @return training epochs
+     * @return value indication whether conversion takes place
      */
-    public int getTrainingEpochs() {
-        return epochs;
+    public boolean getConvertNominalToBinary() {
+        return convertNomToBin;
     }
 
     /**
@@ -201,16 +209,6 @@ public class MMPLearner extends MultiLabelLearnerBase {
      */
     public void setConvertNominalToBinary(boolean convert) {
         convertNomToBin = convert;
-    }
-
-    /**
-     * Gets a value indication whether conversion of nominal attributes from input data
-     * set to binary takes place prior to learning (and respectively making a prediction).
-     *
-     * @return value indication whether conversion takes place
-     */
-    public boolean getConvertNominalToBinary() {
-        return convertNomToBin;
     }
 
     //    /**

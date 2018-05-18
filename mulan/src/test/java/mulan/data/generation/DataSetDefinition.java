@@ -21,8 +21,8 @@ import java.util.List;
 public class DataSetDefinition {
 
     private final List<Attribute> attributes;
-    private int examplesCount = 100;
     private final String name;
+    private int examplesCount = 100;
 
     public DataSetDefinition(String dataSetName) {
         name = dataSetName;
@@ -38,13 +38,13 @@ public class DataSetDefinition {
         return attributes;
     }
 
+    protected int getExamplesCount() {
+        return examplesCount;
+    }
+
     public DataSetDefinition setExamplesCount(int examplesCount) {
         this.examplesCount = examplesCount;
         return this;
-    }
-
-    protected int getExamplesCount() {
-        return examplesCount;
     }
 
     protected String getName() {

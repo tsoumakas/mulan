@@ -29,16 +29,6 @@ package mulan.classifier.neural.model;
  */
 public class ActivationPreLU extends ActivationFunction {
 
-    private static final long serialVersionUID = 3L;
-
-    /**
-     * Default slope value is set to 0.001 for numerical stability
-     * in case the derivative method is called.
-     * If slope = 0 the function equals the ReLU activation function.
-     * If slope = 1 the function equals the Linear activation function.
-     */
-    private double slope = 0.001;
-
     /**
      * Maximum value of function
      */
@@ -47,6 +37,14 @@ public class ActivationPreLU extends ActivationFunction {
      * Minimum value of function
      */
     public final static double MIN = Double.NEGATIVE_INFINITY;
+    private static final long serialVersionUID = 3L;
+    /**
+     * Default slope value is set to 0.001 for numerical stability
+     * in case the derivative method is called.
+     * If slope = 0 the function equals the ReLU activation function.
+     * If slope = 1 the function equals the Linear activation function.
+     */
+    private double slope = 0.001;
 
     @Override
     public double activate(double input) {

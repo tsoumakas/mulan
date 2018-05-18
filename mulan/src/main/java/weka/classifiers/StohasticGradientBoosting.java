@@ -110,6 +110,33 @@ public class StohasticGradientBoosting extends IteratedSingleClassifierEnhancer 
     private double m_percentage = 50;
 
     /**
+     * Default constructor specifying DecisionStump as the classifier
+     */
+    public StohasticGradientBoosting() {
+
+        this(new weka.classifiers.trees.DecisionStump());
+    }
+
+    /**
+     * Constructor which takes base classifier as argument.
+     *
+     * @param classifier the base classifier to use
+     */
+    public StohasticGradientBoosting(Classifier classifier) {
+
+        m_Classifier = classifier;
+    }
+
+    /**
+     * Main method for testing this class.
+     *
+     * @param argv should contain the following arguments: -t training file [-T test file] [-c class index]
+     */
+    public static void main(String[] argv) {
+        runClassifier(new StohasticGradientBoosting(), argv);
+    }
+
+    /**
      * Returns a string describing this attribute evaluator
      *
      * @return a description of the evaluator suitable for displaying in the explorer/experimenter gui
@@ -144,24 +171,6 @@ public class StohasticGradientBoosting extends IteratedSingleClassifierEnhancer 
     }
 
     /**
-     * Default constructor specifying DecisionStump as the classifier
-     */
-    public StohasticGradientBoosting() {
-
-        this(new weka.classifiers.trees.DecisionStump());
-    }
-
-    /**
-     * Constructor which takes base classifier as argument.
-     *
-     * @param classifier the base classifier to use
-     */
-    public StohasticGradientBoosting(Classifier classifier) {
-
-        m_Classifier = classifier;
-    }
-
-    /**
      * String describing default classifier.
      *
      * @return the default classifier classname
@@ -188,6 +197,40 @@ public class StohasticGradientBoosting extends IteratedSingleClassifierEnhancer 
             newVector.addElement(enu.nextElement());
         }
         return newVector.elements();
+    }
+
+    /**
+     * Gets the current settings of the Classifier.
+     *
+     * @return an array of strings suitable for passing to setOptions
+     */
+    public String[] getOptions() {
+
+        // ++ LEF ++
+
+        // String[] superOptions = super.getOptions();
+        // String[] options = new String[superOptions.length + 2];
+        // int current = 0;
+        //
+        // options[current++] = "-S";
+        // options[current++] = "" + getShrinkage();
+
+        String[] superOptions = super.getOptions();
+        String[] options = new String[superOptions.length + 4];
+        int current = 0;
+
+        options[current++] = "-S";
+        options[current++] = "" + getShrinkage();
+        options[current++] = "-P";
+        options[current++] = "" + getPercentage();
+
+        System.arraycopy(superOptions, 0, options, current, superOptions.length);
+
+        current += superOptions.length;
+        while (current < options.length) {
+            options[current++] = "";
+        }
+        return options;
     }
 
     /**
@@ -253,40 +296,6 @@ public class StohasticGradientBoosting extends IteratedSingleClassifierEnhancer 
     }
 
     /**
-     * Gets the current settings of the Classifier.
-     *
-     * @return an array of strings suitable for passing to setOptions
-     */
-    public String[] getOptions() {
-
-        // ++ LEF ++
-
-        // String[] superOptions = super.getOptions();
-        // String[] options = new String[superOptions.length + 2];
-        // int current = 0;
-        //
-        // options[current++] = "-S";
-        // options[current++] = "" + getShrinkage();
-
-        String[] superOptions = super.getOptions();
-        String[] options = new String[superOptions.length + 4];
-        int current = 0;
-
-        options[current++] = "-S";
-        options[current++] = "" + getShrinkage();
-        options[current++] = "-P";
-        options[current++] = "" + getPercentage();
-
-        System.arraycopy(superOptions, 0, options, current, superOptions.length);
-
-        current += superOptions.length;
-        while (current < options.length) {
-            options[current++] = "";
-        }
-        return options;
-    }
-
-    /**
      * Returns the tip text for this property
      *
      * @return tip text for this property suitable for displaying in the explorer/experimenter gui
@@ -298,15 +307,6 @@ public class StohasticGradientBoosting extends IteratedSingleClassifierEnhancer 
     }
 
     /**
-     * Set the shrinkage parameter
-     *
-     * @param l the shrinkage rate.
-     */
-    public void setShrinkage(double l) {
-        m_shrinkage = l;
-    }
-
-    /**
      * Get the shrinkage rate.
      *
      * @return the value of the learning rate
@@ -315,12 +315,21 @@ public class StohasticGradientBoosting extends IteratedSingleClassifierEnhancer 
         return m_shrinkage;
     }
 
-    public void setPercentage(double l) {
-        m_percentage = l;
+    /**
+     * Set the shrinkage parameter
+     *
+     * @param l the shrinkage rate.
+     */
+    public void setShrinkage(double l) {
+        m_shrinkage = l;
     }
 
     public double getPercentage() {
         return m_percentage;
+    }
+
+    public void setPercentage(double l) {
+        m_percentage = l;
     }
 
     /**
@@ -552,14 +561,5 @@ public class StohasticGradientBoosting extends IteratedSingleClassifierEnhancer 
      */
     public String getRevision() {
         return RevisionUtils.extract("$Revision: 8034 $");
-    }
-
-    /**
-     * Main method for testing this class.
-     *
-     * @param argv should contain the following arguments: -t training file [-T test file] [-c class index]
-     */
-    public static void main(String[] argv) {
-        runClassifier(new StohasticGradientBoosting(), argv);
     }
 }

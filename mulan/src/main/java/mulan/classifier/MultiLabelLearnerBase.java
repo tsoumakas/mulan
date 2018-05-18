@@ -34,7 +34,6 @@ import java.util.Date;
 public abstract class MultiLabelLearnerBase
         implements TechnicalInformationHandler, MultiLabelLearner, Serializable {
 
-    private boolean isModelInitialized = false;
     /**
      * The number of labels the learner can handle.
      * The number of labels are determined form the training data when learner is build.
@@ -59,6 +58,7 @@ public abstract class MultiLabelLearnerBase
      * {@link Instances} object of the training data in increasing order.
      */
     protected int[] featureIndices;
+    private boolean isModelInitialized = false;
     /**
      * Whether debugging is on/off
      */
@@ -130,21 +130,21 @@ public abstract class MultiLabelLearnerBase
     protected abstract MultiLabelOutput makePredictionInternal(Instance instance) throws Exception, InvalidDataException;
 
     /**
-     * Set debugging mode.
-     *
-     * @param debug <code>true</code> if debug output should be printed
-     */
-    public void setDebug(boolean debug) {
-        isDebug = debug;
-    }
-
-    /**
      * Get whether debugging is turned on.
      *
      * @return <code>true</code> if debugging output is on
      */
     public boolean getDebug() {
         return isDebug;
+    }
+
+    /**
+     * Set debugging mode.
+     *
+     * @param debug <code>true</code> if debug output should be printed
+     */
+    public void setDebug(boolean debug) {
+        isDebug = debug;
     }
 
     /**

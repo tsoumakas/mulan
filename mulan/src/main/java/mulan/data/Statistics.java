@@ -65,6 +65,10 @@ public class Statistics implements Serializable, TechnicalInformationHandler {
 
     private static final long serialVersionUID = 1206845794397561633L;
     /**
+     * the array holding the phi correlations
+     */
+    double[][] phi;
+    /**
      * the number of instances
      */
     private int numInstances;
@@ -106,10 +110,6 @@ public class Statistics implements Serializable, TechnicalInformationHandler {
      * labelsets and their frequency
      */
     private HashMap<LabelSet, Integer> labelsets;
-    /**
-     * the array holding the phi correlations
-     */
-    double[][] phi;
 
     /**
      * returns the HashMap containing the distinct labelsets and their frequencies

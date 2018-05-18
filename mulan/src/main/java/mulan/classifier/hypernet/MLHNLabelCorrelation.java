@@ -68,11 +68,6 @@ public class MLHNLabelCorrelation extends MultiLabelLearnerBase {
         this.isProcessedData = isProcessedData;
     }
 
-
-    public void setEachNum(int EachNum) {
-        this.EachNum = EachNum;
-    }
-
     public void setlearnNumRP(int learnNumRP) {
         this.learnNumRP = learnNumRP;
     }
@@ -89,29 +84,16 @@ public class MLHNLabelCorrelation extends MultiLabelLearnerBase {
         this.matchThreshold = learnmatchThresholdNumRP;
     }
 
-    public void setOrder(int order) {
-        this.order = order;
-    }
-
-    public void setType(MultiLabelHyperNetWorkType type) {
-        this.type = type;
-    }
-
     public void setisProcessedData(boolean b) {
         this.isProcessedData = b;
     }
 
-    public void setAlpha(double a) {
-        this.alpha = a;
-    }
-
-    public void setSeed(long seed) {
-        this.seed = seed;
-    }
-
-
     public int getEachNum() {
         return this.EachNum;
+    }
+
+    public void setEachNum(int EachNum) {
+        this.EachNum = EachNum;
     }
 
     public int getlearnNumRP() {
@@ -134,8 +116,16 @@ public class MLHNLabelCorrelation extends MultiLabelLearnerBase {
         return order;
     }
 
+    public void setOrder(int order) {
+        this.order = order;
+    }
+
     public MultiLabelHyperNetWorkType getType() {
         return this.type;
+    }
+
+    public void setType(MultiLabelHyperNetWorkType type) {
+        this.type = type;
     }
 
     public boolean getisProcessedData() {
@@ -146,10 +136,17 @@ public class MLHNLabelCorrelation extends MultiLabelLearnerBase {
         return this.alpha;
     }
 
+    public void setAlpha(double a) {
+        this.alpha = a;
+    }
+
     public long getSeed() {
         return seed;
     }
 
+    public void setSeed(long seed) {
+        this.seed = seed;
+    }
 
     /**
      * Bulids the processed trianing data set if the isProcessedData is false

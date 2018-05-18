@@ -42,6 +42,22 @@ public class LabelPowersetStratification implements Stratification, TechnicalInf
     private int seed;
 
     /**
+     * Default constructor
+     */
+    public LabelPowersetStratification() {
+        seed = 0;
+    }
+
+    /**
+     * Constructor setting the random seed
+     *
+     * @param aSeed the seed for random generation
+     */
+    public LabelPowersetStratification(int aSeed) {
+        seed = aSeed;
+    }
+
+    /**
      * Returns an instance of a TechnicalInformation object, containing detailed
      * information about the technical background of this class, e.g., paper
      * reference or book this class is based on.
@@ -64,22 +80,6 @@ public class LabelPowersetStratification implements Stratification, TechnicalInf
         result.setValue(TechnicalInformation.Field.ADDRESS, "Berlin, Heidelberg");
 
         return result;
-    }
-
-    /**
-     * Default constructor
-     */
-    public LabelPowersetStratification() {
-        seed = 0;
-    }
-
-    /**
-     * Constructor setting the random seed
-     *
-     * @param aSeed the seed for random generation
-     */
-    public LabelPowersetStratification(int aSeed) {
-        seed = aSeed;
     }
 
     public MultiLabelInstances[] stratify(MultiLabelInstances data, int folds) {

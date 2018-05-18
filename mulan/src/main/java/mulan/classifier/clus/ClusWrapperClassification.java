@@ -84,6 +84,50 @@ public class ClusWrapperClassification extends MultiLabelLearnerBase {
     }
 
     /**
+     * Takes a dataset as a MultiLabelInstances object and writes an arff file that is compliant with CLUS.
+     *
+     * @param mlDataset the dataset as a MultiLabelInstances object
+     * @param fileName  the name of the generated arff file
+     * @throws Exception Potential exception thrown. To be handled in an upper level.
+     */
+    public static void makeClusCompliant(MultiLabelInstances mlDataset, String fileName) throws Exception {
+        BufferedWriter out = new BufferedWriter(new FileWriter(new File(fileName)));
+
+        // the file will be written in the datasetPath directory
+        // Instances dataset = mlDataset.getDataSet();
+        // any changes are applied to a copy of the original dataset
+        Instances dataset = new Instances(mlDataset.getDataSet());
+        SparseToNonSparse stns = new SparseToNonSparse(); // new instance of filter
+        stns.setInputFormat(dataset); // inform filter about dataset **AFTER** setting options
+        Instances nonSparseDataset = Filter.useFilter(dataset, stns); // apply filter
+
+        String header = new Instances(nonSparseDataset, 0).toString();
+        // preprocess the header
+        // remove ; characters and truncate long attribute names
+        String[] headerLines = header.split("\n");
+        for (int i = 0; i < headerLines.length; i++) {
+            if (headerLines[i].startsWith("@attribute")) {
+                headerLines[i] = headerLines[i].replaceAll(";", "SEMI_COLON");
+                String originalAttributeName = headerLines[i].split(" ")[1];
+                String newAttributeName = originalAttributeName;
+                if (originalAttributeName.length() > 30) {
+                    newAttributeName = originalAttributeName.substring(0, 30) + "..";
+                }
+                out.write(headerLines[i].replace(originalAttributeName, newAttributeName) + "\n");
+            } else {
+                out.write(headerLines[i] + "\n");
+            }
+        }
+        for (int i = 0; i < nonSparseDataset.numInstances(); i++) {
+            if (i % 100 == 0) {
+                out.flush();
+            }
+            out.write(nonSparseDataset.instance(i) + "\n");
+        }
+        out.close();
+    }
+
+    /**
      * This method does the following:
      * <ol>
      * <li>Creates a working directory for the CLUS library</li>
@@ -149,50 +193,6 @@ public class ClusWrapperClassification extends MultiLabelLearnerBase {
         double[] confidences = new double[numLabels];
         return new MultiLabelOutput(confidences, 0.5);
 
-    }
-
-    /**
-     * Takes a dataset as a MultiLabelInstances object and writes an arff file that is compliant with CLUS.
-     *
-     * @param mlDataset the dataset as a MultiLabelInstances object
-     * @param fileName  the name of the generated arff file
-     * @throws Exception Potential exception thrown. To be handled in an upper level.
-     */
-    public static void makeClusCompliant(MultiLabelInstances mlDataset, String fileName) throws Exception {
-        BufferedWriter out = new BufferedWriter(new FileWriter(new File(fileName)));
-
-        // the file will be written in the datasetPath directory
-        // Instances dataset = mlDataset.getDataSet();
-        // any changes are applied to a copy of the original dataset
-        Instances dataset = new Instances(mlDataset.getDataSet());
-        SparseToNonSparse stns = new SparseToNonSparse(); // new instance of filter
-        stns.setInputFormat(dataset); // inform filter about dataset **AFTER** setting options
-        Instances nonSparseDataset = Filter.useFilter(dataset, stns); // apply filter
-
-        String header = new Instances(nonSparseDataset, 0).toString();
-        // preprocess the header
-        // remove ; characters and truncate long attribute names
-        String[] headerLines = header.split("\n");
-        for (int i = 0; i < headerLines.length; i++) {
-            if (headerLines[i].startsWith("@attribute")) {
-                headerLines[i] = headerLines[i].replaceAll(";", "SEMI_COLON");
-                String originalAttributeName = headerLines[i].split(" ")[1];
-                String newAttributeName = originalAttributeName;
-                if (originalAttributeName.length() > 30) {
-                    newAttributeName = originalAttributeName.substring(0, 30) + "..";
-                }
-                out.write(headerLines[i].replace(originalAttributeName, newAttributeName) + "\n");
-            } else {
-                out.write(headerLines[i] + "\n");
-            }
-        }
-        for (int i = 0; i < nonSparseDataset.numInstances(); i++) {
-            if (i % 100 == 0) {
-                out.flush();
-            }
-            out.write(nonSparseDataset.instance(i) + "\n");
-        }
-        out.close();
     }
 
     public String getClusWorkingDir() {

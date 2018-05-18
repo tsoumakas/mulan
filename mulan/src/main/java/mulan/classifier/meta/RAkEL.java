@@ -63,21 +63,12 @@ import java.util.Random;
 public class RAkEL extends MultiLabelMetaLearner {
 
     /**
-     * Seed for replication of random experiments
-     */
-    private int seed = 0;
-    /**
-     * Random number generator
-     */
-    private Random rnd;
-    /**
      * If true then the confidence of the base classifier to the decisions...
      */
     //private boolean useConfidences = true;
     double[][] sumVotesIncremental; /*
      * comment
      */
-
     double[][] lengthVotesIncremental;
     double[] sumVotes;
     double[] lengthVotes;
@@ -87,28 +78,16 @@ public class RAkEL extends MultiLabelMetaLearner {
     int[][] classIndicesPerSubset;
     int[][] absoluteIndicesToRemove;
     MultiLabelLearner[] subsetClassifiers;
-    private Remove[] remove;
     HashSet<String> combinations;
-
     /**
-     * Returns an instance of a TechnicalInformation object, containing detailed
-     * information about the technical background of this class, e.g., paper
-     * reference or book this class is based on.
-     *
-     * @return the technical information about this class
+     * Seed for replication of random experiments
      */
-    @Override
-    public TechnicalInformation getTechnicalInformation() {
-        TechnicalInformation result = new TechnicalInformation(Type.ARTICLE);
-        result.setValue(Field.AUTHOR, "Grigorios Tsoumakas and Ioannis Katakis and Ioannis Vlahavas");
-        result.setValue(Field.TITLE, "Random k-Labelsets for Multi-Label Classification");
-        result.setValue(Field.JOURNAL, "IEEE Transactions on Knowledge and Data Engineering");
-        result.setValue(Field.PAGES, "1079-1089");
-        result.setValue(Field.VOLUME, "23");
-        result.setValue(Field.NUMBER, "7");
-        result.setValue(Field.YEAR, "2011");
-        return result;
-    }
+    private int seed = 0;
+    /**
+     * Random number generator
+     */
+    private Random rnd;
+    private Remove[] remove;
 
     /**
      * Default constructor
@@ -157,52 +136,6 @@ public class RAkEL extends MultiLabelMetaLearner {
     }
 
     /**
-     * Sets the seed for random number generation
-     *
-     * @param x the seed
-     */
-    public void setSeed(int x) {
-        seed = x;
-    }
-
-    /**
-     * Sets the size of the subsets
-     *
-     * @param size the size of the subsets
-     */
-    public void setSizeOfSubset(int size) {
-        sizeOfSubset = size;
-        classIndicesPerSubset = new int[numOfModels][sizeOfSubset];
-    }
-
-    /**
-     * Returns the size of the subsets
-     *
-     * @return the size of the subsets
-     */
-    public int getSizeOfSubset() {
-        return sizeOfSubset;
-    }
-
-    /**
-     * Sets the number of models
-     *
-     * @param models number of models
-     */
-    public void setNumModels(int models) {
-        numOfModels = models;
-    }
-
-    /**
-     * Returns the number of models
-     *
-     * @return number of models
-     */
-    public int getNumModels() {
-        return numOfModels;
-    }
-
-    /**
      * The binomial function
      *
      * @param n Binomial coefficient index
@@ -219,6 +152,72 @@ public class RAkEL extends MultiLabelMetaLearner {
             }
         }
         return b[m];
+    }
+
+    /**
+     * Returns an instance of a TechnicalInformation object, containing detailed
+     * information about the technical background of this class, e.g., paper
+     * reference or book this class is based on.
+     *
+     * @return the technical information about this class
+     */
+    @Override
+    public TechnicalInformation getTechnicalInformation() {
+        TechnicalInformation result = new TechnicalInformation(Type.ARTICLE);
+        result.setValue(Field.AUTHOR, "Grigorios Tsoumakas and Ioannis Katakis and Ioannis Vlahavas");
+        result.setValue(Field.TITLE, "Random k-Labelsets for Multi-Label Classification");
+        result.setValue(Field.JOURNAL, "IEEE Transactions on Knowledge and Data Engineering");
+        result.setValue(Field.PAGES, "1079-1089");
+        result.setValue(Field.VOLUME, "23");
+        result.setValue(Field.NUMBER, "7");
+        result.setValue(Field.YEAR, "2011");
+        return result;
+    }
+
+    /**
+     * Sets the seed for random number generation
+     *
+     * @param x the seed
+     */
+    public void setSeed(int x) {
+        seed = x;
+    }
+
+    /**
+     * Returns the size of the subsets
+     *
+     * @return the size of the subsets
+     */
+    public int getSizeOfSubset() {
+        return sizeOfSubset;
+    }
+
+    /**
+     * Sets the size of the subsets
+     *
+     * @param size the size of the subsets
+     */
+    public void setSizeOfSubset(int size) {
+        sizeOfSubset = size;
+        classIndicesPerSubset = new int[numOfModels][sizeOfSubset];
+    }
+
+    /**
+     * Returns the number of models
+     *
+     * @return number of models
+     */
+    public int getNumModels() {
+        return numOfModels;
+    }
+
+    /**
+     * Sets the number of models
+     *
+     * @param models number of models
+     */
+    public void setNumModels(int models) {
+        numOfModels = models;
     }
 
     @Override

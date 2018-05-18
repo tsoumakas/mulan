@@ -147,6 +147,21 @@ public class MultiLabelOutput {
     }
 
     /**
+     * Creates a ranking form specified values/confidences.
+     *
+     * @param values the values/confidences to be converted to ranking
+     * @return the ranking of given values/confidences
+     */
+    public static int[] ranksFromValues(double[] values) {
+        int[] temp = weka.core.Utils.stableSort(values);
+        int[] ranks = new int[values.length];
+        for (int i = 0; i < values.length; i++) {
+            ranks[temp[i]] = values.length - i;
+        }
+        return ranks;
+    }
+
+    /**
      * Gets bipartition of labels.
      *
      * @return the bipartition
@@ -216,21 +231,6 @@ public class MultiLabelOutput {
      */
     public boolean hasPvalues() {
         return (pValues != null);
-    }
-
-    /**
-     * Creates a ranking form specified values/confidences.
-     *
-     * @param values the values/confidences to be converted to ranking
-     * @return the ranking of given values/confidences
-     */
-    public static int[] ranksFromValues(double[] values) {
-        int[] temp = weka.core.Utils.stableSort(values);
-        int[] ranks = new int[values.length];
-        for (int i = 0; i < values.length; i++) {
-            ranks[temp[i]] = values.length - i;
-        }
-        return ranks;
     }
 
     /**

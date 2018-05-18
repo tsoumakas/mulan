@@ -40,9 +40,9 @@ public class BasicNeuralNet implements NeuralNet, Serializable {
 
     private static final long serialVersionUID = -8944873770650464701L;
     private final List<List<Neuron>> layers;
-    private double[] currentNetOutput;
     private final int netInputDim;
     private final int netOutputDim;
+    private double[] currentNetOutput;
 
 
     /**

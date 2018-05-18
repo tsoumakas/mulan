@@ -35,17 +35,17 @@ import java.util.*;
 public class Neuron implements Serializable {
 
     private static final long serialVersionUID = -2826468439369586864L;
-    private double[] inputWeights;
-    private double[] deltaValues; // for momentum
-    private double errorValue;
     private final ActivationFunction function;
     private final double biasInput;
-    private double neuronInput;
-    private double neuronOutput;
-    private List<Neuron> nextNeurons;
     // the dimension of input pattern vector without bias term
     private final int inputDim;
     private final Random random;
+    private double[] inputWeights;
+    private double[] deltaValues; // for momentum
+    private double errorValue;
+    private double neuronInput;
+    private double neuronOutput;
+    private List<Neuron> nextNeurons;
 
 
     /**

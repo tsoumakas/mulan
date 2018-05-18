@@ -21,6 +21,11 @@ public class Attribute {
     private boolean isLabelAttribute = false;
     private double missingValuesProbability = 0;
 
+    public Attribute(String name, AttributeType type) {
+        this.name = name;
+        this.type = type;
+    }
+
     public static Attribute createNominalAttribute(String name, String[] values) {
         return new NominalAttribute(name, values);
     }
@@ -41,11 +46,6 @@ public class Attribute {
 
     public static Attribute createStringAttribute(String name) {
         return new Attribute(name, AttributeType.String);
-    }
-
-    public Attribute(String name, AttributeType type) {
-        this.name = name;
-        this.type = type;
     }
 
     public AttributeType getType() {

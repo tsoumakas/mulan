@@ -29,7 +29,6 @@ package mulan.classifier.neural.model;
  */
 public class ActivationGaussian extends ActivationFunction {
 
-    private static final long serialVersionUID = 5L;
     /**
      * Maximum value of function
      */
@@ -38,6 +37,7 @@ public class ActivationGaussian extends ActivationFunction {
      * Minimum value of function
      */
     public final static double MIN = 0.0;
+    private static final long serialVersionUID = 5L;
 
     @Override
     public double activate(double input) {

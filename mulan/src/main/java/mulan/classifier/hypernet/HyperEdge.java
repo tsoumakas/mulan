@@ -13,46 +13,19 @@ import java.util.ArrayList;
  */
 public class HyperEdge implements Serializable {
     private static final long serialVersionUID = 12345L;
-
-    public static void main(String[] args) {
-        // TODO Auto-generated method stub
-
-    }
-
+    int order = -1;
+    int classIndex = -1;  //the index of instance that generates this hyperedge
+    Double fitness = Double.MIN_VALUE;
     private ArrayList<Boolean> valueTypeList = null;  //if true denotes the value of vertex is Integer; if false is Double
     private ArrayList<Integer> vertexList = null;
     private ArrayList<Double> valueList = null;  // value of vertex
     private ArrayList<Integer> labelList = null;
     private ArrayList<Double> weightList = null;
-    int order = -1;
-    int classIndex = -1;  //the index of instance that generates this hyperedge
-    Double fitness = Double.MIN_VALUE;
-
-
-    public int getLabel(int labelIndex) {
-        return labelList.get(labelIndex);
-    }
-
-    public double getWeight(int labelIndex) {
-        return weightList.get(labelIndex);
-    }
-
-    public Double getFitness() {
-        return this.fitness;
-    }
-
-    public void setWeight(double weight, int index) {
-        this.weightList.set(index, weight);
-    }
-
-    public void setFitness(double fitness) {
-        this.fitness = fitness;
-    }
-
 
     HyperEdge() {
 
     }
+
 
     HyperEdge(Double valueArray[], Integer vertexArray[], Integer[] labelArray, int classIndex) throws Exception {
         if (valueArray.length != vertexArray.length)
@@ -138,6 +111,30 @@ public class HyperEdge implements Serializable {
         }
     }
 
+    public static void main(String[] args) {
+        // TODO Auto-generated method stub
+
+    }
+
+    public int getLabel(int labelIndex) {
+        return labelList.get(labelIndex);
+    }
+
+    public double getWeight(int labelIndex) {
+        return weightList.get(labelIndex);
+    }
+
+    public Double getFitness() {
+        return this.fitness;
+    }
+
+    public void setFitness(double fitness) {
+        this.fitness = fitness;
+    }
+
+    public void setWeight(double weight, int index) {
+        this.weightList.set(index, weight);
+    }
 
     public int[] classifyInstance(Instance data, int LabelNum) {
         int results[] = new int[LabelNum];

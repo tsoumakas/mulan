@@ -24,101 +24,19 @@ import java.util.Arrays;
 public abstract class MalsarWrapper extends MultiLabelLearnerBase {
 
     /**
-     * The type of normalization to apply.
-     */
-    public enum normalizationType {
-        /**
-         * no normalization
-         */
-        none,
-        /**
-         * z-score normalization
-         */
-        zScore,
-        /**
-         * maximum feature value normalization
-         */
-        maxFeatureValue
-    }
-
-    /**
-     * From MALSAR: "All optimization algorithms in our package are implemented using iterative
-     * methods. Users can use the optional opts input to specify starting points, termination
-     * conditions, tolerance, and maximum iteration number. The input opts is a structure variable.
-     * To specify an option, user can add corresponding fields. If one or more required fields are
-     * not specified, or the opts variable is not given, then default values will be used. The
-     * default values can be changed in init opts.m in /MALSAR/utils."
-     */
-    public enum optsInit {
-        /**
-         * If 0 is specified then the starting points will be initialized to a guess value computed
-         * from data. For example, in the least squares loss, the model W(:, i) for i-th task is
-         * initialized by X{i} * Y{i}.
-         */
-        zero(0),
-        /**
-         * If 1 is specified then opts.W0 is used. Note that if value 1 is specified in .init but
-         * the field .W0 is not specified, then .init will be forced to the default value.
-         */
-        one(1),
-        /**
-         * (default). If 2 is specified, then the starting point will be a zero matrix.
-         */
-        two(2);
-
-        private final int value;
-
-        private optsInit(int value) {
-            this.value = value;
-        }
-
-        public int getValue() {
-            return value;
-        }
-    }
-
-    /**
-     * From MALSAR: "In this package, there are 4 types of termination conditions supported for all
-     * optimization algorithms."
-     */
-    public enum optsTFlag {
-        zero(0), /**
-         * (default).
-         */
-        one(1), two(2), three(3);
-
-        private final int value;
-
-        private optsTFlag(int value) {
-            this.value = value;
-        }
-
-        public int getValue() {
-            return value;
-        }
-    }
-
-    /**
      * The names that should be used for the X/Y cell arrays and the parameters array in Matlab.
      */
     protected final String xCellArrayMatName = "X";
-
     protected final String yCellArrayMatName = "Y";
-    ;
-
     protected final String paramArrayMatName = "W";
-    ;
-
     protected final String optsMatName = "opts";
-    ;
-
     protected normalizationType normalization = normalizationType.none;
-
+    ;
     /* defining optimization options and setting their (MALSAR) default values */
     protected optsInit optInit = optsInit.zero;
-
+    ;
     protected optsTFlag optTFlag = optsTFlag.one;
-
+    ;
     /**
      * tolerance
      */
@@ -140,12 +58,10 @@ public abstract class MalsarWrapper extends MultiLabelLearnerBase {
      * adding Malsar to Matlab's path after clearing any existing Matlab variables.
      */
     protected String malsarMatlabPath;
-
     /**
      * A MatlabProxy used to control Matlab.
      */
     protected MatlabProxy proxy;
-
     /**
      * the learned parameter matrix (model)
      */
@@ -154,7 +70,6 @@ public abstract class MalsarWrapper extends MultiLabelLearnerBase {
      * feature column means used when z-score normalization is applied
      */
     protected double[] means;
-
     /**
      * feature column standard deviations used when z-score normalization is applied
      */
@@ -163,7 +78,6 @@ public abstract class MalsarWrapper extends MultiLabelLearnerBase {
      * stores the maximum value of each feature in the training set
      */
     protected double[] maxFeatureValues;
-
     protected int maxNumCompThreads;
     private NominalToBinary nomToBinFilter;
     private ReplaceMissingValues replaceMissingFilter;
@@ -395,6 +309,81 @@ public abstract class MalsarWrapper extends MultiLabelLearnerBase {
 
     public void setNormalization(normalizationType normalization) {
         this.normalization = normalization;
+    }
+
+    /**
+     * The type of normalization to apply.
+     */
+    public enum normalizationType {
+        /**
+         * no normalization
+         */
+        none,
+        /**
+         * z-score normalization
+         */
+        zScore,
+        /**
+         * maximum feature value normalization
+         */
+        maxFeatureValue
+    }
+
+    /**
+     * From MALSAR: "All optimization algorithms in our package are implemented using iterative
+     * methods. Users can use the optional opts input to specify starting points, termination
+     * conditions, tolerance, and maximum iteration number. The input opts is a structure variable.
+     * To specify an option, user can add corresponding fields. If one or more required fields are
+     * not specified, or the opts variable is not given, then default values will be used. The
+     * default values can be changed in init opts.m in /MALSAR/utils."
+     */
+    public enum optsInit {
+        /**
+         * If 0 is specified then the starting points will be initialized to a guess value computed
+         * from data. For example, in the least squares loss, the model W(:, i) for i-th task is
+         * initialized by X{i} * Y{i}.
+         */
+        zero(0),
+        /**
+         * If 1 is specified then opts.W0 is used. Note that if value 1 is specified in .init but
+         * the field .W0 is not specified, then .init will be forced to the default value.
+         */
+        one(1),
+        /**
+         * (default). If 2 is specified, then the starting point will be a zero matrix.
+         */
+        two(2);
+
+        private final int value;
+
+        private optsInit(int value) {
+            this.value = value;
+        }
+
+        public int getValue() {
+            return value;
+        }
+    }
+
+    /**
+     * From MALSAR: "In this package, there are 4 types of termination conditions supported for all
+     * optimization algorithms."
+     */
+    public enum optsTFlag {
+        zero(0), /**
+         * (default).
+         */
+        one(1), two(2), three(3);
+
+        private final int value;
+
+        private optsTFlag(int value) {
+            this.value = value;
+        }
+
+        public int getValue() {
+            return value;
+        }
     }
 
 }

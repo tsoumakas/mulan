@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xs:schema xmlns="http://mulan.sourceforge.net/labels"
-           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns="http://mulan.sourceforge.net/labels"
            targetNamespace="http://mulan.sourceforge.net/labels">
 
     <xs:element name="labels" type="labelsRootType">

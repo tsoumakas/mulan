@@ -64,21 +64,21 @@ public class CalibratedLabelRanking extends BinaryAndPairwise {
     }
 
     /**
-     * Set Prediction to standard voting mode.
-     *
-     * @param standardVoting <code>true</code> if standard voting should be used
-     */
-    public void setStandardVoting(boolean standardVoting) {
-        useStandardVoting = standardVoting;
-    }
-
-    /**
      * Get whether standard voting is turned on.
      *
      * @return <code>true</code> if standard voting is on
      */
     public boolean getStandardVoting() {
         return useStandardVoting;
+    }
+
+    /**
+     * Set Prediction to standard voting mode.
+     *
+     * @param standardVoting <code>true</code> if standard voting should be used
+     */
+    public void setStandardVoting(boolean standardVoting) {
+        useStandardVoting = standardVoting;
     }
 
     /**

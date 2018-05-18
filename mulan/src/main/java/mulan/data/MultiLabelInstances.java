@@ -46,8 +46,8 @@ import java.util.*;
  */
 public class MultiLabelInstances implements Serializable {
 
-    private Instances dataSet;
     private final LabelsMetaData labelsMetaData;
+    private Instances dataSet;
     /**
      * This loader is used when the dataset is loaded incrementally (instance by instance)
      */

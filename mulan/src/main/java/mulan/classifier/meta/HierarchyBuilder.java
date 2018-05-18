@@ -65,6 +65,81 @@ public class HierarchyBuilder implements Serializable {
     }
 
     /**
+     * Creates the hierarchical dataset according to the original multilabel
+     * instances object and the constructed label hierarchy
+     *
+     * @param mlData   the original multilabel instances
+     * @param metaData the metadata of the constructed label hierarchy
+     * @return the produced dataset
+     * @throws InvalidDataFormatException In case of unexpected data format, checked exception due to instantiated MutlilabelInstances.
+     */
+    public static MultiLabelInstances createHierarchicalDataset(MultiLabelInstances mlData, LabelsMetaData metaData) throws InvalidDataFormatException {
+        Set<String> leafLabels = mlData.getLabelsMetaData().getLabelNames();
+        Set<String> metaLabels = metaData.getLabelNames();
+        for (String string : leafLabels) {
+            metaLabels.remove(string);
+        }
+        Instances dataSet = mlData.getDataSet();
+        int numMetaLabels = metaLabels.size();
+
+        // copy existing attributes
+        ArrayList<Attribute> atts = new ArrayList<Attribute>(dataSet.numAttributes() + numMetaLabels);
+        for (int i = 0; i < dataSet.numAttributes(); i++) {
+            atts.add(dataSet.attribute(i));
+        }
+
+        ArrayList<String> labelValues = new ArrayList<String>();
+        labelValues.add("0");
+        labelValues.add("1");
+
+        // add metalabel attributes
+        for (String metaLabel : metaLabels) {
+            atts.add(new Attribute(metaLabel, labelValues));
+        }
+
+        // initialize dataset
+        Instances newDataSet = new Instances("hierarchical", atts, dataSet.numInstances());
+
+        // copy features and labels, set metalabels
+        for (int i = 0; i < dataSet.numInstances(); i++) {
+            //System.out.println("Constructing instance " + (i+1) + "/"  + dataSet.numInstances());
+            // initialize new values
+            double[] newValues = new double[newDataSet.numAttributes()];
+            Arrays.fill(newValues, 0);
+
+            // copy features and labels
+            double[] values = dataSet.instance(i).toDoubleArray();
+            System.arraycopy(values, 0, newValues, 0, values.length);
+
+            // set metalabels
+            for (String label : leafLabels) {
+                Attribute att = dataSet.attribute(label);
+                if (att.value((int) dataSet.instance(i).value(att)).equals("1")) {
+                    //System.out.println(label);
+                    //System.out.println(Arrays.toString(metaData.getLabelNames().toArray()));
+                    LabelNode currentNode = metaData.getLabelNode(label);
+                    // put 1 all the way up to the root, unless you see a 1, in which case stop
+                    while (currentNode.hasParent()) {
+                        currentNode = currentNode.getParent();
+                        Attribute currentAtt = newDataSet.attribute(currentNode.getName());
+                        // change the following to refer to the array
+                        if (newValues[atts.indexOf(currentAtt)] == 1) // no need to go more up
+                        {
+                            break;
+                        } else // put 1
+                        {
+                            newValues[atts.indexOf(currentAtt)] = 1;
+                        }
+                    }
+                }
+            }
+            Instance instance = dataSet.instance(i);
+            newDataSet.add(DataUtils.createInstance(instance, instance.weight(), newValues));
+        }
+        return new MultiLabelInstances(newDataSet, metaData);
+    }
+
+    /**
      * Builds a hierarchical multi-label dataset. Firstly a random hierarchy is
      * built on top of the labels of a flat multi-label dataset, by recursively
      * randomly partitioning the labels into a specified number of clusters.
@@ -287,81 +362,6 @@ public class HierarchyBuilder implements Serializable {
             }
         }
         return childrenLabels;
-    }
-
-    /**
-     * Creates the hierarchical dataset according to the original multilabel
-     * instances object and the constructed label hierarchy
-     *
-     * @param mlData   the original multilabel instances
-     * @param metaData the metadata of the constructed label hierarchy
-     * @return the produced dataset
-     * @throws InvalidDataFormatException In case of unexpected data format, checked exception due to instantiated MutlilabelInstances.
-     */
-    public static MultiLabelInstances createHierarchicalDataset(MultiLabelInstances mlData, LabelsMetaData metaData) throws InvalidDataFormatException {
-        Set<String> leafLabels = mlData.getLabelsMetaData().getLabelNames();
-        Set<String> metaLabels = metaData.getLabelNames();
-        for (String string : leafLabels) {
-            metaLabels.remove(string);
-        }
-        Instances dataSet = mlData.getDataSet();
-        int numMetaLabels = metaLabels.size();
-
-        // copy existing attributes
-        ArrayList<Attribute> atts = new ArrayList<Attribute>(dataSet.numAttributes() + numMetaLabels);
-        for (int i = 0; i < dataSet.numAttributes(); i++) {
-            atts.add(dataSet.attribute(i));
-        }
-
-        ArrayList<String> labelValues = new ArrayList<String>();
-        labelValues.add("0");
-        labelValues.add("1");
-
-        // add metalabel attributes
-        for (String metaLabel : metaLabels) {
-            atts.add(new Attribute(metaLabel, labelValues));
-        }
-
-        // initialize dataset
-        Instances newDataSet = new Instances("hierarchical", atts, dataSet.numInstances());
-
-        // copy features and labels, set metalabels
-        for (int i = 0; i < dataSet.numInstances(); i++) {
-            //System.out.println("Constructing instance " + (i+1) + "/"  + dataSet.numInstances());
-            // initialize new values
-            double[] newValues = new double[newDataSet.numAttributes()];
-            Arrays.fill(newValues, 0);
-
-            // copy features and labels
-            double[] values = dataSet.instance(i).toDoubleArray();
-            System.arraycopy(values, 0, newValues, 0, values.length);
-
-            // set metalabels
-            for (String label : leafLabels) {
-                Attribute att = dataSet.attribute(label);
-                if (att.value((int) dataSet.instance(i).value(att)).equals("1")) {
-                    //System.out.println(label);
-                    //System.out.println(Arrays.toString(metaData.getLabelNames().toArray()));
-                    LabelNode currentNode = metaData.getLabelNode(label);
-                    // put 1 all the way up to the root, unless you see a 1, in which case stop
-                    while (currentNode.hasParent()) {
-                        currentNode = currentNode.getParent();
-                        Attribute currentAtt = newDataSet.attribute(currentNode.getName());
-                        // change the following to refer to the array
-                        if (newValues[atts.indexOf(currentAtt)] == 1) // no need to go more up
-                        {
-                            break;
-                        } else // put 1
-                        {
-                            newValues[atts.indexOf(currentAtt)] = 1;
-                        }
-                    }
-                }
-            }
-            Instance instance = dataSet.instance(i);
-            newDataSet.add(DataUtils.createInstance(instance, instance.weight(), newValues));
-        }
-        return new MultiLabelInstances(newDataSet, metaData);
     }
 
     private void saveToArffFile(Instances dataSet, File file) throws IOException {

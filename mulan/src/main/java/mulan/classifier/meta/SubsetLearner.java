@@ -84,6 +84,19 @@ import java.util.HashMap;
 public class SubsetLearner extends MultiLabelMetaLearner {
 
     /**
+     * HashMaps containing created models - caching mechanism is used, if
+     * enabled by setting the useCache field to true, for GreedyLabelClustering
+     * and EnsembleOfSubsetLearners methods run time optimization
+     */
+    private static HashMap<String, MultiLabelLearner> existingMultiLabelModels = new HashMap<String, MultiLabelLearner>();
+    private static HashMap<String, FilteredClassifier> existingSingleLabelModels = new HashMap<String, FilteredClassifier>();
+    private static HashMap<String, Remove> existingRemove = new HashMap<String, Remove>();
+    /**
+     * Base single-label classifier that will be used for training and
+     * predictions
+     */
+    protected Classifier baseSingleLabelClassifier;
+    /**
      * Arraylist containing the MultiLabelLearners that we will train and use to
      * make the predictions
      */
@@ -107,11 +120,6 @@ public class SubsetLearner extends MultiLabelMetaLearner {
      */
     private Remove[] remove;
     /**
-     * Base single-label classifier that will be used for training and
-     * predictions
-     */
-    protected Classifier baseSingleLabelClassifier;
-    /**
      * indication for disabled caching mechanism
      */
     private boolean useCache = false;
@@ -119,14 +127,6 @@ public class SubsetLearner extends MultiLabelMetaLearner {
      * The method used to cluster the labels
      */
     private LabelClustering clusterer = null;
-    /**
-     * HashMaps containing created models - caching mechanism is used, if
-     * enabled by setting the useCache field to true, for GreedyLabelClustering
-     * and EnsembleOfSubsetLearners methods run time optimization
-     */
-    private static HashMap<String, MultiLabelLearner> existingMultiLabelModels = new HashMap<String, MultiLabelLearner>();
-    private static HashMap<String, FilteredClassifier> existingSingleLabelModels = new HashMap<String, FilteredClassifier>();
-    private static HashMap<String, Remove> existingRemove = new HashMap<String, Remove>();
 
     /**
      * Default constructor

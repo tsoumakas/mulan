@@ -68,6 +68,36 @@ public class EnsembleOfClassifierChains extends TransformationBasedMultiLabelLea
      * when useSamplingWithReplacement is true
      */
     protected int BagSizePercent = 100;
+    /**
+     * The size of each sample, as a percentage of the training size Used when
+     * useSamplingWithReplacement is false
+     */
+    protected double samplingPercentage = 67;
+
+    /**
+     * Default constructor
+     */
+    public EnsembleOfClassifierChains() {
+        this(new J48(), 10, true, true);
+    }
+
+    /**
+     * Creates a new object
+     *
+     * @param classifier                   the base classifier for each ClassifierChain model
+     * @param aNumOfModels                 the number of models
+     * @param doUseConfidences             whether to use confidences or not
+     * @param doUseSamplingWithReplacement whether to use sampling with replacement or not
+     */
+    public EnsembleOfClassifierChains(Classifier classifier, int aNumOfModels,
+                                      boolean doUseConfidences, boolean doUseSamplingWithReplacement) {
+        super(classifier);
+        numOfModels = aNumOfModels;
+        useConfidences = doUseConfidences;
+        useSamplingWithReplacement = doUseSamplingWithReplacement;
+        ensemble = new ClassifierChain[aNumOfModels];
+        rand = new Random(1);
+    }
 
     /**
      * Returns the size of each bag sample, as a percentage of the training size
@@ -104,37 +134,6 @@ public class EnsembleOfClassifierChains extends TransformationBasedMultiLabelLea
      */
     public void setSamplingPercentage(double samplingPercentage) {
         this.samplingPercentage = samplingPercentage;
-    }
-
-    /**
-     * The size of each sample, as a percentage of the training size Used when
-     * useSamplingWithReplacement is false
-     */
-    protected double samplingPercentage = 67;
-
-    /**
-     * Default constructor
-     */
-    public EnsembleOfClassifierChains() {
-        this(new J48(), 10, true, true);
-    }
-
-    /**
-     * Creates a new object
-     *
-     * @param classifier                   the base classifier for each ClassifierChain model
-     * @param aNumOfModels                 the number of models
-     * @param doUseConfidences             whether to use confidences or not
-     * @param doUseSamplingWithReplacement whether to use sampling with replacement or not
-     */
-    public EnsembleOfClassifierChains(Classifier classifier, int aNumOfModels,
-                                      boolean doUseConfidences, boolean doUseSamplingWithReplacement) {
-        super(classifier);
-        numOfModels = aNumOfModels;
-        useConfidences = doUseConfidences;
-        useSamplingWithReplacement = doUseSamplingWithReplacement;
-        ensemble = new ClassifierChain[aNumOfModels];
-        rand = new Random(1);
     }
 
     @Override

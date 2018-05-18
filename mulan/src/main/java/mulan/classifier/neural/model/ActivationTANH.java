@@ -29,7 +29,6 @@ package mulan.classifier.neural.model;
  */
 public class ActivationTANH extends ActivationFunction {
 
-    private static final long serialVersionUID = -8707244320811304601L;
     /**
      * Maximum value of function
      */
@@ -38,6 +37,7 @@ public class ActivationTANH extends ActivationFunction {
      * Minimum value of function
      */
     public final static double MIN = -1.0;
+    private static final long serialVersionUID = -8707244320811304601L;
 
     public double activate(final double input) {
         return 2.0 / (1.0 + Math.exp(-2.0 * input)) - 1.0;

@@ -36,28 +36,23 @@ import java.util.logging.Logger;
  */
 public class RandomLinearCombinationsNormalize extends TransformationBasedMultiTargetRegressor {
 
+    private static final long serialVersionUID = 1L;
     /**
      * The ensemble models
      */
     private FilteredClassifier[] models;
     private double[][] coefficients;
-
     /**
      * Matrix containing the coefficients for regression
      */
     private Matrix coefficientsMatrix;
-
     private int numCombinations;
     private int nonZero;
     private Random generator;
-
     /**
      * for speeding up evaluation by training once and testing many
      */
     private int numModels;
-
-    private static final long serialVersionUID = 1L;
-
     /**
      * store min and max values of target variables in training set
      */

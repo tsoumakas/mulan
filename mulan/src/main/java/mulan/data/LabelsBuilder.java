@@ -42,11 +42,11 @@ import java.io.*;
  */
 public final class LabelsBuilder {
 
-    private static final String LABELS_SCHEMA_SOURCE = "mulan/data/labels.xsd";
     /**
      * The namespace of the schema for label representation
      */
     protected static final String LABELS_SCHEMA_NAMESPACE = "http://mulan.sourceforge.net/labels";
+    private static final String LABELS_SCHEMA_SOURCE = "mulan/data/labels.xsd";
     //private static final String LABELS_SCHEMA_LOCATION_ID = "http://mulan.sourceforge.net/schemata/labels.xsd";
     private static final String SCHEMA_FULL_CHECKING_FEATURE = "http://apache.org/xml/features/validation/schema-full-checking";
 

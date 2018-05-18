@@ -63,14 +63,6 @@ import java.util.Random;
 @SuppressWarnings("serial")
 public class RAkELd extends MultiLabelMetaLearner {
 
-    /**
-     * Seed for replication of random experiments
-     */
-    private int seed = 0;
-    /**
-     * Random number generator
-     */
-    private Random rnd;
     int numOfModels;
     int sizeOfSubset = 3; //TODO: If numLabels<=3 then ...
     //[R_d
@@ -79,27 +71,15 @@ public class RAkELd extends MultiLabelMetaLearner {
     ArrayList<Integer> listOfLabels;
     //R_d]
     MultiLabelLearner[] subsetClassifiers;
-    private Remove[] remove;
-
     /**
-     * Returns an instance of a TechnicalInformation object, containing
-     * detailed information about the technical background of this class,
-     * e.g., paper reference or book this class is based on.
-     *
-     * @return the technical information about this class
+     * Seed for replication of random experiments
      */
-    @Override
-    public TechnicalInformation getTechnicalInformation() {
-        TechnicalInformation result = new TechnicalInformation(Type.ARTICLE);
-        result.setValue(Field.AUTHOR, "Grigorios Tsoumakas and Ioannis Katakis and Ioannis Vlahavas");
-        result.setValue(Field.TITLE, "Random k-Labelsets for Multi-Label Classification");
-        result.setValue(Field.JOURNAL, "IEEE Transactions on Knowledge and Data Engineering");
-        result.setValue(Field.PAGES, "1079-1089");
-        result.setValue(Field.VOLUME, "23");
-        result.setValue(Field.NUMBER, "7");
-        result.setValue(Field.YEAR, "2011");
-        return result;
-    }
+    private int seed = 0;
+    /**
+     * Random number generator
+     */
+    private Random rnd;
+    private Remove[] remove;
 
     /**
      * Default constructor
@@ -133,6 +113,26 @@ public class RAkELd extends MultiLabelMetaLearner {
     }
 
     /**
+     * Returns an instance of a TechnicalInformation object, containing
+     * detailed information about the technical background of this class,
+     * e.g., paper reference or book this class is based on.
+     *
+     * @return the technical information about this class
+     */
+    @Override
+    public TechnicalInformation getTechnicalInformation() {
+        TechnicalInformation result = new TechnicalInformation(Type.ARTICLE);
+        result.setValue(Field.AUTHOR, "Grigorios Tsoumakas and Ioannis Katakis and Ioannis Vlahavas");
+        result.setValue(Field.TITLE, "Random k-Labelsets for Multi-Label Classification");
+        result.setValue(Field.JOURNAL, "IEEE Transactions on Knowledge and Data Engineering");
+        result.setValue(Field.PAGES, "1079-1089");
+        result.setValue(Field.VOLUME, "23");
+        result.setValue(Field.NUMBER, "7");
+        result.setValue(Field.YEAR, "2011");
+        return result;
+    }
+
+    /**
      * Sets the seed for random number generation
      *
      * @param x the seed
@@ -143,21 +143,21 @@ public class RAkELd extends MultiLabelMetaLearner {
     }
 
     /**
-     * Sets the size of the subsets
-     *
-     * @param size size of subsets
-     */
-    public void setSizeOfSubset(int size) {
-        sizeOfSubset = size;
-    }
-
-    /**
      * Returns the size of the subsets
      *
      * @return the size of the subsets
      */
     public int getSizeOfSubset() {
         return sizeOfSubset;
+    }
+
+    /**
+     * Sets the size of the subsets
+     *
+     * @param size size of subsets
+     */
+    public void setSizeOfSubset(int size) {
+        sizeOfSubset = size;
     }
 
     @Override

@@ -50,6 +50,14 @@ import java.util.logging.Logger;
 public class ConditionalDependenceIdentifier implements LabelPairsDependenceIdentifier, Serializable {
 
     /**
+     * A caching mechanism for reusing once constructed models.
+     */
+    private static HashMap<String, FilteredClassifier> existingModels = null;
+    /**
+     * Seed for replication of random experiments
+     */
+    protected int seed;
+    /**
      * A default t-critical value, corresponds to significance level 0.01. Label pairs with dependence value below the critical are considered as independent.
      */
     private double criticalValue = 3.25;
@@ -61,14 +69,6 @@ public class ConditionalDependenceIdentifier implements LabelPairsDependenceIden
      * Number of folds used for cross validation.
      */
     private int numFolds = 10;
-    /**
-     * Seed for replication of random experiments
-     */
-    protected int seed;
-    /**
-     * A caching mechanism for reusing once constructed models.
-     */
-    private static HashMap<String, FilteredClassifier> existingModels = null;
 
     /**
      * Initializes a single-label classifier used to perform dependence test between labels and a caching mechanism for reusing constructed models.
@@ -304,15 +304,15 @@ public class ConditionalDependenceIdentifier implements LabelPairsDependenceIden
         return dataset;
     }
 
+    public double getCriticalValue() {
+        return criticalValue;
+    }
+
     /**
      * @param criticalValue a t-critical value
      */
     public void setCriticalValue(double criticalValue) {
         this.criticalValue = criticalValue;
-    }
-
-    public double getCriticalValue() {
-        return criticalValue;
     }
 
     /**

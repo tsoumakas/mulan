@@ -42,25 +42,11 @@ import java.util.logging.Logger;
 public class PPT extends LabelsetPruning {
 
     /**
-     * strategies for processing infrequent labelsets
-     */
-    public enum Strategy {
-
-        /**
-         * Discard infrequent labelsets
-         */
-        INFORMATION_LOSS,
-        /**
-         * Reintroduce infrequent labelsets via subsets
-         */
-        NO_INFORMATION_LOSS;
-    }
-
-    ;
-    /**
      * strategy for processing infrequent labelsets
      */
     private Strategy strategy;
+
+    ;
 
     /**
      * Default constructor
@@ -176,5 +162,20 @@ public class PPT extends LabelsetPruning {
             default:
                 return null;
         }
+    }
+
+    /**
+     * strategies for processing infrequent labelsets
+     */
+    public enum Strategy {
+
+        /**
+         * Discard infrequent labelsets
+         */
+        INFORMATION_LOSS,
+        /**
+         * Reintroduce infrequent labelsets via subsets
+         */
+        NO_INFORMATION_LOSS;
     }
 }

@@ -42,6 +42,11 @@ public class LabelSet implements Serializable, Comparable<LabelSet> {
      * once assigned by the constructor, no changes are possible.
      */
     protected int[] labelSet;
+    /**
+     * A cached count of the set size. Observe that the set
+     * size is not the same as the size of the double array.
+     */
+    private int size = -1;
 
     /**
      * Initializes an object based on an array of doubles containing 0/1
@@ -53,6 +58,55 @@ public class LabelSet implements Serializable, Comparable<LabelSet> {
         for (int i = 0; i < set.length; i++) {
             labelSet[i] = (int) set[i];
         }
+    }
+
+    /**
+     * Constructs a LabelSet object from a bitstring.
+     *
+     * @param bits the bitstring
+     * @return the labelset.
+     * @throws Exception if creation fails due to invalid bitstring
+     */
+    public static LabelSet fromBitString(String bits) throws Exception {
+        LabelSet result = new LabelSet(new double[bits.length()]);
+        for (int i = 0; i < bits.length(); i++) {
+            switch (bits.charAt(i)) {
+                case '1':
+                    result.labelSet[i] = 1;
+                    break;
+                case '0':
+                    result.labelSet[i] = 0;
+                    break;
+                default:
+                    throw new Exception("Bad bitstring: " + bits);
+            }
+        }
+        return result;
+    }
+
+    /**
+     * @param l1 a labelset
+     * @param l2 another labelset
+     * @return their interesection
+     */
+    public static LabelSet intersection(LabelSet l1, LabelSet l2) {
+        double[] arrayL1 = l1.toDoubleArray();
+        double[] arrayL2 = l2.toDoubleArray();
+
+        if (arrayL1.length != arrayL2.length) {
+            return null;
+        }
+
+        double[] intersection = new double[arrayL2.length];
+        for (int i = 0; i < arrayL2.length; i++) {
+            if (arrayL1[i] == 1 && arrayL2[i] == 1) {
+                intersection[i] = 1;
+            } else {
+                intersection[i] = 0;
+            }
+        }
+
+        return new LabelSet(intersection);
     }
 
     /**
@@ -77,12 +131,6 @@ public class LabelSet implements Serializable, Comparable<LabelSet> {
             return false; //could perhaps allow comparison with double array
         }
     }
-
-    /**
-     * A cached count of the set size. Observe that the set
-     * size is not the same as the size of the double array.
-     */
-    private int size = -1;
 
     /**
      * The number of set members. Calculated on first call and
@@ -154,30 +202,6 @@ public class LabelSet implements Serializable, Comparable<LabelSet> {
     }
 
     /**
-     * Constructs a LabelSet object from a bitstring.
-     *
-     * @param bits the bitstring
-     * @return the labelset.
-     * @throws Exception if creation fails due to invalid bitstring
-     */
-    public static LabelSet fromBitString(String bits) throws Exception {
-        LabelSet result = new LabelSet(new double[bits.length()]);
-        for (int i = 0; i < bits.length(); i++) {
-            switch (bits.charAt(i)) {
-                case '1':
-                    result.labelSet[i] = 1;
-                    break;
-                case '0':
-                    result.labelSet[i] = 0;
-                    break;
-                default:
-                    throw new Exception("Bad bitstring: " + bits);
-            }
-        }
-        return result;
-    }
-
-    /**
      * Constructs all subsets of a labelset (apart from the empty one).
      *
      * @return an ArrayList of LabelSet objects with the subsets.
@@ -213,31 +237,6 @@ public class LabelSet implements Serializable, Comparable<LabelSet> {
             subsets.add(finalLabelSet);
         }
         return subsets;
-    }
-
-    /**
-     * @param l1 a labelset
-     * @param l2 another labelset
-     * @return their interesection
-     */
-    public static LabelSet intersection(LabelSet l1, LabelSet l2) {
-        double[] arrayL1 = l1.toDoubleArray();
-        double[] arrayL2 = l2.toDoubleArray();
-
-        if (arrayL1.length != arrayL2.length) {
-            return null;
-        }
-
-        double[] intersection = new double[arrayL2.length];
-        for (int i = 0; i < arrayL2.length; i++) {
-            if (arrayL1[i] == 1 && arrayL2[i] == 1) {
-                intersection[i] = 1;
-            } else {
-                intersection[i] = 0;
-            }
-        }
-
-        return new LabelSet(intersection);
     }
 
     /**

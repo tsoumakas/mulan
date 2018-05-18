@@ -41,16 +41,16 @@ import weka.filters.unsupervised.attribute.Remove;
 public class ClassifierChain extends TransformationBasedMultiLabelLearner {
 
     /**
-     * The new chain ordering of the label indices
-     */
-    private int[] chain;
-    /**
      * The ensemble of binary relevance models. These are Weka
      * FilteredClassifier objects, where the filter corresponds to removing all
      * label apart from the one that serves as a target for the corresponding
      * model.
      */
     protected FilteredClassifier[] ensemble;
+    /**
+     * The new chain ordering of the label indices
+     */
+    private int[] chain;
 
     /**
      * Creates a new instance using J48 as the underlying classifier

@@ -30,22 +30,22 @@ package mulan.classifier.neural.model;
  */
 public class ActivationELU extends ActivationFunction {
 
-    private static final long serialVersionUID = 4L;
-    /**
-     * Default slope value is set to 0.001 for numerical stability
-     * in case the derivative method is called.
-     */
-    private double slope = 0.001;
     /**
      * Maximum value of function
      */
     public final static double MAX = Double.POSITIVE_INFINITY;
+    private static final long serialVersionUID = 4L;
     /**
      * Minimum value of function.
      * It is equal to the slope times -1 thus initialized to -0.001.
      * Whenever the slope changes the MIN value must change as well
      */
     public static double MIN = -0.001;
+    /**
+     * Default slope value is set to 0.001 for numerical stability
+     * in case the derivative method is called.
+     */
+    private double slope = 0.001;
 
     @Override
     public double activate(double input) {

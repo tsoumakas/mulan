@@ -90,6 +90,14 @@ public class SpreadSubsampleWithMissClassValues extends Filter implements Superv
      */
     private boolean isDeleteInstancesWithMissingClass = true;
 
+    /**
+     * Main method for testing this class.
+     *
+     * @param argv should contain arguments to the filter: use -h for help
+     */
+    public static void main(String[] argv) {
+        runFilter(new SpreadSubsampleWithMissClassValues(), argv);
+    }
 
     /**
      * @return the isDeleteInstancesWithMissingClass
@@ -185,6 +193,32 @@ public class SpreadSubsampleWithMissClassValues extends Filter implements Superv
     }
 
     /**
+     * Gets the current settings of the filter.
+     *
+     * @return an array of strings suitable for passing to setOptions
+     */
+    @Override
+    public String[] getOptions() {
+
+        Vector<String> options = new Vector<String>();
+
+        options.add("-M");
+        options.add("" + getDistributionSpread());
+
+        options.add("-X");
+        options.add("" + getMaxCount());
+
+        options.add("-S");
+        options.add("" + getRandomSeed());
+
+        if (getAdjustWeights()) {
+            options.add("-W");
+        }
+
+        return options.toArray(new String[0]);
+    }
+
+    /**
      * Parses a given list of options.
      * <p/>
      * <p>
@@ -254,32 +288,6 @@ public class SpreadSubsampleWithMissClassValues extends Filter implements Superv
     }
 
     /**
-     * Gets the current settings of the filter.
-     *
-     * @return an array of strings suitable for passing to setOptions
-     */
-    @Override
-    public String[] getOptions() {
-
-        Vector<String> options = new Vector<String>();
-
-        options.add("-M");
-        options.add("" + getDistributionSpread());
-
-        options.add("-X");
-        options.add("" + getMaxCount());
-
-        options.add("-S");
-        options.add("" + getRandomSeed());
-
-        if (getAdjustWeights()) {
-            options.add("-W");
-        }
-
-        return options.toArray(new String[0]);
-    }
-
-    /**
      * Returns the tip text for this property
      *
      * @return tip text for this property suitable for displaying in the
@@ -289,16 +297,6 @@ public class SpreadSubsampleWithMissClassValues extends Filter implements Superv
         return "The maximum class distribution spread. "
                 + "(0 = no maximum spread, 1 = uniform distribution, 10 = allow at most a "
                 + "10:1 ratio between the classes).";
-    }
-
-    /**
-     * Sets the value for the distribution spread
-     *
-     * @param spread the new distribution spread
-     */
-    public void setDistributionSpread(double spread) {
-
-        m_DistributionSpread = spread;
     }
 
     /**
@@ -312,6 +310,16 @@ public class SpreadSubsampleWithMissClassValues extends Filter implements Superv
     }
 
     /**
+     * Sets the value for the distribution spread
+     *
+     * @param spread the new distribution spread
+     */
+    public void setDistributionSpread(double spread) {
+
+        m_DistributionSpread = spread;
+    }
+
+    /**
      * Returns the tip text for this property
      *
      * @return tip text for this property suitable for displaying in the
@@ -322,16 +330,6 @@ public class SpreadSubsampleWithMissClassValues extends Filter implements Superv
     }
 
     /**
-     * Sets the value for the max count
-     *
-     * @param maxcount the new max count
-     */
-    public void setMaxCount(double maxcount) {
-
-        m_MaxCount = (int) maxcount;
-    }
-
-    /**
      * Gets the value for the max count
      *
      * @return the max count
@@ -339,6 +337,16 @@ public class SpreadSubsampleWithMissClassValues extends Filter implements Superv
     public double getMaxCount() {
 
         return m_MaxCount;
+    }
+
+    /**
+     * Sets the value for the max count
+     *
+     * @param maxcount the new max count
+     */
+    public void setMaxCount(double maxcount) {
+
+        m_MaxCount = (int) maxcount;
     }
 
     /**
@@ -634,14 +642,5 @@ public class SpreadSubsampleWithMissClassValues extends Filter implements Superv
     @Override
     public String getRevision() {
         return RevisionUtils.extract("$Revision$");
-    }
-
-    /**
-     * Main method for testing this class.
-     *
-     * @param argv should contain arguments to the filter: use -h for help
-     */
-    public static void main(String[] argv) {
-        runFilter(new SpreadSubsampleWithMissClassValues(), argv);
     }
 }

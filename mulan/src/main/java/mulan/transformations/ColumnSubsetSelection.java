@@ -38,6 +38,7 @@ import java.util.Random;
  */
 public class ColumnSubsetSelection implements Serializable {
 
+    private static int[] indicesToRemove;
     private Instances transformed;
     private Remove remove;
     private Matrix Y;
@@ -46,7 +47,6 @@ public class ColumnSubsetSelection implements Serializable {
     private int kappa;
     private int[] selectedIndicesInt;
     private Object[] sampledIndicesObj;
-    private static int[] indicesToRemove;
     private java.util.Set sampledIndiceSet;
 
     public MultiLabelInstances transform(MultiLabelInstances data, int kappa, long seed) {

@@ -37,26 +37,11 @@ import java.util.logging.Logger;
 public class PrunedSets extends LabelsetPruning {
 
     /**
-     * strategies for processing infrequent labelsets
-     */
-    public enum Strategy {
-
-        /**
-         * Strategy A: rank subsets firstly by the number of labels they contain
-         * and secondly by the times they occur, then keep top b ranked
-         */
-        A,
-        /**
-         * Strategy B: keep all subsets of size greater than b
-         */
-        B;
-    }
-
-    ;
-    /**
      * strategy for processing infrequent labelsets
      */
     private Strategy strategy;
+
+    ;
     /**
      * parameter of strategy for processing infrequent labelsets
      */
@@ -109,7 +94,7 @@ public class PrunedSets extends LabelsetPruning {
                     if (!ListInstancePerLabel.containsKey(l)) {
                         continue;
                     }
-                    // check if it occurs more than p times 
+                    // check if it occurs more than p times
                     if (ListInstancePerLabel.get(l).size() <= p) {
                         continue;
                     }
@@ -209,5 +194,21 @@ public class PrunedSets extends LabelsetPruning {
             default:
                 return null;
         }
+    }
+
+    /**
+     * strategies for processing infrequent labelsets
+     */
+    public enum Strategy {
+
+        /**
+         * Strategy A: rank subsets firstly by the number of labels they contain
+         * and secondly by the times they occur, then keep top b ranked
+         */
+        A,
+        /**
+         * Strategy B: keep all subsets of size greater than b
+         */
+        B;
     }
 }

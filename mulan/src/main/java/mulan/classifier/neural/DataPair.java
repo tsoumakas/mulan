@@ -61,46 +61,6 @@ public class DataPair {
     }
 
     /**
-     * Gets the input pattern.
-     *
-     * @return the input pattern
-     */
-    public double[] getInput() {
-        return input;
-    }
-
-    /**
-     * Gets the ideal/expected output pattern.
-     *
-     * @return the output pattern
-     */
-    public double[] getOutput() {
-        return output;
-    }
-
-    /**
-     * Gets the ideal/expected output pattern as boolean values.
-     * This is useful when output represents labels bipartition.
-     * If output values in <code>double[]</code> are not in boolean representation,
-     * then output of this method is might not be valid.
-     * The computation is as follows:<br>
-     * - if value is equal to 1, then output is <code>true</code> in boolean<br>
-     * - if value is other than 1, then output is <code>false</code> in boolean
-     *
-     * @return the boolean representation of the output pattern
-     */
-    public boolean[] getOutputBoolean() {
-        if (outputBoolean == null) {
-            outputBoolean = new boolean[output.length];
-            for (int i = 0; i < output.length; i++) {
-                outputBoolean[i] = (output[i] == 1) ? true : false;
-            }
-        }
-
-        return outputBoolean;
-    }
-
-    /**
      * Creates a {@link DataPair} representation for each {@link Instance} contained in
      * {@link MultiLabelInstances} data set. The {@link DataPair} is a light weight representation
      * of instance values (by double values), which is useful when iteration over the data and its
@@ -157,5 +117,45 @@ public class DataPair {
         }
 
         return dataPairs;
+    }
+
+    /**
+     * Gets the input pattern.
+     *
+     * @return the input pattern
+     */
+    public double[] getInput() {
+        return input;
+    }
+
+    /**
+     * Gets the ideal/expected output pattern.
+     *
+     * @return the output pattern
+     */
+    public double[] getOutput() {
+        return output;
+    }
+
+    /**
+     * Gets the ideal/expected output pattern as boolean values.
+     * This is useful when output represents labels bipartition.
+     * If output values in <code>double[]</code> are not in boolean representation,
+     * then output of this method is might not be valid.
+     * The computation is as follows:<br>
+     * - if value is equal to 1, then output is <code>true</code> in boolean<br>
+     * - if value is other than 1, then output is <code>false</code> in boolean
+     *
+     * @return the boolean representation of the output pattern
+     */
+    public boolean[] getOutputBoolean() {
+        if (outputBoolean == null) {
+            outputBoolean = new boolean[output.length];
+            for (int i = 0; i < output.length; i++) {
+                outputBoolean[i] = (output[i] == 1) ? true : false;
+            }
+        }
+
+        return outputBoolean;
     }
 }

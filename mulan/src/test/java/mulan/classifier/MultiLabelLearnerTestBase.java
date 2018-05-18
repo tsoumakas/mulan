@@ -36,21 +36,9 @@ import weka.filters.unsupervised.instance.SparseToNonSparse;
 public abstract class MultiLabelLearnerTestBase {
 
     /**
-     * Path to the data set used in tests. This dataset should be handled by all
-     * multi-label learners. Used to check learners in black-box mode
-     */
-    protected String path = "./data/testData/";
-    /**
      * Artificial dataset used in tests
      */
     protected static final DataSetDefinition DATA_SET;
-
-    /**
-     * Gets a learner instance which can be tested in each test case
-     *
-     * @return
-     */
-    protected abstract MultiLabelLearnerBase getLearner();
 
     static {
         DATA_SET = new DataSetDefinition("GeneralDataSet");
@@ -64,6 +52,19 @@ public abstract class MultiLabelLearnerTestBase {
         DATA_SET.addAttribute(Attribute.createLabelAttribute("label_4"));
         DATA_SET.setExamplesCount(100);
     }
+
+    /**
+     * Path to the data set used in tests. This dataset should be handled by all
+     * multi-label learners. Used to check learners in black-box mode
+     */
+    protected String path = "./data/testData/";
+
+    /**
+     * Gets a learner instance which can be tested in each test case
+     *
+     * @return
+     */
+    protected abstract MultiLabelLearnerBase getLearner();
 
     /**
      * Tests if the learner implements the getTechnicalInformation method

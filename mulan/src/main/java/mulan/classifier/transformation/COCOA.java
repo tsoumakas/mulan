@@ -34,8 +34,6 @@ public class COCOA extends TransformationBasedMultiLabelLearner {
     protected Classifier[][] triClassifiers;
     protected COCOATripleClassTransformation trt;
     protected int[][] triLabelIndices;
-    int numCouples;  //the number of coupling class labels
-    int numMaxCouples = 10;
     protected double thresholds[];
     /**
      * Percentage of majority class instances for each label to be deleted
@@ -43,6 +41,8 @@ public class COCOA extends TransformationBasedMultiLabelLearner {
      */
     protected double underSamplingPercent = 1.0;
     protected int seed = 1;
+    int numCouples;  //the number of coupling class labels
+    int numMaxCouples = 10;
 
 
     public COCOA() {

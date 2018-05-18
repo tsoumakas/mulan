@@ -108,6 +108,90 @@ public class GreedyLabelClustering implements LabelClustering, Serializable {
     }
 
     /**
+     * Returns a string representation of the labels partition.
+     *
+     * @param partition - a label set partition
+     * @return a string representation of the labels partition
+     */
+    public static String partitionToString(int[][] partition) {
+        StringBuilder result = new StringBuilder();
+        for (int[] aGroup : partition) {
+            result.append(Arrays.toString(aGroup));
+            result.append(", ");
+        }
+        return result.toString();
+    }
+
+    /**
+     * Build initial label set partition - each label in a separate group. For example for
+     * numLabels=4 , it returns an array {{0},{1},{2},{3}}
+     *
+     * @param numLabels number of labels in the trainingSet
+     * @return two dimensional array of size numLabels, when each inner array is of size 1
+     */
+    private static int[][] buildInitialSet(int numLabels) {
+        int[][] res = new int[numLabels][1];
+        for (int i = 0; i < numLabels; i++) {
+            res[i][0] = i;
+        }
+        return res;
+    }
+
+    /**
+     * Clusters a new pair of labels and integrates the new group into the given labels partition.
+     *
+     * @param partition - label set partition
+     * @param pair      - labels pair
+     * @return a new partition with clustered labels of the pair
+     */
+    private static int[][] buildCombinationSet(int[][] partition, int[] pair) {
+        int[][] newClusters = new int[partition.length - 1][];
+        int[][] tmpClusters = new int[partition.length][];
+        int i1 = -1;
+        int i2 = -1;
+        for (int i = 0; i < partition.length; i++) { // identify indexes of pair values in the
+            // partition
+            for (int j = 0; j < partition[i].length; j++) {
+                if (partition[i][j] == pair[0]) {
+                    i1 = i;
+                }
+                if (partition[i][j] == pair[1]) {
+                    i2 = i;
+                }
+            }
+        }
+        if (i1 == i2) // if both labels already in the same set -> there is no change
+            return partition;
+        for (int k = 0; k < partition.length; k++) { // copy unchanged sets and unify sets with
+            // values from pair
+            if (i1 > i2) { // ensure that i1 is index of first occurrence of one of the values from
+                // pair
+                int temp = i1;
+                i1 = i2;
+                i2 = temp;
+            }
+            if (k != i1) { // if set's values not in pair -> copy as is
+                tmpClusters[k] = partition[k];
+            } else { // set new set to be a union of two previous sets
+                tmpClusters[k] = new int[partition[i1].length + partition[i2].length];
+                int m;
+                for (m = 0; m < partition[i1].length; m++) {
+                    tmpClusters[k][m] = partition[i1][m];
+                }
+                int n;
+                for (n = 0; n < partition[i2].length; n++) {
+                    tmpClusters[k][m + n] = partition[i2][n];
+                }
+            }
+        }
+        // delete the set which labels were added to another set:
+        System.arraycopy(tmpClusters, 0, newClusters, 0, i2);
+        // move all sets appearing after eliminated set into one index smaller
+        System.arraycopy(tmpClusters, i2 + 1, newClusters, i2, newClusters.length - i2);
+        return newClusters;
+    }
+
+    /**
      * Determines labels partitioning into dependent sets. It clusters label pairs according to
      * their dependence score and evaluates the related models. The clustering process continues as
      * long as the accuracy improves. The finally selected labels partition is returned.
@@ -196,90 +280,6 @@ public class GreedyLabelClustering implements LabelClustering, Serializable {
         System.out.println("Returning  the final labels partition: "
                 + partitionToString(currClusters) + '\n');
         return currClusters;
-    }
-
-    /**
-     * Returns a string representation of the labels partition.
-     *
-     * @param partition - a label set partition
-     * @return a string representation of the labels partition
-     */
-    public static String partitionToString(int[][] partition) {
-        StringBuilder result = new StringBuilder();
-        for (int[] aGroup : partition) {
-            result.append(Arrays.toString(aGroup));
-            result.append(", ");
-        }
-        return result.toString();
-    }
-
-    /**
-     * Build initial label set partition - each label in a separate group. For example for
-     * numLabels=4 , it returns an array {{0},{1},{2},{3}}
-     *
-     * @param numLabels number of labels in the trainingSet
-     * @return two dimensional array of size numLabels, when each inner array is of size 1
-     */
-    private static int[][] buildInitialSet(int numLabels) {
-        int[][] res = new int[numLabels][1];
-        for (int i = 0; i < numLabels; i++) {
-            res[i][0] = i;
-        }
-        return res;
-    }
-
-    /**
-     * Clusters a new pair of labels and integrates the new group into the given labels partition.
-     *
-     * @param partition - label set partition
-     * @param pair      - labels pair
-     * @return a new partition with clustered labels of the pair
-     */
-    private static int[][] buildCombinationSet(int[][] partition, int[] pair) {
-        int[][] newClusters = new int[partition.length - 1][];
-        int[][] tmpClusters = new int[partition.length][];
-        int i1 = -1;
-        int i2 = -1;
-        for (int i = 0; i < partition.length; i++) { // identify indexes of pair values in the
-            // partition
-            for (int j = 0; j < partition[i].length; j++) {
-                if (partition[i][j] == pair[0]) {
-                    i1 = i;
-                }
-                if (partition[i][j] == pair[1]) {
-                    i2 = i;
-                }
-            }
-        }
-        if (i1 == i2) // if both labels already in the same set -> there is no change
-            return partition;
-        for (int k = 0; k < partition.length; k++) { // copy unchanged sets and unify sets with
-            // values from pair
-            if (i1 > i2) { // ensure that i1 is index of first occurrence of one of the values from
-                // pair
-                int temp = i1;
-                i1 = i2;
-                i2 = temp;
-            }
-            if (k != i1) { // if set's values not in pair -> copy as is
-                tmpClusters[k] = partition[k];
-            } else { // set new set to be a union of two previous sets
-                tmpClusters[k] = new int[partition[i1].length + partition[i2].length];
-                int m;
-                for (m = 0; m < partition[i1].length; m++) {
-                    tmpClusters[k][m] = partition[i1][m];
-                }
-                int n;
-                for (n = 0; n < partition[i2].length; n++) {
-                    tmpClusters[k][m + n] = partition[i2][n];
-                }
-            }
-        }
-        // delete the set which labels were added to another set:
-        System.arraycopy(tmpClusters, 0, newClusters, 0, i2);
-        // move all sets appearing after eliminated set into one index smaller
-        System.arraycopy(tmpClusters, i2 + 1, newClusters, i2, newClusters.length - i2);
-        return newClusters;
     }
 
     /**

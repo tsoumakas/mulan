@@ -183,12 +183,6 @@ public class LabelsMetaDataImpl implements LabelsMetaData, Serializable, Externa
         }
     }
 
-    private enum IndexingAction {
-
-        Add,
-        Remove
-    }
-
     @SuppressWarnings("unchecked")
     @Override
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
@@ -200,5 +194,11 @@ public class LabelsMetaDataImpl implements LabelsMetaData, Serializable, Externa
     @Override
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject(this.rootLabelNodes);
+    }
+
+    private enum IndexingAction {
+
+        Add,
+        Remove
     }
 }

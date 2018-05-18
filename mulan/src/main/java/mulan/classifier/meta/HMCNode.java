@@ -38,15 +38,6 @@ public class HMCNode extends MultiLabelMetaLearner {
     private Instances header;
 
     /**
-     * Returns the label indices
-     *
-     * @return label indices
-     */
-    public int[] getLabelIndices() {
-        return labelIndices;
-    }
-
-    /**
      * Creates a new instance with the given name and learner
      *
      * @param name name of the node
@@ -56,6 +47,15 @@ public class HMCNode extends MultiLabelMetaLearner {
     public HMCNode(String name, MultiLabelLearner mlc) throws Exception {
         super(mlc);
         nodeName = name;
+    }
+
+    /**
+     * Returns the label indices
+     *
+     * @return label indices
+     */
+    public int[] getLabelIndices() {
+        return labelIndices;
     }
 
     /**

@@ -72,31 +72,12 @@ public class BRkNN extends MultiLabelKNN {
      * Whether to select k by cross validation.
      */
     private boolean cvkSelection = false;
-
-    /**
-     * The two types of extensions
-     */
-    public enum ExtensionType {
-
-        /**
-         * Standard BR
-         */
-        NONE,
-        /**
-         * Predict top ranked label in case of empty prediction set
-         */
-        EXTA,
-        /**
-         * Predict top n ranked labels based on size of labelset in neighbors
-         */
-        EXTB
-    }
-
-    ;
     /**
      * The type of extension to be used
      */
     private ExtensionType extension = ExtensionType.NONE;
+
+    ;
 
     /**
      * Default constructor
@@ -413,6 +394,25 @@ public class BRkNN extends MultiLabelKNN {
         return "Simple BR implementation of the KNN algorithm." +
                 "For more information, see\n\n" +
                 getTechnicalInformation().toString();
+    }
+
+    /**
+     * The two types of extensions
+     */
+    public enum ExtensionType {
+
+        /**
+         * Standard BR
+         */
+        NONE,
+        /**
+         * Predict top ranked label in case of empty prediction set
+         */
+        EXTA,
+        /**
+         * Predict top n ranked labels based on size of labelset in neighbors
+         */
+        EXTB
     }
 
 }

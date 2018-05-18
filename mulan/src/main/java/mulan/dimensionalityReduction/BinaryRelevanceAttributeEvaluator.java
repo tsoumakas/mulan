@@ -31,13 +31,13 @@ import java.util.logging.Logger;
 public class BinaryRelevanceAttributeEvaluator extends ASEvaluation implements AttributeEvaluator {
 
     /**
-     * final scores for all attributes
-     */
-    private double[] scores;
-    /**
      * The number of labels
      */
     int numLabels;
+    /**
+     * final scores for all attributes
+     */
+    private double[] scores;
     /**
      * combination approach mode
      */
@@ -50,61 +50,6 @@ public class BinaryRelevanceAttributeEvaluator extends ASEvaluation implements A
      * attribute scoring based either on evaluation scores or ranking
      */
     private String ScoreMode;
-
-    /**
-     * a wrapper class for score-based attribute ranking
-     */
-    public class Rank implements Comparable {
-
-        /**
-         * score of the attribute
-         */
-        private double score;
-        /**
-         * index of the attribute
-         */
-        private int index;
-
-        /**
-         * constructor
-         *
-         * @param score the score to be given
-         * @param index the index to be given
-         */
-        public Rank(double score, int index) {
-            this.score = score;
-            this.index = index;
-        }
-
-        /**
-         * Returns the score of the attribute
-         *
-         * @return score of the attribute
-         */
-        public double getScore() {
-            return score;
-        }
-
-        /**
-         * Returns the index of the attribute
-         *
-         * @return index of the attribute
-         */
-        public int getIndex() {
-            return index;
-        }
-
-        @Override
-        public int compareTo(Object o) {
-            if (score > ((Rank) o).score) {
-                return 1;
-            } else if (score < ((Rank) o).score) {
-                return -1;
-            } else {
-                return 0;
-            }
-        }
-    }
 
     /**
      * @param ase     the evaluator type (weka type)
@@ -144,6 +89,92 @@ public class BinaryRelevanceAttributeEvaluator extends ASEvaluation implements A
         } catch (Exception ex) {
             Logger.getLogger(BinaryRelevanceAttributeEvaluator.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    /**
+     * calculates the norm of a vector
+     *
+     * @param vector a numeric array (as a vector)
+     * @return the norm of the given vector
+     */
+    public static double norm(double vector[]) {
+        double sumsq = 0;
+
+        for (int i = 0; i < vector.length; i++) {
+            sumsq += Math.pow(vector[i], 2);
+        }
+
+        return Math.sqrt(sumsq);
+    }
+
+    /**
+     * normalizes an array (in the range of [0,1])
+     *
+     * @param array a numeric array
+     */
+    public static void normalize(double array[]) {
+        /*
+         * find the largest element
+         */
+        double max = array[0];
+
+        for (int i = 1; i < array.length; i++) {
+            max = (array[i] > max ? array[i] : max);
+        }
+
+        /*
+         * normalize all elements
+         */
+        for (int j = 0; j < array.length; j++) {
+            array[j] /= max;
+        }
+    }
+
+    /**
+     * divide by length (dl) normalization
+     *
+     * @param array a numeric array
+     * @return a dl normalized copy of array
+     */
+    public static double[] dl(double array[]) {
+        /*
+         * a copy of the original array
+         */
+        double copy[] = java.util.Arrays.copyOf(array, array.length);
+
+        /*
+         * calculate the norm
+         */
+        double norm = norm(copy);
+
+        /*
+         * divide each element by the norm
+         */
+        for (int i = 0; i < copy.length; i++) {
+            copy[i] /= norm;
+        }
+
+        return copy;
+    }
+
+    /**
+     * divide by maximum (dm) normalization
+     *
+     * @param array a numeric array
+     * @return a dm normalized copy of array
+     */
+    public static double[] dm(double array[]) {
+        /*
+         * a copy of the original array
+         */
+        double[] copy = java.util.Arrays.copyOf(array, array.length);
+
+        /*
+         * normalize the copy
+         */
+        normalize(copy);
+
+        return copy;
     }
 
     /**
@@ -343,92 +374,6 @@ public class BinaryRelevanceAttributeEvaluator extends ASEvaluation implements A
     }
 
     /**
-     * calculates the norm of a vector
-     *
-     * @param vector a numeric array (as a vector)
-     * @return the norm of the given vector
-     */
-    public static double norm(double vector[]) {
-        double sumsq = 0;
-
-        for (int i = 0; i < vector.length; i++) {
-            sumsq += Math.pow(vector[i], 2);
-        }
-
-        return Math.sqrt(sumsq);
-    }
-
-    /**
-     * normalizes an array (in the range of [0,1])
-     *
-     * @param array a numeric array
-     */
-    public static void normalize(double array[]) {
-        /*
-         * find the largest element
-         */
-        double max = array[0];
-
-        for (int i = 1; i < array.length; i++) {
-            max = (array[i] > max ? array[i] : max);
-        }
-
-        /*
-         * normalize all elements
-         */
-        for (int j = 0; j < array.length; j++) {
-            array[j] /= max;
-        }
-    }
-
-    /**
-     * divide by length (dl) normalization
-     *
-     * @param array a numeric array
-     * @return a dl normalized copy of array
-     */
-    public static double[] dl(double array[]) {
-        /*
-         * a copy of the original array
-         */
-        double copy[] = java.util.Arrays.copyOf(array, array.length);
-
-        /*
-         * calculate the norm
-         */
-        double norm = norm(copy);
-
-        /*
-         * divide each element by the norm
-         */
-        for (int i = 0; i < copy.length; i++) {
-            copy[i] /= norm;
-        }
-
-        return copy;
-    }
-
-    /**
-     * divide by maximum (dm) normalization
-     *
-     * @param array a numeric array
-     * @return a dm normalized copy of array
-     */
-    public static double[] dm(double array[]) {
-        /*
-         * a copy of the original array
-         */
-        double[] copy = java.util.Arrays.copyOf(array, array.length);
-
-        /*
-         * normalize the copy
-         */
-        normalize(copy);
-
-        return copy;
-    }
-
-    /**
      * Evaluates an attribute
      *
      * @param attribute the attribute index
@@ -449,5 +394,60 @@ public class BinaryRelevanceAttributeEvaluator extends ASEvaluation implements A
     @Override
     public void buildEvaluator(Instances data) throws Exception {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    /**
+     * a wrapper class for score-based attribute ranking
+     */
+    public class Rank implements Comparable {
+
+        /**
+         * score of the attribute
+         */
+        private double score;
+        /**
+         * index of the attribute
+         */
+        private int index;
+
+        /**
+         * constructor
+         *
+         * @param score the score to be given
+         * @param index the index to be given
+         */
+        public Rank(double score, int index) {
+            this.score = score;
+            this.index = index;
+        }
+
+        /**
+         * Returns the score of the attribute
+         *
+         * @return score of the attribute
+         */
+        public double getScore() {
+            return score;
+        }
+
+        /**
+         * Returns the index of the attribute
+         *
+         * @return index of the attribute
+         */
+        public int getIndex() {
+            return index;
+        }
+
+        @Override
+        public int compareTo(Object o) {
+            if (score > ((Rank) o).score) {
+                return 1;
+            } else if (score < ((Rank) o).score) {
+                return -1;
+            } else {
+                return 0;
+            }
+        }
     }
 }

@@ -34,13 +34,13 @@ import java.util.Iterator;
 public abstract class LabelsetPruning extends LabelPowerset {
 
     /**
-     * labelsets and a list with the corresponding instances
-     */
-    HashMap<LabelSet, ArrayList<Instance>> ListInstancePerLabel;
-    /**
      * parameter for the threshold of number of occurences of a labelset
      */
     protected int p;
+    /**
+     * labelsets and a list with the corresponding instances
+     */
+    HashMap<LabelSet, ArrayList<Instance>> ListInstancePerLabel;
     /**
      * format of the data
      */

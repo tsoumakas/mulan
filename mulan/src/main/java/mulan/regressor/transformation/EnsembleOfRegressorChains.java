@@ -43,38 +43,26 @@ public class EnsembleOfRegressorChains extends TransformationBasedMultiTargetReg
      * The seed to use in random number generators. Default = 1.
      **/
     private int seed = 1;
-
-    /**
-     * Three types of sampling.
-     */
-    public enum SamplingMethod {
-        None, WithReplacement, WithoutReplacement,
-    }
-
-    ;
-
     /**
      * The method used to obtain the values of the meta features. TRUE is used by default.
      */
     private metaType meta = RegressorChain.metaType.TRUE;
 
+    ;
     /**
      * The type of sampling to be used. None is used by default.
      */
     private SamplingMethod sampling = SamplingMethod.None;
-
     /**
      * The size of each sample (as a percentage of the training set size) when sampling with replacement is
      * performed. Default is 100.
      */
     private double sampleWithReplacementPercent = 100;
-
     /**
      * The size of each sample (as a percentage of the training set size) when sampling without replacement is
      * performed. Default is 67.
      */
     private double sampleWithoutReplacementPercent = 67;
-
     /**
      * The number of folds to use in RegressorChainCorrected when CV is selected for obtaining the values of
      * the meta-features.
@@ -229,6 +217,13 @@ public class EnsembleOfRegressorChains extends TransformationBasedMultiTargetReg
 
     public void setSeed(int seed) {
         this.seed = seed;
+    }
+
+    /**
+     * Three types of sampling.
+     */
+    public enum SamplingMethod {
+        None, WithReplacement, WithoutReplacement,
     }
 
 }

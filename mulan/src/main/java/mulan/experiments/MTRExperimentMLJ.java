@@ -44,6 +44,31 @@ import java.util.List;
 public class MTRExperimentMLJ {
 
     /**
+     * Methods supported from CLUS.
+     */
+    public static final String[] CLUSMethodsArray = {"MORF"};
+    /**
+     * Methods supported from Malsar.
+     */
+    public static final String[] MALSARMethodsArray = {"TNR", "Dirty"};
+    /**
+     * This is needed for starting Matlab from Java.
+     */
+    public static MatlabProxy matlabProxy;
+    /**
+     * This is the path to Malsar's sources.
+     */
+    public static String malsarPath;
+    /**
+     * The dataset's filestem
+     */
+    public static String fileStem;
+    /**
+     * Number of execution slots for Weka algorithms that support multi-threading.
+     **/
+    private static int numSlots;
+
+    /**
      * @param args <ul>
      *             <li><b>-path:</b> full path to the dataset folder</li>
      *             <li><b>-filestem:</b> the dataset's filestem (name)</li>
@@ -304,31 +329,6 @@ public class MTRExperimentMLJ {
         }
 
     }
-
-    /**
-     * Methods supported from CLUS.
-     */
-    public static final String[] CLUSMethodsArray = {"MORF"};
-    /**
-     * Methods supported from Malsar.
-     */
-    public static final String[] MALSARMethodsArray = {"TNR", "Dirty"};
-    /**
-     * Number of execution slots for Weka algorithms that support multi-threading.
-     **/
-    private static int numSlots;
-    /**
-     * This is needed for starting Matlab from Java.
-     */
-    public static MatlabProxy matlabProxy;
-    /**
-     * This is the path to Malsar's sources.
-     */
-    public static String malsarPath;
-    /**
-     * The dataset's filestem
-     */
-    public static String fileStem;
 
     private static boolean containsMethod(String[] methods, HashSet<String> referenceMethods) {
         for (String method : methods) {

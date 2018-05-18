@@ -43,24 +43,21 @@ import java.util.Random;
 public class RegressorChainSimple extends TransformationBasedMultiTargetRegressor {
 
     private static final long serialVersionUID = 1L;
-
+    /**
+     * The regressors of the chain.
+     */
+    protected FilteredClassifier[] chainRegressors;
     /**
      * The seed to use for random number generation in order to create a random chain (other than
      * the default one which consists of the targets chained in the order they appear in the arff
      * file).
      */
     private int chainSeed = 0;
-
     /**
      * A permutation of the target indices. E.g. If there are 3 targets with indices 14,15 and 16, a
      * valid chain is 15,14,16.
      */
     private int[] chain;
-
-    /**
-     * The regressors of the chain.
-     */
-    protected FilteredClassifier[] chainRegressors;
 
     /**
      * Creates a new instance with the given base regressor. If {@link #chainSeed} == 0, the default

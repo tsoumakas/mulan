@@ -45,10 +45,6 @@ import java.util.logging.Logger;
  */
 public abstract class Meta extends MultiLabelMetaLearner {
 
-    public enum MetaData {
-        CONTENT, SCORES, RANKS;
-    }
-
     /**
      * the classifier to learn the number of top labels or the threshold
      */
@@ -230,5 +226,9 @@ public abstract class Meta extends MultiLabelMetaLearner {
         debug("building the multi-label classifier");
         baseLearner.setDebug(getDebug());
         baseLearner.build(trainingData);
+    }
+
+    public enum MetaData {
+        CONTENT, SCORES, RANKS;
     }
 }

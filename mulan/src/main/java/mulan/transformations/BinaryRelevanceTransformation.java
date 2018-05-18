@@ -103,6 +103,69 @@ public class BinaryRelevanceTransformation implements Serializable {
     }
 
     /**
+     * Remove all label attributes except that at indexOfLabelToKeep
+     *
+     * @param train        -
+     * @param labelIndices -
+     * @param indexToKeep  the label to keep
+     * @return transformed Instances object
+     * @throws Exception when removal fails
+     */
+    public static Instances transformInstances(Instances train, int[] labelIndices, int indexToKeep) throws Exception {
+        int numLabels = labelIndices.length;
+
+        train.setClassIndex(indexToKeep);
+
+        // Indices of attributes to remove
+        int[] indicesToRemove = new int[numLabels - 1];
+        int counter2 = 0;
+        for (int counter1 = 0; counter1 < numLabels; counter1++) {
+            if (labelIndices[counter1] != indexToKeep) {
+                indicesToRemove[counter2] = labelIndices[counter1];
+                counter2++;
+            }
+        }
+
+        Remove remove = new Remove();
+        remove.setAttributeIndicesArray(indicesToRemove);
+        remove.setInputFormat(train);
+        return Filter.useFilter(train, remove);
+    }
+
+    /**
+     * Remove all label attributes except label at position indexToKeep
+     *
+     * @param instance     the instance from which labels are to be removed
+     * @param labelIndices the label indices to remove
+     * @param indexToKeep  the label to keep
+     * @return transformed Instance
+     */
+    public static Instance transformInstance(Instance instance, int[] labelIndices, int indexToKeep) {
+        double[] values = instance.toDoubleArray();
+        double[] transformedValues = new double[values.length - labelIndices.length + 1];
+
+        int counterTransformed = 0;
+        boolean isLabel = false;
+
+        for (int i = 0; i < values.length; i++) {
+            for (int j = 0; j < labelIndices.length; j++) {
+                if (i == labelIndices[j] && i != indexToKeep) {
+                    isLabel = true;
+                    break;
+                }
+            }
+
+            if (!isLabel) {
+                transformedValues[counterTransformed] = instance.value(i);
+                counterTransformed++;
+            }
+            isLabel = false;
+        }
+
+        return DataUtils.createInstance(instance, 1, transformedValues);
+    }
+
+    /**
      * Remove all label attributes except labelToKeep
      *
      * @param instance    the instance from which labels are to be removed
@@ -166,68 +229,5 @@ public class BinaryRelevanceTransformation implements Serializable {
             }
         }
         return shellCopy;
-    }
-
-    /**
-     * Remove all label attributes except that at indexOfLabelToKeep
-     *
-     * @param train        -
-     * @param labelIndices -
-     * @param indexToKeep  the label to keep
-     * @return transformed Instances object
-     * @throws Exception when removal fails
-     */
-    public static Instances transformInstances(Instances train, int[] labelIndices, int indexToKeep) throws Exception {
-        int numLabels = labelIndices.length;
-
-        train.setClassIndex(indexToKeep);
-
-        // Indices of attributes to remove
-        int[] indicesToRemove = new int[numLabels - 1];
-        int counter2 = 0;
-        for (int counter1 = 0; counter1 < numLabels; counter1++) {
-            if (labelIndices[counter1] != indexToKeep) {
-                indicesToRemove[counter2] = labelIndices[counter1];
-                counter2++;
-            }
-        }
-
-        Remove remove = new Remove();
-        remove.setAttributeIndicesArray(indicesToRemove);
-        remove.setInputFormat(train);
-        return Filter.useFilter(train, remove);
-    }
-
-    /**
-     * Remove all label attributes except label at position indexToKeep
-     *
-     * @param instance     the instance from which labels are to be removed
-     * @param labelIndices the label indices to remove
-     * @param indexToKeep  the label to keep
-     * @return transformed Instance
-     */
-    public static Instance transformInstance(Instance instance, int[] labelIndices, int indexToKeep) {
-        double[] values = instance.toDoubleArray();
-        double[] transformedValues = new double[values.length - labelIndices.length + 1];
-
-        int counterTransformed = 0;
-        boolean isLabel = false;
-
-        for (int i = 0; i < values.length; i++) {
-            for (int j = 0; j < labelIndices.length; j++) {
-                if (i == labelIndices[j] && i != indexToKeep) {
-                    isLabel = true;
-                    break;
-                }
-            }
-
-            if (!isLabel) {
-                transformedValues[counterTransformed] = instance.value(i);
-                counterTransformed++;
-            }
-            isLabel = false;
-        }
-
-        return DataUtils.createInstance(instance, 1, transformedValues);
     }
 }

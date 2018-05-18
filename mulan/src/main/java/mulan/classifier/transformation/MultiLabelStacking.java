@@ -58,6 +58,10 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner {
 
     private static final long serialVersionUID = 1L;
     /**
+     * the training instances
+     */
+    protected Instances train;
+    /**
      * the type of the classifier used in the meta-level
      */
     private Classifier metaClassifier;
@@ -85,10 +89,6 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner {
      * the number of folds used in the first level
      */
     private int numFolds;
-    /**
-     * the training instances
-     */
-    protected Instances train;
     /**
      * a table holding the predictions of the first level classifiers for each
      * class-label of every instance

@@ -39,16 +39,6 @@ import java.util.logging.Logger;
 public class LabelPowerset extends TransformationBasedMultiLabelLearner {
 
     /**
-     * The confidence values for each label are calculated in the following ways
-     * 0: Confidence 0 1/0 for all labels, (1 if label true, 0 if label is
-     * false) 1: Confidence of x/(1-x) for all labels, where x is the
-     * probability of the winning class (x if label true, (1-x) if label is
-     * false) 2: Confidence calculated based on the distribution of
-     * probabilities obtained from the base classifier, as introduced by the PPT
-     * algorithm
-     */
-    private int confidenceCalculationMethod = 1;
-    /**
      * Whether the method introduced by the PPT algorithm will be used to
      * actually get the 1/0 output bipartition based on the confidences
      * (requires a threshold)
@@ -68,6 +58,16 @@ public class LabelPowerset extends TransformationBasedMultiLabelLearner {
      * Random number generator for randomly solving tied predictions
      */
     protected Random Rand;
+    /**
+     * The confidence values for each label are calculated in the following ways
+     * 0: Confidence 0 1/0 for all labels, (1 if label true, 0 if label is
+     * false) 1: Confidence of x/(1-x) for all labels, where x is the
+     * probability of the winning class (x if label true, (1-x) if label is
+     * false) 2: Confidence calculated based on the distribution of
+     * probabilities obtained from the base classifier, as introduced by the PPT
+     * algorithm
+     */
+    private int confidenceCalculationMethod = 1;
 
     /**
      * Conststructor that initializes the learner with a base classifier
