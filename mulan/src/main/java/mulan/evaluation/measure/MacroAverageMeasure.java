@@ -29,5 +29,5 @@ public interface MacroAverageMeasure {
      * @param labelIndex the index of the label [0..numLabels-1]
      * @return the value of a macro average measure for a particular label
      */
-    public double getValue(int labelIndex);
+    double getValue(int labelIndex);
 }

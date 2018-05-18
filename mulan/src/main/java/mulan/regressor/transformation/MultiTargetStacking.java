@@ -83,9 +83,8 @@ public class MultiTargetStacking extends TransformationBasedMultiTargetRegressor
      * Creates a new instance with the given base regressor at both stages.
      *
      * @param baseRegressor the base regression algorithm that will be used in both stages
-     * @throws Exception Potential exception thrown. To be handled in an upper level.
      */
-    public MultiTargetStacking(Classifier baseRegressor) throws Exception {
+    public MultiTargetStacking(Classifier baseRegressor) {
         super(baseRegressor);
         this.secondStageBaseRegressor = baseRegressor;
     }
@@ -95,10 +94,9 @@ public class MultiTargetStacking extends TransformationBasedMultiTargetRegressor
      *
      * @param firstStageBaseRegressor  the base regression algorithm that will be used in the first stage
      * @param secondStageBaseRegressor the base regression algorithm that will be used in the second stage
-     * @throws Exception Potential exception thrown. To be handled in an upper level.
      */
     public MultiTargetStacking(Classifier firstStageBaseRegressor,
-                               Classifier secondStageBaseRegressor) throws Exception {
+                               Classifier secondStageBaseRegressor) {
         super(firstStageBaseRegressor);
         this.secondStageBaseRegressor = secondStageBaseRegressor;
     }

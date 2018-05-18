@@ -250,11 +250,7 @@ public class DMLkNN extends MultiLabelKNN {
             double Prob_in = PriorProbabilities[i] * (smooth + V[i]) / (smooth * numLabels + C[i]);
             double Prob_out = PriorNProbabilities[i] * (smooth + NV[i]) / (smooth * numLabels + NC[i]);
 
-            if (Prob_in >= Prob_out) {
-                predictions[i] = true;
-            } else {
-                predictions[i] = false;
-            }
+            predictions[i] = Prob_in >= Prob_out;
 
             // ranking function
             if ((Prob_in + Prob_out) == 0) {

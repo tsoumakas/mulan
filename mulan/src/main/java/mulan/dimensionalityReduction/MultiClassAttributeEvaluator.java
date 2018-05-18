@@ -53,7 +53,7 @@ public class MultiClassAttributeEvaluator extends ASEvaluation implements Attrib
         Instances data;
         try {
             data = dt.transformInstances(mlData);
-            ((ASEvaluation) baseAttributeEvaluator).buildEvaluator(data);
+            baseAttributeEvaluator.buildEvaluator(data);
         } catch (Exception ex) {
             Logger.getLogger(MultiClassAttributeEvaluator.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -75,10 +75,9 @@ public class MultiClassAttributeEvaluator extends ASEvaluation implements Attrib
      * Not supported
      *
      * @param arg0 functionality is not supported yet
-     * @throws Exception functionality is not supported yet
      */
     @Override
-    public void buildEvaluator(Instances arg0) throws Exception {
+    public void buildEvaluator(Instances arg0) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }

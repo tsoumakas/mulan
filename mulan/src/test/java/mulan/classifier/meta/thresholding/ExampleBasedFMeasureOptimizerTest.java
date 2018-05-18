@@ -25,7 +25,7 @@ import mulan.classifier.meta.MultiLabelMetaLearnerTest;
 public class ExampleBasedFMeasureOptimizerTest extends MultiLabelMetaLearnerTest {
 
     @Override
-    public void setUp() throws Exception {
+    public void setUp() {
         learner = new ExampleBasedFMeasureOptimizer();
     }
 

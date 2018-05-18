@@ -135,11 +135,7 @@ public class CalibratedLabelRanking extends BinaryAndPairwise {
 
         boolean[] bipartition = new boolean[numLabels];
         for (int i = 0; i < numLabels; i++) {
-            if (scores[i] >= scoreVirtual) {
-                bipartition[i] = true;
-            } else {
-                bipartition[i] = false;
-            }
+            bipartition[i] = scores[i] >= scoreVirtual;
         }
 
         for (int i = 0; i < scores.length; i++) {
@@ -266,11 +262,7 @@ public class CalibratedLabelRanking extends BinaryAndPairwise {
 
         //Generate Multilabel Output
         for (int i = 0; i < numLabels; i++) {
-            if (voteLabel[i] >= voteVirtual) {
-                bipartition[i] = true;
-            } else {
-                bipartition[i] = false;
-            }
+            bipartition[i] = voteLabel[i] >= voteVirtual;
             confidences[i] = 1.0 * voteLabel[i] / numLabels;
         }
         MultiLabelOutput mlo = new MultiLabelOutput(bipartition, confidences);
@@ -393,11 +385,7 @@ public class CalibratedLabelRanking extends BinaryAndPairwise {
 
         //Generate Multilabel Output
         for (int i = 0; i < numLabels; i++) {
-            if (voteLabel[i] >= voteVirtual) {
-                bipartition[i] = true;
-            } else {
-                bipartition[i] = false;
-            }
+            bipartition[i] = voteLabel[i] >= voteVirtual;
             confidences[i] = 1.0 * voteLabel[i] / numLabels;
         }
         MultiLabelOutput mlo = new MultiLabelOutput(bipartition, confidences);

@@ -23,7 +23,7 @@ package mulan.classifier.transformation;
 public class MultiLabelStackingTest extends TransformationBasedMultiLabelLearnerTest {
 
     @Override
-    public void setUp() throws Exception {
+    public void setUp() {
         learner = new MultiLabelStacking();
     }
 }

@@ -217,17 +217,13 @@ public class OneThreshold extends MultiLabelMetaLearner {
     }
 
     @Override
-    protected MultiLabelOutput makePredictionInternal(Instance instance) throws Exception, InvalidDataException {
+    protected MultiLabelOutput makePredictionInternal(Instance instance) throws Exception {
         boolean[] predictedLabels;
         MultiLabelOutput mlo = baseLearner.makePrediction(instance);
         double[] confidences = mlo.getConfidences();
         predictedLabels = new boolean[numLabels];
         for (int i = 0; i < numLabels; i++) {
-            if (confidences[i] >= threshold) {
-                predictedLabels[i] = true;
-            } else {
-                predictedLabels[i] = false;
-            }
+            predictedLabels[i] = confidences[i] >= threshold;
 
         }
         MultiLabelOutput newOutput = new MultiLabelOutput(predictedLabels, mlo.getConfidences());

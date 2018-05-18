@@ -166,9 +166,8 @@ public class SingleTargetTransformation implements Serializable {
      *
      * @param targetToKeep the target to keep
      * @return transformed Instances object
-     * @throws Exception Potential exception thrown. To be handled in an upper level.
      */
-    public Instances transformInstances(int targetToKeep) throws Exception {
+    public Instances transformInstances(int targetToKeep) {
         Instances shellCopy = new Instances(this.shell);
         int[] labelIndices = data.getLabelIndices();
 

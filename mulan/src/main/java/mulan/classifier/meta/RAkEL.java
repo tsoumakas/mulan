@@ -321,11 +321,7 @@ public class RAkEL extends MultiLabelMetaLearner {
                 confidence1[i] = 0;
                 confidence2[i] = 0;
             }
-            if (confidence1[i] >= threshold) {
-                bipartition[i] = true;
-            } else {
-                bipartition[i] = false;
-            }
+            bipartition[i] = confidence1[i] >= threshold;
         }
 
         // todo: optionally use confidence2 for ranking measures

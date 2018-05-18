@@ -167,7 +167,7 @@ public class LabelSet implements Serializable, Comparable<LabelSet> {
     public boolean[] toBooleanArray() {
         boolean[] arr = new boolean[labelSet.length];
         for (int i = 0; i < labelSet.length; i++) {
-            arr[i] = (labelSet[i] == 1) ? true : false;
+            arr[i] = labelSet[i] == 1;
         }
         return arr;
     }

@@ -95,7 +95,7 @@ public class HMC extends MultiLabelMetaLearner {
         return result;
     }
 
-    private void buildRec(HMCNode node, Instances data) throws InvalidDataFormatException, Exception {
+    private void buildRec(HMCNode node, Instances data) throws Exception {
         String metaLabel = node.getName();
 
         //debug("Preparing node data");

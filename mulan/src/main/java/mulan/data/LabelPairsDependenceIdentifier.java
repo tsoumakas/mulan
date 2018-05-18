@@ -34,13 +34,13 @@ public interface LabelPairsDependenceIdentifier {
      * @param mlInstances multilabel data set
      * @return an array of label pairs sorted in descending order of pairs' dependence score
      */
-    public LabelsPair[] calculateDependence(MultiLabelInstances mlInstances);
+    LabelsPair[] calculateDependence(MultiLabelInstances mlInstances);
 
     /**
      * Returns a critical value
      *
      * @return critical value
      */
-    public double getCriticalValue();
+    double getCriticalValue();
 
 }

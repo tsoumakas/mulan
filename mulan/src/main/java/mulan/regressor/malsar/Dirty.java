@@ -103,7 +103,7 @@ public class Dirty extends MalsarWrapper {
      * This classifier implements its own makeCopy method because the MatlabProxy object is not
      * Serializable
      */
-    public Dirty makeCopy() throws Exception {
+    public Dirty makeCopy() {
         Dirty malsar = new Dirty(malsarMatlabPath, proxy, maxNumCompThreads);
         malsar.setDebug(this.getDebug());
         malsar.setNormalization(normalization);

@@ -68,7 +68,7 @@ public class TraceNormRegularization extends MalsarWrapper {
      * This classifier implements its own makeCopy method because the MatlabProxy object is not
      * Serializable.
      */
-    public TraceNormRegularization makeCopy() throws Exception {
+    public TraceNormRegularization makeCopy() {
         TraceNormRegularization malsar = new TraceNormRegularization(malsarMatlabPath, proxy,
                 maxNumCompThreads);
         malsar.setDebug(this.getDebug());

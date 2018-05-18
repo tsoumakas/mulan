@@ -77,8 +77,6 @@ public class BRkNN extends MultiLabelKNN {
      */
     private ExtensionType extension = ExtensionType.NONE;
 
-    ;
-
     /**
      * Default constructor
      */
@@ -138,9 +136,8 @@ public class BRkNN extends MultiLabelKNN {
      * Select the best value for k by hold-one-out cross-validation. Hamming
      * Loss is minimized
      *
-     * @throws Exception Potential exception thrown. To be handled in an upper level.
      */
-    private void crossValidate() throws Exception {
+    private void crossValidate() {
         try {
             // the performance for each different k
             double[] hammingLoss = new double[cvMaxK];

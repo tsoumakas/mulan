@@ -299,7 +299,7 @@ public class Statistics implements Serializable, TechnicalInformationHandler {
             for (int j = 0; j < numLabels; j++) {
                 System.out.print(myFormatter.format(phi[i][j]) + " ");
             }
-            System.out.println("");
+            System.out.println();
         }
     }
 

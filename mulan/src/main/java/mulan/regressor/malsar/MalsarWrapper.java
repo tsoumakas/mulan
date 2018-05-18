@@ -31,12 +31,9 @@ public abstract class MalsarWrapper extends MultiLabelLearnerBase {
     protected final String paramArrayMatName = "W";
     protected final String optsMatName = "opts";
     protected normalizationType normalization = normalizationType.none;
-    ;
     /* defining optimization options and setting their (MALSAR) default values */
     protected optsInit optInit = optsInit.zero;
-    ;
     protected optsTFlag optTFlag = optsTFlag.one;
-    ;
     /**
      * tolerance
      */
@@ -247,8 +244,7 @@ public abstract class MalsarWrapper extends MultiLabelLearnerBase {
     }
 
     @Override
-    protected MultiLabelOutput makePredictionInternal(Instance instance) throws Exception,
-            InvalidDataException {
+    protected MultiLabelOutput makePredictionInternal(Instance instance) throws Exception {
         // first pass the instance from the filters
         // nomToBinFilter.input(instance);
         // nomToBinFilter.batchFinished();
@@ -356,7 +352,7 @@ public abstract class MalsarWrapper extends MultiLabelLearnerBase {
 
         private final int value;
 
-        private optsInit(int value) {
+        optsInit(int value) {
             this.value = value;
         }
 
@@ -377,7 +373,7 @@ public abstract class MalsarWrapper extends MultiLabelLearnerBase {
 
         private final int value;
 
-        private optsTFlag(int value) {
+        optsTFlag(int value) {
             this.value = value;
         }
 

@@ -562,7 +562,7 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner {
 
             // Ensure correct predictions both for class values {0,1} and {1,0}
             Attribute classAttribute = metaLevelData[labelIndex].classAttribute();
-            bipartition[labelIndex] = (classAttribute.value(maxIndex).equals("1")) ? true : false;
+            bipartition[labelIndex] = classAttribute.value(maxIndex).equals("1");
 
             // The confidence of the label being equal to 1
             metaconfidences[labelIndex] = distribution[classAttribute.indexOfValue("1")];

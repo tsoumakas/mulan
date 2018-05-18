@@ -234,9 +234,8 @@ public class BaseFunction {
      *
      * @param obj an array
      * @return an ArrayList transformed by obj
-     * @throws Exception if transformation fails
      */
-    public static ArrayList getArrayList(Object[] obj) throws Exception {
+    public static ArrayList getArrayList(Object[] obj) {
         ArrayList list = new ArrayList();
         for (int i = 0; i < obj.length; i++)
             list.add(obj[i]);

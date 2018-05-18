@@ -46,8 +46,6 @@ public class PPT extends LabelsetPruning {
      */
     private Strategy strategy;
 
-    ;
-
     /**
      * Default constructor
      */
@@ -176,6 +174,6 @@ public class PPT extends LabelsetPruning {
         /**
          * Reintroduce infrequent labelsets via subsets
          */
-        NO_INFORMATION_LOSS;
+        NO_INFORMATION_LOSS
     }
 }

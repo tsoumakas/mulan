@@ -149,7 +149,7 @@ public class ClusteringBased extends MultiLabelMetaLearner {
     }
 
     @Override
-    protected MultiLabelOutput makePredictionInternal(Instance instance) throws Exception, InvalidDataException {
+    protected MultiLabelOutput makePredictionInternal(Instance instance) throws Exception {
         Instance newInstance = RemoveAllLabels.transformInstance(instance, labelIndices);
         int cluster = clusterer.clusterInstance(newInstance);
         return multi[cluster].makePrediction(instance);

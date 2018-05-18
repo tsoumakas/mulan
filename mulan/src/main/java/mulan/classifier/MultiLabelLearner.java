@@ -39,7 +39,7 @@ public interface MultiLabelLearner {
      *
      * @return <code>true</code> if learner is updatable (on-line), <code>false</code> otherwise.
      */
-    public boolean isUpdatable();
+    boolean isUpdatable();
 
     /**
      * Builds the learner model from specified {@link MultiLabelInstances} data.
@@ -52,7 +52,7 @@ public interface MultiLabelLearner {
      * @throws InvalidDataException if specified instances data is invalid or not supported by the learner
      * @see MultiLabelLearner#isUpdatable()
      */
-    public void build(MultiLabelInstances instances) throws Exception, InvalidDataException;
+    void build(MultiLabelInstances instances) throws Exception, InvalidDataException;
 
     /**
      * Creates a deep copy of the given learner using serialization.
@@ -60,7 +60,7 @@ public interface MultiLabelLearner {
      * @return a deep copy of the learner
      * @throws Exception if an error occurs while making copy of the learner.
      */
-    public MultiLabelLearner makeCopy() throws Exception;
+    MultiLabelLearner makeCopy() throws Exception;
 
     /**
      * Returns the prediction of the learner for a given input {@link Instance}.
@@ -71,7 +71,7 @@ public interface MultiLabelLearner {
      * @throws InvalidDataException         if specified instance data is invalid and can not be processed by the learner
      * @throws ModelInitializationException if method is called before {@link MultiLabelLearner#build(MultiLabelInstances)}
      */
-    public MultiLabelOutput makePrediction(Instance instance)
+    MultiLabelOutput makePrediction(Instance instance)
             throws Exception, InvalidDataException, ModelInitializationException;
 
     /**
@@ -79,5 +79,5 @@ public interface MultiLabelLearner {
      *
      * @param debug True to show debug information, False not to
      */
-    public void setDebug(boolean debug);
+    void setDebug(boolean debug);
 }

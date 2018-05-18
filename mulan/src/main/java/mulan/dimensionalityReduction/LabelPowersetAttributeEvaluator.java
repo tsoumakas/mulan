@@ -52,7 +52,7 @@ public class LabelPowersetAttributeEvaluator extends ASEvaluation implements Att
         Instances data;
         try {
             data = lpt.transformInstances(mlData);
-            ((ASEvaluation) baseAttributeEvaluator).buildEvaluator(data);
+            baseAttributeEvaluator.buildEvaluator(data);
         } catch (Exception ex) {
             Logger.getLogger(LabelPowersetAttributeEvaluator.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -74,10 +74,9 @@ public class LabelPowersetAttributeEvaluator extends ASEvaluation implements Att
      * Not supported
      *
      * @param arg0 functionality is not supported yet
-     * @throws Exception functionality is not supported yet
      */
     @Override
-    public void buildEvaluator(Instances arg0) throws Exception {
+    public void buildEvaluator(Instances arg0) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }

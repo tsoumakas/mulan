@@ -203,11 +203,7 @@ public class LabelPowerset extends TransformationBasedMultiLabelLearner {
 
             if (makePredictionsBasedOnConfidences) {
                 for (int i = 0; i < confidences.length; i++) {
-                    if (confidences[i] > threshold) {
-                        bipartition[i] = true;
-                    } else {
-                        bipartition[i] = false;
-                    }
+                    bipartition[i] = confidences[i] > threshold;
                 }
             }
 

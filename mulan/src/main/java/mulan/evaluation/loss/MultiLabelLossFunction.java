@@ -30,7 +30,7 @@ public interface MultiLabelLossFunction {
      *
      * @return the name of the loss function
      */
-    public String getName();
+    String getName();
 
     /**
      * Computes the loss function
@@ -39,5 +39,5 @@ public interface MultiLabelLossFunction {
      * @param groundTruth the ground truth of the example
      * @return the value of the loss function
      */
-    public double computeLoss(MultiLabelOutput prediction, boolean[] groundTruth);
+    double computeLoss(MultiLabelOutput prediction, boolean[] groundTruth);
 }

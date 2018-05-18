@@ -205,7 +205,7 @@ public class ConverterLibSVM {
         }
     }
 
-    private static void createLabelsMetadataFile(String filePath, int numLabels) throws LabelsBuilderException {
+    private static void createLabelsMetadataFile(String filePath, int numLabels) {
     }
 
     /**

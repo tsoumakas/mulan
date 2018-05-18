@@ -263,11 +263,7 @@ public class SCut extends MultiLabelMetaLearner {
             arrayOfConfidences = m.getConfidences();
             for (int i = 0; i
                     < numLabels; i++) {
-                if (arrayOfConfidences[i] >= thresholds[i]) {
-                    predictedLabels[i] = true;
-                } else {
-                    predictedLabels[i] = false;
-                }
+                predictedLabels[i] = arrayOfConfidences[i] >= thresholds[i];
 
             }
         }

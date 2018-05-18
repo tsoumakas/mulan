@@ -117,7 +117,7 @@ public class MLCSSP extends MultiLabelMetaLearner {
 
             for (int i = 0; i < projectedResponse.getColumnDimension(); i++) {
                 projected_confidences[i] = projectedResponse.get(0, i);
-                projected_bipartition[i] = (Math.ceil(projected_confidences[i]) == 1) ? true : false;
+                projected_bipartition[i] = Math.ceil(projected_confidences[i]) == 1;
             }
 
             // return mlo

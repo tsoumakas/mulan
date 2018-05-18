@@ -29,8 +29,7 @@ public class ClusWrapperRegression extends ClusWrapperClassification {
      * Evaluator to determine the type of the MultiLabelOutput and thus prepare the appropriate measures.
      */
     @Override
-    protected MultiLabelOutput makePredictionInternal(Instance instance) throws Exception,
-            InvalidDataException {
+    protected MultiLabelOutput makePredictionInternal(Instance instance) throws Exception {
         double[] pValues = new double[numLabels];
         return new MultiLabelOutput(pValues, true);
 

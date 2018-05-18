@@ -233,17 +233,13 @@ public class RCut extends MultiLabelMetaLearner {
     }
 
     @Override
-    protected MultiLabelOutput makePredictionInternal(Instance instance) throws Exception, InvalidDataException {
+    protected MultiLabelOutput makePredictionInternal(Instance instance) throws Exception {
         boolean[] predictedLabels;
         MultiLabelOutput mlo = baseLearner.makePrediction(instance);
         int[] ranking = mlo.getRanking();
         predictedLabels = new boolean[numLabels];
         for (int i = 0; i < numLabels; i++) {
-            if (ranking[i] <= t) {
-                predictedLabels[i] = true;
-            } else {
-                predictedLabels[i] = false;
-            }
+            predictedLabels[i] = ranking[i] <= t;
 
         }
         MultiLabelOutput newOutput = new MultiLabelOutput(predictedLabels);

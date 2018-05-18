@@ -780,7 +780,7 @@ public class GridSearch9734 extends RandomizableSingleClassifierEnhancer impleme
             result.addElement(new Option("", "", 0, "\nOptions specific to filter "
                     + getFilter().getClass().getName() + " ('-filter'):"));
 
-            en = ((OptionHandler) getFilter()).listOptions();
+            en = getFilter().listOptions();
             while (en.hasMoreElements())
                 result.addElement(en.nextElement());
         }
@@ -2845,10 +2845,7 @@ public class GridSearch9734 extends RandomizableSingleClassifierEnhancer impleme
                 return true;
             if (location.getY() == 0)
                 return true;
-            else if (location.getY() == height() - 1)
-                return true;
-            else
-                return false;
+            else return location.getY() == height() - 1;
         }
 
         /**
@@ -3412,7 +3409,7 @@ public class GridSearch9734 extends RandomizableSingleClassifierEnhancer impleme
             m_Max = 0;
 
             for (i = 0; i < getPerformances().size(); i++) {
-                perf = (Performance) getPerformances().get(i);
+                perf = getPerformances().get(i);
                 location = getGrid().getLocation(perf.getValues());
                 m_Table[getGrid().height() - (int) location.getY() - 1][(int) location.getX()] = perf
                         .getPerformance(getType());

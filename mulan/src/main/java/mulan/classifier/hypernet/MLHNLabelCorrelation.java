@@ -567,7 +567,7 @@ public class MLHNLabelCorrelation extends MultiLabelLearnerBase {
     }
 
     @Override
-    protected MultiLabelOutput makePredictionInternal(Instance test) throws InvalidDataException, ModelInitializationException, Exception {
+    protected MultiLabelOutput makePredictionInternal(Instance test) throws Exception {
         Instance processedTest = null;
         if (isProcessedData) {
             processedTest = test;

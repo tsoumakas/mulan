@@ -137,7 +137,7 @@ public class ClassifierChain extends TransformationBasedMultiLabelLearner {
 
             // Ensure correct predictions both for class values {0,1} and {1,0}
             Attribute classAttribute = ensemble[counter].getFilter().getOutputFormat().classAttribute();
-            bipartition[chain[counter]] = (classAttribute.value(maxIndex).equals("1")) ? true : false;
+            bipartition[chain[counter]] = classAttribute.value(maxIndex).equals("1");
 
             // The confidence of the label being equal to 1
             confidences[chain[counter]] = distribution[classAttribute.indexOfValue("1")];

@@ -27,7 +27,7 @@ public class HyperEdge implements Serializable {
     }
 
 
-    HyperEdge(Double valueArray[], Integer vertexArray[], Integer[] labelArray, int classIndex) throws Exception {
+    HyperEdge(Double valueArray[], Integer vertexArray[], Integer[] labelArray, int classIndex) {
         if (valueArray.length != vertexArray.length)
             return;
 
@@ -49,7 +49,7 @@ public class HyperEdge implements Serializable {
         }
     }
 
-    HyperEdge(Instance data, Integer vertexArray[], int labelNum, int classIndex) throws Exception {
+    HyperEdge(Instance data, Integer vertexArray[], int labelNum, int classIndex) {
         if (vertexArray.length < 1)
             return;
 
@@ -80,7 +80,7 @@ public class HyperEdge implements Serializable {
         }
     }
 
-    HyperEdge(Instance data, Integer vertexArray[], Boolean[] valueTypeArray, int labelNum, int classIndex) throws Exception {
+    HyperEdge(Instance data, Integer vertexArray[], Boolean[] valueTypeArray, int labelNum, int classIndex) {
         if (vertexArray.length < 1)
             return;
 

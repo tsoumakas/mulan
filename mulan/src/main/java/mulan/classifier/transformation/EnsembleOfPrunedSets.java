@@ -114,7 +114,7 @@ public class EnsembleOfPrunedSets extends TransformationBasedMultiLabelLearner {
 
     @Override
     protected MultiLabelOutput makePredictionInternal(Instance instance)
-            throws Exception, InvalidDataException {
+            throws Exception {
 
         int[] sumVotes = new int[numLabels];
 

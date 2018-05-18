@@ -680,16 +680,10 @@ public class MultiLabelInstances implements Serializable {
 
         for (int index = 0; index < numValues; index++) {
             String value = attribute.value(index);
-            if (allowedValues.contains(value)) {
-                allowedValues.remove(value);
-            }
+            allowedValues.remove(value);
         }
 
-        if (!allowedValues.isEmpty()) {
-            return false;
-        }
-
-        return true;
+        return allowedValues.isEmpty();
     }
 
     // Checks the consistency of labels if there is a hierarchy between them.
@@ -731,10 +725,7 @@ public class MultiLabelInstances implements Serializable {
 
     private boolean isLabelSet(Instance instance, String labelName,
                                Map<String, Attribute> attributesIndex) {
-        if (instance.stringValue(attributesIndex.get(labelName)).equals("1"))
-            return true;
-        else
-            return false;
+        return instance.stringValue(attributesIndex.get(labelName)).equals("1");
     }
 
     /**

@@ -23,7 +23,7 @@ import weka.classifiers.trees.J48;
 public class EnsembleOfSubsetLearners_ConditionalTest extends MultiLabelMetaLearnerTest {
 
     @Override
-    public void setUp() throws Exception {
+    public void setUp() {
         ConditionalDependenceIdentifier cond = new ConditionalDependenceIdentifier(new J48());
         cond.setNumFolds(2);
         MultiLabelLearner lp = new LabelPowerset(new J48());

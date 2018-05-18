@@ -48,7 +48,6 @@ public class EnsembleOfRegressorChains extends TransformationBasedMultiTargetReg
      */
     private metaType meta = RegressorChain.metaType.TRUE;
 
-    ;
     /**
      * The type of sampling to be used. None is used by default.
      */
@@ -72,9 +71,8 @@ public class EnsembleOfRegressorChains extends TransformationBasedMultiTargetReg
     /**
      * Default constructor.
      *
-     * @throws Exception Potential exception thrown. To be handled in an upper level.
      */
-    public EnsembleOfRegressorChains() throws Exception {
+    public EnsembleOfRegressorChains() {
         this(new REPTree(), 10, SamplingMethod.WithReplacement);
     }
 
@@ -84,10 +82,9 @@ public class EnsembleOfRegressorChains extends TransformationBasedMultiTargetReg
      * @param baseRegressor the base regression algorithm that will be used
      * @param numOfModels   the number of models in the ensemble
      * @param sampling      the sampling method
-     * @throws Exception Potential exception thrown. To be handled in an upper level.
      */
     public EnsembleOfRegressorChains(Classifier baseRegressor, int numOfModels,
-                                     SamplingMethod sampling) throws Exception {
+                                     SamplingMethod sampling) {
         super(baseRegressor);
         this.numOfModels = numOfModels;
         this.sampling = sampling;
@@ -169,8 +166,7 @@ public class EnsembleOfRegressorChains extends TransformationBasedMultiTargetReg
     }
 
     @Override
-    protected MultiLabelOutput makePredictionInternal(Instance instance) throws Exception,
-            InvalidDataException {
+    protected MultiLabelOutput makePredictionInternal(Instance instance) throws Exception {
         double[] scores = new double[numLabels];
 
         for (int i = 0; i < numOfModels; i++) {

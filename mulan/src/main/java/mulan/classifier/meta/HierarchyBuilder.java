@@ -162,9 +162,8 @@ public class HierarchyBuilder implements Serializable {
      *
      * @param mlData the multiLabel data on with the new hierarchy will be built
      * @return a hierarchy of labels
-     * @throws java.lang.Exception Potential exception thrown. To be handled in an upper level.
      */
-    public LabelsMetaData buildLabelHierarchy(MultiLabelInstances mlData) throws Exception {
+    public LabelsMetaData buildLabelHierarchy(MultiLabelInstances mlData) {
         if (numPartitions > mlData.getNumLabels()) {
             throw new IllegalArgumentException("Number of labels is smaller than the number of partitions");
         }

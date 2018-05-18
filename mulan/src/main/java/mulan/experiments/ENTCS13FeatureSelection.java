@@ -289,7 +289,7 @@ public class ENTCS13FeatureSelection {
             System.exit(1);
         }
 
-        int[] featureIndices = new int[(int) Math.round((double) t * sortedEvaluatedAttributeList.length)];
+        int[] featureIndices = new int[(int) Math.round(t * sortedEvaluatedAttributeList.length)];
 
         for (int i = 0; i < featureIndices.length; i++) {
             featureIndices[i] = ((int) sortedEvaluatedAttributeList[i][0]); //add the index of the ith best feature to the array

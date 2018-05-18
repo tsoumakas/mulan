@@ -24,7 +24,7 @@ import weka.classifiers.trees.J48;
 public class SubsetLearnerWithGreedyClustering_ConditionalTest extends MultiLabelMetaLearnerTest {
 
     @Override
-    public void setUp() throws Exception {
+    public void setUp() {
         MultiLabelLearner lp = new LabelPowerset(new J48());
         ConditionalDependenceIdentifier cond = new ConditionalDependenceIdentifier(new J48());
         cond.setNumFolds(2);

@@ -203,9 +203,8 @@ public class BinaryRelevanceTransformation implements Serializable {
      *
      * @param labelToKeep the label to keep
      * @return transformed Instances object
-     * @throws Exception when removal fails
      */
-    public Instances transformInstances(int labelToKeep) throws Exception {
+    public Instances transformInstances(int labelToKeep) {
         int[] labelIndices = data.getLabelIndices();
         Instances shellCopy = null;
 

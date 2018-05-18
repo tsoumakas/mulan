@@ -176,7 +176,7 @@ public class LabelNodeImpl implements LabelNode, Serializable {
     }
 
     public boolean hasParent() {
-        return (parentNode == null) ? false : true;
+        return parentNode != null;
     }
 
     /**

@@ -42,9 +42,8 @@ public class HMCNode extends MultiLabelMetaLearner {
      *
      * @param name name of the node
      * @param mlc  learner
-     * @throws Exception Potential exception thrown. To be handled in an upper level.
      */
-    public HMCNode(String name, MultiLabelLearner mlc) throws Exception {
+    public HMCNode(String name, MultiLabelLearner mlc) {
         super(mlc);
         nodeName = name;
     }
@@ -83,11 +82,7 @@ public class HMCNode extends MultiLabelMetaLearner {
      * @return whether the node has children
      */
     public boolean hasChildren() {
-        if (children != null) {
-            return true;
-        } else {
-            return false;
-        }
+        return children != null;
     }
 
     /**

@@ -350,11 +350,7 @@ public class Evaluator {
         boolean isRuleBased = learner.isRuleBased();
         boolean isRegression;
         MultiLabelOutput output = learner.makePrediction(testData.getDataSet().instance(0));
-        if (output.hasPvalues()) {
-            isRegression = true;
-        } else {
-            isRegression = false;
-        }
+        isRegression = output.hasPvalues();
 
         String clusWorkingDir = learner.getClusWorkingDir();
         String datasetName = learner.getDatasetName();
@@ -420,11 +416,7 @@ public class Evaluator {
                     if (isRegression) {
                         trueValues[j] = Double.parseDouble(pred);
                     } else {
-                        if (Double.parseDouble(pred) > 0.5) {
-                            trueLabels[j] = true;
-                        } else {
-                            trueLabels[j] = false;
-                        }
+                        trueLabels[j] = Double.parseDouble(pred) > 0.5;
                     }
                 }
                 // collect predicted values

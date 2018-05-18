@@ -68,8 +68,7 @@ public class ExampleBasedFMeasureOptimizer extends MultiLabelMetaLearner {
     }
 
     @Override
-    protected MultiLabelOutput makePredictionInternal(Instance instance) throws Exception,
-            InvalidDataException {
+    protected MultiLabelOutput makePredictionInternal(Instance instance) throws Exception {
         MultiLabelOutput mlo = baseLearner.makePrediction(instance);
         double[] marginals = mlo.getConfidences();
         boolean[] bipartition = bipartitionFromMarginals(marginals);

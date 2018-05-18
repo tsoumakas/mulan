@@ -106,9 +106,8 @@ public class LabelPowersetTransformation implements Serializable {
      * @param instance     the instance to be transformed
      * @param labelIndices the labels to remove.
      * @return tranformed instance
-     * @throws Exception Potential exception thrown. To be handled in an upper level.
      */
-    public Instance transformInstance(Instance instance, int[] labelIndices) throws Exception {
+    public Instance transformInstance(Instance instance, int[] labelIndices) {
         Instance transformedInstance = RemoveAllLabels.transformInstance(instance, labelIndices);
         transformedInstance.setDataset(null);
         transformedInstance.insertAttributeAt(transformedInstance.numAttributes());

@@ -102,9 +102,8 @@ public class MulanJavadoc {
     /**
      * Recursively visit all files
      *
-     * @throws java.lang.Exception if failed
      */
-    public static void traverse() throws Exception {
+    public static void traverse() {
         recursiveTraversal(originalDir);
     }
 
@@ -112,9 +111,8 @@ public class MulanJavadoc {
      * Recursively visit all files
      *
      * @param fileObject the path of the file or directory
-     * @throws java.lang.Exception if failed
      */
-    public static void recursiveTraversal(File fileObject) throws Exception {
+    public static void recursiveTraversal(File fileObject) {
         if (fileObject.isDirectory()) {
             //System.out.println(fileObject.getName());
             File allFiles[] = fileObject.listFiles();

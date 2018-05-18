@@ -43,5 +43,5 @@ public interface ModelUpdateRule {
      * @return the error measure of the model response for given input pattern
      * and specified true output.
      */
-    public double process(DataPair example, Map<String, Object> params);
+    double process(DataPair example, Map<String, Object> params);
 }

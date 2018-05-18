@@ -157,10 +157,8 @@ public class ColumnSubsetSelection implements Serializable {
                 assert (closest_match != -1);
 
                 // see if column was selected; if not, add it
-                if (!sampledIndiceSet.contains((Object) closest_match)) {
-                    sampledIndiceSet.add((Object) closest_match);
-                    //System.out.println("DEBUG(CSSP): Added column " + closest_match + " to the sampled column set!");
-                }
+                //System.out.println("DEBUG(CSSP): Added column " + closest_match + " to the sampled column set!");
+                sampledIndiceSet.add(closest_match);
 
                 sampling_count += 1;
             }
@@ -173,7 +171,7 @@ public class ColumnSubsetSelection implements Serializable {
             // compute all **PHYSICAL** (not VIRTUAL) indices of label columns for CSSP to remove
             int idx = 0;
             for (int i = 0; i < labelIndices.length; i++) {
-                if (!sampledIndiceSet.contains((Object) i)) {
+                if (!sampledIndiceSet.contains(i)) {
                     indicesToRemove[idx] = indices[i];
                     idx += 1;
                 }
@@ -183,7 +181,7 @@ public class ColumnSubsetSelection implements Serializable {
             int[] selectedIndicesObj = indicesToRemove.clone();
             selectedIndicesInt = new int[selectedIndicesObj.length];
             for (int i = 0; i < selectedIndicesObj.length; i++) {
-                selectedIndicesInt[i] = (int) selectedIndicesObj[i];
+                selectedIndicesInt[i] = selectedIndicesObj[i];
             }
 
             // compute Moore-Penrose pseudo-inverse matrix of the column-reduced label indicator matrix
@@ -221,7 +219,7 @@ public class ColumnSubsetSelection implements Serializable {
                 // replicate data from ALL columns that WOULD not be removed by CSSP        	
                 for (int j = 0; j < matC.getColumnDimension(); j++) {
                     // get label indice
-                    int corrIdx = (int) indicesToKeep.get(j);
+                    int corrIdx = indicesToKeep.get(j);
 
                     // update matC
                     matC.set(i, j, Double.parseDouble(instance.toString(corrIdx)));

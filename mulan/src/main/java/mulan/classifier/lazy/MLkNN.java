@@ -252,7 +252,7 @@ public class MLkNN extends MultiLabelKNN {
                 predictions[i] = false;
             } else {
                 Random rnd = new Random();
-                predictions[i] = (rnd.nextInt(2) == 1) ? true : false;
+                predictions[i] = rnd.nextInt(2) == 1;
             }
             // ranking function
             confidences[i] = Prob_in / (Prob_in + Prob_out);

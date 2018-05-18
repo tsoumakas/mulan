@@ -38,5 +38,5 @@ public interface MultiClassTransformation {
      * @return a single-label multi-class dataset
      * @throws java.lang.Exception Potential exception thrown. To be handled in an upper level.
      */
-    public Instances transformInstances(MultiLabelInstances dataSet) throws Exception;
+    Instances transformInstances(MultiLabelInstances dataSet) throws Exception;
 }

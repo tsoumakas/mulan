@@ -185,8 +185,7 @@ public class EnsembleOfClassifierChains extends TransformationBasedMultiLabelLea
     }
 
     @Override
-    protected MultiLabelOutput makePredictionInternal(Instance instance) throws Exception,
-            InvalidDataException {
+    protected MultiLabelOutput makePredictionInternal(Instance instance) throws Exception {
 
         int[] sumVotes = new int[numLabels];
         double[] sumConf = new double[numLabels];

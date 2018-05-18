@@ -6,6 +6,7 @@ import weka.classifiers.AbstractClassifier;
 import weka.classifiers.Classifier;
 import weka.core.Instance;
 import weka.core.Instances;
+import weka.filters.Filter;
 import weka.filters.supervised.instance.SpreadSubsampleWithMissClassValues;
 
 
@@ -89,7 +90,7 @@ public class BinaryRelevanceUnderSampling extends BinaryRelevance {
             ss.setRandomSeed(seed);
             ss.setDistributionSpread(d);
             ss.setInputFormat(shell);
-            Instances sshell = ss.useFilter(shell, ss);
+            Instances sshell = Filter.useFilter(shell, ss);
 
 
             ensemble[i].buildClassifier(sshell);

@@ -106,7 +106,7 @@ public abstract class MultiLabelLearnerBase
     }
 
     public final MultiLabelOutput makePrediction(Instance instance)
-            throws Exception, InvalidDataException, ModelInitializationException {
+            throws Exception {
         if (instance == null) {
             throw new ArgumentNullException("instance");
         }

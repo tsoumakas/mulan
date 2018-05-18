@@ -69,7 +69,7 @@ public interface Measure {
      * @return a deep copy of the measure
      * @throws Exception if an error occurs while making copy of the measure.
      */
-    public Measure makeCopy() throws Exception;
+    Measure makeCopy() throws Exception;
 
     /**
      * Resets the cumulated measure value, so the process of computation can be started
@@ -82,5 +82,5 @@ public interface Measure {
      *
      * @return true if missing values are handled, false otherwise
      */
-    public boolean handlesMissingValues();
+    boolean handlesMissingValues();
 }

@@ -192,7 +192,7 @@ public class RandomLinearCombinationsNormalize extends TransformationBasedMultiT
         coefficientsMatrix = new Matrix(Arrays.copyOfRange(coefficients, 0, numModels));
     }
 
-    protected MultiLabelOutput makePredictionInternal(Instance instance) throws Exception, InvalidDataException {
+    protected MultiLabelOutput makePredictionInternal(Instance instance) throws Exception {
 
         Instances dataset = instance.dataset();
         dataset.setClassIndex(dataset.numAttributes() - 1);

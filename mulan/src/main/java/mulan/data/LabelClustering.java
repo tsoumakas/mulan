@@ -33,6 +33,6 @@ public interface LabelClustering {
      * @param trainingSet a set of training examples
      * @return a label set partitioning
      */
-    public int[][] determineClusters(MultiLabelInstances trainingSet);
+    int[][] determineClusters(MultiLabelInstances trainingSet);
 
 }

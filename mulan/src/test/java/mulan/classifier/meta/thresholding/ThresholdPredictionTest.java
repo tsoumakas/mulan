@@ -23,7 +23,7 @@ import weka.classifiers.trees.M5P;
 public class ThresholdPredictionTest extends MultiLabelMetaLearnerTest {
 
     @Override
-    public void setUp() throws Exception {
+    public void setUp() {
         learner = new ThresholdPrediction(new CalibratedLabelRanking(new J48()), new M5P(), Meta.MetaData.CONTENT, 3);
     }
 }

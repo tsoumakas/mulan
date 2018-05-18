@@ -90,10 +90,10 @@ public class SelectBasedOnFrequency extends MultiClassTransformationBase {
                 boolean test = false;
                 switch (type) {
                     case MIN:
-                        test = labelOccurance[counter] < value ? true : false;
+                        test = labelOccurance[counter] < value;
                         break;
                     case MAX:
-                        test = labelOccurance[counter] > value ? true : false;
+                        test = labelOccurance[counter] > value;
                         break;
                 }
 

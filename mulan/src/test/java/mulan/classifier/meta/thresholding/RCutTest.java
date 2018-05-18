@@ -23,7 +23,7 @@ import weka.classifiers.trees.J48;
 public class RCutTest extends MultiLabelMetaLearnerTest {
 
     @Override
-    public void setUp() throws Exception {
+    public void setUp() {
         learner = new RCut(new CalibratedLabelRanking(new J48()), new HammingLoss(), 3);
     }
 }

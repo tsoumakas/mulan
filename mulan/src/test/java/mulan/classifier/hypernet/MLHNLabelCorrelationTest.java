@@ -17,7 +17,7 @@ public class MLHNLabelCorrelationTest extends MultiLabelLearnerTestBase {
     }
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         MultiLabelLearner baseLeaner = new BinaryRelevance(new J48());
         MultiLabelHyperNetWorkType type = MultiLabelHyperNetWorkType.MLHN_GC;
         learner = new MLHNLabelCorrelation(baseLeaner, type);

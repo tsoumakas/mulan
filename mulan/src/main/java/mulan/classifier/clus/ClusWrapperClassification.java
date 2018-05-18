@@ -188,8 +188,7 @@ public class ClusWrapperClassification extends MultiLabelLearnerBase {
      * measures.
      */
     @Override
-    protected MultiLabelOutput makePredictionInternal(Instance instance) throws Exception,
-            InvalidDataException {
+    protected MultiLabelOutput makePredictionInternal(Instance instance) throws Exception {
         double[] confidences = new double[numLabels];
         return new MultiLabelOutput(confidences, 0.5);
 

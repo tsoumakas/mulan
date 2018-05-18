@@ -82,7 +82,7 @@ public class IncludeLabelsClassifier extends TransformationBasedMultiLabelLearne
             //debug(temp.toString());
             confidences[i] = temp[transformed.classAttribute().indexOfValue("1")];
             //debug("" + confidences[i]);
-            bipartition[i] = temp[transformed.classAttribute().indexOfValue("1")] >= temp[transformed.classAttribute().indexOfValue("0")] ? true : false;
+            bipartition[i] = temp[transformed.classAttribute().indexOfValue("1")] >= temp[transformed.classAttribute().indexOfValue("0")];
             //debug("" + bipartition[i]);
         }
 

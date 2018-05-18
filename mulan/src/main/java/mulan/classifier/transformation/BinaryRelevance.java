@@ -93,7 +93,7 @@ public class BinaryRelevance extends TransformationBasedMultiLabelLearner {
                 int maxIndex = (distribution[0] > distribution[1]) ? 0 : 1;
 
                 // Ensure correct predictions both for class values {0,1} and {1,0}
-                bipartition[counter] = (maxIndex == 1) ? true : false;
+                bipartition[counter] = maxIndex == 1;
 
                 // The confidence of the label being equal to 1
                 confidences[counter] = distribution[1];

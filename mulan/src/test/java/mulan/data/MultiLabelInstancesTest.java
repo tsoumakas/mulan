@@ -113,7 +113,7 @@ public class MultiLabelInstancesTest {
     }
 
     @Test
-    public void testConstructor() throws InvalidDataFormatException {
+    public void testConstructor() {
         Assert.assertNotNull(mlData);
         Assert.assertEquals(NUM_LABELS, mlData.getNumLabels());
         Assert.assertNotNull(mlData.getLabelsMetaData());

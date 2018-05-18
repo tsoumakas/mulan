@@ -152,7 +152,7 @@ public class DataPair {
         if (outputBoolean == null) {
             outputBoolean = new boolean[output.length];
             for (int i = 0; i < output.length; i++) {
-                outputBoolean[i] = (output[i] == 1) ? true : false;
+                outputBoolean[i] = output[i] == 1;
             }
         }
 

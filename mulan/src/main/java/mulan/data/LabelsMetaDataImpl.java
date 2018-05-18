@@ -89,7 +89,7 @@ public class LabelsMetaDataImpl implements LabelsMetaData, Serializable, Externa
     }
 
     public boolean isHierarchy() {
-        return (allLabelNodes.size() == rootLabelNodes.size()) ? false : true;
+        return allLabelNodes.size() != rootLabelNodes.size();
     }
 
     public int getNumLabels() {
@@ -133,7 +133,7 @@ public class LabelsMetaDataImpl implements LabelsMetaData, Serializable, Externa
         LabelNode labelNode = allLabelNodes.get(labelName);
 
         int result = processNodeIndex(labelNode, IndexingAction.Remove);
-        if (result > 0 && rootLabelNodes.contains(labelNode)) {
+        if (result > 0) {
             rootLabelNodes.remove(labelNode);
         }
 

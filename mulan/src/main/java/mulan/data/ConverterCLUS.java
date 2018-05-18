@@ -49,9 +49,8 @@ public class ConverterCLUS {
      * @param sourceFilename the source file name
      * @param arffFilename   the converted arff name
      * @param xmlFilename    the xml name
-     * @throws java.lang.Exception Potential exception thrown. To be handled in an upper level.
      */
-    public static void convert(String sourceFilename, String arffFilename, String xmlFilename) throws Exception {
+    public static void convert(String sourceFilename, String arffFilename, String xmlFilename) {
         String line;
         try {
             BufferedReader brInput = new BufferedReader(new FileReader(sourceFilename));
@@ -100,7 +99,7 @@ public class ConverterCLUS {
                         String[] tokens = line.split(",");
                         double[] values = new double[attInfo.size()];
                         for (int i = 0; i < numAttributes; i++) {
-                            Attribute att = (Attribute) attInfo.get(i);
+                            Attribute att = attInfo.get(i);
                             if (att.isNumeric()) {
                                 values[i] = Double.parseDouble(tokens[i]);
                             } else {

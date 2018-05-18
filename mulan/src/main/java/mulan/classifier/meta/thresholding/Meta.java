@@ -229,6 +229,6 @@ public abstract class Meta extends MultiLabelMetaLearner {
     }
 
     public enum MetaData {
-        CONTENT, SCORES, RANKS;
+        CONTENT, SCORES, RANKS
     }
 }

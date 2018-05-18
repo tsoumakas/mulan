@@ -41,7 +41,6 @@ public class PrunedSets extends LabelsetPruning {
      */
     private Strategy strategy;
 
-    ;
     /**
      * parameter of strategy for processing infrequent labelsets
      */
@@ -209,6 +208,6 @@ public class PrunedSets extends LabelsetPruning {
         /**
          * Strategy B: keep all subsets of size greater than b
          */
-        B;
+        B
     }
 }

@@ -10,6 +10,7 @@ import weka.classifiers.AbstractClassifier;
 import weka.classifiers.Classifier;
 import weka.core.Instance;
 import weka.core.Instances;
+import weka.filters.Filter;
 import weka.filters.supervised.instance.SpreadSubsampleWithMissClassValues;
 
 import java.util.ArrayList;
@@ -135,7 +136,7 @@ public class COCOA extends TransformationBasedMultiLabelLearner {
             ss.setInputFormat(ins);
             ss.setRandomSeed(seed);
             ss.setDistributionSpread(1.0);
-            result = ss.useFilter(ins, ss);
+            result = Filter.useFilter(ins, ss);
 
         } else {
             result = new Instances(ins, 0);
@@ -146,7 +147,7 @@ public class COCOA extends TransformationBasedMultiLabelLearner {
                 ss.setInputFormat(ins);
                 ss.setRandomSeed(seed);
                 ss.setDistributionSpread(d1);  //d1>=1.0
-                result1 = ss.useFilter(result1, ss);
+                result1 = Filter.useFilter(result1, ss);
 
                 for (Instance data : result1) {
                     if ((int) data.classValue() != midi) {
@@ -165,7 +166,7 @@ public class COCOA extends TransformationBasedMultiLabelLearner {
                 } else {
                     ss.setDistributionSpread(d2);  //d2>=1.0
                 }
-                result2 = ss.useFilter(result2, ss);
+                result2 = Filter.useFilter(result2, ss);
 
                 for (Instance data : result2) {
                     if ((int) data.classValue() == midi) {
@@ -263,7 +264,7 @@ public class COCOA extends TransformationBasedMultiLabelLearner {
     }
 
     //only use triClassifiers to predict training set or not
-    private double[] makePredictionforThreshold(Instance instance) throws InvalidDataException, ModelInitializationException, Exception {
+    private double[] makePredictionforThreshold(Instance instance) throws Exception {
         double[] confidences = new double[numLabels];
         Arrays.fill(confidences, 0);
 
@@ -285,17 +286,13 @@ public class COCOA extends TransformationBasedMultiLabelLearner {
     }
 
     @Override
-    protected MultiLabelOutput makePredictionInternal(Instance instance) throws Exception, InvalidDataException {
+    protected MultiLabelOutput makePredictionInternal(Instance instance) throws Exception {
         double confidences[] = makePredictionforThreshold(instance);
         boolean bipartition[] = new boolean[numLabels];
 
 
         for (int j = 0; j < numLabels; j++) {
-            if (confidences[j] > thresholds[j]) {
-                bipartition[j] = true;
-            } else {
-                bipartition[j] = false;
-            }
+            bipartition[j] = confidences[j] > thresholds[j];
         }
 
         return new MultiLabelOutput(bipartition, confidences);

@@ -337,7 +337,7 @@ public class MMPLearner extends MultiLabelLearnerBase {
                 nomToBinFilter = new NominalToBinary();
                 try {
                     nomToBinFilter = new NominalToBinary();
-                    nomToBinFilter.setAttributeIndices(nominalAttrRange.toString());
+                    nomToBinFilter.setAttributeIndices(nominalAttrRange);
                     nomToBinFilter.setInputFormat(dataSet);
                 } catch (Exception exception) {
                     nomToBinFilter = null;

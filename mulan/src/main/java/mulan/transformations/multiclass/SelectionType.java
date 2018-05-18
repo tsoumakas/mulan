@@ -33,5 +33,5 @@ public enum SelectionType {
     /**
      * Select the most frequent label
      */
-    MAX;
+    MAX
 }

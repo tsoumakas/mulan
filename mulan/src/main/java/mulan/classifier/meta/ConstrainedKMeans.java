@@ -328,10 +328,9 @@ public class ConstrainedKMeans extends RandomizableClusterer implements NumberOf
      * @param instance the instance to be assigned to a cluster
      * @return the number of the assigned cluster as an interger if the class is
      * enumerated, otherwise the predicted value
-     * @throws Exception if instance could not be classified successfully
      */
     @Override
-    public int clusterInstance(Instance instance) throws Exception {
+    public int clusterInstance(Instance instance) {
         m_ReplaceMissingFilter.input(instance);
         m_ReplaceMissingFilter.batchFinished();
         Instance inst = m_ReplaceMissingFilter.output();
@@ -481,10 +480,8 @@ public class ConstrainedKMeans extends RandomizableClusterer implements NumberOf
      * Returns the number of clusters.
      *
      * @return the number of clusters generated for a training dataset.
-     * @throws Exception if number of clusters could not be returned
-     *                   successfully
      */
-    public int numberOfClusters() throws Exception {
+    public int numberOfClusters() {
         return m_NumClusters;
     }
 
