@@ -16,7 +16,9 @@
 package mulan.evaluation.measure;
 
 import weka.classifiers.evaluation.NominalPrediction;
-import weka.core.FastVector;
+import weka.classifiers.evaluation.Prediction;
+
+import java.util.ArrayList;
 
 /**
  * Implementation of the label-based macro precision measure.
@@ -33,11 +35,11 @@ public abstract class LabelBasedAUC extends ConfidenceMeasureBase {
     /**
      * The predictions for each label
      */
-    protected FastVector[] m_Predictions;
+    protected ArrayList<Prediction>[] m_Predictions;
     /**
      * The predictions for all labels
      */
-    protected FastVector all_Predictions;
+    protected ArrayList<Prediction> all_Predictions;
 
     /**
      * Creates a new instance of this class
@@ -46,19 +48,19 @@ public abstract class LabelBasedAUC extends ConfidenceMeasureBase {
      */
     public LabelBasedAUC(int numOfLabels) {
         this.numOfLabels = numOfLabels;
-        m_Predictions = new FastVector[numOfLabels];
+        m_Predictions = new ArrayList[numOfLabels];
         for (int labelIndex = 0; labelIndex < numOfLabels; labelIndex++) {
-            m_Predictions[labelIndex] = new FastVector();
+            m_Predictions[labelIndex] = new ArrayList<>();
         }
-        all_Predictions = new FastVector();
+        all_Predictions = new ArrayList<>();
     }
 
     @Override
     public void reset() {
         for (int labelIndex = 0; labelIndex < numOfLabels; labelIndex++) {
-            m_Predictions[labelIndex] = new FastVector();
+            m_Predictions[labelIndex] = new ArrayList<>();
         }
-        all_Predictions = new FastVector();
+        all_Predictions = new ArrayList<>();
     }
 
     @Override
@@ -82,8 +84,8 @@ public abstract class LabelBasedAUC extends ConfidenceMeasureBase {
             dist[1] = confidences[labelIndex];
             dist[0] = 1 - dist[1];
 
-            m_Predictions[labelIndex].addElement(new NominalPrediction(classValue, dist, 1));
-            all_Predictions.addElement(new NominalPrediction(classValue, dist, 1));
+            m_Predictions[labelIndex].add(new NominalPrediction(classValue, dist, 1));
+            all_Predictions.add(new NominalPrediction(classValue, dist, 1));
         }
     }
 }
