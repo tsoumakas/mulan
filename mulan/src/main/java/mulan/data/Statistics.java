@@ -20,85 +20,107 @@
  */
 package mulan.data;
 
+import weka.core.*;
+import weka.core.TechnicalInformation.Field;
+import weka.core.TechnicalInformation.Type;
+import weka.filters.Filter;
+import weka.filters.unsupervised.attribute.Remove;
+
 import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
-import weka.core.TechnicalInformation.Field;
-import weka.core.TechnicalInformation.Type;
-import weka.core.*;
-import weka.filters.Filter;
-import weka.filters.unsupervised.attribute.Remove;
 
 /**
-<!-- globalinfo-start -->
-* Class for calculating statistics of a multi-label dataset. For more information, see<br>
-* <br>
-* Tsoumakas, Grigorios, Katakis, Ioannis, Vlahavas, Ioannis: Mining Multi-Label Data. In Maimon, Oded and Rokach, Lior, editors, Data Mining and Knowledge Discovery Handbook, 667-685, 2010.
-* <br>
-<!-- globalinfo-end -->
- * 
-<!-- technical-bibtex-start -->
-* BibTeX:
-* <pre>
-* &#64;incollection{Tsoumakas2010,
-*    author = {Tsoumakas, Grigorios and Katakis, Ioannis and Vlahavas, Ioannis},
-*    booktitle = {Data Mining and Knowledge Discovery Handbook},
-*    edition = {2nd},
-*    editor = {Maimon, Oded and Rokach, Lior},
-*    pages = {667-685},
-*    publisher = {Springer},
-*    title = {Mining Multi-Label Data},
-*    year = {2010}
-* }
-* </pre>
-* <br>
-<!-- technical-bibtex-end -->
+ * <!-- globalinfo-start -->
+ * Class for calculating statistics of a multi-label dataset. For more information, see<br>
+ * <br>
+ * Tsoumakas, Grigorios, Katakis, Ioannis, Vlahavas, Ioannis: Mining Multi-Label Data. In Maimon, Oded and Rokach, Lior, editors, Data Mining and Knowledge Discovery Handbook, 667-685, 2010.
+ * <br>
+ * <!-- globalinfo-end -->
+ * <p>
+ * <!-- technical-bibtex-start -->
+ * BibTeX:
+ * <pre>
+ * &#64;incollection{Tsoumakas2010,
+ *    author = {Tsoumakas, Grigorios and Katakis, Ioannis and Vlahavas, Ioannis},
+ *    booktitle = {Data Mining and Knowledge Discovery Handbook},
+ *    edition = {2nd},
+ *    editor = {Maimon, Oded and Rokach, Lior},
+ *    pages = {667-685},
+ *    publisher = {Springer},
+ *    title = {Mining Multi-Label Data},
+ *    year = {2010}
+ * }
+ * </pre>
+ * <br>
+ * <!-- technical-bibtex-end -->
  *
- *
- * @author Grigorios Tsoumakas 
+ * @author Grigorios Tsoumakas
  * @author Robert Friberg
- * @version 2012.02.06 
+ * @version 2012.02.06
  */
 public class Statistics implements Serializable, TechnicalInformationHandler {
 
     private static final long serialVersionUID = 1206845794397561633L;
-    /** the number of instances */
-    private int numInstances;
-    /** the number of predictive attributes */
-    private int numPredictors = 0;
-    /** the number of nominal predictive attributes */
-    private int numNominal = 0;
-    /** the number of numeric attributes */
-    private int numNumeric = 0;
-    /** the number of labels */
-    private int numLabels;
-    /** the label density  */
-    private double labelDensity;
-    /** the label cardinality */
-    private double labelCardinality;
-    /** percentage of instances per label */
-    private double[] examplesPerLabel;
-    /** number of examples per cardinality, <br><br>
-     *  note that this array has size equal to the number of elements plus one, <br>
-     *  because the first element is the number of examples for cardinality=0  */
-    private double[] cardinalityDistribution;
-    /** labelsets and their frequency */
-    private HashMap<LabelSet, Integer> labelsets;
-    /** the array holding the phi correlations*/
+    /**
+     * the array holding the phi correlations
+     */
     double[][] phi;
+    /**
+     * the number of instances
+     */
+    private int numInstances;
+    /**
+     * the number of predictive attributes
+     */
+    private int numPredictors = 0;
+    /**
+     * the number of nominal predictive attributes
+     */
+    private int numNominal = 0;
+    /**
+     * the number of numeric attributes
+     */
+    private int numNumeric = 0;
+    /**
+     * the number of labels
+     */
+    private int numLabels;
+    /**
+     * the label density
+     */
+    private double labelDensity;
+    /**
+     * the label cardinality
+     */
+    private double labelCardinality;
+    /**
+     * percentage of instances per label
+     */
+    private double[] examplesPerLabel;
+    /**
+     * number of examples per cardinality, <br><br>
+     * note that this array has size equal to the number of elements plus one, <br>
+     * because the first element is the number of examples for cardinality=0
+     */
+    private double[] cardinalityDistribution;
+    /**
+     * labelsets and their frequency
+     */
+    private HashMap<LabelSet, Integer> labelsets;
 
-    /** 
+    /**
      * returns the HashMap containing the distinct labelsets and their frequencies
-     * 
+     *
      * @return HashMap with distinct labelsest and their frequencies
      */
     public HashMap<LabelSet, Integer> labelCombCount() {
         return labelsets;
     }
 
-    /** 
+    /**
      * This method calculates and prints a matrix with the coocurrences of <br>
      * pairs of labels
      *
@@ -135,10 +157,10 @@ public class Statistics implements Serializable, TechnicalInformationHandler {
         return coocurrenceMatrix;
     }
 
-    /** 
+    /**
      * calculates various multilabel statistics, such as label cardinality, <br>
      * label density and the set of distinct labels along with their frequency
-     * 
+     *
      * @param mlData a multi-label dataset
      */
     public void calculateStats(MultiLabelInstances mlData) {
@@ -277,7 +299,7 @@ public class Statistics implements Serializable, TechnicalInformationHandler {
             for (int j = 0; j < numLabels; j++) {
                 System.out.print(myFormatter.format(phi[i][j]) + " ");
             }
-            System.out.println("");
+            System.out.println();
         }
     }
 
@@ -303,7 +325,7 @@ public class Statistics implements Serializable, TechnicalInformationHandler {
      * between -bound &lt;= phi &lt;= bound
      *
      * @param labelIndex the label index under examination
-     * @param bound the bound which limits the phi coefficient values 
+     * @param bound      the bound which limits the phi coefficient values
      * @return the indices of the labels whose phi coefficient values lie between -bound &lt;= phi &lt;= bound
      */
     public int[] uncorrelatedLabels(int labelIndex, double bound) {
@@ -327,7 +349,7 @@ public class Statistics implements Serializable, TechnicalInformationHandler {
      * the number of labels that will be returned.
      *
      * @param labelIndex the label index under examination
-     * @param k the number of labels to be returned
+     * @param k          the number of labels to be returned
      * @return the indices of the k most correlated labels
      */
     public int[] topPhiCorrelatedLabels(int labelIndex, int k) {
@@ -357,8 +379,7 @@ public class Statistics implements Serializable, TechnicalInformationHandler {
      * correlate to the rest of the labels with correlation higher than the
      * specified phi value;
      *
-     * @param step
-     *            the phi value increment step
+     * @param step the phi value increment step
      */
     public void printPhiDiagram(double step) {
         String pattern = "0.00";
@@ -378,8 +399,8 @@ public class Statistics implements Serializable, TechnicalInformationHandler {
         }
     }
 
-    /** 
-     * returns various multilabel statistics in textual representation 
+    /**
+     * returns various multilabel statistics in textual representation
      */
     @Override
     public String toString() {
@@ -415,45 +436,45 @@ public class Statistics implements Serializable, TechnicalInformationHandler {
         return sb.toString();
     }
 
-    /** 
+    /**
      * returns the prior probabilities of the labels
-     * 
+     *
      * @return array of prior probabilities of labels
      */
     public double[] priors() {
         return examplesPerLabel;
     }
 
-    /** 
+    /**
      * returns the label cardinality of the dataset
-     * 
+     *
      * @return label cardinality
      */
     public double cardinality() {
         return labelCardinality;
     }
 
-    /** 
+    /**
      * returns the label density of the dataset
-     * 
+     *
      * @return label density
      */
     public double density() {
         return labelDensity;
     }
 
-    /** 
+    /**
      * returns a set with the distinct labelsets of the dataset
-     * 
+     *
      * @return set of distinct labelsets
      */
     public Set<LabelSet> labelSets() {
         return labelsets.keySet();
     }
 
-    /** 
+    /**
      * returns the frequency of a labelset in the dataset
-     * 
+     *
      * @param x a labelset
      * @return the frequency of the given labelset
      */
@@ -480,12 +501,13 @@ public class Statistics implements Serializable, TechnicalInformationHandler {
         result.setValue(Field.YEAR, "2010");
         return result;
     }
-    
+
     /**
      * Returns a string describing this class.
      *
      * @return a description suitable for displaying in a future gui
-     */    public String globalInfo() {
+     */
+    public String globalInfo() {
         return "Class for calculating statistics of a multi-label dataset. "
                 + "For more information, see\n\n"
                 + getTechnicalInformation().toString();

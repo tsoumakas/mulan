@@ -23,9 +23,9 @@ package mulan.data;
 import mulan.core.MulanException;
 
 /**
- * Exception is raised by {@link LabelsBuilder} to indicate an error when creating 
+ * Exception is raised by {@link LabelsBuilder} to indicate an error when creating
  * {@link LabelsMetaDataImpl} instance form specified source.
- * 
+ *
  * @author Jozef Vilcek
  * @see LabelsBuilder
  */
@@ -35,6 +35,7 @@ public class LabelsBuilderException extends MulanException {
 
     /**
      * Creates a new {@link LabelsBuilderException} instance.
+     *
      * @param message the detail message
      */
     public LabelsBuilderException(String message) {
@@ -46,7 +47,7 @@ public class LabelsBuilderException extends MulanException {
      * detail message and nested exception.
      *
      * @param message the detail message
-     * @param cause the nested exception
+     * @param cause   the nested exception
      */
     public LabelsBuilderException(String message, Throwable cause) {
         super(message, cause);

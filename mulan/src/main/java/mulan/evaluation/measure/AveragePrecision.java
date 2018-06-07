@@ -22,7 +22,7 @@ import java.util.List;
  * Implementation of the average precision measure. It evaluates the average
  * fraction of labels ranked above a particular relevant label, that are
  * actually relevant.
- * 
+ *
  * @author Jozef Vilcek
  * @author Grigorios Tsoumakas
  * @version 2010.11.05

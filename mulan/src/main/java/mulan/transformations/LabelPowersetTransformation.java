@@ -15,15 +15,15 @@
  */
 package mulan.transformations;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashSet;
-
 import mulan.data.LabelSet;
 import mulan.data.MultiLabelInstances;
 import weka.core.Attribute;
 import weka.core.Instance;
 import weka.core.Instances;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashSet;
 
 /**
  * Class that implement the Label powerset (LP) transformation method
@@ -38,7 +38,7 @@ public class LabelPowersetTransformation implements Serializable {
 
     /**
      * Returns the format of the transformed instances
-     * 
+     *
      * @return the format of the transformed instances
      */
     public Instances getTransformedFormat() {
@@ -46,7 +46,6 @@ public class LabelPowersetTransformation implements Serializable {
     }
 
     /**
-     * 
      * @param mlData multi-label data
      * @return the transformed instances
      * @throws Exception Potential exception thrown. To be handled in an upper level.
@@ -79,7 +78,7 @@ public class LabelPowersetTransformation implements Serializable {
         for (LabelSet subset : labelSets) {
             classValues.add(subset.toBitString());
         }
-        Attribute newClass = new Attribute("LP_Class_" + Integer.toHexString((int) Math.random()*Integer.MAX_VALUE), classValues);
+        Attribute newClass = new Attribute("LP_Class_" + Integer.toHexString((int) Math.random() * Integer.MAX_VALUE), classValues);
 
         // remove all labels
         newData = RemoveAllLabels.transformInstances(data, labelIndices);
@@ -104,13 +103,11 @@ public class LabelPowersetTransformation implements Serializable {
     }
 
     /**
-     * 
-     * @param instance the instance to be transformed
+     * @param instance     the instance to be transformed
      * @param labelIndices the labels to remove.
      * @return tranformed instance
-     * @throws Exception Potential exception thrown. To be handled in an upper level.
      */
-    public Instance transformInstance(Instance instance, int[] labelIndices) throws Exception {
+    public Instance transformInstance(Instance instance, int[] labelIndices) {
         Instance transformedInstance = RemoveAllLabels.transformInstance(instance, labelIndices);
         transformedInstance.setDataset(null);
         transformedInstance.insertAttributeAt(transformedInstance.numAttributes());

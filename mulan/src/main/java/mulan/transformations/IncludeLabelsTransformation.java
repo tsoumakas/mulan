@@ -15,12 +15,13 @@
  */
 package mulan.transformations;
 
-import java.io.Serializable;
-import java.util.ArrayList;
 import mulan.data.MultiLabelInstances;
 import weka.core.Attribute;
 import weka.core.Instance;
 import weka.core.Instances;
+
+import java.io.Serializable;
+import java.util.ArrayList;
 
 /**
  * Class that implements the PT6 transformation
@@ -34,7 +35,6 @@ public class IncludeLabelsTransformation implements Serializable {
     private int[] labelIndices;
 
     /**
-     *
      * @param mlData multi-label data
      * @return transformed instances
      * @throws Exception Potential exception thrown. To be handled in an upper level.
@@ -73,7 +73,7 @@ public class IncludeLabelsTransformation implements Serializable {
                 temp.insertAttributeAt(temp.numAttributes());
                 temp.insertAttributeAt(temp.numAttributes());
                 temp.setDataset(transformed);
-                temp.setValue(temp.numAttributes() - 2, (String) labelNames.get(labelCounter));
+                temp.setValue(temp.numAttributes() - 2, labelNames.get(labelCounter));
                 if (data.attribute(labelIndices[labelCounter]).value((int) data.instance(instanceIndex).value(labelIndices[labelCounter])).equals("1")) {
                     temp.setValue(temp.numAttributes() - 1, "1");
                 } else {
@@ -92,9 +92,8 @@ public class IncludeLabelsTransformation implements Serializable {
      *
      * @param instance an unlabeled instance
      * @return a transformed unlabeled instance
-     * @throws Exception Potential exception thrown. To be handled in an upper level.
      */
-    public Instance transformInstance(Instance instance) throws Exception {
+    public Instance transformInstance(Instance instance) {
         if (labelIndices == null) {
             System.out.println("Label Indices not set!!");
             return null;

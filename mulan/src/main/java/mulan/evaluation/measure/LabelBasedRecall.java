@@ -36,5 +36,5 @@ public abstract class LabelBasedRecall extends LabelBasedBipartitionMeasureBase 
     public double getIdealValue() {
         return 1;
     }
-    
+
 }

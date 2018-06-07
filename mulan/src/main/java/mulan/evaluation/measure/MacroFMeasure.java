@@ -36,7 +36,7 @@ public class MacroFMeasure extends LabelBasedFMeasure implements MacroAverageMea
      * Full constructor
      *
      * @param numOfLabels the number of labels
-     * @param beta controls the combination of precision and recall
+     * @param beta        controls the combination of precision and recall
      */
     public MacroFMeasure(int numOfLabels, double beta) {
         super(numOfLabels, beta);

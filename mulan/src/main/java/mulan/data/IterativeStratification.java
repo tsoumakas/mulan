@@ -20,14 +20,15 @@
  */
 package mulan.data;
 
-import java.util.Arrays;
-import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.TechnicalInformation;
 import weka.core.TechnicalInformationHandler;
+
+import java.util.Arrays;
+import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Class for stratifying data based on the iterative stratification method
@@ -39,23 +40,23 @@ import weka.core.TechnicalInformationHandler;
 public class IterativeStratification implements Stratification, TechnicalInformationHandler {
 
     private long seed;
-    
+
     /**
      * Default constructor
      */
     public IterativeStratification() {
         seed = 0;
     }
-    
+
     /**
      * Constructor setting a specific random seed
-     * 
+     *
      * @param seed Seed of the random generator.
      */
     public IterativeStratification(long seed) {
         this.seed = seed;
     }
-    
+
     /**
      * Returns an instance of a TechnicalInformation object, containing detailed
      * information about the technical background of this class, e.g., paper
@@ -84,21 +85,21 @@ public class IterativeStratification implements Stratification, TechnicalInforma
     public MultiLabelInstances[] stratify(MultiLabelInstances data, int folds) {
         MultiLabelInstances[] segments = new MultiLabelInstances[folds];
         double[] splitRatio = new double[folds];
-        Arrays.fill(splitRatio, 1.0/folds);
+        Arrays.fill(splitRatio, 1.0 / folds);
         Instances[] singleSegments = foldsCreation(data.getDataSet(), new Random(seed), splitRatio, data.getNumLabels(), data.getLabelIndices(), data.getNumInstances());
-        for (int i=0; i<folds; i++) {
+        for (int i = 0; i < folds; i++) {
             try {
                 segments[i] = new MultiLabelInstances(singleSegments[i], data.getLabelsMetaData());
             } catch (InvalidDataFormatException ex) {
                 Logger.getLogger(IterativeStratification.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        return segments;       
+        return segments;
     }
 
     private Instances[] foldsCreation(Instances workingSet, Random random,
-            double[] splitRatio, int numLabels, int[] labelIndices,
-            int totalNumberOfInstances) {
+                                      double[] splitRatio, int numLabels, int[] labelIndices,
+                                      int totalNumberOfInstances) {
         int numFolds = splitRatio.length;
         // The instances on the final folds
         Instances[] instancesOnSplits = new Instances[numFolds];
@@ -247,7 +248,7 @@ public class IterativeStratification implements Stratification, TechnicalInforma
      * Function that returns the number of examples per label in each fold
      */
     private int[] calculatingTheFrequencies(Instances dataSet, int numLabels,
-            int[] labelIndices) {
+                                            int[] labelIndices) {
         int[] vectorSumOfLabels = new int[numLabels];
         int numInstances = dataSet.numInstances();
         boolean[] trueLabels = new boolean[numLabels];
@@ -274,7 +275,7 @@ public class IterativeStratification implements Stratification, TechnicalInforma
      * fold.
      */
     private double[][] calculatingTheDesiredSplits(int[] frequenciesOnDataset,
-            double[] splitRatio, int numLabels, int totalNumberOfInstances) {
+                                                   double[] splitRatio, int numLabels, int totalNumberOfInstances) {
         double[][] desiredSplit = new double[splitRatio.length][numLabels + 1];
 
         for (int fold = 0; fold < splitRatio.length; fold++) {
@@ -319,7 +320,7 @@ public class IterativeStratification implements Stratification, TechnicalInforma
      * instances
      */
     private Instances[] takeTheInstancesOfTheLabel(Instances workingSet,
-            int numLabels, int[] labelIndices, int[] desiredLabel) {
+                                                   int numLabels, int[] labelIndices, int[] desiredLabel) {
 
         // In the returnedInstance in the [0] index is the filtered instances for the desired label 
         // while on the [1] index is the remaining workingSet returned
@@ -365,7 +366,7 @@ public class IterativeStratification implements Stratification, TechnicalInforma
      * the fold with the less number of instances.
      */
     private int[] findThePossibleSpit(double[][] desiredSplit, int lab,
-            int numFolds) {
+                                      int numFolds) {
         int[] possibleSplits = new int[numFolds + 1];
 
         // Firstly Check which fold has the highest nonnegative value on the label lab
@@ -413,7 +414,7 @@ public class IterativeStratification implements Stratification, TechnicalInforma
      * inserted into a fold
      */
     private double[] updateDesiredSplitStatistics(double[] desiredSplit,
-            boolean[] trueLabels) {
+                                                  boolean[] trueLabels) {
         double[] returnedArray = new double[desiredSplit.length];
 
         for (int lab = 0; lab < desiredSplit.length - 1; lab++) {
@@ -462,8 +463,8 @@ public class IterativeStratification implements Stratification, TechnicalInforma
         possibleSplits[0] = count;
         return possibleSplits;
     }
-    
-    
+
+
     private boolean[] getTrueLabels(Instance instance, int numLabels, int[] labelIndices) {
 
         boolean[] trueLabels = new boolean[numLabels];
@@ -475,5 +476,5 @@ public class IterativeStratification implements Stratification, TechnicalInforma
 
         return trueLabels;
     }
-    
+
 }

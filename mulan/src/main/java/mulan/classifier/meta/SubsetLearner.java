@@ -15,11 +15,6 @@
  */
 package mulan.classifier.meta;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import mulan.classifier.MultiLabelLearner;
 import mulan.classifier.MultiLabelOutput;
 import mulan.classifier.transformation.BinaryRelevance;
@@ -40,8 +35,14 @@ import weka.core.TechnicalInformation;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.Remove;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+
 /**
- <!-- globalinfo-start -->
+ * <!-- globalinfo-start -->
  * A class for learning a classifier according to disjoint label subsets: a multi-label learner (the Label Powerset by default) is applied to subsets with multiple labels and a single-label learner is applied to single label  subsets. The final classification prediction is  determined by combining labels predicted by all the learned models. Note: the class is not multi-thread safe. &lt;br&gt; &lt;br&gt; There is a mechanism for caching and reusing learned classification models. The caching mechanism is controlled by {&#64;link #useCache} parameter.<br>
  * <br>
  * For more information, see<br>
@@ -50,9 +51,9 @@ import weka.filters.unsupervised.attribute.Remove;
  * <br>
  * Lena Tenenboim-Chekina, Lior Rokach,, Bracha Shapira: Identification of Label Dependencies for Multi-label Classification. In: , Haifa, Israel, 53--60, 2010.
  * <br>
- <!-- globalinfo-end -->
- *
- <!-- technical-bibtex-start -->
+ * <!-- globalinfo-end -->
+ * <p>
+ * <!-- technical-bibtex-start -->
  * BibTeX:
  * <pre>
  * &#64;inproceedings{LenaTenenboim2009,
@@ -63,7 +64,7 @@ import weka.filters.unsupervised.attribute.Remove;
  *    volume = {Proc. ECML/PKDD 2009 Workshop on Learning from Multi-Label Data (MLD'09)},
  *    year = {2009}
  * }
- * 
+ *
  * &#64;inproceedings{LenaTenenboim-Chekina2010,
  *    address = {Haifa, Israel},
  *    author = {Lena Tenenboim-Chekina, Lior Rokach, and Bracha Shapira},
@@ -74,14 +75,27 @@ import weka.filters.unsupervised.attribute.Remove;
  * }
  * </pre>
  * <br>
- <!-- technical-bibtex-end -->
- * 
+ * <!-- technical-bibtex-end -->
+ *
  * @author Lena Chekina (lenat@bgu.ac.il)
  * @author Vasiloudis Theodoros
  * @version 30.11.2010
  */
 public class SubsetLearner extends MultiLabelMetaLearner {
 
+    /**
+     * HashMaps containing created models - caching mechanism is used, if
+     * enabled by setting the useCache field to true, for GreedyLabelClustering
+     * and EnsembleOfSubsetLearners methods run time optimization
+     */
+    private static HashMap<String, MultiLabelLearner> existingMultiLabelModels = new HashMap<String, MultiLabelLearner>();
+    private static HashMap<String, FilteredClassifier> existingSingleLabelModels = new HashMap<String, FilteredClassifier>();
+    private static HashMap<String, Remove> existingRemove = new HashMap<String, Remove>();
+    /**
+     * Base single-label classifier that will be used for training and
+     * predictions
+     */
+    protected Classifier baseSingleLabelClassifier;
     /**
      * Arraylist containing the MultiLabelLearners that we will train and use to
      * make the predictions
@@ -106,11 +120,6 @@ public class SubsetLearner extends MultiLabelMetaLearner {
      */
     private Remove[] remove;
     /**
-     * Base single-label classifier that will be used for training and
-     * predictions
-     */
-    protected Classifier baseSingleLabelClassifier;
-    /**
      * indication for disabled caching mechanism
      */
     private boolean useCache = false;
@@ -118,14 +127,6 @@ public class SubsetLearner extends MultiLabelMetaLearner {
      * The method used to cluster the labels
      */
     private LabelClustering clusterer = null;
-    /**
-     * HashMaps containing created models - caching mechanism is used, if
-     * enabled by setting the useCache field to true, for GreedyLabelClustering
-     * and EnsembleOfSubsetLearners methods run time optimization
-     */
-    private static HashMap<String, MultiLabelLearner> existingMultiLabelModels = new HashMap<String, MultiLabelLearner>();
-    private static HashMap<String, FilteredClassifier> existingSingleLabelModels = new HashMap<String, FilteredClassifier>();
-    private static HashMap<String, Remove> existingRemove = new HashMap<String, Remove>();
 
     /**
      * Default constructor
@@ -133,8 +134,8 @@ public class SubsetLearner extends MultiLabelMetaLearner {
     public SubsetLearner() {
         this(new GreedyLabelClustering(new BinaryRelevance(new J48()), new J48(), new ConditionalDependenceIdentifier(new J48())), new BinaryRelevance(new J48()), new J48());
     }
-            
-    
+
+
     /**
      * Initialize the SubsetLearner with labels subsets partitioning and single
      * label learner.
@@ -142,7 +143,7 @@ public class SubsetLearner extends MultiLabelMetaLearner {
      * with the specified single label learner.will be used as multilabel
      * learner.
      *
-     * @param labelsSubsets subsets of dependent labels
+     * @param labelsSubsets         subsets of dependent labels
      * @param singleLabelClassifier method used for single label classification
      */
     public SubsetLearner(int[][] labelsSubsets, Classifier singleLabelClassifier) {
@@ -163,12 +164,12 @@ public class SubsetLearner extends MultiLabelMetaLearner {
      * Initialize the SubsetLearner with labels set partitioning, multilabel and
      * single label learners.
      *
-     * @param labelsSubsets subsets of dependent labels
-     * @param multiLabelLearner method used for multilabel classification
+     * @param labelsSubsets         subsets of dependent labels
+     * @param multiLabelLearner     method used for multilabel classification
      * @param singleLabelClassifier method used for single label classification
      */
     public SubsetLearner(int[][] labelsSubsets, MultiLabelLearner multiLabelLearner,
-            Classifier singleLabelClassifier) {
+                         Classifier singleLabelClassifier) {
         super(multiLabelLearner);
 
         if (singleLabelClassifier == null) {
@@ -187,12 +188,12 @@ public class SubsetLearner extends MultiLabelMetaLearner {
      * Initialize the SubsetLearner with a label clustering method, multilabel
      * and single label learners.
      *
-     * @param clusteringMethod the method used for clustering
-     * @param multiLabelLearner method used for multilabel classification
+     * @param clusteringMethod      the method used for clustering
+     * @param multiLabelLearner     method used for multilabel classification
      * @param singleLabelClassifier method used for single label classification
      */
     public SubsetLearner(LabelClustering clusteringMethod, MultiLabelLearner multiLabelLearner,
-            Classifier singleLabelClassifier) {
+                         Classifier singleLabelClassifier) {
         super(multiLabelLearner);
 
         if (clusteringMethod == null) {
@@ -227,7 +228,7 @@ public class SubsetLearner extends MultiLabelMetaLearner {
      * when is needed next time.
      *
      * @param trainingSet The initial {@link mulan.data.MultiLabelInstances}
-     * dataset
+     *                    dataset
      * @throws Exception Potential exception thrown. To be handled in an upper level.
      */
     @Override
@@ -286,17 +287,17 @@ public class SubsetLearner extends MultiLabelMetaLearner {
     /**
      * Construct multilabel model.
      *
-     * @param trainingSet The initial {@link mulan.data.MultiLabelInstances}
-     * dataset
-     * @param countMulti the number of previous multilabel splits within the
-     * label-set partition
+     * @param trainingSet  The initial {@link mulan.data.MultiLabelInstances}
+     *                     dataset
+     * @param countMulti   the number of previous multilabel splits within the
+     *                     label-set partition
      * @param totalSplitNo the total number of previous splits within the
-     * label-set partition
-     * @param modelKey the unique key of the trainingSet and the labels subset
+     *                     label-set partition
+     * @param modelKey     the unique key of the trainingSet and the labels subset
      * @throws Exception Potential exception thrown. To be handled in an upper level.
      */
     private void buildMultiLabelModel(MultiLabelInstances trainingSet, int countMulti,
-            int totalSplitNo, String modelKey) throws Exception {
+                                      int totalSplitNo, String modelKey) throws Exception {
         if (useCache && existingMultiLabelModels.containsKey(modelKey)) { // try to get existing model from cache
             MultiLabelLearner model = existingMultiLabelModels.get(modelKey);
             resetRandomSeed(model); // reset random seed of the classifier to it's initial value,	 such that it will be
@@ -323,17 +324,17 @@ public class SubsetLearner extends MultiLabelMetaLearner {
     /**
      * Construct single label model.
      *
-     * @param trainingSet The initial {@link mulan.data.MultiLabelInstances}
-     * dataset
-     * @param countSingle the number of previous single-label splits within the
-     * label-set partition
+     * @param trainingSet  The initial {@link mulan.data.MultiLabelInstances}
+     *                     dataset
+     * @param countSingle  the number of previous single-label splits within the
+     *                     label-set partition
      * @param totalSplitNo the total number of previous splits within the
-     * label-set partition
-     * @param modelKey the unique key of the trainingSet and the labels subset
+     *                     label-set partition
+     * @param modelKey     the unique key of the trainingSet and the labels subset
      * @throws Exception Potential exception thrown. To be handled in an upper level.
      */
     private void buildSingleLabelModel(MultiLabelInstances trainingSet, int countSingle,
-            int totalSplitNo, String modelKey) throws Exception {
+                                       int totalSplitNo, String modelKey) throws Exception {
         if (useCache && existingSingleLabelModels.containsKey(modelKey)) {
             // if single-label model is in cache -> get it
             FilteredClassifier model = existingSingleLabelModels.get(modelKey);
@@ -366,7 +367,7 @@ public class SubsetLearner extends MultiLabelMetaLearner {
      * Concatenate all integers from an array with additional integer into a
      * single string.
      *
-     * @param set an array representing labels subset
+     * @param set  an array representing labels subset
      * @param fold a hash code of the current training set
      * @return a string in the form: "_l1_l2_ ... ln_fold"
      */
@@ -485,7 +486,7 @@ public class SubsetLearner extends MultiLabelMetaLearner {
 
     /**
      * Sets whether cache mechanism will be used
-     * 
+     *
      * @param useCache whether cache mechanism will be used
      */
     public void setUseCache(boolean useCache) {
@@ -522,7 +523,7 @@ public class SubsetLearner extends MultiLabelMetaLearner {
 
     /**
      * Returns a string representation of the model
-     * 
+     *
      * @return a string representation of the model
      */
     public String getModel() {
@@ -532,7 +533,7 @@ public class SubsetLearner extends MultiLabelMetaLearner {
         }
         return out;
     }
-    
+
     public String globalInfo() {
         StringBuilder sb = new StringBuilder();
         sb.append("A class for learning a classifier according to disjoint ");
@@ -541,7 +542,7 @@ public class SubsetLearner extends MultiLabelMetaLearner {
         sb.append(" a single-label learner is applied to single label ");
         sb.append(" subsets. The final classification prediction is ");
         sb.append(" determined by combining labels predicted by all the ");
-        sb.append("learned models. Note: the class is not multi-thread safe. "); 
+        sb.append("learned models. Note: the class is not multi-thread safe. ");
         sb.append("<br> <br> There is a mechanism for caching and reusing ");
         sb.append("learned classification models. The caching mechanism is ");
         sb.append("controlled by {@link #useCache} parameter.\n\nFor more ");

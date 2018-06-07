@@ -23,10 +23,10 @@ package mulan.data;
 import java.util.Set;
 
 /**
- * Represents a label attribute as a node in the labels hierarchy.  
- * The identity of the node is represented by label name, which must be unique 
+ * Represents a label attribute as a node in the labels hierarchy.
+ * The identity of the node is represented by label name, which must be unique
  * within labels hierarchy.
- * 
+ *
  * @author Jozef Vilcek
  */
 public interface LabelNode {

@@ -20,18 +20,14 @@
  */
 package mulan.data;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-
-import java.util.ArrayList;
-import java.util.Arrays;
 import weka.core.Attribute;
 import weka.core.DenseInstance;
 import weka.core.Instance;
 import weka.core.Instances;
+
+import java.io.*;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * <p>Class that converts a dataset that is originally in the format of the
@@ -51,11 +47,10 @@ public class ConverterCLUS {
      * Converts the original dataset to mulan compatible dataset.
      *
      * @param sourceFilename the source file name
-     * @param arffFilename the converted arff name
-     * @param xmlFilename the xml name
-     * @throws java.lang.Exception Potential exception thrown. To be handled in an upper level.
+     * @param arffFilename   the converted arff name
+     * @param xmlFilename    the xml name
      */
-    public static void convert(String sourceFilename, String arffFilename, String xmlFilename) throws Exception {
+    public static void convert(String sourceFilename, String arffFilename, String xmlFilename) {
         String line;
         try {
             BufferedReader brInput = new BufferedReader(new FileReader(sourceFilename));
@@ -104,7 +99,7 @@ public class ConverterCLUS {
                         String[] tokens = line.split(",");
                         double[] values = new double[attInfo.size()];
                         for (int i = 0; i < numAttributes; i++) {
-                            Attribute att = (Attribute) attInfo.get(i);
+                            Attribute att = attInfo.get(i);
                             if (att.isNumeric()) {
                                 values[i] = Double.parseDouble(tokens[i]);
                             } else {

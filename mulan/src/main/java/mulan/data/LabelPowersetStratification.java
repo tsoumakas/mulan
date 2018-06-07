@@ -20,9 +20,6 @@
  */
 package mulan.data;
 
-import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import mulan.transformations.LabelPowersetTransformation;
 import weka.core.Instances;
 import weka.core.TechnicalInformation;
@@ -30,15 +27,35 @@ import weka.core.TechnicalInformationHandler;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.Add;
 
+import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  * Class for stratifying data based on label combinations
- * 
+ *
  * @author Grigorios Tsoumakas
  * @version 2012.05.08
  */
 public class LabelPowersetStratification implements Stratification, TechnicalInformationHandler {
 
     private int seed;
+
+    /**
+     * Default constructor
+     */
+    public LabelPowersetStratification() {
+        seed = 0;
+    }
+
+    /**
+     * Constructor setting the random seed
+     *
+     * @param aSeed the seed for random generation
+     */
+    public LabelPowersetStratification(int aSeed) {
+        seed = aSeed;
+    }
 
     /**
      * Returns an instance of a TechnicalInformation object, containing detailed
@@ -64,22 +81,6 @@ public class LabelPowersetStratification implements Stratification, TechnicalInf
 
         return result;
     }
-    
-    /**
-     * Default constructor
-     */
-    public LabelPowersetStratification() {
-        seed = 0;
-    }
-    
-    /**
-     * Constructor setting the random seed
-     * 
-     * @param aSeed the seed for random generation
-     */    
-    public LabelPowersetStratification(int aSeed) {
-        seed = aSeed;
-    }
 
     public MultiLabelInstances[] stratify(MultiLabelInstances data, int folds) {
         try {
@@ -89,29 +90,29 @@ public class LabelPowersetStratification implements Stratification, TechnicalInf
 
             // transform to single-label
             transformed = transformation.transformInstances(data);
-            
+
             // add id 
             Add add = new Add();
             add.setAttributeIndex("first");
             add.setAttributeName("instanceID");
             add.setInputFormat(transformed);
             transformed = Filter.useFilter(transformed, add);
-            for (int i=0; i<transformed.numInstances(); i++) {
+            for (int i = 0; i < transformed.numInstances(); i++) {
                 transformed.instance(i).setValue(0, i);
-            }            
-            transformed.setClassIndex(transformed.numAttributes()-1);
-            
+            }
+            transformed.setClassIndex(transformed.numAttributes() - 1);
+
             // stratify
             transformed.randomize(new Random(seed));
             transformed.stratify(folds);
-            
+
             for (int i = 0; i < folds; i++) {
                 //System.out.println("Fold " + (i + 1) + "/" + folds);
                 Instances temp = transformed.testCV(folds, i);
                 Instances test = new Instances(data.getDataSet(), 0);
-                for (int j=0; j<temp.numInstances(); j++) {
+                for (int j = 0; j < temp.numInstances(); j++) {
                     test.add(data.getDataSet().instance((int) temp.instance(j).value(0)));
-                }                
+                }
                 segments[i] = new MultiLabelInstances(test, data.getLabelsMetaData());
             }
             return segments;

@@ -19,7 +19,6 @@ import mulan.classifier.MultiLabelOutput;
 import mulan.core.ArgumentNullException;
 
 /**
- *
  * @author Grigorios Tsoumakas
  * @version 2010.12.03
  */
@@ -61,7 +60,7 @@ public abstract class RankingMeasureBase extends ClassificationMeasureBase {
      * Updates the measure based on an example
      *
      * @param ranking the predicted ranking
-     * @param truth the ground truth
+     * @param truth   the ground truth
      */
     protected abstract void updateRanking(int[] ranking, boolean[] truth);
 

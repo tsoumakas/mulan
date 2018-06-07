@@ -47,7 +47,7 @@ public class BinaryRelevance extends TransformationBasedMultiLabelLearner {
      * Creates a new instance
      *
      * @param classifier the base-level classification algorithm that will be
-     * used for training each of the binary models
+     *                   used for training each of the binary models
      */
     public BinaryRelevance(Classifier classifier) {
         super(classifier);
@@ -75,45 +75,43 @@ public class BinaryRelevance extends TransformationBasedMultiLabelLearner {
     protected MultiLabelOutput makePredictionInternal(Instance instance) {
         boolean[] bipartition = new boolean[numLabels];
         double[] confidences = new double[numLabels];
-        
-        boolean isContainBinary=false;
-        boolean isContainNumeric=false;
+
+        boolean isContainBinary = false;
+        boolean isContainNumeric = false;
 
         for (int counter = 0; counter < numLabels; counter++) {
             Instance transformedInstance = brt.transformInstance(instance, counter);
-            if(instance.attribute(labelIndices[counter]).isNominal()){
-            	isContainBinary=true;
-            	double distribution[];
-                 try {
-                     distribution = ensemble[counter].distributionForInstance(transformedInstance);
-                 } catch (Exception e) {
-                     System.out.println(e);
-                     return null;
-                 }
-                 int maxIndex = (distribution[0] > distribution[1]) ? 0 : 1;
+            if (instance.attribute(labelIndices[counter]).isNominal()) {
+                isContainBinary = true;
+                double distribution[];
+                try {
+                    distribution = ensemble[counter].distributionForInstance(transformedInstance);
+                } catch (Exception e) {
+                    System.out.println(e);
+                    return null;
+                }
+                int maxIndex = (distribution[0] > distribution[1]) ? 0 : 1;
 
-                 // Ensure correct predictions both for class values {0,1} and {1,0}
-                 bipartition[counter] = (maxIndex == 1) ? true : false;
+                // Ensure correct predictions both for class values {0,1} and {1,0}
+                bipartition[counter] = maxIndex == 1;
 
-                 // The confidence of the label being equal to 1
-                 confidences[counter] = distribution[1];
-            }
-            else if(instance.attribute(labelIndices[counter]).isNumeric()){
-            	isContainNumeric=true;
-            	try {
-            		confidences[counter] = ensemble[counter].classifyInstance(transformedInstance);
+                // The confidence of the label being equal to 1
+                confidences[counter] = distribution[1];
+            } else if (instance.attribute(labelIndices[counter]).isNumeric()) {
+                isContainNumeric = true;
+                try {
+                    confidences[counter] = ensemble[counter].classifyInstance(transformedInstance);
                 } catch (Exception e) {
                     System.out.println(e);
                     return null;
                 }
             }
         }
-        MultiLabelOutput mlo=null;
-        if(isContainBinary && !isContainNumeric){
-        	mlo= new MultiLabelOutput(bipartition, confidences);
-        }
-        else if(isContainNumeric && !isContainBinary){
-        	mlo = new MultiLabelOutput(confidences, true);
+        MultiLabelOutput mlo = null;
+        if (isContainBinary && !isContainNumeric) {
+            mlo = new MultiLabelOutput(bipartition, confidences);
+        } else if (isContainNumeric && !isContainBinary) {
+            mlo = new MultiLabelOutput(confidences, true);
         }
         return mlo;
     }

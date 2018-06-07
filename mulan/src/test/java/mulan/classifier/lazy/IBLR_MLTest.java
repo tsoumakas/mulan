@@ -17,16 +17,16 @@ package mulan.classifier.lazy;
 
 /**
  * Unit test routines for {@link IBLR_ML}.
- * 
+ *
  * @author Eleftherios Spyromitros-Xioufis
  */
 public class IBLR_MLTest extends MultiLabelKNNTest {
-	
-	private static final int DEFAULT_numOfNeighbors = 10; 
-		
-	@Override
-	public void setUp(){
-		learner = new  IBLR_ML(DEFAULT_numOfNeighbors);
-	}
+
+    private static final int DEFAULT_numOfNeighbors = 10;
+
+    @Override
+    public void setUp() {
+        learner = new IBLR_ML(DEFAULT_numOfNeighbors);
+    }
 
 }

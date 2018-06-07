@@ -1,8 +1,5 @@
 package mulan.regressor.transformation;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-
 import mulan.classifier.MultiLabelOutput;
 import mulan.data.DataUtils;
 import mulan.data.MultiLabelInstances;
@@ -14,9 +11,12 @@ import weka.core.Attribute;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.filters.Filter;
-import weka.filters.unsupervised.instance.Resample;
 import weka.filters.unsupervised.attribute.AddID;
 import weka.filters.unsupervised.attribute.Remove;
+import weka.filters.unsupervised.instance.Resample;
+
+import java.util.ArrayList;
+import java.util.HashSet;
 
 /**
  * This class implements the Multi-Target Stacking (MTS) method. 4 alternative methods to obtain the values of
@@ -31,62 +31,6 @@ import weka.filters.unsupervised.attribute.Remove;
 public class MultiTargetStacking extends TransformationBasedMultiTargetRegressor {
 
     private static final long serialVersionUID = 1L;
-
-    /**
-     * The 4 alternative methods to obtain the values of the meta features.
-     */
-    public enum metaType {
-        /**
-         * Using internal k fold cross-validation.
-         */
-        CV,
-        /**
-         * Using the full training set.
-         */
-        INSAMPLE,
-        /**
-         * Using the true target values.
-         */
-        TRUE,
-        /**
-         * Using a random sample.
-         */
-        SAMPLE
-    }
-
-    /**
-     * The method used to obtain the values of the meta features. TRAIN is used by default.
-     */
-    private metaType meta = metaType.INSAMPLE;
-
-    /**
-     * The number of folds to use in internal k fold cross-validation. 3 folds are used by default.
-     */
-    private int numFolds = 3;
-
-    /**
-     * Whether to include the original features attributes in the second stage training sets. True by default.
-     */
-    private boolean includeFeatures = true;
-
-    /** The regressors of the first stage. */
-    private Classifier[] firstStageRegressors;
-    /** The regressors of the second stage. */
-    private Classifier[] secondStageRegressors;
-
-    /** The type of the regressor used in the second stage. */
-    private Classifier secondStageBaseRegressor;
-
-    /**
-     * The values of the meta features (obtained using one of the available methods). The first dimension's
-     * size is equalt to the number of training examples and the second is the number of targets.
-     */
-    private double[][] metaFeatures;
-    /** The augmented datasets used to train the second stage regressors. */
-    private Instances[] secondStageTrainsets;
-    /** This transformation object is used for performing the transformation at the first stage. */
-    private SingleTargetTransformation stt;
-
     /**
      * When the base regressor is capable of attribute selection this ArrayList holds the indices of the
      * target variables that were selected in each target's model.
@@ -97,14 +41,50 @@ public class MultiTargetStacking extends TransformationBasedMultiTargetRegressor
      * normal feature variables that were selected in each target's model.
      */
     protected ArrayList<Integer>[] selectedFeatureIndices;
+    /**
+     * The method used to obtain the values of the meta features. TRAIN is used by default.
+     */
+    private metaType meta = metaType.INSAMPLE;
+    /**
+     * The number of folds to use in internal k fold cross-validation. 3 folds are used by default.
+     */
+    private int numFolds = 3;
+    /**
+     * Whether to include the original features attributes in the second stage training sets. True by default.
+     */
+    private boolean includeFeatures = true;
+    /**
+     * The regressors of the first stage.
+     */
+    private Classifier[] firstStageRegressors;
+    /**
+     * The regressors of the second stage.
+     */
+    private Classifier[] secondStageRegressors;
+    /**
+     * The type of the regressor used in the second stage.
+     */
+    private Classifier secondStageBaseRegressor;
+    /**
+     * The values of the meta features (obtained using one of the available methods). The first dimension's
+     * size is equalt to the number of training examples and the second is the number of targets.
+     */
+    private double[][] metaFeatures;
+    /**
+     * The augmented datasets used to train the second stage regressors.
+     */
+    private Instances[] secondStageTrainsets;
+    /**
+     * This transformation object is used for performing the transformation at the first stage.
+     */
+    private SingleTargetTransformation stt;
 
     /**
      * Creates a new instance with the given base regressor at both stages.
      *
      * @param baseRegressor the base regression algorithm that will be used in both stages
-     * @throws Exception Potential exception thrown. To be handled in an upper level.
      */
-    public MultiTargetStacking(Classifier baseRegressor) throws Exception {
+    public MultiTargetStacking(Classifier baseRegressor) {
         super(baseRegressor);
         this.secondStageBaseRegressor = baseRegressor;
     }
@@ -112,12 +92,11 @@ public class MultiTargetStacking extends TransformationBasedMultiTargetRegressor
     /**
      * Creates a new instance with a different base regressor at each stage.
      *
-     * @param firstStageBaseRegressor the base regression algorithm that will be used in the first stage
+     * @param firstStageBaseRegressor  the base regression algorithm that will be used in the first stage
      * @param secondStageBaseRegressor the base regression algorithm that will be used in the second stage
-     * @throws Exception Potential exception thrown. To be handled in an upper level.
      */
     public MultiTargetStacking(Classifier firstStageBaseRegressor,
-                               Classifier secondStageBaseRegressor) throws Exception {
+                               Classifier secondStageBaseRegressor) {
         super(firstStageBaseRegressor);
         this.secondStageBaseRegressor = secondStageBaseRegressor;
     }
@@ -387,6 +366,28 @@ public class MultiTargetStacking extends TransformationBasedMultiTargetRegressor
 
     public ArrayList<Integer>[] getSelectedFeatureIndices() {
         return selectedFeatureIndices;
+    }
+
+    /**
+     * The 4 alternative methods to obtain the values of the meta features.
+     */
+    public enum metaType {
+        /**
+         * Using internal k fold cross-validation.
+         */
+        CV,
+        /**
+         * Using the full training set.
+         */
+        INSAMPLE,
+        /**
+         * Using the true target values.
+         */
+        TRUE,
+        /**
+         * Using a random sample.
+         */
+        SAMPLE
     }
 
 }

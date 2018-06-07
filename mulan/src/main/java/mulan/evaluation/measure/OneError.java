@@ -17,7 +17,7 @@ package mulan.evaluation.measure;
 
 /**
  * Measure based on the one error loss function
- * 
+ *
  * @author Grigorios Tsoumakas
  * @version 2010.12.10
  */

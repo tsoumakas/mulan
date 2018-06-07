@@ -17,7 +17,7 @@ package mulan.evaluation.measure;
 
 /**
  * Implementation of the coverage measure.
- * 
+ *
  * @author Grigorios Tsoumakas
  * @version 2010.12.04
  */

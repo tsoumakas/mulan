@@ -21,13 +21,13 @@ import weka.classifiers.trees.J48;
 public class MLCSSPTest extends MultiLabelMetaLearnerTest {
 
     @Override
-    public void setUp() throws Exception {
+    public void setUp() {
         BinaryRelevance br = new BinaryRelevance(new J48());
         learner = new MLCSSP(br);
     }
-    
+
     @Override
-    public void testBuild_WithMissingValues()  {        
+    public void testBuild_WithMissingValues() {
     }
 
 }

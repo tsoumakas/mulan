@@ -31,12 +31,12 @@ import weka.core.Instances;
 public class Ranker {
 
     /**
-     * Calls a specified {@link AttributeEvaluator} to evaluate each feature 
+     * Calls a specified {@link AttributeEvaluator} to evaluate each feature
      * attribute of specified {@link MultiLabelInstances} data set, excluding
      * labels. Internally it uses {@link weka.attributeSelection.Ranker}
      *
      * @param attributeEval the attribute evaluator to guide the search
-     * @param mlData the multi-label instances data set
+     * @param mlData        the multi-label instances data set
      * @return an array (not necessarily ordered) of selected attribute indexes
      * @throws Exception if an error occur in search
      */
@@ -47,7 +47,7 @@ public class Ranker {
         // convert these to feature indices
         int[] featureIndices = mlData.getFeatureIndices();
         int[] finalIndices = new int[indices.length];
-        for (int i=0; i<indices.length; i++) {
+        for (int i = 0; i < indices.length; i++) {
             finalIndices[i] = featureIndices[indices[i]];
         }
         return finalIndices;

@@ -15,7 +15,6 @@
  */
 package mulan.classifier.meta;
 
-import java.util.Set;
 import mulan.classifier.MultiLabelLearner;
 import mulan.classifier.MultiLabelOutput;
 import mulan.classifier.meta.HierarchyBuilder.Method;
@@ -30,15 +29,17 @@ import weka.core.TechnicalInformation;
 import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
 
+import java.util.Set;
+
 /**
- <!-- globalinfo-start -->
+ * <!-- globalinfo-start -->
  * Class implementing the Hierarchy Of Multi-labEl leaRners algorithm. For more information, see<br>
  * <br>
  * Grigorios Tsoumakas, Ioannis Katakis, Ioannis Vlahavas: Effective and Efficient Multilabel Classification in Domains with Large Number of Labels. In: Proc. ECML/PKDD 2008 Workshop on Mining Multidimensional Data (MMD'08), 2008.
  * <br>
- <!-- globalinfo-end -->
- *
- <!-- technical-bibtex-start -->
+ * <!-- globalinfo-end -->
+ * <p>
+ * <!-- technical-bibtex-start -->
  * BibTeX:
  * <pre>
  * &#64;inproceedings{Tsoumakas2008,
@@ -50,7 +51,7 @@ import weka.core.TechnicalInformation.Type;
  * }
  * </pre>
  * <br>
- <!-- technical-bibtex-end -->
+ * <!-- technical-bibtex-end -->
  *
  * @author Grigorios Tsoumakas
  * @version 2012.02.27
@@ -75,12 +76,12 @@ public class HOMER extends MultiLabelMetaLearner {
     }
 
     /**
-     * Creates a new instance based on given multi-label learner, number of 
+     * Creates a new instance based on given multi-label learner, number of
      * children and partitioning method
-     * 
-     * @param mll multi-label learner
+     *
+     * @param mll      multi-label learner
      * @param clusters number of partitions
-     * @param method partitioning method
+     * @param method   partitioning method
      */
     public HOMER(MultiLabelLearner mll, int clusters, Method method) {
         super(mll);
@@ -143,11 +144,11 @@ public class HOMER extends MultiLabelMetaLearner {
     }
 
     //spark temporary edit for complexity measures   
-    
-    
+
+
     /**
      * Returns the number of nodes
-     * 
+     *
      * @return number of nodes
      */
     public long getNoNodes() {
@@ -156,7 +157,7 @@ public class HOMER extends MultiLabelMetaLearner {
 
     /**
      * Returns the number of classifier evaluations
-     * 
+     *
      * @return number of classifier evaluations
      */
     public long getNoClassifierEvals() {
@@ -165,7 +166,7 @@ public class HOMER extends MultiLabelMetaLearner {
 
     /**
      * Returns the total number of instances used for training
-     * 
+     *
      * @return total number of instances used for training
      */
     public long getTotalUsedTrainInsts() {
@@ -174,7 +175,7 @@ public class HOMER extends MultiLabelMetaLearner {
 
     public String globalInfo() {
         return "Class implementing the Hierarchy Of Multi-labEl leaRners " +
-               "algorithm. For more information, see\n\n"
+                "algorithm. For more information, see\n\n"
                 + getTechnicalInformation().toString();
     }
 }

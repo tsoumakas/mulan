@@ -14,7 +14,7 @@
  *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 package mulan.classifier.meta;
- 
+
 import junit.framework.Assert;
 import mulan.classifier.MultiLabelLearner;
 import mulan.classifier.MultiLabelLearnerBase;
@@ -26,7 +26,7 @@ import weka.classifiers.trees.J48;
 public class HMCTest extends MultiLabelMetaLearnerTest {
 
     @Override
-    public void setUp() throws Exception {
+    public void setUp() {
         learner = new HMC(new LabelPowerset(new J48()));
     }
 

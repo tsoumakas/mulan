@@ -15,10 +15,7 @@
  */
 package mulan.transformations;
 
-import java.io.Serializable;
-import java.util.Random;
 import mulan.core.MulanRuntimeException;
-
 import mulan.data.MultiLabelInstances;
 import weka.core.Instance;
 import weka.core.Instances;
@@ -26,6 +23,9 @@ import weka.core.matrix.Matrix;
 import weka.core.matrix.SingularValueDecomposition;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.Remove;
+
+import java.io.Serializable;
+import java.util.Random;
 
 /**
  * <p>Class that solves the column subset selection problem via random sampling.
@@ -38,6 +38,7 @@ import weka.filters.unsupervised.attribute.Remove;
  */
 public class ColumnSubsetSelection implements Serializable {
 
+    private static int[] indicesToRemove;
     private Instances transformed;
     private Remove remove;
     private Matrix Y;
@@ -46,8 +47,7 @@ public class ColumnSubsetSelection implements Serializable {
     private int kappa;
     private int[] selectedIndicesInt;
     private Object[] sampledIndicesObj;
-    private static int[] indicesToRemove;
-    private java.util.Set sampledIndiceSet;   
+    private java.util.Set sampledIndiceSet;
 
     public MultiLabelInstances transform(MultiLabelInstances data, int kappa, long seed) {
         try {
@@ -130,7 +130,7 @@ public class ColumnSubsetSelection implements Serializable {
 
             // run column-sampling loop
             int sampling_count = 0;
-            
+
             Random generator = new Random(seed);
             while (sampledIndiceSet.size() < kappa) // ...loop until knapsack gets filled...
             {
@@ -157,10 +157,8 @@ public class ColumnSubsetSelection implements Serializable {
                 assert (closest_match != -1);
 
                 // see if column was selected; if not, add it
-                if (!sampledIndiceSet.contains((Object) closest_match)) {
-                    sampledIndiceSet.add((Object) closest_match);
-                    //System.out.println("DEBUG(CSSP): Added column " + closest_match + " to the sampled column set!");
-                }
+                //System.out.println("DEBUG(CSSP): Added column " + closest_match + " to the sampled column set!");
+                sampledIndiceSet.add(closest_match);
 
                 sampling_count += 1;
             }
@@ -173,7 +171,7 @@ public class ColumnSubsetSelection implements Serializable {
             // compute all **PHYSICAL** (not VIRTUAL) indices of label columns for CSSP to remove
             int idx = 0;
             for (int i = 0; i < labelIndices.length; i++) {
-                if (!sampledIndiceSet.contains((Object) i)) {
+                if (!sampledIndiceSet.contains(i)) {
                     indicesToRemove[idx] = indices[i];
                     idx += 1;
                 }
@@ -183,7 +181,7 @@ public class ColumnSubsetSelection implements Serializable {
             int[] selectedIndicesObj = indicesToRemove.clone();
             selectedIndicesInt = new int[selectedIndicesObj.length];
             for (int i = 0; i < selectedIndicesObj.length; i++) {
-                selectedIndicesInt[i] = (int) selectedIndicesObj[i];
+                selectedIndicesInt[i] = selectedIndicesObj[i];
             }
 
             // compute Moore-Penrose pseudo-inverse matrix of the column-reduced label indicator matrix
@@ -221,7 +219,7 @@ public class ColumnSubsetSelection implements Serializable {
                 // replicate data from ALL columns that WOULD not be removed by CSSP        	
                 for (int j = 0; j < matC.getColumnDimension(); j++) {
                     // get label indice
-                    int corrIdx = (int) indicesToKeep.get(j);
+                    int corrIdx = indicesToKeep.get(j);
 
                     // update matC
                     matC.set(i, j, Double.parseDouble(instance.toString(corrIdx)));
@@ -279,7 +277,7 @@ public class ColumnSubsetSelection implements Serializable {
             transformed = Filter.useFilter(data.getDataSet(), remove);
 
             this.sampledIndicesObj = indicesToKeep.toArray();
-            
+
             return data.reintegrateModifiedDataSet(transformed);
 
         } catch (Exception ex) {

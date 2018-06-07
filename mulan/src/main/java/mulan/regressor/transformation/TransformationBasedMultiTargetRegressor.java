@@ -28,7 +28,7 @@ import weka.core.TechnicalInformation.Type;
  * For more information, see:<br>
  * <em>E. Spyromitros-Xioufis, G. Tsoumakas, W. Groves, I. Vlahavas. 2014. Multi-label Classification Methods for
  * Multi-target Regression. <a href="http://arxiv.org/abs/1211.6581">arXiv e-prints</a></em>.
- * 
+ *
  * @author Eleftherios Spyromitros-Xioufis
  * @version 2014.04.01
  */
@@ -50,7 +50,7 @@ public abstract class TransformationBasedMultiTargetRegressor extends MultiLabel
 
     /**
      * Creates a new instance.
-     * 
+     *
      * @param baseRegressor the base regressor which will be used internally to handle the data.
      */
     public TransformationBasedMultiTargetRegressor(Classifier baseRegressor) {
@@ -59,7 +59,7 @@ public abstract class TransformationBasedMultiTargetRegressor extends MultiLabel
 
     /**
      * Returns the {@link Classifier} which is used internally by the learner.
-     * 
+     *
      * @return the internally used regressor
      */
     public Classifier getBaseRegressor() {
@@ -69,7 +69,7 @@ public abstract class TransformationBasedMultiTargetRegressor extends MultiLabel
     /**
      * Returns an instance of a TechnicalInformation object, containing detailed information about the
      * technical background of this class, e.g., paper reference or book this class is based on.
-     * 
+     *
      * @return the technical information about this class
      */
     public TechnicalInformation getTechnicalInformation() {
@@ -87,7 +87,7 @@ public abstract class TransformationBasedMultiTargetRegressor extends MultiLabel
      * Returns a string representation of the multi-target regression model by calling
      * {@link #getModelForTarget(int)} for each target. Should always by called after the model has been
      * initialized.
-     * 
+     *
      * @return a string representation of the multi-target regression model
      */
     public String getModel() {
@@ -106,7 +106,7 @@ public abstract class TransformationBasedMultiTargetRegressor extends MultiLabel
     /**
      * Returns a string representation of the single-target regression model build for the target with this
      * targetIndex.
-     * 
+     *
      * @param targetIndex the target's index
      * @return a string representation of the single-target regression model
      */

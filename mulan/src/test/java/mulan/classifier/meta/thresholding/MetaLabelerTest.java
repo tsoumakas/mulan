@@ -22,7 +22,7 @@ import weka.classifiers.trees.J48;
 public class MetaLabelerTest extends MultiLabelMetaLearnerTest {
 
     @Override
-    public void setUp() throws Exception {
+    public void setUp() {
         learner = new MetaLabeler(new CalibratedLabelRanking(new J48()), new J48(), Meta.MetaData.CONTENT, "Nominal-Class");
     }
 }

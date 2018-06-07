@@ -50,7 +50,7 @@ public abstract class TransformationBasedMultiLabelLearner extends MultiLabelLea
      * Creates a new instance.
      *
      * @param baseClassifier the base classifier which will be used internally
-     * to handle the data.
+     *                       to handle the data.
      * @see Classifier
      */
     public TransformationBasedMultiLabelLearner(Classifier baseClassifier) {

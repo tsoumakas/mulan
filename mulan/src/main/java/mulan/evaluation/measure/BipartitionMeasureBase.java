@@ -19,7 +19,6 @@ import mulan.classifier.MultiLabelOutput;
 import mulan.core.ArgumentNullException;
 
 /**
- *
  * @author Grigorios Tsoumakas
  * @version 2010.11.01
  */
@@ -41,7 +40,7 @@ public abstract class BipartitionMeasureBase extends ClassificationMeasureBase {
      * Updates the measure based on an example
      *
      * @param bipartition the predicted bipartition
-     * @param truth the ground truth
+     * @param truth       the ground truth
      */
     protected abstract void updateBipartition(boolean[] bipartition, boolean[] truth);
 

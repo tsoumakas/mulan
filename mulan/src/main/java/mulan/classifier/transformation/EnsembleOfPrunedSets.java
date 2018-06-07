@@ -15,9 +15,6 @@
  */
 package mulan.classifier.transformation;
 
-import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import mulan.classifier.InvalidDataException;
 import mulan.classifier.MultiLabelOutput;
 import mulan.data.MultiLabelInstances;
@@ -28,6 +25,10 @@ import weka.core.Instance;
 import weka.core.Instances;
 import weka.filters.Filter;
 import weka.filters.unsupervised.instance.RemovePercentage;
+
+import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * <p>Implementation of the Ensemble of Pruned Sets (EPS) algorithm.</p> <p>For
@@ -71,12 +72,12 @@ public class EnsembleOfPrunedSets extends TransformationBasedMultiLabelLearner {
 
     /**
      * @param aNumOfModels the number of models in the ensemble
-     * @param aStrategy pruned sets strategy
-     * @param aPercentage percentage of data to sample
-     * @param aP pruned sets parameter p
-     * @param aB pruned sets parameter b
-     * @param baselearner the base learner
-     * @param aThreshold the threshold for producing bipartitions
+     * @param aStrategy    pruned sets strategy
+     * @param aPercentage  percentage of data to sample
+     * @param aP           pruned sets parameter p
+     * @param aB           pruned sets parameter b
+     * @param baselearner  the base learner
+     * @param aThreshold   the threshold for producing bipartitions
      */
     public EnsembleOfPrunedSets(double aPercentage, int aNumOfModels, double aThreshold, int aP, PrunedSets.Strategy aStrategy, int aB, Classifier baselearner) {
         super(baselearner);
@@ -113,7 +114,7 @@ public class EnsembleOfPrunedSets extends TransformationBasedMultiLabelLearner {
 
     @Override
     protected MultiLabelOutput makePredictionInternal(Instance instance)
-            throws Exception, InvalidDataException {
+            throws Exception {
 
         int[] sumVotes = new int[numLabels];
 

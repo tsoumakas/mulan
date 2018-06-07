@@ -15,15 +15,10 @@
  */
 package mulan.experiments;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import mulan.classifier.MultiLabelLearner;
 import mulan.classifier.lazy.MLkNN;
-import mulan.classifier.meta.thresholding.*;
 import mulan.classifier.meta.thresholding.Meta.MetaData;
+import mulan.classifier.meta.thresholding.*;
 import mulan.classifier.neural.BPMLL;
 import mulan.classifier.transformation.BinaryRelevance;
 import mulan.classifier.transformation.CalibratedLabelRanking;
@@ -37,12 +32,17 @@ import weka.classifiers.trees.J48;
 import weka.classifiers.trees.M5P;
 import weka.core.Utils;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
- * <p>Class replicating the experiment in <em>Marios Ioannou, George Sakkas, 
- * Grigorios Tsoumakas, and Ioannis Vlahavas. 2010. Obtaining Bipartitions from 
+ * <p>Class replicating the experiment in <em>Marios Ioannou, George Sakkas,
+ * Grigorios Tsoumakas, and Ioannis Vlahavas. 2010. Obtaining Bipartitions from
  * Score Vectors for Multi-Label Classification. In Proceedings of the 2010 22nd
- * IEEE International Conference on Tools with Artificial Intelligence - Volume 
- * 01 (ICTAI '10), Vol. 1. IEEE Computer Society, Washington, DC, USA, 409-416. 
+ * IEEE International Conference on Tools with Artificial Intelligence - Volume
+ * 01 (ICTAI '10), Vol. 1. IEEE Computer Society, Washington, DC, USA, 409-416.
  * </em></p>
  *
  * @author Grigorios Tsoumakas

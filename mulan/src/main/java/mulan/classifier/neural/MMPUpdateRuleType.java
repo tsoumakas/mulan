@@ -21,18 +21,24 @@
 package mulan.classifier.neural;
 
 /**
- * The enumeration of update rules, which can be used by the 
+ * The enumeration of update rules, which can be used by the
  * {@link MMPLearner} to update its model in learning phase.
- * 
+ *
  * @author Jozef Vilcek
  * @version 2012.02.27
  */
 public enum MMPUpdateRuleType {
 
-    /** Indicates usage of uniform update rule */
+    /**
+     * Indicates usage of uniform update rule
+     */
     UniformUpdate,
-    /** Indicates usage of maximum update rule */
+    /**
+     * Indicates usage of maximum update rule
+     */
     MaxUpdate,
-    /** Indicates usage of randomized update rule */
+    /**
+     * Indicates usage of randomized update rule
+     */
     RandomizedUpdate,
 }

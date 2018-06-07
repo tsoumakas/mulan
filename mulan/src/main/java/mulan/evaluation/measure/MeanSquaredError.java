@@ -30,6 +30,6 @@ public class MeanSquaredError extends LossBasedConfidenceMeasureBase {
     public MeanSquaredError() {
         super(new mulan.evaluation.loss.SquaredError());
     }
-    
-    
+
+
 }

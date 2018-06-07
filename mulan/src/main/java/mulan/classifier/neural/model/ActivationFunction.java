@@ -23,11 +23,11 @@ package mulan.classifier.neural.model;
 import java.io.Serializable;
 
 /**
- * Abstract base class for activation functions. 
- * The activation function is used in neural network to transform an input of 
+ * Abstract base class for activation functions.
+ * The activation function is used in neural network to transform an input of
  * each layer (neuron) and produce the output for next layer (neuron).
  * Depending on learning algorithm, derivation of activation function might be necessary.
- * 
+ *
  * @author Jozef Vilcek
  * @version 2012.02.27
  */

@@ -23,7 +23,7 @@ import weka.classifiers.trees.J48;
 public class SCutTest extends MultiLabelMetaLearnerTest {
 
     @Override
-    public void setUp() throws Exception {
+    public void setUp() {
         learner = new SCut(new CalibratedLabelRanking(new J48()), new HammingLoss(), 5);
     }
 }

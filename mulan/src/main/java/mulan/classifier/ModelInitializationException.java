@@ -17,8 +17,8 @@ package mulan.classifier;
 
 /**
  * Exception thrown by the {@link MultiLabelLearner} when learner is queried for prediction on data
- * before model is internally built by learning from training data. 
- * 
+ * before model is internally built by learning from training data.
+ *
  * @author Jozef Vilcek
  */
 public class ModelInitializationException extends LearnerException {
@@ -40,7 +40,7 @@ public class ModelInitializationException extends LearnerException {
      * detail message and nested exception.
      *
      * @param message the detail message
-     * @param cause the nested exception
+     * @param cause   the nested exception
      */
     public ModelInitializationException(String message, Throwable cause) {
         super(message, cause);

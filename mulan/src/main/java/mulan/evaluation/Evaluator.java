@@ -15,60 +15,22 @@
  */
 package mulan.evaluation;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
+import clus.Clus;
 import mulan.classifier.MultiLabelLearner;
 import mulan.classifier.MultiLabelOutput;
 import mulan.classifier.clus.ClusWrapperClassification;
 import mulan.data.MultiLabelInstances;
-import mulan.evaluation.measure.AveragePrecision;
-import mulan.evaluation.measure.Coverage;
-import mulan.evaluation.measure.ErrorSetSize;
-import mulan.evaluation.measure.ExampleBasedAccuracy;
-import mulan.evaluation.measure.ExampleBasedFMeasure;
-import mulan.evaluation.measure.ExampleBasedPrecision;
-import mulan.evaluation.measure.ExampleBasedRecall;
-import mulan.evaluation.measure.ExampleBasedSpecificity;
-import mulan.evaluation.measure.GeometricMeanAverageInterpolatedPrecision;
-import mulan.evaluation.measure.GeometricMeanAveragePrecision;
-import mulan.evaluation.measure.HammingLoss;
-import mulan.evaluation.measure.HierarchicalLoss;
-import mulan.evaluation.measure.IsError;
-import mulan.evaluation.measure.LogLoss;
-import mulan.evaluation.measure.MacroAUC;
-import mulan.evaluation.measure.MacroFMeasure;
-import mulan.evaluation.measure.MacroPrecision;
-import mulan.evaluation.measure.MacroRecall;
-import mulan.evaluation.measure.MacroSpecificity;
-import mulan.evaluation.measure.MeanAverageInterpolatedPrecision;
-import mulan.evaluation.measure.MeanAveragePrecision;
-import mulan.evaluation.measure.Measure;
-import mulan.evaluation.measure.MicroAUC;
-import mulan.evaluation.measure.MicroFMeasure;
-import mulan.evaluation.measure.MicroPrecision;
-import mulan.evaluation.measure.MicroRecall;
-import mulan.evaluation.measure.MicroSpecificity;
-import mulan.evaluation.measure.OneError;
-import mulan.evaluation.measure.RankingLoss;
-import mulan.evaluation.measure.SubsetAccuracy;
+import mulan.evaluation.measure.*;
 import mulan.evaluation.measure.regression.example.ExampleBasedRMaxSE;
-import mulan.evaluation.measure.regression.macro.MacroMAE;
-import mulan.evaluation.measure.regression.macro.MacroRMSE;
-import mulan.evaluation.measure.regression.macro.MacroRMaxSE;
-import mulan.evaluation.measure.regression.macro.MacroRelMAE;
-import mulan.evaluation.measure.regression.macro.MacroRelRMSE;
+import mulan.evaluation.measure.regression.macro.*;
 import weka.core.Instance;
 import weka.core.Instances;
-import clus.Clus;
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Evaluator - responsible for generating evaluation data
@@ -80,7 +42,9 @@ import clus.Clus;
  */
 public class Evaluator {
 
-    /** seed for reproduction of cross-validation results **/
+    /**
+     * seed for reproduction of cross-validation results
+     **/
     private int seed = 1;
 
     /**
@@ -96,12 +60,12 @@ public class Evaluator {
      * Evaluates a {@link MultiLabelLearner} on given test data set using specified evaluation
      * measures
      *
-     * @param learner the learner to be evaluated
+     * @param learner    the learner to be evaluated
      * @param mlTestData the data set for evaluation
-     * @param measures the evaluation measures to compute
+     * @param measures   the evaluation measures to compute
      * @return an Evaluation object
      * @throws IllegalArgumentException if an input parameter is null
-     * @throws Exception when evaluation fails
+     * @throws Exception                when evaluation fails
      */
     public Evaluation evaluate(MultiLabelLearner learner, MultiLabelInstances mlTestData,
                                List<Measure> measures) throws Exception {
@@ -180,12 +144,12 @@ public class Evaluator {
     /**
      * Evaluates a {@link MultiLabelLearner} on given test data set.
      *
-     * @param learner the learner to be evaluated
-     * @param mlTestData the data set for evaluation
+     * @param learner     the learner to be evaluated
+     * @param mlTestData  the data set for evaluation
      * @param mlTrainData the train data set
      * @return the evaluation result
      * @throws IllegalArgumentException if either of input parameters is null.
-     * @throws Exception when evaluation fails
+     * @throws Exception                when evaluation fails
      */
     public Evaluation evaluate(MultiLabelLearner learner, MultiLabelInstances mlTestData,
                                MultiLabelInstances mlTrainData) throws IllegalArgumentException, Exception {
@@ -305,8 +269,8 @@ public class Evaluator {
      * Evaluates a {@link MultiLabelLearner} via cross-validation on given data set with defined
      * number of folds and seed.
      *
-     * @param learner the learner to be evaluated via cross-validation
-     * @param data the multi-label data set for cross-validation
+     * @param learner   the learner to be evaluated via cross-validation
+     * @param data      the multi-label data set for cross-validation
      * @param someFolds number of folds
      * @return a {@link MultipleEvaluation} object holding the results
      */
@@ -323,9 +287,9 @@ public class Evaluator {
      * Evaluates a {@link MultiLabelLearner} via cross-validation on given data set using given
      * evaluation measures with defined number of folds and seed.
      *
-     * @param learner the learner to be evaluated via cross-validation
-     * @param data the multi-label data set for cross-validation
-     * @param measures the evaluation measures to compute
+     * @param learner   the learner to be evaluated via cross-validation
+     * @param data      the multi-label data set for cross-validation
+     * @param measures  the evaluation measures to compute
      * @param someFolds number of folds
      * @return a {@link MultipleEvaluation} object holding the results
      */
@@ -372,12 +336,12 @@ public class Evaluator {
      * Evaluates a {@link ClusWrapperClassification} on given test data set using specified
      * evaluation measures
      *
-     * @param learner the learner to be evaluated
+     * @param learner  the learner to be evaluated
      * @param testData the data set for evaluation
      * @param measures the evaluation measures to compute
      * @return an Evaluation object
      * @throws IllegalArgumentException if an input parameter is null
-     * @throws Exception when evaluation fails
+     * @throws Exception                when evaluation fails
      */
     public Evaluation evaluate(ClusWrapperClassification learner, MultiLabelInstances testData,
                                List<Measure> measures) throws Exception {
@@ -386,11 +350,7 @@ public class Evaluator {
         boolean isRuleBased = learner.isRuleBased();
         boolean isRegression;
         MultiLabelOutput output = learner.makePrediction(testData.getDataSet().instance(0));
-        if (output.hasPvalues()) {
-            isRegression = true;
-        } else {
-            isRegression = false;
-        }
+        isRegression = output.hasPvalues();
 
         String clusWorkingDir = learner.getClusWorkingDir();
         String datasetName = learner.getDatasetName();
@@ -456,11 +416,7 @@ public class Evaluator {
                     if (isRegression) {
                         trueValues[j] = Double.parseDouble(pred);
                     } else {
-                        if (Double.parseDouble(pred) > 0.5) {
-                            trueLabels[j] = true;
-                        } else {
-                            trueLabels[j] = false;
-                        }
+                        trueLabels[j] = Double.parseDouble(pred) > 0.5;
                     }
                 }
                 // collect predicted values

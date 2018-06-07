@@ -20,15 +20,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 
  * @author Eleftherios Spyromitros-Xioufis
  * @version 2010.12.04
  */
 public abstract class LabelBasedAveragePrecision extends ConfidenceMeasureBase {
 
-    /** the number of labels */
+    /**
+     * the number of labels
+     */
     protected int numOfLabels;
-    /** collection that stores all predictions and ground truths */
+    /**
+     * collection that stores all predictions and ground truths
+     */
     protected List<ConfidenceActual>[] confact;
 
     /**
@@ -76,7 +79,7 @@ public abstract class LabelBasedAveragePrecision extends ConfidenceMeasureBase {
          * Creates a new instance of this class
          *
          * @param confidence the confidence
-         * @param actual the ground truth
+         * @param actual     the ground truth
          */
         public ConfidenceActual(double confidence, boolean actual) {
             this.actual = actual;

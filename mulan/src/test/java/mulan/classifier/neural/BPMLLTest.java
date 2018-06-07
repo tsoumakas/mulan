@@ -15,8 +15,6 @@
  */
 package mulan.classifier.neural;
 
-import java.util.Arrays;
-
 import junit.framework.Assert;
 import mulan.classifier.InvalidDataException;
 import mulan.classifier.MultiLabelLearnerBase;
@@ -26,12 +24,12 @@ import mulan.data.MultiLabelInstances;
 import mulan.data.generation.Attribute;
 import mulan.data.generation.DataSetBuilder;
 import mulan.data.generation.DataSetDefinition;
-
 import org.junit.Before;
 import org.junit.Test;
-
 import weka.core.DenseInstance;
 import weka.core.Instance;
+
+import java.util.Arrays;
 
 public class BPMLLTest extends MultiLabelLearnerTestBase {
 

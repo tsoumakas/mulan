@@ -20,57 +20,58 @@
  */
 package mulan.classifier.neural.model;
 
-import java.io.Serializable;
-import java.util.*;
 import mulan.core.ArgumentNullException;
 
+import java.io.Serializable;
+import java.util.*;
+
 /**
- * Implementation of a neuron unit. 
- * The neurons are used as processing elements in {@link NeuralNet}. 
- * 
+ * Implementation of a neuron unit.
+ * The neurons are used as processing elements in {@link NeuralNet}.
+ *
  * @author Jozef Vilcek
  * @version 2012.02.27
  */
 public class Neuron implements Serializable {
 
     private static final long serialVersionUID = -2826468439369586864L;
-    private double[] inputWeights;
-    private double[] deltaValues; // for momentum
-    private double errorValue;
     private final ActivationFunction function;
     private final double biasInput;
-    private double neuronInput;
-    private double neuronOutput;
-    private List<Neuron> nextNeurons;
     // the dimension of input pattern vector without bias term
     private final int inputDim;
     private final Random random;
-    
-    
+    private double[] inputWeights;
+    private double[] deltaValues; // for momentum
+    private double errorValue;
+    private double neuronInput;
+    private double neuronOutput;
+    private List<Neuron> nextNeurons;
+
+
     /**
      * Creates a new {@link Neuron} instance.
      *
-     * @param function the activation function of the neuron
-     * @param inputDim the dimension of input pattern vector the neuron can process (the bias not included).
-     * 				   The input dimension must be greater than zero.
+     * @param function  the activation function of the neuron
+     * @param inputDim  the dimension of input pattern vector the neuron can process (the bias not included).
+     *                  The input dimension must be greater than zero.
      * @param biasValue the bias input value
      */
     public Neuron(final ActivationFunction function, int inputDim, double biasValue) {
-    	this(function, inputDim, biasValue, new Random());
+        this(function, inputDim, biasValue, new Random());
     }
 
     /**
      * Creates a new {@link Neuron} instance.
      *
-     * @param function the activation function of the neuron
-     * @param inputDim the dimension of input pattern vector the neuron can process (the bias not included).
-     * 				   The input dimension must be greater than zero.
+     * @param function  the activation function of the neuron
+     * @param inputDim  the dimension of input pattern vector the neuron can process (the bias not included).
+     *                  The input dimension must be greater than zero.
      * @param biasValue the bias input value
-     * @param random the pseudo-random generator to be used for computations involving randomness.
-     * 		This parameter can be null. In this case, new random instance with default seed will be constructed where needed.
+     * @param random    the pseudo-random generator to be used for computations involving randomness.
+     *                  This parameter can be null. In this case, new random instance with default seed will be constructed where needed.
      */
     public Neuron(final ActivationFunction function, int inputDim, double biasValue, final Random random) {
-    	if (function == null) {
+        if (function == null) {
             throw new ArgumentNullException("function");
         }
         if (inputDim <= 0) {
@@ -86,15 +87,15 @@ public class Neuron implements Serializable {
         this.random = random == null ? new Random() : random;
         reset();
     }
-    
-    
+
+
     /**
      * Creates a new {@link Neuron} instance.
      *
-     * @param function the activation function of the neuron
-     * @param inputDim the dimension of input pattern vector the neuron can process (the bias not included)
-     * 				   The input dimension must be greater than zero.
-     * @param biasValue the bias input value
+     * @param function    the activation function of the neuron
+     * @param inputDim    the dimension of input pattern vector the neuron can process (the bias not included)
+     *                    The input dimension must be greater than zero.
+     * @param biasValue   the bias input value
      * @param nextNeurons collection of neurons for which this neuron will be an input.
      */
     public Neuron(final ActivationFunction function, int inputDim, double biasValue, final Collection<Neuron> nextNeurons) {
@@ -110,6 +111,7 @@ public class Neuron implements Serializable {
 
     /**
      * Returns the {@link ActivationFunction} used by the {@link Neuron}.
+     *
      * @return the activation function
      */
     public ActivationFunction getActivationFunction() {
@@ -191,7 +193,7 @@ public class Neuron implements Serializable {
      * The output value is cached from processing of last input.
      *
      * @return output of the {@link Neuron} or 0 if no
-     * 			pattern was processed yet or neuron is after reset.
+     * pattern was processed yet or neuron is after reset.
      */
     public double getOutput() {
         return neuronOutput;
@@ -206,7 +208,7 @@ public class Neuron implements Serializable {
      * The input values are cached from last processed input pattern.
      *
      * @return the input value of the {@link Neuron} or 0 if no
-     * 			pattern was processed yet or neuron is after reset.
+     * pattern was processed yet or neuron is after reset.
      */
     public double getNeuronInput() {
         return neuronInput;
@@ -228,7 +230,7 @@ public class Neuron implements Serializable {
      *
      * @param neuron the neuron which is connected to the output of this instance.
      * @return true if specified neuron was successfully connected;
-     * 		   false if connection already exists
+     * false if connection already exists
      * @throws IllegalArgumentException in neuron is null
      */
     public boolean addNeuron(Neuron neuron) {
@@ -248,7 +250,7 @@ public class Neuron implements Serializable {
      *
      * @param neurons the collection of neurons which have to be connected to the output of this instance.
      * @return true if at least one of specified neurons was successfully connected;
-     * 		   false if no connection was made. This means that all instances are already connected.
+     * false if no connection was made. This means that all instances are already connected.
      * @throws IllegalArgumentException if neurons collection is null
      */
     public boolean addAllNeurons(Collection<Neuron> neurons) {
@@ -270,7 +272,7 @@ public class Neuron implements Serializable {
      *
      * @param neuron the neuron which is connected to the output of this instance.
      * @return true if connection to specified neuron was successfully removed;
-     * 		   false if connection did not exist
+     * false if connection did not exist
      * @throws IllegalArgumentException if neuron is null
      */
     public boolean removeNeuron(Neuron neuron) {

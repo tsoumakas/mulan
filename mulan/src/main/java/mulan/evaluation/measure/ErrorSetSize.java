@@ -17,7 +17,7 @@ package mulan.evaluation.measure;
 
 /**
  * Measure based on the ErrorSetSize ranking loss function
- * 
+ *
  * @author Grigorios Tsoumakas
  * @version 2010.11.05
  */

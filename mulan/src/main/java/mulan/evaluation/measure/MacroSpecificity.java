@@ -47,7 +47,7 @@ public class MacroSpecificity extends LabelBasedSpecificity implements MacroAver
     public String getName() {
         return "Macro-averaged Specificity";
     }
-    
+
     /**
      * Returns the specificity for a label
      *

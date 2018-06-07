@@ -15,9 +15,6 @@
  */
 package mulan.classifier.meta.thresholding;
 
-import java.util.Arrays;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import mulan.classifier.InvalidDataException;
 import mulan.classifier.MultiLabelLearner;
 import mulan.classifier.MultiLabelOutput;
@@ -36,6 +33,10 @@ import weka.core.TechnicalInformation;
 import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
 import weka.core.Utils;
+
+import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * <p> Class that estimates a single threshold for all labels and examples. For
@@ -77,8 +78,8 @@ public class OneThreshold extends MultiLabelMetaLearner {
 
     /**
      * @param baseLearner the underlying multi=label learner
-     * @param aMeasure the measure to optimize
-     * @param someFolds number of cross-validation folds
+     * @param aMeasure    the measure to optimize
+     * @param someFolds   number of cross-validation folds
      */
     public OneThreshold(MultiLabelLearner baseLearner, BipartitionMeasureBase aMeasure, int someFolds) {
         super(baseLearner);
@@ -96,7 +97,7 @@ public class OneThreshold extends MultiLabelMetaLearner {
 
     /**
      * @param baseLearner the underlying multi=label learner
-     * @param aMeasure measure to optimize
+     * @param aMeasure    measure to optimize
      */
     public OneThreshold(MultiLabelLearner baseLearner, BipartitionMeasureBase aMeasure) {
         super(baseLearner);
@@ -107,11 +108,11 @@ public class OneThreshold extends MultiLabelMetaLearner {
      * Evaluates the performance of the learner on a data set according to a
      * bipartition measure for a range of thresholds
      *
-     * @param data the test data to evaluate different thresholds
+     * @param data    the test data to evaluate different thresholds
      * @param measure the evaluation is based on this parameter
-     * @param min the minimum threshold
-     * @param max the maximum threshold
-     * @param the step to increase threshold from min to max
+     * @param min     the minimum threshold
+     * @param max     the maximum threshold
+     * @param the     step to increase threshold from min to max
      * @return the optimal threshold
      * @throws Exception Potential exception thrown. To be handled in an upper level.
      */
@@ -180,7 +181,7 @@ public class OneThreshold extends MultiLabelMetaLearner {
     /**
      * Evaluates the measureForThreshold of different threshold values
      *
-     * @param data the test data to evaluate different thresholds
+     * @param data    the test data to evaluate different thresholds
      * @param measure the evaluation is based on this parameter
      * @return the sum of differences from the optimal value of the measure for
      * each instance and threshold
@@ -216,17 +217,13 @@ public class OneThreshold extends MultiLabelMetaLearner {
     }
 
     @Override
-    protected MultiLabelOutput makePredictionInternal(Instance instance) throws Exception, InvalidDataException {
+    protected MultiLabelOutput makePredictionInternal(Instance instance) throws Exception {
         boolean[] predictedLabels;
         MultiLabelOutput mlo = baseLearner.makePrediction(instance);
         double[] confidences = mlo.getConfidences();
         predictedLabels = new boolean[numLabels];
         for (int i = 0; i < numLabels; i++) {
-            if (confidences[i] >= threshold) {
-                predictedLabels[i] = true;
-            } else {
-                predictedLabels[i] = false;
-            }
+            predictedLabels[i] = confidences[i] >= threshold;
 
         }
         MultiLabelOutput newOutput = new MultiLabelOutput(predictedLabels, mlo.getConfidences());

@@ -15,14 +15,15 @@
  */
 package mulan.classifier.transformation;
 
-import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import mulan.data.DataUtils;
 import mulan.data.LabelSet;
 import weka.classifiers.Classifier;
 import weka.classifiers.trees.J48;
 import weka.core.Instance;
+
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * <p>Implementation of he Pruned Sets (PS) algorithm.</p> <p>For more
@@ -36,24 +37,10 @@ import weka.core.Instance;
 public class PrunedSets extends LabelsetPruning {
 
     /**
-     * strategies for processing infrequent labelsets
-     */
-    public enum Strategy {
-
-        /**
-         * Strategy A: rank subsets firstly by the number of labels they contain
-         * and secondly by the times they occur, then keep top b ranked
-         */
-        A,
-        /**
-         * Strategy B: keep all subsets of size greater than b
-         */
-        B;
-    };
-    /**
      * strategy for processing infrequent labelsets
      */
     private Strategy strategy;
+
     /**
      * parameter of strategy for processing infrequent labelsets
      */
@@ -71,9 +58,9 @@ public class PrunedSets extends LabelsetPruning {
      * strategy for processing infrequent labelsets
      *
      * @param classifier base single-label classification algorithm
-     * @param aP number of instances required for a labelset to be included.
-     * @param aStrategy strategy for processing infrequent labelsets
-     * @param aB parameter of the strategy for processing infrequent labelsets
+     * @param aP         number of instances required for a labelset to be included.
+     * @param aStrategy  strategy for processing infrequent labelsets
+     * @param aB         parameter of the strategy for processing infrequent labelsets
      */
     public PrunedSets(Classifier classifier, int aP, Strategy aStrategy, int aB) {
         super(classifier, aP);
@@ -106,7 +93,7 @@ public class PrunedSets extends LabelsetPruning {
                     if (!ListInstancePerLabel.containsKey(l)) {
                         continue;
                     }
-                    // check if it occurs more than p times 
+                    // check if it occurs more than p times
                     if (ListInstancePerLabel.get(l).size() <= p) {
                         continue;
                     }
@@ -206,5 +193,21 @@ public class PrunedSets extends LabelsetPruning {
             default:
                 return null;
         }
+    }
+
+    /**
+     * strategies for processing infrequent labelsets
+     */
+    public enum Strategy {
+
+        /**
+         * Strategy A: rank subsets firstly by the number of labels they contain
+         * and secondly by the times they occur, then keep top b ranked
+         */
+        A,
+        /**
+         * Strategy B: keep all subsets of size greater than b
+         */
+        B
     }
 }

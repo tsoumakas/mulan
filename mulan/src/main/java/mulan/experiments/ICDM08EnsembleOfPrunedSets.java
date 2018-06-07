@@ -15,12 +15,6 @@
  */
 package mulan.experiments;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-
-import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import mulan.classifier.meta.thresholding.OneThreshold;
 import mulan.classifier.transformation.EnsembleOfPrunedSets;
 import mulan.classifier.transformation.PrunedSets;
@@ -28,14 +22,16 @@ import mulan.data.MultiLabelInstances;
 import mulan.evaluation.Evaluation;
 import mulan.evaluation.Evaluator;
 import mulan.evaluation.MultipleEvaluation;
-import mulan.evaluation.measure.BipartitionMeasureBase;
-import mulan.evaluation.measure.ExampleBasedAccuracy;
-import mulan.evaluation.measure.ExampleBasedFMeasure;
-import mulan.evaluation.measure.HammingLoss;
-import mulan.evaluation.measure.Measure;
+import mulan.evaluation.measure.*;
 import weka.classifiers.functions.SMO;
 import weka.core.Instances;
 import weka.core.Utils;
+
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * <p>Class replicating the experiment in <em>Jesse Read, Bernhard Pfahringer,

@@ -20,31 +20,18 @@
  */
 package mulan.data;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.io.Serializable;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
-
 import mulan.core.ArgumentNullException;
 import mulan.core.MulanRuntimeException;
 import mulan.core.WekaException;
 import weka.core.SerializedObject;
 
+import javax.xml.bind.annotation.*;
+import java.io.*;
+import java.util.*;
+
 /**
- * Implementation of {@link LabelsMetaData} info about labels and their structure. 
- * 
+ * Implementation of {@link LabelsMetaData} info about labels and their structure.
+ *
  * @author Jozef Vilcek
  * @see LabelsMetaData
  */
@@ -82,7 +69,7 @@ public class LabelsMetaDataImpl implements LabelsMetaData, Serializable, Externa
         if (rootLabelNodes.contains(rootNode)) {
             throw new IllegalArgumentException(
                     String.format("The root label node '%s' is already added.",
-                    rootNode.getName()));
+                            rootNode.getName()));
         }
 
         rootLabelNodes.add(rootNode);
@@ -102,7 +89,7 @@ public class LabelsMetaDataImpl implements LabelsMetaData, Serializable, Externa
     }
 
     public boolean isHierarchy() {
-        return (allLabelNodes.size() == rootLabelNodes.size()) ? false : true;
+        return allLabelNodes.size() != rootLabelNodes.size();
     }
 
     public int getNumLabels() {
@@ -146,7 +133,7 @@ public class LabelsMetaDataImpl implements LabelsMetaData, Serializable, Externa
         LabelNode labelNode = allLabelNodes.get(labelName);
 
         int result = processNodeIndex(labelNode, IndexingAction.Remove);
-        if (result > 0 && rootLabelNodes.contains(labelNode)) {
+        if (result > 0) {
             rootLabelNodes.remove(labelNode);
         }
 
@@ -196,22 +183,22 @@ public class LabelsMetaDataImpl implements LabelsMetaData, Serializable, Externa
         }
     }
 
+    @SuppressWarnings("unchecked")
+    @Override
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        rootLabelNodes = (Set<LabelNode>) in.readObject();
+        doReInit();
+
+    }
+
+    @Override
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(this.rootLabelNodes);
+    }
+
     private enum IndexingAction {
 
         Add,
         Remove
     }
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-		rootLabelNodes = (Set<LabelNode>)in.readObject();
-		doReInit();
-		
-	}
-
-	@Override
-	public void writeExternal(ObjectOutput out) throws IOException {
-		out.writeObject(this.rootLabelNodes);
-	}
 }

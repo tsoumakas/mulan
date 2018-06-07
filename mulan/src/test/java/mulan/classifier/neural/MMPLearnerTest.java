@@ -27,10 +27,8 @@ import mulan.evaluation.loss.ErrorSetSize;
 import mulan.evaluation.loss.IsError;
 import mulan.evaluation.loss.OneError;
 import mulan.evaluation.loss.RankingLoss;
-
 import org.junit.Before;
 import org.junit.Test;
-
 import weka.core.DenseInstance;
 import weka.core.Instance;
 
@@ -70,11 +68,11 @@ public class MMPLearnerTest extends MultiLabelLearnerTestBase {
         learner.setConvertNominalToBinary(false);
         Assert.assertFalse(learner.getConvertNominalToBinary());
     }
-    
+
     @Test()
     public void testSetTrainingEpochs() {
         learner.setTrainingEpochs(100);
-        Assert.assertEquals(100,learner.getTrainingEpochs());
+        Assert.assertEquals(100, learner.getTrainingEpochs());
     }
 
     @Test(expected = InvalidDataException.class)

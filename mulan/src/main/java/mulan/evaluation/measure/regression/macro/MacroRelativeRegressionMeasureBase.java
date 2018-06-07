@@ -1,8 +1,8 @@
 package mulan.evaluation.measure.regression.macro;
 
-import java.util.Arrays;
-
 import mulan.data.MultiLabelInstances;
+
+import java.util.Arrays;
 
 public abstract class MacroRelativeRegressionMeasureBase extends MacroRegressionMeasureBase {
     /**
@@ -15,9 +15,13 @@ public abstract class MacroRelativeRegressionMeasureBase extends MacroRegression
      * max) absolute or squared or logarithmic per target
      */
     protected double[] fullMeanPredError;
-    /** holds the mean per target in train set */
+    /**
+     * holds the mean per target in train set
+     */
     protected double[] targetMeansTrain;
-    /** holds the mean per target in full dataset */
+    /**
+     * holds the mean per target in full dataset
+     */
     protected double[] targetMeansFull;
 
     public MacroRelativeRegressionMeasureBase(MultiLabelInstances train, MultiLabelInstances test) {

@@ -20,21 +20,22 @@
  */
 package mulan.classifier.neural;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 import mulan.classifier.neural.model.Neuron;
 import mulan.evaluation.loss.RankingLossFunction;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 /**
- * Implementation of uniform update rule for {@link MMPLearner}. The rule will penalize 
+ * Implementation of uniform update rule for {@link MMPLearner}. The rule will penalize
  * each wrongly order pair of labels by same amount. <br>
- * The model is represented as a list of perceptrons (one for each label), each represented 
+ * The model is represented as a list of perceptrons (one for each label), each represented
  * by {@link Neuron}. Perceptrons are expected to be in the same order as labels in training data set.
- * 
- * @see MMPUpdateRuleBase
+ *
  * @author Jozef Vilcek
  * @version 2012.02.27
+ * @see MMPUpdateRuleBase
  */
 public class MMPUniformUpdateRule extends MMPUpdateRuleBase {
 

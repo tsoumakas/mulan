@@ -1,15 +1,15 @@
 package mulan.transformations;
 
-import java.io.Serializable;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import mulan.data.MultiLabelInstances;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.Add;
 import weka.filters.unsupervised.attribute.Remove;
+
+import java.io.Serializable;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Class that implements the triple classes transformation of COCOA method
@@ -56,7 +56,7 @@ public class COCOATripleClassTransformation implements Serializable {
     /**
      * Remove all label attributes except labelToKeep
      *
-     * @param instance the instance from which labels are to be removed
+     * @param instance    the instance from which labels are to be removed
      * @param labelToKeep the label to keep
      * @return transformed Instance
      */
@@ -67,24 +67,22 @@ public class COCOATripleClassTransformation implements Serializable {
         add.input(transformedInstance);
         transformedInstance = add.output();
         transformedInstance.setDataset(shell);
-             	
-        String s1=instance.stringValue(label1);
-    	String s2=instance.stringValue(label2);
-    	if(s1.equals("0")){
-    		if(s2.equals("0")){
-    			transformedInstance.setClassValue("0");
-    		}
-    		else if(s2.equals("1")){
-    			transformedInstance.setClassValue("1");
-    		}
-    	}
-    	else if(s1.equals("1")){
-    		transformedInstance.setClassValue("2");
-    	}
+
+        String s1 = instance.stringValue(label1);
+        String s2 = instance.stringValue(label2);
+        if (s1.equals("0")) {
+            if (s2.equals("0")) {
+                transformedInstance.setClassValue("0");
+            } else if (s2.equals("1")) {
+                transformedInstance.setClassValue("1");
+            }
+        } else if (s1.equals("1")) {
+            transformedInstance.setClassValue("2");
+        }
         return transformedInstance;
     }
 
-    
+
     /**
      * Prepares the training data of triple class for two labels.
      *
@@ -95,10 +93,10 @@ public class COCOATripleClassTransformation implements Serializable {
     public Instances transformInstances(int label1, int label2) {
         Instances transformed = new Instances(shell, 0);
         for (int j = 0; j < shell.numInstances(); j++) {
-        	Instance tempInstance=transformInstance(data.getDataSet().instance(j), label1, label2);
-        	transformed.add(tempInstance);
+            Instance tempInstance = transformInstance(data.getDataSet().instance(j), label1, label2);
+            transformed.add(tempInstance);
         }
         return transformed;
     }
-    
+
 }

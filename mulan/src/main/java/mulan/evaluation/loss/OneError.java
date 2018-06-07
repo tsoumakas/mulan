@@ -19,7 +19,7 @@ package mulan.evaluation.loss;
  * Implementation of the one-error loss function. For a given example and
  * prediction, one-error is 1 if the top ranked label is a relevant and 0
  * otherwise.
- * 
+ *
  * @author Jozef Vilcek
  * @author Grigorios Tsoumakas
  * @version 2010.11.10

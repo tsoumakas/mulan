@@ -15,33 +15,28 @@
  */
 package mulan.experiments;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import mulan.classifier.lazy.IBLR_ML;
 import mulan.classifier.transformation.MultiLabelStacking;
 import mulan.data.MultiLabelInstances;
 import mulan.evaluation.Evaluation;
 import mulan.evaluation.Evaluator;
 import mulan.evaluation.MultipleEvaluation;
-import mulan.evaluation.measure.AveragePrecision;
-import mulan.evaluation.measure.Coverage;
-import mulan.evaluation.measure.HammingLoss;
-import mulan.evaluation.measure.Measure;
-import mulan.evaluation.measure.OneError;
-import mulan.evaluation.measure.RankingLoss;
+import mulan.evaluation.measure.*;
 import weka.classifiers.Classifier;
 import weka.classifiers.functions.Logistic;
 import weka.classifiers.lazy.IBk;
 import weka.core.Instances;
 import weka.core.Utils;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
- * <p>Class replicating the experiment in <em>Weiwei Cheng and Eyke Hüllermeier. 
- * 2009. Combining instance-based learning and logistic regression for 
+ * <p>Class replicating the experiment in <em>Weiwei Cheng and Eyke Hüllermeier.
+ * 2009. Combining instance-based learning and logistic regression for
  * multilabel classification. Mach. Learn. 76, 2-3 (September 2009), 211-225.
  * </em></p>
  *

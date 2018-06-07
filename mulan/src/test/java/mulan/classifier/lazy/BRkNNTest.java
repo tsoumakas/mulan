@@ -16,12 +16,11 @@
 package mulan.classifier.lazy;
 
 import junit.framework.Assert;
-
 import org.junit.Test;
 
 /**
  * Unit test routines for {@link BRkNN}.
- * 
+ *
  * @author Eleftherios Spyromitros-Xioufis
  */
 public class BRkNNTest extends MultiLabelKNNTest {

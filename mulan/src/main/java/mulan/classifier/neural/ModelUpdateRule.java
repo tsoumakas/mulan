@@ -23,9 +23,9 @@ package mulan.classifier.neural;
 import java.util.Map;
 
 /**
- * Represents an update rule, which can be used by a learner, to process an input 
+ * Represents an update rule, which can be used by a learner, to process an input
  * example in learning phase and perform an update of a model when necessary.
- * 
+ *
  * @author Jozef Vilcek
  * @version 2012.02.27
  */
@@ -39,9 +39,9 @@ public interface ModelUpdateRule {
      * the true output for given example).
      *
      * @param example the input example
-     * @param params the additional parameters for an update.
+     * @param params  the additional parameters for an update.
      * @return the error measure of the model response for given input pattern
      * and specified true output.
      */
-    public double process(DataPair example, Map<String, Object> params);
+    double process(DataPair example, Map<String, Object> params);
 }

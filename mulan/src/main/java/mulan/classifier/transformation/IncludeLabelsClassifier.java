@@ -26,7 +26,7 @@ import weka.core.Instances;
  * A multilabel classifier based on the include labels transformation. The
  * multiple label attributes are mapped to two attributes: <ul> <li>a) one
  * nominal attribute containing the class</li> <li>b) one binary attribute
- * containing whether it is true.</li> </ul> 
+ * containing whether it is true.</li> </ul>
  *
  * @author Robert Friberg
  * @author Grigorios Tsoumakas
@@ -35,16 +35,16 @@ import weka.core.Instances;
 public class IncludeLabelsClassifier extends TransformationBasedMultiLabelLearner {
 
     /**
-     * The transformation used by the classifier
-     */
-    private IncludeLabelsTransformation pt6Trans;
-    /**
      * A dataset with the format needed by the base classifier. It is
      * potentially expensive copying datasets with many attributes, so it is
      * used for building the classifier and then it's mlData are discarded and
      * it is reused during prediction.
      */
     protected Instances transformed;
+    /**
+     * The transformation used by the classifier
+     */
+    private IncludeLabelsTransformation pt6Trans;
 
     /**
      * Constructor that initializes a new learner with the given base classifier
@@ -82,7 +82,7 @@ public class IncludeLabelsClassifier extends TransformationBasedMultiLabelLearne
             //debug(temp.toString());
             confidences[i] = temp[transformed.classAttribute().indexOfValue("1")];
             //debug("" + confidences[i]);
-            bipartition[i] = temp[transformed.classAttribute().indexOfValue("1")] >= temp[transformed.classAttribute().indexOfValue("0")] ? true : false;
+            bipartition[i] = temp[transformed.classAttribute().indexOfValue("1")] >= temp[transformed.classAttribute().indexOfValue("0")];
             //debug("" + bipartition[i]);
         }
 

@@ -20,22 +20,28 @@ import weka.core.FastVector;
 
 /**
  * Implementation of the label-based macro precision measure.
- * 
+ *
  * @author Grigorios Tsoumakas
  * @version 2012.07.17
  */
 public abstract class LabelBasedAUC extends ConfidenceMeasureBase {
 
-    /** The number of labels */
+    /**
+     * The number of labels
+     */
     protected int numOfLabels;
-    /** The predictions for each label */
+    /**
+     * The predictions for each label
+     */
     protected FastVector[] m_Predictions;
-    /** The predictions for all labels */
+    /**
+     * The predictions for all labels
+     */
     protected FastVector all_Predictions;
 
     /**
      * Creates a new instance of this class
-     * 
+     *
      * @param numOfLabels the number of labels
      */
     public LabelBasedAUC(int numOfLabels) {
@@ -59,7 +65,7 @@ public abstract class LabelBasedAUC extends ConfidenceMeasureBase {
     public double getIdealValue() {
         return 1;
     }
-   
+
     @Override
     protected void updateConfidence(double[] confidences, boolean[] truth) {
         for (int labelIndex = 0; labelIndex < numOfLabels; labelIndex++) {

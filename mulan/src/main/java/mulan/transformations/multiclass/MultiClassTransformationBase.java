@@ -20,28 +20,33 @@
  */
 package mulan.transformations.multiclass;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 import mulan.data.MultiLabelInstances;
-import mulan.transformations.*;
+import mulan.transformations.RemoveAllLabels;
 import weka.core.Attribute;
 import weka.core.Instance;
 import weka.core.Instances;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- * The base class for multi-class transformation methods. It provides initial 
+ * The base class for multi-class transformation methods. It provides initial
  * implementation of the {@link MultiClassTransformation} interface. All
  * implementations of transformation methods should reuse this base class.
- *  
+ *
  * @author Stavros Bakirtzoglou
  * @version 2012.02.02
  */
 public abstract class MultiClassTransformationBase implements Serializable, MultiClassTransformation {
 
-    /** the number of labels */
+    /**
+     * the number of labels
+     */
     protected int numOfLabels;
-    /** the array with the label indices */
+    /**
+     * the array with the label indices
+     */
     protected int[] labelIndices;
 
     public Instances transformInstances(MultiLabelInstances mlData) throws Exception {

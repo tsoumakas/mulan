@@ -15,20 +15,21 @@
  */
 package mulan.classifier.meta;
 
-import java.util.*;
 import weka.classifiers.rules.DecisionTableHashKey;
 import weka.clusterers.NumberOfClustersRequestable;
 import weka.clusterers.RandomizableClusterer;
-import weka.core.Capabilities.Capability;
 import weka.core.*;
+import weka.core.Capabilities.Capability;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.ReplaceMissingValues;
 
+import java.util.*;
+
 /**
- <!-- globalinfo-start -->
+ * <!-- globalinfo-start -->
  * Cluster data using the constrained k means algorithm
  * <br>
- <!-- globalinfo-end -->
+ * <!-- globalinfo-end -->
  *
  * @author Mark Hall
  * @author Eibe Frank
@@ -39,65 +40,12 @@ import weka.filters.unsupervised.attribute.ReplaceMissingValues;
 public class ConstrainedKMeans extends RandomizableClusterer implements NumberOfClustersRequestable, WeightedInstancesHandler {
 
     /**
-     * for serialization 
+     * for serialization
      */
     static final long serialVersionUID = -3235809600124455376L;
     private ArrayList[] bucket;
     private int bucketSize;
     private int maxIterations;
-
-    /**
-     * Class for representing an instance inside a bucket
-     */
-    static public class bucketInstance implements Comparable {
-
-        double[] distances;
-        double distance;
-
-        /**
-         * Sets the distances to other instances
-         * @param x distances
-         */
-        public void setDistances(double[] x) {
-            distances = new double[x.length];
-            System.arraycopy(x, 0, distances, 0, x.length);
-        }
-
-        /**
-         * 
-         * @param x the distance
-         */
-        public void setDistance(double x) {
-            distance = x;
-        }
-
-        /**
-         * 
-         * @return distances
-         */
-        public double[] getDistances() {
-            return distances;
-        }
-
-        /**
-         * 
-         * @return distance
-         */
-        public double getDistance() {
-            return distance;
-        }
-
-        public int compareTo(Object ci) {
-            double d = ((bucketInstance) ci).getDistance();
-            if ((this.distance - d) < 0) {
-                return -1;
-            } else if (this.distance == d) {
-                return 0;
-            } else {
-                return 1;
-            }
-        }
-    }
     /**
      * replace missing values in training instances
      */
@@ -179,7 +127,6 @@ public class ConstrainedKMeans extends RandomizableClusterer implements NumberOf
     }
 
     /**
-     * 
      * @param x max iterations
      */
     public void setMaxIterations(int x) {
@@ -325,7 +272,7 @@ public class ConstrainedKMeans extends RandomizableClusterer implements NumberOf
     /**
      * clusters an instance that has been through the filters
      *
-     * @param instance the instance to assign a cluster to
+     * @param instance     the instance to assign a cluster to
      * @param updateErrors if true, update the within clusters sum of errors
      * @return a cluster number
      */
@@ -381,10 +328,9 @@ public class ConstrainedKMeans extends RandomizableClusterer implements NumberOf
      * @param instance the instance to be assigned to a cluster
      * @return the number of the assigned cluster as an interger if the class is
      * enumerated, otherwise the predicted value
-     * @throws Exception if instance could not be classified successfully
      */
     @Override
-    public int clusterInstance(Instance instance) throws Exception {
+    public int clusterInstance(Instance instance) {
         m_ReplaceMissingFilter.input(instance);
         m_ReplaceMissingFilter.batchFinished();
         Instance inst = m_ReplaceMissingFilter.output();
@@ -395,7 +341,7 @@ public class ConstrainedKMeans extends RandomizableClusterer implements NumberOf
     /**
      * Calculates the distance between two instances
      *
-     * @param first the first instance
+     * @param first  the first instance
      * @param second the second instance
      * @return the distance between the two given instances, between 0 and 1
      */
@@ -403,7 +349,7 @@ public class ConstrainedKMeans extends RandomizableClusterer implements NumberOf
         double distance = 0;
         int firstI, secondI;
         for (int p1 = 0, p2 = 0;
-                p1 < first.numValues() || p2 < second.numValues();) {
+             p1 < first.numValues() || p2 < second.numValues(); ) {
             if (p1 >= first.numValues()) {
                 firstI = m_ClusterCentroids.numAttributes();
             } else {
@@ -445,8 +391,8 @@ public class ConstrainedKMeans extends RandomizableClusterer implements NumberOf
      * Computes the difference between two given attribute values.
      *
      * @param index the attribute index
-     * @param val1 the first value
-     * @param val2 the second value
+     * @param val1  the first value
+     * @param val2  the second value
      * @return the difference
      */
     private double difference(int index, double val1, double val2) {
@@ -534,10 +480,8 @@ public class ConstrainedKMeans extends RandomizableClusterer implements NumberOf
      * Returns the number of clusters.
      *
      * @return the number of clusters generated for a training dataset.
-     * @throws Exception if number of clusters could not be returned
-     * successfully
      */
-    public int numberOfClusters() throws Exception {
+    public int numberOfClusters() {
         return m_NumClusters;
     }
 
@@ -573,6 +517,15 @@ public class ConstrainedKMeans extends RandomizableClusterer implements NumberOf
     }
 
     /**
+     * gets the number of clusters to generate
+     *
+     * @return the number of clusters to generate
+     */
+    public int getNumClusters() {
+        return m_NumClusters;
+    }
+
+    /**
      * set the number of clusters to generate
      *
      * @param n the number of clusters to generate
@@ -584,15 +537,6 @@ public class ConstrainedKMeans extends RandomizableClusterer implements NumberOf
         }
         m_NumClusters = n;
         bucket = new ArrayList[n];
-    }
-
-    /**
-     * gets the number of clusters to generate
-     *
-     * @return the number of clusters to generate
-     */
-    public int getNumClusters() {
-        return m_NumClusters;
     }
 
     /**
@@ -695,5 +639,56 @@ public class ConstrainedKMeans extends RandomizableClusterer implements NumberOf
      */
     public int[] getClusterSizes() {
         return m_ClusterSizes;
+    }
+
+    /**
+     * Class for representing an instance inside a bucket
+     */
+    static public class bucketInstance implements Comparable {
+
+        double[] distances;
+        double distance;
+
+        /**
+         * @return distances
+         */
+        public double[] getDistances() {
+            return distances;
+        }
+
+        /**
+         * Sets the distances to other instances
+         *
+         * @param x distances
+         */
+        public void setDistances(double[] x) {
+            distances = new double[x.length];
+            System.arraycopy(x, 0, distances, 0, x.length);
+        }
+
+        /**
+         * @return distance
+         */
+        public double getDistance() {
+            return distance;
+        }
+
+        /**
+         * @param x the distance
+         */
+        public void setDistance(double x) {
+            distance = x;
+        }
+
+        public int compareTo(Object ci) {
+            double d = ((bucketInstance) ci).getDistance();
+            if ((this.distance - d) < 0) {
+                return -1;
+            } else if (this.distance == d) {
+                return 0;
+            } else {
+                return 1;
+            }
+        }
     }
 }

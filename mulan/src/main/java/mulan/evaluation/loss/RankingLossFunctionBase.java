@@ -15,9 +15,10 @@
  */
 package mulan.evaluation.loss;
 
-import java.io.Serializable;
 import mulan.classifier.MultiLabelOutput;
 import mulan.core.ArgumentNullException;
+
+import java.io.Serializable;
 
 /**
  * Base class for ranking loss functions
@@ -25,7 +26,7 @@ import mulan.core.ArgumentNullException;
  * @author GrigoriosTsoumakas
  * @version 2010.11.10
  */
-public abstract class RankingLossFunctionBase implements RankingLossFunction, Serializable  {
+public abstract class RankingLossFunctionBase implements RankingLossFunction, Serializable {
 
     private void checkRanking(int[] ranking) {
         if (ranking == null) {

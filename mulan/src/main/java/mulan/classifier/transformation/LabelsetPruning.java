@@ -15,14 +15,15 @@
  */
 package mulan.classifier.transformation;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import mulan.data.LabelSet;
 import mulan.data.MultiLabelInstances;
 import weka.classifiers.Classifier;
 import weka.core.Instance;
 import weka.core.Instances;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 
 /**
  * <p>Common functionality class for the PPT and PS algorithms.</p>
@@ -33,13 +34,13 @@ import weka.core.Instances;
 public abstract class LabelsetPruning extends LabelPowerset {
 
     /**
-     * labelsets and a list with the corresponding instances
-     */
-    HashMap<LabelSet, ArrayList<Instance>> ListInstancePerLabel;
-    /**
      * parameter for the threshold of number of occurences of a labelset
      */
     protected int p;
+    /**
+     * labelsets and a list with the corresponding instances
+     */
+    HashMap<LabelSet, ArrayList<Instance>> ListInstancePerLabel;
     /**
      * format of the data
      */
@@ -50,7 +51,7 @@ public abstract class LabelsetPruning extends LabelPowerset {
      * parameter
      *
      * @param classifier base single-label classification algorithm
-     * @param aP number of instances required for a labelset to be included.
+     * @param aP         number of instances required for a labelset to be included.
      */
     public LabelsetPruning(Classifier classifier, int aP) {
         super(classifier);

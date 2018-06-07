@@ -15,8 +15,6 @@
  */
 package mulan.classifier.meta;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import mulan.classifier.InvalidDataException;
 import mulan.classifier.MultiLabelLearner;
 import mulan.classifier.MultiLabelOutput;
@@ -26,19 +24,25 @@ import mulan.transformations.RemoveAllLabels;
 import weka.classifiers.trees.J48;
 import weka.clusterers.Clusterer;
 import weka.clusterers.SimpleKMeans;
-import weka.core.*;
+import weka.core.EuclideanDistance;
+import weka.core.Instance;
+import weka.core.Instances;
+import weka.core.TechnicalInformation;
 import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
- <!-- globalinfo-start -->
+ * <!-- globalinfo-start -->
  * Class implementing clustering-based multi-label classification. For more information, see<br>
  * <br>
  * Gulisong Nasierding, Grigorios Tsoumakas, Abbas Kouzani: Clustering Based Multi-Label Classification for Image Annotation and Retrieval. In: Proc. 2009 IEEE International Conference on Systems, Man, and Cybernetics (SMC 2009), 2009.
  * <br>
- <!-- globalinfo-end -->
- *
- <!-- technical-bibtex-start -->
+ * <!-- globalinfo-end -->
+ * <p>
+ * <!-- technical-bibtex-start -->
  * BibTeX:
  * <pre>
  * &#64;inproceedings{GulisongNasierding2009,
@@ -50,23 +54,29 @@ import weka.core.TechnicalInformation.Type;
  * }
  * </pre>
  * <br>
- <!-- technical-bibtex-end -->
+ * <!-- technical-bibtex-end -->
  *
- * @author  Gulisong Nasierding
- * @author  Grigorios Tsoumakas
+ * @author Gulisong Nasierding
+ * @author Grigorios Tsoumakas
  * @version 2012.02.27
  */
 public class ClusteringBased extends MultiLabelMetaLearner {
 
-    /** The number of clusters */
+    /**
+     * The number of clusters
+     */
     private int numClusters;
-    /** The multi-label learners, one for each cluster */
+    /**
+     * The multi-label learners, one for each cluster
+     */
     private MultiLabelLearner[] multi;
-    /** The clusterer to use */
+    /**
+     * The clusterer to use
+     */
     private Clusterer clusterer;
 
     /**
-     * Default constructor. 
+     * Default constructor.
      */
     public ClusteringBased() {
         super(new LabelPowerset(new J48()));
@@ -79,11 +89,11 @@ public class ClusteringBased extends MultiLabelMetaLearner {
             Logger.getLogger(ClusteringBased.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     /**
      * Constructor
-     * 
-     * @param aClusterer the clustering approach
+     *
+     * @param aClusterer            the clustering approach
      * @param aMultiLabelClassifier the multi-label learner
      */
     public ClusteringBased(Clusterer aClusterer, MultiLabelLearner aMultiLabelClassifier) {
@@ -93,7 +103,7 @@ public class ClusteringBased extends MultiLabelMetaLearner {
 
     /**
      * Returns the clustering approach
-     * 
+     *
      * @return the clustering approach
      */
     public Clusterer getClusterer() {
@@ -128,7 +138,7 @@ public class ClusteringBased extends MultiLabelMetaLearner {
         for (int i = 0; i < numClusters; i++) {
             try {
                 multi[i] = baseLearner.makeCopy();
-                debug("Dataset " + (i+1) + ": " + subsetMultiLabelInstances[i].getDataSet().numInstances() + " instances");
+                debug("Dataset " + (i + 1) + ": " + subsetMultiLabelInstances[i].getDataSet().numInstances() + " instances");
                 multi[i].build(subsetMultiLabelInstances[i]);
 
 
@@ -139,7 +149,7 @@ public class ClusteringBased extends MultiLabelMetaLearner {
     }
 
     @Override
-    protected MultiLabelOutput makePredictionInternal(Instance instance) throws Exception, InvalidDataException {
+    protected MultiLabelOutput makePredictionInternal(Instance instance) throws Exception {
         Instance newInstance = RemoveAllLabels.transformInstance(instance, labelIndices);
         int cluster = clusterer.clusterInstance(newInstance);
         return multi[cluster].makePrediction(instance);
@@ -155,10 +165,10 @@ public class ClusteringBased extends MultiLabelMetaLearner {
         result.setValue(Field.YEAR, "2009");
         return result;
     }
-    
+
     public String globalInfo() {
         return "Class implementing clustering-based multi-label classification."
-                + " For more information, see\n\n" 
-                + getTechnicalInformation().toString(); 
+                + " For more information, see\n\n"
+                + getTechnicalInformation().toString();
     }
 }

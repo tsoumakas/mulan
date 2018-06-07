@@ -15,7 +15,6 @@
  */
 package mulan.classifier.meta;
 
-import java.util.*;
 import mulan.classifier.MultiLabelLearner;
 import mulan.classifier.MultiLabelOutput;
 import mulan.classifier.transformation.BinaryRelevance;
@@ -28,17 +27,19 @@ import weka.classifiers.trees.J48;
 import weka.core.Instance;
 import weka.core.TechnicalInformation;
 
+import java.util.*;
+
 /**
- <!-- globalinfo-start -->
+ * <!-- globalinfo-start -->
  * A class for gathering several different SubsetLearners into a composite ensemble model. &lt;br&gt; &lt;br&gt; The label set partitions for participation in ensemble are selected using their dependence weight from the large number of randomly generated possible partitions. The type of the learned dependencies is determined by the {&#64;link mulan.data.LabelPairsDependenceIdentifier} supplied to the class constructor. Two strategies for selecting ensemble partitions exists: (1) to select the highly weighted ones and (2) to select most different from the highly weighted ones. The strategy to be used is determined by the {&#64;link #selectDiverseModels} parameter which is 'true' by default.<br>
  * <br>
  * For more information, see<br>
  * <br>
  * Lena Tenenboim-Chekina, Lior Rokach,, Bracha Shapira: Identification of Label Dependencies for Multi-label Classification. In: , Haifa, Israel, 53--60, 2010.
  * <br>
- <!-- globalinfo-end --> 
- * 
- <!-- technical-bibtex-start -->
+ * <!-- globalinfo-end -->
+ * <p>
+ * <!-- technical-bibtex-start -->
  * BibTeX:
  * <pre>
  * &#64;inproceedings{LenaTenenboim-Chekina2010,
@@ -51,13 +52,28 @@ import weka.core.TechnicalInformation;
  * }
  * </pre>
  * <br>
- <!-- technical-bibtex-end -->
- * 
+ * <!-- technical-bibtex-end -->
+ *
  * @author Lena Chekina (lenat@bgu.ac.il)
  * @version 30.11.2010
  */
 public class EnsembleOfSubsetLearners extends MultiLabelMetaLearner {
 
+    /**
+     * Number of randomly generated possible label set partitions
+     */
+    private static int numOfRandomPartitions = 50000;
+    /**
+     * Number of highly weighted partitions used for selecting the 'enough'
+     * different among them. Used when {@link #selectDiverseModels} is true.
+     */
+    private static int numOfPartitionsForDiversity = 100;
+    /**
+     * Parameter used to dynamically define the threshold of 'enough' different
+     * partition. Used when
+     * {@link #selectDiverseModels} is true.
+     */
+    private static double dynamicDiversityThreshold = 0.2;
     /**
      * An array of ensemble models
      */
@@ -95,25 +111,9 @@ public class EnsembleOfSubsetLearners extends MultiLabelMetaLearner {
      * Random number generator
      */
     private Random rnd;
-    /**
-     * Number of randomly generated possible label set partitions
-     */
-    private static int numOfRandomPartitions = 50000;
-    /**
-     * Number of highly weighted partitions used for selecting the 'enough'
-     * different among them. Used when {@link #selectDiverseModels} is true.
-     */
-    private static int numOfPartitionsForDiversity = 100;
-    /**
-     * Parameter used to dynamically define the threshold of 'enough' different
-     * partition. Used when
-     * {@link #selectDiverseModels} is true.
-     */
-    private static double dynamicDiversityThreshold = 0.2;
 
     /**
      * Default constructor. Can be used for accessing class utility methods.
-     *
      */
     public EnsembleOfSubsetLearners() {
         this(new BinaryRelevance(new J48()), new J48(), new ConditionalDependenceIdentifier(new J48()), 10);
@@ -124,20 +124,333 @@ public class EnsembleOfSubsetLearners extends MultiLabelMetaLearner {
      * method for labels dependence identification and number of models to
      * constitute the ensemble.
      *
-     * @param aMultiLabelLearner the learner for multilabel classification
-     * @param aSingleLabelLearner the learner for single label classification
+     * @param aMultiLabelLearner    the learner for multilabel classification
+     * @param aSingleLabelLearner   the learner for single label classification
      * @param aDependenceIdentifier the method for label pairs dependence
-     * identification
-     * @param models the number of models
+     *                              identification
+     * @param models                the number of models
      */
     public EnsembleOfSubsetLearners(MultiLabelLearner aMultiLabelLearner,
-            Classifier aSingleLabelLearner, LabelPairsDependenceIdentifier aDependenceIdentifier,
-            int models) {
+                                    Classifier aSingleLabelLearner, LabelPairsDependenceIdentifier aDependenceIdentifier,
+                                    int models) {
         super(aMultiLabelLearner);
         singleLabelLearner = aSingleLabelLearner;
         dependenceIdentifier = aDependenceIdentifier;
         numModels = models;
         rnd = new Random(seed);
+    }
+
+    /**
+     * Returns a string representation of the labels partition.
+     *
+     * @param partition - a label set partition
+     * @return a string representation of the labels partition
+     */
+    public static String partitionToString(int[][] partition) {
+        StringBuilder result = new StringBuilder();
+        for (int[] aGroup : partition) {
+            result.append(Arrays.toString(aGroup));
+            result.append(", ");
+        }
+        return result.toString();
+    }
+
+    /**
+     * Creates a matrix containing dependence score for each labels pair.
+     *
+     * @param pairsList  the list of labels pairs and their dependence scores
+     * @param critical   the statistic critical value
+     * @param n          the size of the matrix (i.e. the number of labels)
+     * @param normalized indicates if to apply normalization using chiCritical
+     *                   value
+     * @return a matrix containing dependence score for each labels pair.
+     */
+    private static double[][] createDependenceWeightsMatrix(LabelsPair[] pairsList,
+                                                            double critical, int n, boolean normalized) {
+        double[][] matrix = new double[n][n];
+        for (LabelsPair pair : pairsList) {
+            Double value = pair.getScore();
+            int[] data = pair.getPair();
+            if (normalized) {
+                if (data[0] < data[1]) { // fill matrix above the diagonal
+                    matrix[data[0]][data[1]] = value - critical;
+                } else {
+                    matrix[data[1]][data[0]] = value - critical;
+                }
+            } else {
+                if (data[0] < data[1]) {
+                    matrix[data[0]][data[1]] = value;
+                } else {
+                    matrix[data[1]][data[0]] = value;
+                }
+            }
+        }
+        return matrix;
+    }
+
+    /**
+     * Fills an array with values from 0 to n-1
+     *
+     * @param n the array length
+     * @return an array with values from 0 to n-1
+     */
+    private static int[] initialize(int n) {
+        int[] a = new int[n];
+        for (int i = 0; i < n; i++) {
+            a[i] = i;
+        }
+        return a;
+    }
+
+    /**
+     * Converts random permutations to list of various label set partitions.
+     *
+     * @param permutations the arrays of permutations
+     * @param numLabels    the number of labels
+     * @return a list of various label set partitions
+     */
+    private static List<int[][]> convertToSets(int[][] permutations, int numLabels) {
+        List<int[][]> sets = new ArrayList<int[][]>();
+        for (int[] permutation : permutations) {
+            List<Integer[]> groupsList = extractGroups(permutation, numLabels);
+            sets.add(createSet(groupsList));
+        }
+        return sets;
+    }
+
+    /**
+     * Converts a random permutation to list of label subsets.
+     *
+     * @param permutation the array of permutation
+     * @param numLabels   the number of labels
+     * @return a list of label subsets
+     */
+    private static List<Integer[]> extractGroups(int[] permutation, int numLabels) {
+        List<Integer[]> groupsList = new ArrayList<Integer[]>();
+        List<Integer> group = new ArrayList<Integer>();
+        for (int value : permutation) {
+            if (value < numLabels) { // if value indicates label index
+                group.add(value);
+            } else { // the value indicates a separator
+                if (group.size() > 0) {
+                    Integer gr[] = group.toArray(new Integer[group.size()]);
+                    groupsList.add(gr);
+                    group = new ArrayList<Integer>();
+                }
+            }
+        }
+        if (group.size() > 0) { // add the latest group
+            Integer gr[] = group.toArray(new Integer[group.size()]);
+            groupsList.add(gr);
+        }
+        return groupsList;
+    }
+
+    /**
+     * Converts a list of arrays (i.e label subsets) into two-dimensional array
+     * representing a label set partitioning.
+     *
+     * @param groupsList the list of label subsets
+     * @return arrays of label set partitions
+     */
+    private static int[][] createSet(List<Integer[]> groupsList) {
+        int numGroups = groupsList.size();
+        int[][] sets = new int[numGroups][];
+        Integer[][] sets2 = groupsList.toArray(new Integer[groupsList.size()][]);
+        for (int i = 0; i < sets2.length; i++) { // convert to primitives
+            sets[i] = new int[sets2[i].length];
+            for (int j = 0; j < sets2[i].length; j++) {
+                sets[i][j] = sets2[i][j];
+            }
+        }
+        return sets;
+    }
+
+    /**
+     * Computes 'dependence' score of a partition.
+     *
+     * @param partition     the label set partition
+     * @param weightsMatrix the matrix containing dependence score for each
+     *                      labels pair
+     * @param numLabels     the number of labels
+     * @return value indicating a 'dependence' score of the partition
+     */
+    private static Double computeWeight(int[][] partition, double[][] weightsMatrix, int numLabels) {
+        double[][] matrix = deepClone(weightsMatrix);
+        Double weight = 0.0;
+        TreeSet<Integer> ind = new TreeSet<Integer>(); // a set of labels in other groups
+        TreeSet<Integer> dep = new TreeSet<Integer>(); // a set of labels in the same group
+        for (int[] aGroup : partition) {
+            for (int aLabel : aGroup) { // for each label
+                for (int bLabel : aGroup) { // all labels from the same group add to dep set
+                    dep.add(bLabel);
+                }
+                for (int n = 0; n < numLabels; n++) { // all other labels add to ind
+                    if (!dep.contains(n)) {
+                        ind.add(n);
+                    }
+                }
+                weight = weight + weightOf(dep, aLabel, matrix); // summing up the scores of all pairs
+                // whose labels are in the same group
+                weight = weight - weightOf(ind, aLabel, matrix); // subtracting the scores of all pairs
+                // whose labels are in different groups
+            }
+        }
+        return weight;
+    }
+
+    /**
+     * Creates a deep copy of two-dimensional matrix
+     *
+     * @param matrix the matrix to copy
+     * @return a deep opy of the matrix
+     */
+    private static double[][] deepClone(double[][] matrix) {
+        double[][] m = new double[matrix.length][];
+        for (int i = 0; i < matrix.length; i++) {
+            m[i] = matrix[i].clone();
+        }
+        return m;
+    }
+
+    /**
+     * Summarizes the weights of pairs of the label with other labels.
+     *
+     * @param otherLabels the set of labels which pair-weight with the specified
+     *                    label should be summarized
+     * @param label       the label which pair-weight with other labels should be
+     *                    summarized
+     * @param matrix      the matrix containing dependence score for each labels pair
+     * @return sum of the weights of pairs of the label with each one of the
+     * other labels
+     */
+    private static Double weightOf(TreeSet<Integer> otherLabels, int label, double[][] matrix) {
+        Double w = 0.0;
+        for (Integer l2 : otherLabels) {
+            if (label < l2) { // getting values from above the diagonal of the matrix
+                w = w + matrix[label][l2];
+                matrix[label][l2] = 0; // each entry should be counted only once
+            } else {
+                w = w + matrix[l2][label];
+                matrix[l2][label] = 0;
+            }
+        }
+        return w;
+    }
+
+    /**
+     * Filtering out identical label set partitions. An assumption is that
+     * partitions with the same weight are identical.
+     *
+     * @param orderedList the list of weighted label subsets ordered by subset
+     *                    weight
+     * @return a list of distinct weighted label subsets
+     */
+    private static List<LabelSubsetsWeight> getDistinctSets(List<LabelSubsetsWeight> orderedList) {
+        List<LabelSubsetsWeight> distinct = new ArrayList<LabelSubsetsWeight>();
+        long v = 0;
+        for (LabelSubsetsWeight subset : orderedList) {
+            long value = subset.getValue().longValue();
+            if (v != value) {
+                distinct.add(subset);
+            }
+            v = value;
+        }
+        return distinct;
+    }
+
+    /**
+     * Returns the specified number of highly weighted partitions.
+     *
+     * @param orderedList the list of weighted label subsets ordered by subset
+     *                    weight in descending order
+     * @param number      the number of partitions to return
+     * @return the specified number of highly weighted partitions.
+     */
+    private static List<LabelSubsetsWeight> getHighOrdered(List<LabelSubsetsWeight> orderedList,
+                                                           int number) {
+        List<LabelSubsetsWeight> highest = new ArrayList<LabelSubsetsWeight>();
+        int count = 0;
+        for (LabelSubsetsWeight subset : orderedList) {
+            highest.add(subset);
+            count++;
+            if (count == number) {
+                return highest;
+            }
+        }
+        return highest;
+    }
+
+    /**
+     * Computes a distance between the two label set partitions.
+     *
+     * @param set1      the label set partition 1
+     * @param set2      the label set partition 2
+     * @param numLabels the number of labels
+     * @return a distance between the two label set partitions
+     */
+    private static int distance(LabelSubsetsWeight set1, LabelSubsetsWeight set2, int numLabels) {
+        int dist = 0;
+        int[][] set1Matrix = matrixRepresentation(set1.getSubsets(), numLabels);
+        int[][] set2Matrix = matrixRepresentation(set2.getSubsets(), numLabels);
+        for (int i = 0; i < numLabels; i++) {
+            for (int j = i + 1; j < numLabels; j++) {
+                if ((set1Matrix[i][j] == 0 && set2Matrix[i][j] == 1)
+                        || (set1Matrix[i][j] == 1 && set2Matrix[i][j] == 0)) {
+                    dist++;
+                }
+            }
+        }
+        return dist;
+    }
+
+    /**
+     * Represents a partition as a matrix: if two labels are in the same group
+     * the relatesd entry of the matrix is 1, otherwise 0.
+     *
+     * @param set       the label set partition to be represented by a matrix
+     * @param numLabels the number of labels
+     * @return a matrix representing the partition
+     */
+    private static int[][] matrixRepresentation(int[][] set, int numLabels) {
+        int[][] setMatrix = new int[numLabels][numLabels];
+        for (int[] anArray : setMatrix) { // initialize with 0
+            Arrays.fill(anArray, 0);
+        }
+        for (int[] aGroup : set) {
+            for (int j = 0; j < aGroup.length; j++) {
+                int l1 = aGroup[j]; // for each element
+                for (int k = j + 1; k < aGroup.length; k++) {
+                    // set 1 for all elements in the same group
+                    int l2 = aGroup[k];
+                    setMatrix[l1][l2] = 1;
+                    setMatrix[l2][l1] = 1;
+                }
+            }
+        }
+        return setMatrix;
+    }
+
+    /**
+     * @param numOfRandomPartitions number of randomly generated possible label set partitions
+     */
+    public static void setNumOfRandomPartitions(int numOfRandomPartitions) {
+        EnsembleOfSubsetLearners.numOfRandomPartitions = numOfRandomPartitions;
+    }
+
+    /**
+     * @param numOfPartitionsForDiversity number of highly weighted partitions used for selecting the 'enough' different among them
+     */
+    public static void setNumOfPartitionsForDiversity(int numOfPartitionsForDiversity) {
+        EnsembleOfSubsetLearners.numOfPartitionsForDiversity = numOfPartitionsForDiversity;
+    }
+
+    /**
+     * @param dynamicDiversityThreshold parameter used to dynamically define the threshold of 'enough' different
+     *                                  partition
+     */
+    public static void setDynamicDiversityThreshold(double dynamicDiversityThreshold) {
+        EnsembleOfSubsetLearners.dynamicDiversityThreshold = dynamicDiversityThreshold;
     }
 
     @Override
@@ -213,7 +526,7 @@ public class EnsembleOfSubsetLearners extends MultiLabelMetaLearner {
      * partitions consisting of the specified number of labels..
      *
      * @param numLabels - number of labels
-     * @param numSets - number of random partitions to generate
+     * @param numSets   - number of random partitions to generate
      * @return a list of generated partitions
      */
     public List<int[][]> createRandomSets(int numLabels, int numSets) {
@@ -223,21 +536,6 @@ public class EnsembleOfSubsetLearners extends MultiLabelMetaLearner {
         int[][] permutations = GenerateRandomPermutations(n, numSets);
         sets = convertToSets(permutations, numLabels);
         return sets;
-    }
-
-    /**
-     * Returns a string representation of the labels partition.
-     *
-     * @param partition - a label set partition
-     * @return a string representation of the labels partition
-     */
-    public static String partitionToString(int[][] partition) {
-        StringBuilder result = new StringBuilder();
-        for (int[] aGroup : partition) {
-            result.append(Arrays.toString(aGroup));
-            result.append(", ");
-        }
-        return result.toString();
     }
 
     /*
@@ -272,43 +570,10 @@ public class EnsembleOfSubsetLearners extends MultiLabelMetaLearner {
     }
 
     /**
-     * Creates a matrix containing dependence score for each labels pair.
-     *
-     * @param pairsList the list of labels pairs and their dependence scores
-     * @param critical the statistic critical value
-     * @param n the size of the matrix (i.e. the number of labels)
-     * @param normalized indicates if to apply normalization using chiCritical
-     * value
-     * @return a matrix containing dependence score for each labels pair.
-     */
-    private static double[][] createDependenceWeightsMatrix(LabelsPair[] pairsList,
-            double critical, int n, boolean normalized) {
-        double[][] matrix = new double[n][n];
-        for (LabelsPair pair : pairsList) {
-            Double value = pair.getScore();
-            int[] data = pair.getPair();
-            if (normalized) {
-                if (data[0] < data[1]) { // fill matrix above the diagonal
-                    matrix[data[0]][data[1]] = value - critical;
-                } else {
-                    matrix[data[1]][data[0]] = value - critical;
-                }
-            } else {
-                if (data[0] < data[1]) {
-                    matrix[data[0]][data[1]] = value;
-                } else {
-                    matrix[data[1]][data[0]] = value;
-                }
-            }
-        }
-        return matrix;
-    }
-
-    /**
      * Generates random permutations of values from 0 to n-1.
      *
-     * @param n indicates the length of a permutation: each permutation will
-     * contain 'n' numbers from 0 to n-1 (inclusive)
+     * @param n   indicates the length of a permutation: each permutation will
+     *            contain 'n' numbers from 0 to n-1 (inclusive)
      * @param num the number of permutations to be generated
      * @return arrays of random permutations of values from 0 to n-1.
      */
@@ -320,20 +585,6 @@ public class EnsembleOfSubsetLearners extends MultiLabelMetaLearner {
             permutations[i] = rand;
         }
         return permutations;
-    }
-
-    /**
-     * Fills an array with values from 0 to n-1
-     *
-     * @param n the array length
-     * @return an array with values from 0 to n-1
-     */
-    private static int[] initialize(int n) {
-        int[] a = new int[n];
-        for (int i = 0; i < n; i++) {
-            a[i] = i;
-        }
-        return a;
     }
 
     /**
@@ -354,80 +605,16 @@ public class EnsembleOfSubsetLearners extends MultiLabelMetaLearner {
     }
 
     /**
-     * Converts random permutations to list of various label set partitions.
-     *
-     * @param permutations the arrays of permutations
-     * @param numLabels the number of labels
-     * @return a list of various label set partitions
-     */
-    private static List<int[][]> convertToSets(int[][] permutations, int numLabels) {
-        List<int[][]> sets = new ArrayList<int[][]>();
-        for (int[] permutation : permutations) {
-            List<Integer[]> groupsList = extractGroups(permutation, numLabels);
-            sets.add(createSet(groupsList));
-        }
-        return sets;
-    }
-
-    /**
-     * Converts a random permutation to list of label subsets.
-     *
-     * @param permutation the array of permutation
-     * @param numLabels the number of labels
-     * @return a list of label subsets
-     */
-    private static List<Integer[]> extractGroups(int[] permutation, int numLabels) {
-        List<Integer[]> groupsList = new ArrayList<Integer[]>();
-        List<Integer> group = new ArrayList<Integer>();
-        for (int value : permutation) {
-            if (value < numLabels) { // if value indicates label index
-                group.add(value);
-            } else { // the value indicates a separator
-                if (group.size() > 0) {
-                    Integer gr[] = group.toArray(new Integer[group.size()]);
-                    groupsList.add(gr);
-                    group = new ArrayList<Integer>();
-                }
-            }
-        }
-        if (group.size() > 0) { // add the latest group
-            Integer gr[] = group.toArray(new Integer[group.size()]);
-            groupsList.add(gr);
-        }
-        return groupsList;
-    }
-
-    /**
-     * Converts a list of arrays (i.e label subsets) into two-dimensional array
-     * representing a label set partitioning.
-     *
-     * @param groupsList the list of label subsets
-     * @return arrays of label set partitions
-     */
-    private static int[][] createSet(List<Integer[]> groupsList) {
-        int numGroups = groupsList.size();
-        int[][] sets = new int[numGroups][];
-        Integer[][] sets2 = groupsList.toArray(new Integer[groupsList.size()][]);
-        for (int i = 0; i < sets2.length; i++) { // convert to primitives
-            sets[i] = new int[sets2[i].length];
-            for (int j = 0; j < sets2[i].length; j++) {
-                sets[i][j] = sets2[i][j];
-            }
-        }
-        return sets;
-    }
-
-    /**
      * Computes 'dependence' score of each partition and store it in a list of
      * weighted subsets.
      *
-     * @param partitions the label set partitions
+     * @param partitions    the label set partitions
      * @param weightsMatrix the matrix containing dependence score for each
-     * labels pair
+     *                      labels pair
      * @return a list of weighted label subsets
      */
     private ArrayList<LabelSubsetsWeight> setWeights(List<int[][]> partitions,
-            double[][] weightsMatrix) {
+                                                     double[][] weightsMatrix) {
         ArrayList<LabelSubsetsWeight> weightedList = new ArrayList<LabelSubsetsWeight>(partitions.size());
         for (int[][] partition : partitions) {
             Double weight = computeWeight(partition, weightsMatrix, numLabels); // compute 'dependence' score of a partition
@@ -438,177 +625,12 @@ public class EnsembleOfSubsetLearners extends MultiLabelMetaLearner {
     }
 
     /**
-     * Computes 'dependence' score of a partition.
-     *
-     * @param partition the label set partition
-     * @param weightsMatrix the matrix containing dependence score for each
-     * labels pair
-     * @param numLabels the number of labels
-     * @return value indicating a 'dependence' score of the partition
-     */
-    private static Double computeWeight(int[][] partition, double[][] weightsMatrix, int numLabels) {
-        double[][] matrix = deepClone(weightsMatrix);
-        Double weight = 0.0;
-        TreeSet<Integer> ind = new TreeSet<Integer>(); // a set of labels in other groups
-        TreeSet<Integer> dep = new TreeSet<Integer>(); // a set of labels in the same group
-        for (int[] aGroup : partition) {
-            for (int aLabel : aGroup) { // for each label
-                for (int bLabel : aGroup) { // all labels from the same group add to dep set
-                    dep.add(bLabel);
-                }
-                for (int n = 0; n < numLabels; n++) { // all other labels add to ind
-                    if (!dep.contains(n)) {
-                        ind.add(n);
-                    }
-                }
-                weight = weight + weightOf(dep, aLabel, matrix); // summing up the scores of all pairs
-                // whose labels are in the same group
-                weight = weight - weightOf(ind, aLabel, matrix); // subtracting the scores of all pairs
-                // whose labels are in different groups
-            }
-        }
-        return weight;
-    }
-
-    /**
-     * Creates a deep copy of two-dimensional matrix
-     *
-     * @param matrix the matrix to copy
-     * @return a deep opy of the matrix
-     */
-    private static double[][] deepClone(double[][] matrix) {
-        double[][] m = new double[matrix.length][];
-        for (int i = 0; i < matrix.length; i++) {
-            m[i] = matrix[i].clone();
-        }
-        return m;
-    }
-
-    /**
-     * Summarizes the weights of pairs of the label with other labels.
-     *
-     * @param otherLabels the set of labels which pair-weight with the specified
-     * label should be summarized
-     * @param label the label which pair-weight with other labels should be
-     * summarized
-     * @param matrix the matrix containing dependence score for each labels pair
-     * @return sum of the weights of pairs of the label with each one of the
-     * other labels
-     */
-    private static Double weightOf(TreeSet<Integer> otherLabels, int label, double[][] matrix) {
-        Double w = 0.0;
-        for (Integer l2 : otherLabels) {
-            if (label < l2) { // getting values from above the diagonal of the matrix
-                w = w + matrix[label][l2];
-                matrix[label][l2] = 0; // each entry should be counted only once
-            } else {
-                w = w + matrix[l2][label];
-                matrix[l2][label] = 0;
-            }
-        }
-        return w;
-    }
-
-    /**
-     * Filtering out identical label set partitions. An assumption is that
-     * partitions with the same weight are identical.
-     *
-     * @param orderedList the list of weighted label subsets ordered by subset
-     * weight
-     * @return a list of distinct weighted label subsets
-     */
-    private static List<LabelSubsetsWeight> getDistinctSets(List<LabelSubsetsWeight> orderedList) {
-        List<LabelSubsetsWeight> distinct = new ArrayList<LabelSubsetsWeight>();
-        long v = 0;
-        for (LabelSubsetsWeight subset : orderedList) {
-            long value = subset.getValue().longValue();
-            if (v != value) {
-                distinct.add(subset);
-            }
-            v = value;
-        }
-        return distinct;
-    }
-
-    /**
-     * Returns the specified number of highly weighted partitions.
-     *
-     * @param orderedList the list of weighted label subsets ordered by subset
-     * weight in descending order
-     * @param number the number of partitions to return
-     * @return the specified number of highly weighted partitions.
-     */
-    private static List<LabelSubsetsWeight> getHighOrdered(List<LabelSubsetsWeight> orderedList,
-            int number) {
-        List<LabelSubsetsWeight> highest = new ArrayList<LabelSubsetsWeight>();
-        int count = 0;
-        for (LabelSubsetsWeight subset : orderedList) {
-            highest.add(subset);
-            count++;
-            if (count == number) {
-                return highest;
-            }
-        }
-        return highest;
-    }
-
-    /**
-     * Computes a distance between the two label set partitions.
-     *
-     * @param set1 the label set partition 1
-     * @param set2 the label set partition 2
-     * @param numLabels the number of labels
-     * @return a distance between the two label set partitions
-     */
-    private static int distance(LabelSubsetsWeight set1, LabelSubsetsWeight set2, int numLabels) {
-        int dist = 0;
-        int[][] set1Matrix = matrixRepresentation(set1.getSubsets(), numLabels);
-        int[][] set2Matrix = matrixRepresentation(set2.getSubsets(), numLabels);
-        for (int i = 0; i < numLabels; i++) {
-            for (int j = i + 1; j < numLabels; j++) {
-                if ((set1Matrix[i][j] == 0 && set2Matrix[i][j] == 1)
-                        || (set1Matrix[i][j] == 1 && set2Matrix[i][j] == 0)) {
-                    dist++;
-                }
-            }
-        }
-        return dist;
-    }
-
-    /**
-     * Represents a partition as a matrix: if two labels are in the same group
-     * the relatesd entry of the matrix is 1, otherwise 0.
-     *
-     * @param set the label set partition to be represented by a matrix
-     * @param numLabels the number of labels
-     * @return a matrix representing the partition
-     */
-    private static int[][] matrixRepresentation(int[][] set, int numLabels) {
-        int[][] setMatrix = new int[numLabels][numLabels];
-        for (int[] anArray : setMatrix) { // initialize with 0
-            Arrays.fill(anArray, 0);
-        }
-        for (int[] aGroup : set) {
-            for (int j = 0; j < aGroup.length; j++) {
-                int l1 = aGroup[j]; // for each element
-                for (int k = j + 1; k < aGroup.length; k++) {
-                    // set 1 for all elements in the same group
-                    int l2 = aGroup[k];
-                    setMatrix[l1][l2] = 1;
-                    setMatrix[l2][l1] = 1;
-                }
-            }
-        }
-        return setMatrix;
-    }
-
-    /**
      * Selects most different from the highly weighted partitions. This method
      * is used when the
      * {@link #selectDiverseModels} parameter is 'true'.
      *
      * @param sets the list of weighted label subsets ordered by subset weight
-     * in descending order
+     *             in descending order
      * @return most different from the highly weighted label set partitions
      */
     private List<LabelSubsetsWeight> selectByDiversity(List<LabelSubsetsWeight> sets) {
@@ -638,13 +660,13 @@ public class EnsembleOfSubsetLearners extends MultiLabelMetaLearner {
      * "selected" partitions. If a partition is within the "selected" it's
      * minimal distance is 0.
      *
-     * @param allSets the list of all label set partitions
+     * @param allSets  the list of all label set partitions
      * @param selected the list of selected label set partitions
      * @return an array containing the minimal distance from each label set
      * partition to the "selected" partitions
      */
     private SubsetsDistance[] minDistToSelected(List<LabelSubsetsWeight> allSets,
-            List<LabelSubsetsWeight> selected) {
+                                                List<LabelSubsetsWeight> selected) {
         // an array of minimal distances from each partition to those in selected
         SubsetsDistance[] minDists = new SubsetsDistance[allSets.size()];
         // an array of distances from a partition to each one in selected
@@ -665,6 +687,89 @@ public class EnsembleOfSubsetLearners extends MultiLabelMetaLearner {
     }
 
     /**
+     * @param rnd random generator
+     */
+    public void setRnd(Random rnd) {
+        this.rnd = rnd;
+    }
+
+    /**
+     * @param threshold the threshold for ensemble voting
+     */
+    public void setThreshold(double threshold) {
+        this.threshold = threshold;
+    }
+
+    /**
+     * @param dependenceIdentifier the type of dependence identification process
+     */
+    public void setDependenceIdentifier(LabelPairsDependenceIdentifier dependenceIdentifier) {
+        this.dependenceIdentifier = dependenceIdentifier;
+    }
+
+    /**
+     * @param x seed value
+     */
+    public void setSeed(int x) {
+        seed = x;
+        rnd = new Random(seed);
+    }
+
+    /**
+     * @return Number of models
+     */
+    public int getNumModels() {
+        return numModels;
+    }
+
+    /**
+     * @param models the number of models
+     */
+    public void setNumModels(int models) {
+        numModels = models;
+    }
+
+    /**
+     * @return Most different from the highly weighted partitions
+     */
+    public boolean isSelectDiverseModels() {
+        return selectDiverseModels;
+    }
+
+    /**
+     * @param selectDiverseModels whether to select most different from the highly weighted partitions
+     */
+    public void setSelectDiverseModels(boolean selectDiverseModels) {
+        this.selectDiverseModels = selectDiverseModels;
+    }
+
+    /**
+     * @param useSubsetcache whether to use Subset caching
+     */
+    public void setUseSubsetLearnerCache(boolean useSubsetcache) {
+        this.useSubsetcache = useSubsetcache;
+    }
+
+    public String globalInfo() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("A class for gathering several different SubsetLearners ");
+        sb.append("into a composite ensemble model. <br> <br> The label set ");
+        sb.append("partitions for participation in ensemble are selected ");
+        sb.append("using their dependence weight from the large number of ");
+        sb.append("randomly generated possible partitions. The type of the ");
+        sb.append("learned dependencies is determined by the ");
+        sb.append("{@link mulan.data.LabelPairsDependenceIdentifier} supplied");
+        sb.append(" to the class constructor. Two strategies for selecting ");
+        sb.append("ensemble partitions exists: (1) to select the highly ");
+        sb.append("weighted ones and (2) to select most different from the ");
+        sb.append("highly weighted ones. The strategy to be used is ");
+        sb.append("determined by the {@link #selectDiverseModels} parameter ");
+        sb.append("which is 'true' by default.\n\nFor more information, ");
+        sb.append("see\n\n").append(getTechnicalInformation().toString());
+        return sb.toString();
+    }
+
+    /**
      * A class for handling partitions and their dependence weights. The natural
      * order of instances of this class is according to the natural order of the
      * partition dependence weight.
@@ -678,7 +783,7 @@ public class EnsembleOfSubsetLearners extends MultiLabelMetaLearner {
          * Initialize a LabelSubsetsWeight object using labels set partition and
          * its weight.
          *
-         * @param v the partition dependence weight
+         * @param v    the partition dependence weight
          * @param comb the label set partition
          */
         public LabelSubsetsWeight(double v, int[][] comb) {
@@ -759,7 +864,7 @@ public class EnsembleOfSubsetLearners extends MultiLabelMetaLearner {
          * and its distance value.
          *
          * @param _id the partition identifier
-         * @param v the partition's distance
+         * @param v   the partition's distance
          */
         public SubsetsDistance(int _id, int v) {
             subsetsId = _id;
@@ -840,123 +945,6 @@ public class EnsembleOfSubsetLearners extends MultiLabelMetaLearner {
             }
             return 0;
         }
-    }
-
-    /**
-     * 
-     * @param rnd random generator
-     */
-    public void setRnd(Random rnd) {
-        this.rnd = rnd;
-    }
-
-    /**
-     * 
-     * @param threshold the threshold for ensemble voting
-     */
-    public void setThreshold(double threshold) {
-        this.threshold = threshold;
-    }
-
-    /**
-     * 
-     * @param dependenceIdentifier the type of dependence identification process
-     */
-    public void setDependenceIdentifier(LabelPairsDependenceIdentifier dependenceIdentifier) {
-        this.dependenceIdentifier = dependenceIdentifier;
-    }
-
-    /**
-     * 
-     * @param x seed value
-     */
-    public void setSeed(int x) {
-        seed = x;
-        rnd = new Random(seed);
-    }
-
-    /**
-     * 
-     * @param models the number of models
-     */
-    public void setNumModels(int models) {
-        numModels = models;
-    }
-
-    /**
-     * 
-     * @return Number of models
-     */
-    public int getNumModels() {
-        return numModels;
-    }
-
-    /**
-     * 
-     * @return Most different from the highly weighted partitions
-     */
-    public boolean isSelectDiverseModels() {
-        return selectDiverseModels;
-    }
-
-    /**
-     * 
-     * @param selectDiverseModels whether to select most different from the highly weighted partitions
-     */
-    public void setSelectDiverseModels(boolean selectDiverseModels) {
-        this.selectDiverseModels = selectDiverseModels;
-    }
-
-    /**
-     * 
-     * @param useSubsetcache whether to use Subset caching
-     */
-    public void setUseSubsetLearnerCache(boolean useSubsetcache) {
-        this.useSubsetcache = useSubsetcache;
-    }
-
-    /**
-     * 
-     * @param numOfRandomPartitions number of randomly generated possible label set partitions
-     */
-    public static void setNumOfRandomPartitions(int numOfRandomPartitions) {
-        EnsembleOfSubsetLearners.numOfRandomPartitions = numOfRandomPartitions;
-    }
-
-    /**
-     * 
-     * @param numOfPartitionsForDiversity  number of highly weighted partitions used for selecting the 'enough' different among them
-     */
-    public static void setNumOfPartitionsForDiversity(int numOfPartitionsForDiversity) {
-        EnsembleOfSubsetLearners.numOfPartitionsForDiversity = numOfPartitionsForDiversity;
-    }
-
-    /**
-     * 
-     * @param dynamicDiversityThreshold parameter used to dynamically define the threshold of 'enough' different
-     * partition
-     */
-    public static void setDynamicDiversityThreshold(double dynamicDiversityThreshold) {
-        EnsembleOfSubsetLearners.dynamicDiversityThreshold = dynamicDiversityThreshold;
-    }
-    
-    public String globalInfo() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("A class for gathering several different SubsetLearners ");
-        sb.append("into a composite ensemble model. <br> <br> The label set ");
-        sb.append("partitions for participation in ensemble are selected ");
-        sb.append("using their dependence weight from the large number of ");
-        sb.append("randomly generated possible partitions. The type of the ");
-        sb.append("learned dependencies is determined by the ");
-        sb.append("{@link mulan.data.LabelPairsDependenceIdentifier} supplied");
-        sb.append(" to the class constructor. Two strategies for selecting ");
-        sb.append("ensemble partitions exists: (1) to select the highly ");
-        sb.append("weighted ones and (2) to select most different from the ");
-        sb.append("highly weighted ones. The strategy to be used is ");
-        sb.append("determined by the {@link #selectDiverseModels} parameter ");
-        sb.append("which is 'true' by default.\n\nFor more information, ");
-        sb.append("see\n\n").append(getTechnicalInformation().toString());
-        return sb.toString();
     }
 
 }

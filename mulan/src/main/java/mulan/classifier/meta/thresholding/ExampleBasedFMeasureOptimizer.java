@@ -15,7 +15,6 @@
  */
 package mulan.classifier.meta.thresholding;
 
-import java.util.Arrays;
 import mulan.classifier.InvalidDataException;
 import mulan.classifier.MultiLabelLearner;
 import mulan.classifier.MultiLabelOutput;
@@ -28,15 +27,17 @@ import weka.core.TechnicalInformation;
 import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
 
+import java.util.Arrays;
+
 /**
- * <p>This class takes the marginal probabilities estimated for each label by a 
- * multi-label learner and transforms them into a bipartition which is 
- * approximately optimal for example-based FMeasure. This optimizer assumes 
- * independence of the target variables (labels) and the optimal solution always 
- * contains the labels with the highest marginal probabilities. For more 
- * information, see <em> Lewis, David (1995) Evaluating and optimizing 
- * autonomous text classification systems. In: Proceedings of the 18th annual 
- * international ACM SIGIR conference on Research and development in information 
+ * <p>This class takes the marginal probabilities estimated for each label by a
+ * multi-label learner and transforms them into a bipartition which is
+ * approximately optimal for example-based FMeasure. This optimizer assumes
+ * independence of the target variables (labels) and the optimal solution always
+ * contains the labels with the highest marginal probabilities. For more
+ * information, see <em> Lewis, David (1995) Evaluating and optimizing
+ * autonomous text classification systems. In: Proceedings of the 18th annual
+ * international ACM SIGIR conference on Research and development in information
  * retrieval (SIGIR 1995).</em></p>
  *
  * @author Eleftherios Spyromitros-Xioufis
@@ -48,7 +49,7 @@ public class ExampleBasedFMeasureOptimizer extends MultiLabelMetaLearner {
      * The supplied multi-label learner should be able to output marginal
      * probabilities.
      *
-     * @param baseLearner the base MultilabelLearner used 
+     * @param baseLearner the base MultilabelLearner used
      */
     public ExampleBasedFMeasureOptimizer(MultiLabelLearner baseLearner) {
         super(baseLearner);
@@ -67,8 +68,7 @@ public class ExampleBasedFMeasureOptimizer extends MultiLabelMetaLearner {
     }
 
     @Override
-    protected MultiLabelOutput makePredictionInternal(Instance instance) throws Exception,
-            InvalidDataException {
+    protected MultiLabelOutput makePredictionInternal(Instance instance) throws Exception {
         MultiLabelOutput mlo = baseLearner.makePrediction(instance);
         double[] marginals = mlo.getConfidences();
         boolean[] bipartition = bipartitionFromMarginals(marginals);

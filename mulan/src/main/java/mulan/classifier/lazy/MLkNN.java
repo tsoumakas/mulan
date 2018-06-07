@@ -15,9 +15,6 @@
  */
 package mulan.classifier.lazy;
 
-import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import mulan.classifier.MultiLabelOutput;
 import mulan.data.MultiLabelInstances;
 import weka.core.Instance;
@@ -27,17 +24,21 @@ import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
 import weka.core.Utils;
 
+import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
- <!-- globalinfo-start -->
+ * <!-- globalinfo-start -->
  * Class implementing the ML-kNN (Multi-Label k Nearest Neighbours) algorithm.<br>
  * <br>
  * For more information, see<br>
  * <br>
  * Min-Ling Zhang, Zhi-Hua Zhou (2007). ML-KNN: A lazy learning approach to multi-label learning. Pattern Recogn.. 40(7):2038--2048.
  * <br>
- <!-- globalinfo-end -->
- *
- <!-- technical-bibtex-start -->
+ * <!-- globalinfo-end -->
+ * <p>
+ * <!-- technical-bibtex-start -->
  * BibTeX:
  * <pre>
  * &#64;article{Zhang2007,
@@ -54,7 +55,7 @@ import weka.core.Utils;
  * }
  * </pre>
  * <br>
- <!-- technical-bibtex-end -->
+ * <!-- technical-bibtex-end -->
  *
  * @author Eleftherios Spyromitros-Xioufis
  * @version 2012.07.16
@@ -90,7 +91,7 @@ public class MLkNN extends MultiLabelKNN {
 
     /**
      * @param numOfNeighbors : the number of neighbors
-     * @param smooth : the smoothing factor
+     * @param smooth         : the smoothing factor
      */
     public MLkNN(int numOfNeighbors, double smooth) {
         super(numOfNeighbors);
@@ -251,7 +252,7 @@ public class MLkNN extends MultiLabelKNN {
                 predictions[i] = false;
             } else {
                 Random rnd = new Random();
-                predictions[i] = (rnd.nextInt(2) == 1) ? true : false;
+                predictions[i] = rnd.nextInt(2) == 1;
             }
             // ranking function
             confidences[i] = Prob_in / (Prob_in + Prob_out);

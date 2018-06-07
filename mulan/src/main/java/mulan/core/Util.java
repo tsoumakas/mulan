@@ -19,12 +19,14 @@ import java.util.Random;
 
 /**
  * Class which provides various utility methods.
- * 
+ *
  * @author Jozef Vilcek
  */
 public class Util {
 
-    /** Constant representing a new line */
+    /**
+     * Constant representing a new line
+     */
     private static final String NEW_LINE = System.getProperty("line.separator");
 
     /**
@@ -34,8 +36,8 @@ public class Util {
      * selected and its index is returned.
      *
      * @param array the array in which the maximum value should be find
-     * @param rand random instance used to select the value if more values equal
-     *             to the maximum are present in the array
+     * @param rand  random instance used to select the value if more values equal
+     *              to the maximum are present in the array
      * @return the index of find maximum value
      */
     public static int RandomIndexOfMax(double array[], Random rand) {
@@ -66,6 +68,7 @@ public class Util {
 
     /**
      * Returns a correct new line separator string for the underlying operating system.
+     *
      * @return the new line separator string
      */
     public static String getNewLineSeparator() {

@@ -15,17 +15,17 @@
  */
 package mulan.transformations.regression;
 
-import java.io.Serializable;
-
 import mulan.data.MultiLabelInstances;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.Remove;
 
+import java.io.Serializable;
+
 /**
  * This class implements the Classifier/Regressor Chain transformation.
- * 
+ *
  * @author Eleftherios Spyromitros-Xioufis
  * @version 2014.04.01
  */
@@ -36,11 +36,11 @@ public class ChainTransformation implements Serializable {
     /**
      * Deletes all target attributes that appear after the first targetsToKeep in the chain. The
      * target attribute at position targetsToKeep in the chain is set as the class attribute.
-     * 
-     * @param data the input data set
-     * @param chain a chain (permutation) of the indices of the target attributes
+     *
+     * @param data             the input data set
+     * @param chain            a chain (permutation) of the indices of the target attributes
      * @param numTargetsToKeep the number of target attributes from the beginning of the chain that
-     *            should be kept, 1&lt;=numTargetsToKeep&lt;=numOfTargets
+     *                         should be kept, 1&lt;=numTargetsToKeep&lt;=numOfTargets
      * @return the transformed Instances object. The input object is not modified.
      * @throws Exception Potential exception thrown. To be handled in an upper level.
      */
@@ -72,11 +72,11 @@ public class ChainTransformation implements Serializable {
     /**
      * Transforms a single Instance in the same way as
      * {@link #transformInstance(Instance, int[], int)} transforms an Instances object.
-     * 
-     * @param instance the input instance
-     * @param chain a chain (permutation) of the indices of the target attributes
+     *
+     * @param instance         the input instance
+     * @param chain            a chain (permutation) of the indices of the target attributes
      * @param numTargetsToKeep the number of target attributes from the beginning of the chain that
-     *            should be kept, 1&lt;=numTargetsToKeep&lt;=numOfTargets
+     *                         should be kept, 1&lt;=numTargetsToKeep&lt;=numOfTargets
      * @return the transformed Instance object. The input object is not modified.
      * @throws Exception Potential exception thrown. To be handled in an upper level.
      */
@@ -100,7 +100,7 @@ public class ChainTransformation implements Serializable {
 
     /**
      * Exemplifies how the per instance transformation works.
-     * 
+     *
      * @param args Arguments accepted from command line
      * @throws Exception Potential exception thrown. To be handled in an upper level.
      */

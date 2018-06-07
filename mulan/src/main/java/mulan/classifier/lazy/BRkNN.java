@@ -15,8 +15,6 @@
  */
 package mulan.classifier.lazy;
 
-import java.util.ArrayList;
-import java.util.Random;
 import mulan.classifier.MultiLabelOutput;
 import mulan.core.Util;
 import mulan.data.MultiLabelInstances;
@@ -28,15 +26,18 @@ import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
 import weka.core.Utils;
 
+import java.util.ArrayList;
+import java.util.Random;
+
 /**
- <!-- globalinfo-start -->
+ * <!-- globalinfo-start -->
  * Simple BR implementation of the KNN algorithm.For more information, see<br>
  * <p>
  * Eleftherios Spyromitros, Grigorios Tsoumakas, Ioannis Vlahavas: An Empirical Study of Lazy Multilabel Classification Algorithms. In: Proc. 5th Hellenic Conference on Artificial Intelligence (SETN 2008), 2008.
  * </p>
- <!-- globalinfo-end -->
- * 
- <!-- technical-bibtex-start -->
+ * <!-- globalinfo-end -->
+ * <p>
+ * <!-- technical-bibtex-start -->
  * BibTeX:
  * <pre>
  * &#64;inproceedings{EleftheriosSpyromitros2008,
@@ -48,9 +49,9 @@ import weka.core.Utils;
  * }
  * </pre>
  * <br>
- <!-- technical-bibtex-end -->
- * 
- * @author Eleftherios Spyromitros-Xioufis 
+ * <!-- technical-bibtex-end -->
+ *
+ * @author Eleftherios Spyromitros-Xioufis
  * @author Grigorios Tsoumakas
  * @version 2010.12.29
  */
@@ -71,25 +72,6 @@ public class BRkNN extends MultiLabelKNN {
      * Whether to select k by cross validation.
      */
     private boolean cvkSelection = false;
-
-    /**
-     * The two types of extensions
-     */
-    public enum ExtensionType {
-
-        /**
-         * Standard BR
-         */
-        NONE,
-        /**
-         * Predict top ranked label in case of empty prediction set
-         */
-        EXTA,
-        /**
-         * Predict top n ranked labels based on size of labelset in neighbors
-         */
-        EXTB
-    };
     /**
      * The type of extension to be used
      */
@@ -101,7 +83,7 @@ public class BRkNN extends MultiLabelKNN {
     public BRkNN() {
         this(10, ExtensionType.NONE);
     }
-    
+
     /**
      * A constructor that sets the number of neighbors
      *
@@ -115,7 +97,7 @@ public class BRkNN extends MultiLabelKNN {
      * Constructor giving the option to select an extension of the base version
      *
      * @param numOfNeighbors the number of neighbors
-     * @param ext the extension to use (see {@link ExtensionType})
+     * @param ext            the extension to use (see {@link ExtensionType})
      */
     public BRkNN(int numOfNeighbors, ExtensionType ext) {
         super(numOfNeighbors);
@@ -144,9 +126,7 @@ public class BRkNN extends MultiLabelKNN {
     }
 
     /**
-     *
-     * @param flag
-     *            if true the k is selected via cross-validation
+     * @param flag if true the k is selected via cross-validation
      */
     public void setkSelectionViaCV(boolean flag) {
         cvkSelection = flag;
@@ -156,9 +136,8 @@ public class BRkNN extends MultiLabelKNN {
      * Select the best value for k by hold-one-out cross-validation. Hamming
      * Loss is minimized
      *
-     * @throws Exception Potential exception thrown. To be handled in an upper level.
      */
-    private void crossValidate() throws Exception {
+    private void crossValidate() {
         try {
             // the performance for each different k
             double[] hammingLoss = new double[cvMaxK];
@@ -290,10 +269,8 @@ public class BRkNN extends MultiLabelKNN {
      * Calculates the confidences of the labels, based on the neighboring
      * instances
      *
-     * @param neighbours
-     *            the list of nearest neighboring instances
-     * @param distances
-     *            the distances of the neighbors
+     * @param neighbours the list of nearest neighboring instances
+     * @param distances  the distances of the neighbors
      * @return the confidences of the labels
      */
     private double[] getConfidences(Instances neighbours, double[] distances) {
@@ -404,7 +381,7 @@ public class BRkNN extends MultiLabelKNN {
     /**
      * set the maximum number of neighbors to be evaluated via cross-validation
      *
-     * @param cvMaxK  Maximum number of neighbors
+     * @param cvMaxK Maximum number of neighbors
      */
     public void setCvMaxK(int cvMaxK) {
         this.cvMaxK = cvMaxK;
@@ -412,8 +389,27 @@ public class BRkNN extends MultiLabelKNN {
 
     public String globalInfo() {
         return "Simple BR implementation of the KNN algorithm." +
-               "For more information, see\n\n" + 
+                "For more information, see\n\n" +
                 getTechnicalInformation().toString();
+    }
+
+    /**
+     * The two types of extensions
+     */
+    public enum ExtensionType {
+
+        /**
+         * Standard BR
+         */
+        NONE,
+        /**
+         * Predict top ranked label in case of empty prediction set
+         */
+        EXTA,
+        /**
+         * Predict top n ranked labels based on size of labelset in neighbors
+         */
+        EXTB
     }
 
 }

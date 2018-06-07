@@ -17,7 +17,7 @@ package mulan.evaluation.measure;
 
 /**
  * Implementation of the ranking loss measure.
- * 
+ *
  * @author Grigorios Tsoumakas
  * @version 2010.11.23
  */

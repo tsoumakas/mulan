@@ -23,11 +23,11 @@ package mulan.data;
 import java.util.Set;
 
 /**
- * Represents meta data about label attributes and their structure. 
- * The labels can be organized in hierarchical structure. If no hierarchy 
- * is defined between labels, they are stored in a flat structure. 
+ * Represents meta data about label attributes and their structure.
+ * The labels can be organized in hierarchical structure. If no hierarchy
+ * is defined between labels, they are stored in a flat structure.
  * This means all labels are represented as root {@link LabelNode} element.
- *  
+ *
  * @author Jozef Vilcek
  */
 public interface LabelsMetaData {
@@ -47,7 +47,7 @@ public interface LabelsMetaData {
      *
      * @param labelName the name of label of which the node should be retrieved
      * @return the {@link LabelNode} for specified label of <code>null</code>
-     * 		   if {@link LabelNode} does not exists for specified label name
+     * if {@link LabelNode} does not exists for specified label name
      */
     LabelNode getLabelNode(String labelName);
 
@@ -64,7 +64,7 @@ public interface LabelsMetaData {
      *
      * @param labelName the label name
      * @return <code>true</code> if meta data contains the given label name;
-     * 		   <code>false</code> otherwise.
+     * <code>false</code> otherwise.
      */
     boolean containsLabel(String labelName);
 
@@ -73,18 +73,20 @@ public interface LabelsMetaData {
      * represented as root {@link LabelNode} nodes.
      *
      * @return <code>true</code> if there is hierarchy defined between labels;
-     * 		   <code>false</code> otherwise.
+     * <code>false</code> otherwise.
      */
     boolean isHierarchy();
 
     /**
      * Gets the total number of {@link LabelNode} nodes.
+     *
      * @return total number of {@link LabelNode} nodes
      */
     int getNumLabels();
 
     /**
      * Returns a deep copy of the {@link LabelsMetaDataImpl} instance.
+     *
      * @return a deep copy of the {@link LabelsMetaDataImpl} instance
      */
     LabelsMetaData clone();

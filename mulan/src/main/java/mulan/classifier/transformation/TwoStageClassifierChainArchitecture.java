@@ -15,7 +15,6 @@
  */
 package mulan.classifier.transformation;
 
-import java.util.Arrays;
 import mulan.classifier.MultiLabelOutput;
 import mulan.data.MultiLabelInstances;
 import mulan.transformations.RemoveAllLabels;
@@ -25,6 +24,8 @@ import weka.classifiers.trees.J48;
 import weka.core.*;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.Reorder;
+
+import java.util.Arrays;
 
 /**
  * <p>Implementation of the Two Stage Classifier Chain Architecture (TSCCA)
@@ -191,7 +192,7 @@ public class TwoStageClassifierChainArchitecture extends TransformationBasedMult
      * missing Temporary included to switch between standard voting and
      * qweighted multilabel voting
      *
-     * @param instance the instance used 
+     * @param instance the instance used
      * @return prediction the prediction made
      * @throws java.lang.Exception Potential exception thrown. To be handled in an upper level.
      */

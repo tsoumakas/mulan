@@ -20,12 +20,13 @@
  */
 package mulan.transformations.multiclass;
 
+import mulan.transformations.RemoveAllLabels;
+import weka.core.Instance;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import mulan.transformations.RemoveAllLabels;
-import weka.core.Instance;
 
 /**
  * Class that implement the Copy transformation method

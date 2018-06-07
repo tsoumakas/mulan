@@ -20,35 +20,40 @@
  */
 package mulan.classifier.neural;
 
-import java.util.List;
-import java.util.Map;
 import mulan.classifier.MultiLabelOutput;
 import mulan.classifier.neural.model.Neuron;
 import mulan.core.ArgumentNullException;
 import mulan.evaluation.loss.RankingLossFunction;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * The base class of update rules for {@link MMPLearner}. The base class implements the
- * {@link ModelUpdateRule} interface and provides a common logic shared among update rules 
+ * {@link ModelUpdateRule} interface and provides a common logic shared among update rules
  * for {@link MMPLearner}. More information on uprate rules logic can be found in paper referenced
  * by {@link MMPLearner}.
- * 
- * @see MMPLearner 
+ *
  * @author Jozef Vilcek
  * @version 2012.02.27
+ * @see MMPLearner
  */
 public abstract class MMPUpdateRuleBase implements ModelUpdateRule {
 
-    /** The list of Neurons representing the model to be updated by the rule in learning process */
+    /**
+     * The list of Neurons representing the model to be updated by the rule in learning process
+     */
     private final List<Neuron> perceptrons;
-    /** The masure used to decide when (and to what extend) the model should be updated by the rule */
+    /**
+     * The masure used to decide when (and to what extend) the model should be updated by the rule
+     */
     private final RankingLossFunction lossFunction;
 
     /**
      * Creates a new instance of {@link MMPUpdateRuleBase}.
      *
      * @param perceptrons the list of perceptrons, representing the model, which will receive updates.
-     * @param loss the lossFunction measure used to decide when the model should be updated by the rule
+     * @param loss        the lossFunction measure used to decide when the model should be updated by the rule
      */
     public MMPUpdateRuleBase(List<Neuron> perceptrons, RankingLossFunction loss) {
         if (perceptrons == null) {
@@ -100,11 +105,11 @@ public abstract class MMPUpdateRuleBase implements ModelUpdateRule {
      * {@link MMPUpdateRuleBase#process(DataPair, Map)} function, when update of model for
      * given input example is needed.
      *
-     * @param example the input example
+     * @param example     the input example
      * @param confidences the confidences outputed by the model the input example
-     * @param loss the lossFunction measure of the model for given input example
+     * @param loss        the lossFunction measure of the model for given input example
      * @return the parameters for updating preceptrons
      */
     protected abstract double[] computeUpdateParameters(DataPair example,
-            double[] confidences, double loss);
+                                                        double[] confidences, double loss);
 }

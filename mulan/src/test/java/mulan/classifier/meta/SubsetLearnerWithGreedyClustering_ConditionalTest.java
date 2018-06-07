@@ -23,14 +23,14 @@ import weka.classifiers.trees.J48;
 
 public class SubsetLearnerWithGreedyClustering_ConditionalTest extends MultiLabelMetaLearnerTest {
 
-	@Override
-	public void setUp() throws Exception {
-		MultiLabelLearner lp = new LabelPowerset(new J48());
-		ConditionalDependenceIdentifier cond = new ConditionalDependenceIdentifier(new J48());
-		cond.setNumFolds(2);
-		GreedyLabelClustering greedy = new GreedyLabelClustering(lp, new J48(), cond);
-		greedy.setNumFolds(2);
-		learner = new SubsetLearner(greedy, lp, new J48());
-		learner.setDebug(true);
-	}
+    @Override
+    public void setUp() {
+        MultiLabelLearner lp = new LabelPowerset(new J48());
+        ConditionalDependenceIdentifier cond = new ConditionalDependenceIdentifier(new J48());
+        cond.setNumFolds(2);
+        GreedyLabelClustering greedy = new GreedyLabelClustering(lp, new J48(), cond);
+        greedy.setNumFolds(2);
+        learner = new SubsetLearner(greedy, lp, new J48());
+        learner.setDebug(true);
+    }
 }
