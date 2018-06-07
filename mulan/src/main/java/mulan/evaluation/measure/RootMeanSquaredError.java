@@ -25,12 +25,12 @@ public class RootMeanSquaredError extends MeanSquaredError {
 
     @Override
     public double getValue() {
-        return Math.sqrt(sum/count);
-    }    
+        return Math.sqrt(sum / count);
+    }
 
     @Override
     public String getName() {
         return "Root Mean Squared Error";
     }
-    
+
 }

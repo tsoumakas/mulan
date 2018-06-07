@@ -1,8 +1,5 @@
 package mulan.experiments;
 
-import java.util.Date;
-import java.util.Random;
-
 import mulan.data.MultiLabelInstances;
 import mulan.evaluation.Evaluation;
 import mulan.evaluation.Evaluator;
@@ -18,33 +15,41 @@ import weka.core.Utils;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.Normalize;
 
+import java.util.Date;
+import java.util.Random;
+
 /**
  * <p>
  * Class replicating the experiment in
  * <em>G. Tsoumakas, E. Spyromitros-Xioufis, A. Vrekou, I. Vlahavas, "Multi-Target Regression via Random Linear Target Combinations", Proc. of ECML PKDD 2014, Springer, Nancy, France, 2014.</em>
  * </p>
- * 
+ *
  * @author Eleftherios Spyromitros-Xioufis
  * @version 2014.04.01
- * 
  */
 public class ExperimentRLC {
 
-    /** whether to output debug messages */
+    /**
+     * whether to output debug messages
+     */
     public static boolean debug = false;
-    /** number of folds when doing cross-validation */
+    /**
+     * number of folds when doing cross-validation
+     */
     public static int numFolds = 10;
-    /** a string representation of the base regressor */
+    /**
+     * a string representation of the base regressor
+     */
     public static String baseRegressorChoice = "additive";
 
     /**
      * @param args <br>
-     *            -path "path to the dataset folder" (required)<br>
-     *            -filestem "dataset file name" (required)<br>
-     *            -targets "number of targets in the dataset" (required)<br>
-     *            -eval "evaluation type 'cv' and 'holdout' are supported (default: cv)"<br>
-     *            -models "maximum number of models in the RLC method" (default: number of targets)<br>
-     *            -seed "a seed number used for random number generation" (default: 1)<br>
+     *             -path "path to the dataset folder" (required)<br>
+     *             -filestem "dataset file name" (required)<br>
+     *             -targets "number of targets in the dataset" (required)<br>
+     *             -eval "evaluation type 'cv' and 'holdout' are supported (default: cv)"<br>
+     *             -models "maximum number of models in the RLC method" (default: number of targets)<br>
+     *             -seed "a seed number used for random number generation" (default: 1)<br>
      * @throws Exception Potential exception thrown. To be handled in an upper level.
      */
     public static void main(String[] args) throws Exception {

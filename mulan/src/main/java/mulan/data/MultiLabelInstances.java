@@ -20,8 +20,6 @@
  */
 package mulan.data;
 
-import java.io.*;
-import java.util.*;
 import mulan.core.ArgumentNullException;
 import mulan.core.MulanRuntimeException;
 import weka.core.Attribute;
@@ -29,25 +27,27 @@ import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.converters.ArffLoader;
 
+import java.io.*;
+import java.util.*;
+
 /**
  * Implements multi-label instances data set. Multi-label data are stored in Weka's
  * {@link Instances}. The class is a convenient wrapper. The data are loaded form data file, checked
  * for valid format. If hierarchy for labels is specified via XML meta-data file, the data file is
  * cross-checked with XML for consistency. <br>
- *  Applied rules:<br>
- *  - label names must be unique<br>
- *  - all labels in XML meta-data must be defined also in ARFF data set<br>
- *  - each label attribute must be nominal with binary values<br>
- *  - if labels has hierarchy, then if child labels indicates <code>true</code> of some data
+ * Applied rules:<br>
+ * - label names must be unique<br>
+ * - all labels in XML meta-data must be defined also in ARFF data set<br>
+ * - each label attribute must be nominal with binary values<br>
+ * - if labels has hierarchy, then if child labels indicates <code>true</code> of some data
  * instance, then all its parent labels must indicate also <code>true</code> for that instance<br>
- * 
- * 
+ *
  * @author Jozef Vilcek
  */
 public class MultiLabelInstances implements Serializable {
 
-    private Instances dataSet;
     private final LabelsMetaData labelsMetaData;
+    private Instances dataSet;
     /**
      * This loader is used when the dataset is loaded incrementally (instance by instance)
      */
@@ -57,13 +57,13 @@ public class MultiLabelInstances implements Serializable {
      * Creates a new instance of {@link MultiLabelInstances} data. The label attributes are assumed
      * to be at the end of ARFF data file. The count is specified by parameter. Based on these
      * attributes the {@link LabelsMetaData} are created.
-     * 
-     * @param arffFilePath the path to ARFF file containing the data
+     *
+     * @param arffFilePath       the path to ARFF file containing the data
      * @param numLabelAttributes the number of ARFF data set attributes which are labels.
-     * @throws ArgumentNullException if arrfFilePath is null
-     * @throws IllegalArgumentException if numLabelAttribures is less than 2
+     * @throws ArgumentNullException      if arrfFilePath is null
+     * @throws IllegalArgumentException   if numLabelAttribures is less than 2
      * @throws InvalidDataFormatException if format of loaded multi-label data is invalid
-     * @throws DataLoadException if ARFF data file can not be loaded
+     * @throws DataLoadException          if ARFF data file can not be loaded
      */
     public MultiLabelInstances(String arffFilePath, int numLabelAttributes)
             throws InvalidDataFormatException {
@@ -91,13 +91,13 @@ public class MultiLabelInstances implements Serializable {
      * {@link InputStream} data source. The data in the stream are assumed to be in ARFF format. The
      * label attributes in ARFF data are assumed to be the last ones. Based on those attributes the
      * {@link LabelsMetaData} are created.
-     * 
-     * @param arffDataStream the {@link InputStream} data source to load data in ARFF format
+     *
+     * @param arffDataStream     the {@link InputStream} data source to load data in ARFF format
      * @param numLabelAttributes the number of last ARFF data set attributes which are labels.
-     * @throws ArgumentNullException if {@link InputStream} data source is null
-     * @throws IllegalArgumentException if number of labels attributes is less than 2
+     * @throws ArgumentNullException      if {@link InputStream} data source is null
+     * @throws IllegalArgumentException   if number of labels attributes is less than 2
      * @throws InvalidDataFormatException if format of loaded multi-label data is invalid
-     * @throws DataLoadException if ARFF data can not be loaded
+     * @throws DataLoadException          if ARFF data can not be loaded
      */
     public MultiLabelInstances(InputStream arffDataStream, int numLabelAttributes)
             throws InvalidDataFormatException {
@@ -124,17 +124,17 @@ public class MultiLabelInstances implements Serializable {
      * {@link InputStream} data source. The data in the stream are assumed to be in ARFF format. The
      * label attributes in ARFF data are assumed to be either the last or the first ones. Based on
      * those attributes the {@link LabelsMetaData} are created.
-     * 
-     * @param arffDataStream the {@link InputStream} data source to load data in ARFF format
+     *
+     * @param arffDataStream     the {@link InputStream} data source to load data in ARFF format
      * @param numLabelAttributes the number of last ARFF data set attributes which are labels.
-     * @param labelsFirst whether the label attributes are the first or the last ones
-     * @throws ArgumentNullException if {@link InputStream} data source is null
-     * @throws IllegalArgumentException if number of labels attributes is less than 2
+     * @param labelsFirst        whether the label attributes are the first or the last ones
+     * @throws ArgumentNullException      if {@link InputStream} data source is null
+     * @throws IllegalArgumentException   if number of labels attributes is less than 2
      * @throws InvalidDataFormatException if format of loaded multi-label data is invalid
-     * @throws DataLoadException if ARFF data can not be loaded
+     * @throws DataLoadException          if ARFF data can not be loaded
      */
     public MultiLabelInstances(InputStream arffDataStream, int numLabelAttributes,
-            boolean labelsFirst) throws InvalidDataFormatException {
+                               boolean labelsFirst) throws InvalidDataFormatException {
 
         if (arffDataStream == null) {
             throw new ArgumentNullException("arffDataStream");
@@ -158,12 +158,12 @@ public class MultiLabelInstances implements Serializable {
      * meta-data are loaded separately. The load failure is indicated by {@link DataLoadException}.
      * When data are loaded, validations are applied to ensure consistency between ARFF data and
      * specified labels meta-data.
-     * 
-     * @param data the Instances object containing the data
+     *
+     * @param data                 the Instances object containing the data
      * @param xmlLabelsDefFilePath the path to XML file containing labels meta-data
-     * @throws IllegalArgumentException if input parameters refers to non-existing files
+     * @throws IllegalArgumentException   if input parameters refers to non-existing files
      * @throws InvalidDataFormatException if format of loaded multi-label data is invalid
-     * @throws DataLoadException if XML meta-data of ARFF data file can not be loaded
+     * @throws DataLoadException          if XML meta-data of ARFF data file can not be loaded
      */
     public MultiLabelInstances(Instances data, String xmlLabelsDefFilePath)
             throws InvalidDataFormatException {
@@ -181,13 +181,13 @@ public class MultiLabelInstances implements Serializable {
      * meta-data are loaded separately. The load failure is indicated by {@link DataLoadException}.
      * When data are loaded, validations are applied to ensure consistency between ARFF data and
      * specified labels meta-data.
-     * 
-     * @param arffFilePath the path to ARFF file containing the data
+     *
+     * @param arffFilePath         the path to ARFF file containing the data
      * @param xmlLabelsDefFilePath the path to XML file containing labels meta-data
-     * @throws ArgumentNullException if input parameters are null
-     * @throws IllegalArgumentException if input parameters refers to non-existing files
+     * @throws ArgumentNullException      if input parameters are null
+     * @throws IllegalArgumentException   if input parameters refers to non-existing files
      * @throws InvalidDataFormatException if format of loaded multi-label data is invalid
-     * @throws DataLoadException if XML meta-data of ARFF data file can not be loaded
+     * @throws DataLoadException          if XML meta-data of ARFF data file can not be loaded
      */
     public MultiLabelInstances(String arffFilePath, String xmlLabelsDefFilePath)
             throws InvalidDataFormatException {
@@ -210,15 +210,15 @@ public class MultiLabelInstances implements Serializable {
      * meta-data are loaded separately. The load failure is indicated by {@link DataLoadException}.
      * When data are loaded, validations are applied to ensure consistency between ARFF data and
      * specified labels meta-data.
-     * 
-     * @param arffFilePath the path to ARFF file containing the data
+     *
+     * @param arffFilePath         the path to ARFF file containing the data
      * @param xmlLabelsDefFilePath the path to XML file containing labels meta-data
-     * @param incremental if incremental or not
-     * @throws ArgumentNullException if input parameters are null
-     * @throws IllegalArgumentException if input parameters refers to non-existing files
+     * @param incremental          if incremental or not
+     * @throws ArgumentNullException      if input parameters are null
+     * @throws IllegalArgumentException   if input parameters refers to non-existing files
      * @throws InvalidDataFormatException if format of loaded multi-label data is invalid
-     * @throws IOException if arff or xml is not found
-     * @throws DataLoadException if XML meta-data of ARFF data file can not be loaded
+     * @throws IOException                if arff or xml is not found
+     * @throws DataLoadException          if XML meta-data of ARFF data file can not be loaded
      */
     public MultiLabelInstances(String arffFilePath, String xmlLabelsDefFilePath, boolean incremental)
             throws InvalidDataFormatException, IOException {
@@ -247,13 +247,13 @@ public class MultiLabelInstances implements Serializable {
      * valid schema. Data load load failure is indicated by {@link DataLoadException}. When data are
      * loaded, validations are applied to ensure consistency between ARFF data and specified labels
      * meta-data.
-     * 
-     * @param arffDataStream the {@link InputStream} data source to load data in ARFF format
+     *
+     * @param arffDataStream     the {@link InputStream} data source to load data in ARFF format
      * @param xmlLabelsDefStream the {@link InputStream} data source to load XML labels meta data
-     * @throws ArgumentNullException if input parameters are null
-     * @throws IllegalArgumentException if input parameters refers to non-existing files
+     * @throws ArgumentNullException      if input parameters are null
+     * @throws IllegalArgumentException   if input parameters refers to non-existing files
      * @throws InvalidDataFormatException if format of loaded multi-label data is invalid
-     * @throws DataLoadException if XML meta-data of ARFF data can not be loaded
+     * @throws DataLoadException          if XML meta-data of ARFF data can not be loaded
      */
     public MultiLabelInstances(InputStream arffDataStream, InputStream xmlLabelsDefStream)
             throws InvalidDataFormatException {
@@ -277,12 +277,12 @@ public class MultiLabelInstances implements Serializable {
      * Creates a new instance of {@link MultiLabelInstances} data from existing {@link Instances}
      * and {@link LabelsMetaData}. The input parameters are not copied. Internally are stored only
      * references.<br>
-     *  The data set and labels meta data are validated against each other. Any violation of
+     * The data set and labels meta data are validated against each other. Any violation of
      * validation criteria result in {@link InvalidDataFormatException}.
-     * 
-     * @param dataSet the data set with data instances in multi-label format
+     *
+     * @param dataSet        the data set with data instances in multi-label format
      * @param labelsMetaData the meta-data about label attributes of data set
-     * @throws IllegalArgumentException if input parameters are null
+     * @throws IllegalArgumentException   if input parameters are null
      * @throws InvalidDataFormatException if multi-label data format is not valid
      */
     public MultiLabelInstances(Instances dataSet, LabelsMetaData labelsMetaData)
@@ -301,7 +301,7 @@ public class MultiLabelInstances implements Serializable {
 
     /**
      * Gets the number of labels (label attributes)
-     * 
+     *
      * @return number of labels
      */
     public int getNumLabels() {
@@ -310,7 +310,7 @@ public class MultiLabelInstances implements Serializable {
 
     /**
      * Gets the number of instances
-     * 
+     *
      * @return number of instances
      */
     public int getNumInstances() {
@@ -319,7 +319,7 @@ public class MultiLabelInstances implements Serializable {
 
     /**
      * Gets the cardinality of the dataset
-     * 
+     *
      * @return dataset cardinality
      */
     public double getCardinality() {
@@ -404,7 +404,7 @@ public class MultiLabelInstances implements Serializable {
     /**
      * Gets the {@link Set} of label {@link Attribute} instances of this {@link MultiLabelInstances}
      * instance.
-     * 
+     *
      * @return the Set of label Attribute instances
      */
     public Set<Attribute> getLabelAttributes() {
@@ -423,7 +423,7 @@ public class MultiLabelInstances implements Serializable {
     /**
      * Gets the array with indices of feature attributes stored in underlying {@link Instances} data
      * set.
-     * 
+     *
      * @return an array with the indices of the feature attributes
      */
     public int[] getFeatureIndices() {
@@ -446,7 +446,7 @@ public class MultiLabelInstances implements Serializable {
     /**
      * Gets the {@link Set} of feature {@link Attribute} instances of this
      * {@link MultiLabelInstances} instance.
-     * 
+     *
      * @return the {@link Set} of feature {@link Attribute} instances
      */
     public Set<Attribute> getFeatureAttributes() {
@@ -465,7 +465,7 @@ public class MultiLabelInstances implements Serializable {
     /**
      * Gets the {@link LabelsMetaData} instance, which contains descriptive meta-data about label
      * attributes stored in underlying {@link Instances} data set.
-     * 
+     *
      * @return descriptive meta-data about label attributes
      */
     public LabelsMetaData getLabelsMetaData() {
@@ -474,7 +474,7 @@ public class MultiLabelInstances implements Serializable {
 
     /**
      * Gets underlying {@link Instances}, which contains all data.
-     * 
+     *
      * @return underlying Instances object which contains all data
      */
     public Instances getDataSet() {
@@ -487,17 +487,16 @@ public class MultiLabelInstances implements Serializable {
      * {@link MultiLabelInstances} if needed. The underlying {@link LabelsMetaData} are modified to
      * reflect changes in data set. The method creates new instance of {@link MultiLabelInstances}
      * with modified data set and new meta-data. <br>
-     *  The supported changes are:<br>
-     *  - remove of label {@link Attribute} to the existing {@link Instances}<br>
-     *  - add/remove of {@link Instance} from the existing {@link Instances}<br>
-     *  - add/remove of feature/predictor {@link Attribute} to the existing {@link Instances}<br>
-     * 
-     * 
+     * The supported changes are:<br>
+     * - remove of label {@link Attribute} to the existing {@link Instances}<br>
+     * - add/remove of {@link Instance} from the existing {@link Instances}<br>
+     * - add/remove of feature/predictor {@link Attribute} to the existing {@link Instances}<br>
+     *
      * @param modifiedDataSet the modified data set
      * @return the modified data set
-     * @throws IllegalArgumentException if specified modified data set is null
+     * @throws IllegalArgumentException   if specified modified data set is null
      * @throws InvalidDataFormatException if multi-label data format with specified modifications is
-     *             not valid
+     *                                    not valid
      */
     public MultiLabelInstances reintegrateModifiedDataSet(Instances modifiedDataSet)
             throws InvalidDataFormatException {
@@ -681,16 +680,10 @@ public class MultiLabelInstances implements Serializable {
 
         for (int index = 0; index < numValues; index++) {
             String value = attribute.value(index);
-            if (allowedValues.contains(value)) {
-                allowedValues.remove(value);
-            }
+            allowedValues.remove(value);
         }
 
-        if (!allowedValues.isEmpty()) {
-            return false;
-        }
-
-        return true;
+        return allowedValues.isEmpty();
     }
 
     // Checks the consistency of labels if there is a hierarchy between them.
@@ -715,7 +708,7 @@ public class MultiLabelInstances implements Serializable {
     }
 
     private void checkSubtreeConsistency(LabelNode node, Instance instance, boolean canBeLabelSet,
-            Map<String, Attribute> attributesIndex) throws InvalidDataFormatException {
+                                         Map<String, Attribute> attributesIndex) throws InvalidDataFormatException {
         boolean isLabelSet = isLabelSet(instance, node.getName(), attributesIndex);
         if (isLabelSet == true && canBeLabelSet == false) {
             throw new InvalidDataFormatException(String.format(
@@ -731,16 +724,13 @@ public class MultiLabelInstances implements Serializable {
     }
 
     private boolean isLabelSet(Instance instance, String labelName,
-            Map<String, Attribute> attributesIndex) {
-        if (instance.stringValue(attributesIndex.get(labelName)).equals("1"))
-            return true;
-        else
-            return false;
+                               Map<String, Attribute> attributesIndex) {
+        return instance.stringValue(attributesIndex.get(labelName)).equals("1");
     }
 
     /**
      * Create a HashMap that contains every label, with its depth in the Hierarchical tree
-     * 
+     *
      * @return a HashMap that contains every label with its depth in the Hierarchical tree
      */
     public HashMap<String, Integer> getLabelDepth() {
@@ -760,7 +750,7 @@ public class MultiLabelInstances implements Serializable {
     /**
      * Calculates the depth of a label, in the Hierarchy of the tree of labels. Returns the counter
      * of every level. We define the root node label that has the depth 1
-     * 
+     *
      * @param labelName the name of the label
      * @return the depth of a label
      */
@@ -776,7 +766,7 @@ public class MultiLabelInstances implements Serializable {
 
     /**
      * Returns the depth of the labels
-     * 
+     *
      * @return the depth of the labels
      */
     public int[] getLabelDepthIndices() {
@@ -798,7 +788,7 @@ public class MultiLabelInstances implements Serializable {
 
     /**
      * Method that checks whether an instance has missing labels
-     * 
+     *
      * @param instance one instance of this dataset
      * @return true if the instance has missing labels
      */
@@ -818,7 +808,7 @@ public class MultiLabelInstances implements Serializable {
 
     /**
      * Returns the next instace of a multi-label dataset when the incremental read is enabled.
-     * 
+     *
      * @return The next instace of a multi-label dataset
      * @throws IOException if loader fails
      */
@@ -829,61 +819,60 @@ public class MultiLabelInstances implements Serializable {
         }
         return loader.getNextInstance(dataSet);
     }
-    
+
     /**
      * LB's new methods
      */
-    
+
     /**
      * Returns the array contains imbalance ratios of labels.
-     * 
+     *
      * @return the array contains imbalance ratios of labels
      */
-    public double[] getImbalanceRatios(){
-    	int numInstances = dataSet.numInstances();
+    public double[] getImbalanceRatios() {
+        int numInstances = dataSet.numInstances();
         int numLabels = labelsMetaData.getNumLabels();
-    	
-    	double imbalanceRatios[] = new double[numLabels];
+
+        double imbalanceRatios[] = new double[numLabels];
         int[] labelIndices = getLabelIndices();
 
         for (int j = 0; j < numLabels; j++) {
-        	double c1=0;  //count the number of instance has value 1 for jth label
-        	for (int i = 0; i < numInstances; i++) {
+            double c1 = 0;  //count the number of instance has value 1 for jth label
+            for (int i = 0; i < numInstances; i++) {
                 if (dataSet.instance(i).stringValue(labelIndices[j]).equals("1")) {
                     c1++;
                 }
             }
-        	imbalanceRatios[j]=c1*1.0/numInstances;
+            imbalanceRatios[j] = c1 * 1.0 / numInstances;
         }
         return imbalanceRatios;
     }
-    
+
     /**
      * Returns the imbalance ratios of a subset of labels.
-     * 
+     *
      * @param the array of indexes of a subset of label (index from 0 to number of labels -1)
      * @return the imbalance ratios of a subset of labels
      */
-    public double[] getImbalanceRatio(int arrayLabelIndex[]){
-    	int numInstances = dataSet.numInstances();
+    public double[] getImbalanceRatio(int arrayLabelIndex[]) {
+        int numInstances = dataSet.numInstances();
         int numLabels = labelsMetaData.getNumLabels();
         int[] labelIndices = getLabelIndices();
-        
-    	double imbalanceRatios[]=new double[arrayLabelIndex.length];
+
+        double imbalanceRatios[] = new double[arrayLabelIndex.length];
 
         for (int j = 0; j < arrayLabelIndex.length; j++) {
-        	if(arrayLabelIndex[j]>=numLabels){ //index is out of range
-        		imbalanceRatios[j]=-1;  
-        	}
-        	else{
-        		double c1=0;  //count the number of instance has value 1 for jth label
-            	for (int i = 0; i < numInstances; i++) {
+            if (arrayLabelIndex[j] >= numLabels) { //index is out of range
+                imbalanceRatios[j] = -1;
+            } else {
+                double c1 = 0;  //count the number of instance has value 1 for jth label
+                for (int i = 0; i < numInstances; i++) {
                     if (dataSet.instance(i).stringValue(labelIndices[arrayLabelIndex[j]]).equals("1")) {
                         c1++;
                     }
                 }
-            	imbalanceRatios[j]=c1*1.0/numInstances;
-        	}
+                imbalanceRatios[j] = c1 * 1.0 / numInstances;
+            }
         }
         return imbalanceRatios;
     }

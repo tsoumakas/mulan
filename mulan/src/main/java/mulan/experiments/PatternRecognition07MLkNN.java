@@ -15,16 +15,17 @@
  */
 package mulan.experiments;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import mulan.classifier.lazy.MLkNN;
 import mulan.data.MultiLabelInstances;
 import mulan.evaluation.Evaluator;
 import mulan.evaluation.MultipleEvaluation;
 import mulan.evaluation.measure.*;
 import weka.core.Utils;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * <p>Class replicating the experiment in <em>Min-Ling Zhang and Zhi-Hua Zhou.

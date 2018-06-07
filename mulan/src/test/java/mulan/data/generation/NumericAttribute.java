@@ -15,25 +15,25 @@
  */
 package mulan.data.generation;
 
-public class NumericAttribute extends Attribute{
-	private final double min;
-	private final double max;
-	
-	public NumericAttribute(String name) {
-		this(name, -1, 1);
-	}
-	
-	NumericAttribute(String name, double min, double max){
-		super(name, AttributeType.Numeric);
-		this.min = min;
-		this.max = max;
-	}
-	
-	public double getMin(){
-		return min;
-	}
-	
-	public double getMax(){
-		return max;
-	}
+public class NumericAttribute extends Attribute {
+    private final double min;
+    private final double max;
+
+    public NumericAttribute(String name) {
+        this(name, -1, 1);
+    }
+
+    NumericAttribute(String name, double min, double max) {
+        super(name, AttributeType.Numeric);
+        this.min = min;
+        this.max = max;
+    }
+
+    public double getMin() {
+        return min;
+    }
+
+    public double getMax() {
+        return max;
+    }
 }

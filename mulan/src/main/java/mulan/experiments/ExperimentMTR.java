@@ -1,12 +1,5 @@
 package mulan.experiments;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.lang.management.ManagementFactory;
-import java.lang.management.ThreadMXBean;
-import java.util.ArrayList;
-import java.util.List;
-
 import mulan.classifier.MultiLabelLearnerBase;
 import mulan.data.MultiLabelInstances;
 import mulan.evaluation.Evaluation;
@@ -25,6 +18,13 @@ import weka.classifiers.rules.ZeroR;
 import weka.classifiers.trees.REPTree;
 import weka.core.Utils;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.lang.management.ManagementFactory;
+import java.lang.management.ThreadMXBean;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * <p>
  * Class replicating the experiment in
@@ -34,42 +34,57 @@ import weka.core.Utils;
  *
  * @author Eleftherios Spyromitros-Xioufis
  * @version 2014.04.01
- *
  */
 public class ExperimentMTR {
 
-    /** the number of models in ensemble methods (ERC) **/
+    /**
+     * the number of models in ensemble methods (ERC)
+     **/
     public static final int numEnsembleModels = 10;
-    /** whether the base learner should output debug messages **/
+    /**
+     * whether the base learner should output debug messages
+     **/
     public static final boolean baseDebug = false;
-    /** whether the multi-target methods should output debug messages **/
+    /**
+     * whether the multi-target methods should output debug messages
+     **/
     public static final boolean mtDebug = true;
-    /** the number of cross-validation folds to use for evaluation **/
+    /**
+     * the number of cross-validation folds to use for evaluation
+     **/
     public static final int numFolds = 10;
-    /** the type of sampling in ERC **/
+    /**
+     * the type of sampling in ERC
+     **/
     public static final EnsembleOfRegressorChains.SamplingMethod sampling = EnsembleOfRegressorChains.SamplingMethod.None;
-    /** number of execution slots to use by Weka's algorithms which support this option **/
+    /**
+     * number of execution slots to use by Weka's algorithms which support this option
+     **/
     private static int numSlots;
-    /** number of targets **/
+    /**
+     * number of targets
+     **/
     private static int numTargets;
-    /** the multi-target datasets. Train and test will be null when cv is performed and vise versa **/
+    /**
+     * the multi-target datasets. Train and test will be null when cv is performed and vise versa
+     **/
     private static MultiLabelInstances full;
     private static MultiLabelInstances train;
     private static MultiLabelInstances test;
 
     /**
      * @param args <ul>
-     *            <li><b>-path:</b> full path to the dataset folder</li>
-     *            <li><b>-filestem:</b> the dataset's filestem (name)</li>
-     *            <li><b>-targets:</b> the number of targets in the dataset</li>
-     *            <li><b>-eval:</b> the type of evaluation to perform ('cv' for cross-validation / 'train' for
-     *            train/test split)</li>
-     *            <li><b>-mt:</b> comma separated list of the multi-target regression methods to evaluate:<br>
-     *            (ST,MTS,MTSC,ERC,ERCC,MORF)</li>
-     *            <li><b>-base:</b>the base regressor to use (reptree-bag)</li>
-     *            <li><b>-slots:</b> number of execution slots to be used by Weka's algorithms which support
-     *            this option</li>
-     *            </ul>
+     *             <li><b>-path:</b> full path to the dataset folder</li>
+     *             <li><b>-filestem:</b> the dataset's filestem (name)</li>
+     *             <li><b>-targets:</b> the number of targets in the dataset</li>
+     *             <li><b>-eval:</b> the type of evaluation to perform ('cv' for cross-validation / 'train' for
+     *             train/test split)</li>
+     *             <li><b>-mt:</b> comma separated list of the multi-target regression methods to evaluate:<br>
+     *             (ST,MTS,MTSC,ERC,ERCC,MORF)</li>
+     *             <li><b>-base:</b>the base regressor to use (reptree-bag)</li>
+     *             <li><b>-slots:</b> number of execution slots to be used by Weka's algorithms which support
+     *             this option</li>
+     *             </ul>
      * @throws Exception exceptions not caught
      */
     public static void main(String[] args) throws Exception {
@@ -294,6 +309,7 @@ public class ExperimentMTR {
 
     /**
      * Get CPU time in milliseconds.
+     *
      * @return the CPU time in ms
      */
     public static long getCpuTime() {

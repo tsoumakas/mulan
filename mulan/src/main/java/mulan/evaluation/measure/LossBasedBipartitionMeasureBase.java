@@ -18,7 +18,6 @@ package mulan.evaluation.measure;
 import mulan.evaluation.loss.BipartitionLossFunction;
 
 /**
- *
  * @author Grigorios Tsoumakas
  * @version 2010.11.10
  */

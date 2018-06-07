@@ -23,43 +23,47 @@ package mulan.classifier.neural.model;
 /**
  * Implements the gaussian activation function.
  * The function output values are from interval (0, 1).
- * 
+ *
  * @author Ioannis Charitos
  * @version 2017.02.10
  */
 public class ActivationGaussian extends ActivationFunction {
-	
-	private static final long serialVersionUID = 5L;
-    /** Maximum value of function */
-    public final static double MAX = + 1.0;
-    /** Minimum value of function */
+
+    /**
+     * Maximum value of function
+     */
+    public final static double MAX = +1.0;
+    /**
+     * Minimum value of function
+     */
     public final static double MIN = 0.0;
+    private static final long serialVersionUID = 5L;
 
-	@Override
-	public double activate(double input) {
-		return Math.exp(-(input * input));
-	}
+    @Override
+    public double activate(double input) {
+        return Math.exp(-(input * input));
+    }
 
-	@Override
-	public double derivative(double input) {
-		/* Due to ambiguity we manually set the derivative's value to 0.
-		 *  It can be proved that the function's limit 
-		 *  at both positive and negative infinity is 0.
-		 */
-		if (input == Double.NEGATIVE_INFINITY || input == Double.POSITIVE_INFINITY)
-			return 0;
-		else
-			return -2.0 * input * activate(input);
-	}
+    @Override
+    public double derivative(double input) {
+        /* Due to ambiguity we manually set the derivative's value to 0.
+         *  It can be proved that the function's limit
+         *  at both positive and negative infinity is 0.
+         */
+        if (input == Double.NEGATIVE_INFINITY || input == Double.POSITIVE_INFINITY)
+            return 0;
+        else
+            return -2.0 * input * activate(input);
+    }
 
-	@Override
-	public double getMax() {
-		return MAX;
-	}
+    @Override
+    public double getMax() {
+        return MAX;
+    }
 
-	@Override
-	public double getMin() {
-		return MIN;
-	}
+    @Override
+    public double getMin() {
+        return MIN;
+    }
 
 }

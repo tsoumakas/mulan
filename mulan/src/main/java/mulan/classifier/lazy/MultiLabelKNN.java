@@ -32,10 +32,6 @@ import weka.core.neighboursearch.LinearNNSearch;
 public abstract class MultiLabelKNN extends MultiLabelLearnerBase {
 
     /**
-     * Whether the neighbors should be distance-weighted.
-     */
-    protected int distanceWeighting;
-    /**
      * no weighting.
      */
     public static final int WEIGHT_NONE = 1;
@@ -47,6 +43,10 @@ public abstract class MultiLabelKNN extends MultiLabelLearnerBase {
      * weight by 1-distance.
      */
     public static final int WEIGHT_SIMILARITY = 4;
+    /**
+     * Whether the neighbors should be distance-weighted.
+     */
+    protected int distanceWeighting;
     // TODO weight each neighbor's vote according to the inverse square of its distance
     /**
      * Number of neighbors used in the k-nearest neighbor algorithm
@@ -61,14 +61,6 @@ public abstract class MultiLabelKNN extends MultiLabelLearnerBase {
      * Implementing Euclidean distance (or similarity) function.
      */
     protected DistanceFunction dfunc = null;
-
-    /**
-     * Sets a distance function
-     * @param dfunc the distance function
-     */
-    public void setDfunc(DistanceFunction dfunc) {
-        this.dfunc = dfunc;
-    }
     /**
      * The training instances
      */
@@ -90,6 +82,15 @@ public abstract class MultiLabelKNN extends MultiLabelLearnerBase {
     public MultiLabelKNN(int numOfNeighbors) {
         this.numOfNeighbors = numOfNeighbors;
         dfunc = new EuclideanDistance();
+    }
+
+    /**
+     * Sets a distance function
+     *
+     * @param dfunc the distance function
+     */
+    public void setDfunc(DistanceFunction dfunc) {
+        this.dfunc = dfunc;
     }
 
     protected void buildInternal(MultiLabelInstances trainSet) throws Exception {

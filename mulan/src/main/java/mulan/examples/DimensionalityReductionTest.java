@@ -15,8 +15,6 @@
  */
 package mulan.examples;
 
-import java.util.Arrays;
-
 import mulan.data.MultiLabelInstances;
 import mulan.dimensionalityReduction.BinaryRelevanceAttributeEvaluator;
 import mulan.dimensionalityReduction.Ranker;
@@ -26,6 +24,8 @@ import weka.core.Instances;
 import weka.core.Utils;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.Remove;
+
+import java.util.Arrays;
 
 /**
  * Demonstrates the attribute selection capabilities of Mulan

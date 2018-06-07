@@ -23,7 +23,7 @@ import java.util.List;
  * the error set. The error set is composed of all possible label pairs,
  * where one is relevant and the other is not, and which satisfy the condition
  * that the relevant label is ranked lower than the irrelevant one.
- * 
+ *
  * @author Grigorios Tsoumakas
  * @version 2010.11.10
  */

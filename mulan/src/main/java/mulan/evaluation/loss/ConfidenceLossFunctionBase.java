@@ -15,10 +15,10 @@
  */
 package mulan.evaluation.loss;
 
-import java.io.Serializable;
-
 import mulan.classifier.MultiLabelOutput;
 import mulan.core.ArgumentNullException;
+
+import java.io.Serializable;
 
 /**
  * Base class for confidence loss functions

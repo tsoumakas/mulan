@@ -22,12 +22,12 @@ package mulan.evaluation.measure;
  * @version 2012.07.27
  */
 public interface MacroAverageMeasure {
-    
+
     /**
      * Returns the value of a macro average measure for a particular label
-     * 
+     *
      * @param labelIndex the index of the label [0..numLabels-1]
      * @return the value of a macro average measure for a particular label
      */
-    public double getValue(int labelIndex);
+    double getValue(int labelIndex);
 }

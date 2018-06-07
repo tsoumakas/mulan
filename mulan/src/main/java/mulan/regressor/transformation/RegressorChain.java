@@ -1,11 +1,5 @@
 package mulan.regressor.transformation;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Random;
-
 import mulan.classifier.MultiLabelOutput;
 import mulan.data.DataUtils;
 import mulan.data.MultiLabelInstances;
@@ -20,6 +14,8 @@ import weka.filters.unsupervised.attribute.AddID;
 import weka.filters.unsupervised.attribute.Remove;
 import weka.filters.unsupervised.instance.Resample;
 
+import java.util.*;
+
 /**
  * This class implements the Regressor Chain (RC) method. 4 alternative methods to obtain the values of the
  * meta features are implemented.<br>
@@ -33,67 +29,6 @@ import weka.filters.unsupervised.instance.Resample;
 public class RegressorChain extends TransformationBasedMultiTargetRegressor {
 
     private static final long serialVersionUID = 1L;
-
-    /**
-     * The 4 alternative methods to obtain the values of the meta features.
-     */
-    public enum metaType {
-        /**
-         * Using internal k fold cross-validation.
-         */
-        CV,
-        /**
-         * Using the full training set.
-         */
-        INSAMPLE,
-        /**
-         * Using the true target values.
-         */
-        TRUE,
-        /**
-         * Using a random sample.
-         */
-        SAMPLE
-    }
-
-    /**
-     * The method used to obtain the values of the meta features. TRUE is used by default.
-     */
-    private metaType meta = metaType.TRUE;
-
-    /**
-     * A permutation of the target indices. E.g. If there are 3 targets with indices 14, 15, 16, a valid chain
-     * is 15, 14, 16.
-     */
-    private int[] chain;
-
-    /**
-     * The seed to use for random number generation in order to create a random chain (other than the default
-     * one which consists of the targets chained in the order they appear in the arff file).
-     */
-    private int chainSeed = 0;
-
-    /**
-     * The number of folds to use in internal k fold cross-validation. 3 folds are used by default.
-     */
-    private int numFolds = 3;
-
-    /**
-     * The training data of each regressor of the chain. After training the actual data are deleted and only
-     * the header information is held which is needed during prediction.
-     */
-    private Instances[] chainRegressorsTrainSets;
-
-    /** The regressors of the chain. */
-    private Classifier[] chainRegressors;
-
-    /**
-     * The values of the meta features (obtained using one of the available methods). The first dimension's
-     * size is equal to the number of training examples and the second is equal to the number of targets minus
-     * 1 (we do need meta features for the last target of the chain).
-     */
-    private double[][] metaFeatures;
-
     /**
      * When the base regressor is capable of attribute selection this ArrayList holds the indices of the
      * target variables that were selected in each target's model.
@@ -104,15 +39,47 @@ public class RegressorChain extends TransformationBasedMultiTargetRegressor {
      * normal feature variables that were selected in each target's model.
      */
     protected ArrayList<Integer>[] selectedFeatureIndices;
+    /**
+     * The method used to obtain the values of the meta features. TRUE is used by default.
+     */
+    private metaType meta = metaType.TRUE;
+    /**
+     * A permutation of the target indices. E.g. If there are 3 targets with indices 14, 15, 16, a valid chain
+     * is 15, 14, 16.
+     */
+    private int[] chain;
+    /**
+     * The seed to use for random number generation in order to create a random chain (other than the default
+     * one which consists of the targets chained in the order they appear in the arff file).
+     */
+    private int chainSeed = 0;
+    /**
+     * The number of folds to use in internal k fold cross-validation. 3 folds are used by default.
+     */
+    private int numFolds = 3;
+    /**
+     * The training data of each regressor of the chain. After training the actual data are deleted and only
+     * the header information is held which is needed during prediction.
+     */
+    private Instances[] chainRegressorsTrainSets;
+    /**
+     * The regressors of the chain.
+     */
+    private Classifier[] chainRegressors;
+    /**
+     * The values of the meta features (obtained using one of the available methods). The first dimension's
+     * size is equal to the number of training examples and the second is equal to the number of targets minus
+     * 1 (we do need meta features for the last target of the chain).
+     */
+    private double[][] metaFeatures;
 
     /**
      * Creates a new instance with the given base regressor. If {@link #chainSeed} == 0, the default chain is
      * used. Otherwise, a random chain is created using the given seed.
      *
      * @param baseRegressor the base regression algorithm that will be used
-     * @throws Exception Potential exception thrown. To be handled in an upper level.
      */
-    public RegressorChain(Classifier baseRegressor) throws Exception {
+    public RegressorChain(Classifier baseRegressor) {
         super(baseRegressor);
     }
 
@@ -120,10 +87,9 @@ public class RegressorChain extends TransformationBasedMultiTargetRegressor {
      * Creates a new instance with the given base regressor and chain ordering.
      *
      * @param baseRegressor the base regression algorithm that will be used
-     * @param aChain a chain ordering
-     * @throws Exception Potential exception thrown. To be handled in an upper level.
+     * @param aChain        a chain ordering
      */
-    public RegressorChain(Classifier baseRegressor, int[] aChain) throws Exception {
+    public RegressorChain(Classifier baseRegressor, int[] aChain) {
         super(baseRegressor);
         chain = aChain;
     }
@@ -363,6 +329,28 @@ public class RegressorChain extends TransformationBasedMultiTargetRegressor {
 
     public ArrayList<Integer>[] getSelectedFeatureIndices() {
         return selectedFeatureIndices;
+    }
+
+    /**
+     * The 4 alternative methods to obtain the values of the meta features.
+     */
+    public enum metaType {
+        /**
+         * Using internal k fold cross-validation.
+         */
+        CV,
+        /**
+         * Using the full training set.
+         */
+        INSAMPLE,
+        /**
+         * Using the true target values.
+         */
+        TRUE,
+        /**
+         * Using a random sample.
+         */
+        SAMPLE
     }
 
 }

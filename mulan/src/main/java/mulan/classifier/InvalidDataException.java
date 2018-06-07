@@ -16,9 +16,9 @@
 package mulan.classifier;
 
 /**
- * Exception thrown by the {@link MultiLabelLearner} when presented with invalid data or 
+ * Exception thrown by the {@link MultiLabelLearner} when presented with invalid data or
  * data which can not be processed by the specific learner type.
- * 
+ *
  * @author Jozef Vilcek
  */
 public class InvalidDataException extends LearnerException {
@@ -40,7 +40,7 @@ public class InvalidDataException extends LearnerException {
      * detail message and nested exception.
      *
      * @param message the detail message
-     * @param cause the nested exception
+     * @param cause   the nested exception
      */
     public InvalidDataException(String message, Throwable cause) {
         super(message, cause);

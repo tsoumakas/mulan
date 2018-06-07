@@ -15,12 +15,12 @@
  */
 package mulan.evaluation.measure;
 
-import java.io.Serializable;
-
 import mulan.classifier.MultiLabelOutput;
 import mulan.core.ArgumentNullException;
 import mulan.evaluation.GroundTruth;
 import weka.core.SerializedObject;
+
+import java.io.Serializable;
 
 /**
  * @author Grigorios Tsoumakas
@@ -37,9 +37,9 @@ public abstract class ClassificationMeasureBase implements Measure, Serializable
         if (!truth.isClassification()) {
             throw new ArgumentNullException("Classification ground truth is null");
         }
-        
+
         updateInternal(prediction, truth.getTrueLabels());
-         
+
     }
 
     /**
@@ -59,16 +59,16 @@ public abstract class ClassificationMeasureBase implements Measure, Serializable
 
     /**
      * Updates the classification measure based on an example
-     * 
+     *
      * @param prediction the output of the algorithm for the example
-     * @param truth the ground truth of the example
+     * @param truth      the ground truth of the example
      */
     protected abstract void updateInternal(MultiLabelOutput prediction, boolean[] truth);
 
     public Measure makeCopy() throws Exception {
         return (Measure) new SerializedObject(this).getObject();
     }
-    
+
     /**
      * By default, classification measures do not handle missing ground truth values. This method
      * should be overridden if a particular measure's implementation can handle missing ground thuth

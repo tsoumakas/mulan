@@ -41,16 +41,16 @@ import weka.filters.unsupervised.attribute.Remove;
 public class ClassifierChain extends TransformationBasedMultiLabelLearner {
 
     /**
-     * The new chain ordering of the label indices
-     */
-    private int[] chain;
-    /**
      * The ensemble of binary relevance models. These are Weka
      * FilteredClassifier objects, where the filter corresponds to removing all
      * label apart from the one that serves as a target for the corresponding
      * model.
      */
     protected FilteredClassifier[] ensemble;
+    /**
+     * The new chain ordering of the label indices
+     */
+    private int[] chain;
 
     /**
      * Creates a new instance using J48 as the underlying classifier
@@ -63,8 +63,8 @@ public class ClassifierChain extends TransformationBasedMultiLabelLearner {
      * Creates a new instance
      *
      * @param classifier the base-level classification algorithm that will be
-     * used for training each of the binary models
-     * @param aChain contains the order of the label indexes [0..numLabels-1] 
+     *                   used for training each of the binary models
+     * @param aChain     contains the order of the label indexes [0..numLabels-1]
      */
     public ClassifierChain(Classifier classifier, int[] aChain) {
         super(classifier);
@@ -75,7 +75,7 @@ public class ClassifierChain extends TransformationBasedMultiLabelLearner {
      * Creates a new instance
      *
      * @param classifier the base-level classification algorithm that will be
-     * used for training each of the binary models
+     *                   used for training each of the binary models
      */
     public ClassifierChain(Classifier classifier) {
         super(classifier);
@@ -137,7 +137,7 @@ public class ClassifierChain extends TransformationBasedMultiLabelLearner {
 
             // Ensure correct predictions both for class values {0,1} and {1,0}
             Attribute classAttribute = ensemble[counter].getFilter().getOutputFormat().classAttribute();
-            bipartition[chain[counter]] = (classAttribute.value(maxIndex).equals("1")) ? true : false;
+            bipartition[chain[counter]] = classAttribute.value(maxIndex).equals("1");
 
             // The confidence of the label being equal to 1
             confidences[chain[counter]] = distribution[classAttribute.indexOfValue("1")];

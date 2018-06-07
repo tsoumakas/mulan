@@ -15,11 +15,6 @@
  */
 package mulan.classifier.meta.thresholding;
 
-import java.util.ArrayList;
-import java.util.Set;
-import java.util.TreeSet;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import mulan.classifier.MultiLabelLearner;
 import mulan.classifier.MultiLabelOutput;
 import mulan.classifier.transformation.BinaryRelevance;
@@ -35,6 +30,12 @@ import weka.core.TechnicalInformation;
 import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
 
+import java.util.ArrayList;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  * <p>
  * Class implementing the MetaLabeler algorithm. For more information, see
@@ -45,7 +46,6 @@ import weka.core.TechnicalInformation.Type;
  * @author Marios Ioannou
  * @author George Sakkas
  * @author Grigorios Tsoumakas
- *
  * @version 2014.1.27
  */
 public class MetaLabeler extends Meta {
@@ -65,10 +65,10 @@ public class MetaLabeler extends Meta {
     /**
      * Constructor that initializes the learner
      *
-     * @param baseLearner the underlying multi-label learner
-     * @param classifier the binary classification
+     * @param baseLearner    the underlying multi-label learner
+     * @param classifier     the binary classification
      * @param metaDataChoice the type of meta-data
-     * @param aClassChoice the type of the class
+     * @param aClassChoice   the type of the class
      */
     public MetaLabeler(MultiLabelLearner baseLearner, Classifier classifier, MetaData metaDataChoice, String aClassChoice) {
         super(baseLearner, classifier, metaDataChoice);
@@ -194,7 +194,7 @@ public class MetaLabeler extends Meta {
             // initialize  classifier instances
             ArrayList<Attribute> list = new ArrayList<>();
             for (int t = 0; t < numLabels; t++) {
-                list.add(new Attribute("label"+(t+1)));
+                list.add(new Attribute("label" + (t + 1)));
             }
             classifierInstances = new Instances("ranks-scores", list, 0);
             classifierInstances.insertAttributeAt(target, classifierInstances.numAttributes());

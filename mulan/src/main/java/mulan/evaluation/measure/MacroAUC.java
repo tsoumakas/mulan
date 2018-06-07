@@ -54,15 +54,15 @@ public class MacroAUC extends LabelBasedAUC implements MacroAverageMeasure {
 
     /**
      * Returns the AUC for a particular label
-     * 
-     * @param labelIndex the index of the label 
+     *
+     * @param labelIndex the index of the label
      * @return the AUC for that label
      */
     @Override
     public double getValue(int labelIndex) {
         ThresholdCurve tc = new ThresholdCurve();
         Instances result = tc.getCurve(m_Predictions[labelIndex], 1);
-        return ThresholdCurve.getROCArea(result);  
+        return ThresholdCurve.getROCArea(result);
     }
 
 }

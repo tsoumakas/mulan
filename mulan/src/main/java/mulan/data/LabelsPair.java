@@ -29,14 +29,19 @@ import java.io.Serializable;
  * @version 30.11.2010
  */
 public class LabelsPair implements Comparable, Serializable {
-    /** a pair of labels*/
+    /**
+     * a pair of labels
+     */
     int[] pair;
-    /** dependence score of the labels pair*/
+    /**
+     * dependence score of the labels pair
+     */
     Double score;
 
     /**
      * Initialize a labels pair using an array of two int values.
-     * @param aPair - a pair of labels (i.e. an array of length 2)
+     *
+     * @param aPair  - a pair of labels (i.e. an array of length 2)
      * @param aScore - a dependence score
      */
     public LabelsPair(int[] aPair, double aScore) {
@@ -48,7 +53,6 @@ public class LabelsPair implements Comparable, Serializable {
     }
 
     /**
-     * 
      * @return The pair of labels
      */
     public int[] getPair() {
@@ -56,7 +60,6 @@ public class LabelsPair implements Comparable, Serializable {
     }
 
     /**
-     * 
      * @param pair a pair of labels
      */
     public void setPair(int[] pair) {
@@ -64,7 +67,6 @@ public class LabelsPair implements Comparable, Serializable {
     }
 
     /**
-     * 
      * @return The dependence score of the labels pair
      */
     public Double getScore() {
@@ -72,7 +74,6 @@ public class LabelsPair implements Comparable, Serializable {
     }
 
     /**
-     * 
      * @param score the dependence score of the labels pair
      */
     public void setScore(Double score) {
@@ -88,16 +89,16 @@ public class LabelsPair implements Comparable, Serializable {
     }
 
     public int compareTo(Object otherPair) {
-        if( otherPair == null ) {
+        if (otherPair == null) {
             throw new NullPointerException();
         }
-        if( !( otherPair instanceof LabelsPair)) {
+        if (!(otherPair instanceof LabelsPair)) {
             throw new ClassCastException("Invalid object");
         }
-        Double value = ( (LabelsPair) otherPair ).getScore();
-        if(  this.getScore() > value )
+        Double value = ((LabelsPair) otherPair).getScore();
+        if (this.getScore() > value)
             return 1;
-        else if ( this.getScore() < value )
+        else if (this.getScore() < value)
             return -1;
         else
             return 0;
@@ -113,7 +114,7 @@ public class LabelsPair implements Comparable, Serializable {
      */
     @Override
     public String toString() {
-        return  "labels pair: [" + pair[0] + ", " + pair[1] + "]; " +
+        return "labels pair: [" + pair[0] + ", " + pair[1] + "]; " +
                 " dependence score; " + score + '\n';
     }
 }

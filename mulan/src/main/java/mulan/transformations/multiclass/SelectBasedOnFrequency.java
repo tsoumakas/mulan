@@ -20,15 +20,15 @@
  */
 package mulan.transformations.multiclass;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import mulan.data.MultiLabelInstances;
 import mulan.transformations.RemoveAllLabels;
 import weka.core.Instance;
 import weka.core.Instances;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Class that implement the Select-Max and Select-Min transformation methods.
@@ -38,9 +38,13 @@ import weka.core.Instances;
  */
 public class SelectBasedOnFrequency extends MultiClassTransformationBase {
 
-    /** type of frequency */
+    /**
+     * type of frequency
+     */
     private SelectionType type;
-    /** occurences of each label */
+    /**
+     * occurences of each label
+     */
     private int[] labelOccurance;
 
     /**
@@ -72,7 +76,7 @@ public class SelectBasedOnFrequency extends MultiClassTransformationBase {
 
     /**
      * Transforms a multi-label example to a list containing a single-label
-     * multi-class example by selecting the most/least frequent label in the 
+     * multi-class example by selecting the most/least frequent label in the
      * training set
      *
      * @param instance
@@ -86,10 +90,10 @@ public class SelectBasedOnFrequency extends MultiClassTransformationBase {
                 boolean test = false;
                 switch (type) {
                     case MIN:
-                        test = labelOccurance[counter] < value ? true : false;
+                        test = labelOccurance[counter] < value;
                         break;
                     case MAX:
-                        test = labelOccurance[counter] > value ? true : false;
+                        test = labelOccurance[counter] > value;
                         break;
                 }
 

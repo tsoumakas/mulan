@@ -15,11 +15,6 @@
  */
 package mulan.regressor.transformation;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Random;
-
 import mulan.classifier.MultiLabelOutput;
 import mulan.data.DataUtils;
 import mulan.data.MultiLabelInstances;
@@ -30,27 +25,34 @@ import weka.core.Instance;
 import weka.core.Instances;
 import weka.filters.unsupervised.attribute.Remove;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Random;
+
 /**
  * This class implements the Regressor Chain (RC) method.<br>
  * <br>
  * For more information, see:<br>
  * <em>E. Spyromitros-Xioufis, G. Tsoumakas, W. Groves, I. Vlahavas. 2014. Multi-label Classification Methods for
  * Multi-target Regression. <a href="http://arxiv.org/abs/1211.6581">arXiv e-prints</a></em>.
- * 
+ *
  * @author Eleftherios Spyromitros-Xioufis
  * @version 2014.04.01
  */
 public class RegressorChainSimple extends TransformationBasedMultiTargetRegressor {
 
     private static final long serialVersionUID = 1L;
-
+    /**
+     * The regressors of the chain.
+     */
+    protected FilteredClassifier[] chainRegressors;
     /**
      * The seed to use for random number generation in order to create a random chain (other than
      * the default one which consists of the targets chained in the order they appear in the arff
      * file).
      */
     private int chainSeed = 0;
-
     /**
      * A permutation of the target indices. E.g. If there are 3 targets with indices 14,15 and 16, a
      * valid chain is 15,14,16.
@@ -58,14 +60,9 @@ public class RegressorChainSimple extends TransformationBasedMultiTargetRegresso
     private int[] chain;
 
     /**
-     * The regressors of the chain.
-     */
-    protected FilteredClassifier[] chainRegressors;
-
-    /**
      * Creates a new instance with the given base regressor. If {@link #chainSeed} == 0, the default
      * chain is used. Otherwise, a random chain is created using the given seed.
-     * 
+     *
      * @param regressor the base regression algorithm that will be used
      */
     public RegressorChainSimple(Classifier regressor) {
@@ -74,9 +71,9 @@ public class RegressorChainSimple extends TransformationBasedMultiTargetRegresso
 
     /**
      * Creates a new instance with the given base regressor and chain ordering.
-     * 
+     *
      * @param regressor the base regression algorithm that will be used
-     * @param aChain a chain ordering
+     * @param aChain    a chain ordering
      */
     public RegressorChainSimple(Classifier regressor, int[] aChain) {
         super(regressor);

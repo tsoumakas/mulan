@@ -16,7 +16,6 @@
 package mulan.classifier.lazy;
 
 import junit.framework.Assert;
-
 import org.junit.Test;
 
 /**

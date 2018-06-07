@@ -1,26 +1,16 @@
 package weka.classifiers;
 
-import java.util.Enumeration;
-import java.util.Vector;
-
 import weka.classifiers.rules.ZeroR;
 import weka.classifiers.trees.REPTree;
-import weka.core.AdditionalMeasureProducer;
-import weka.core.Capabilities;
+import weka.core.*;
 import weka.core.Capabilities.Capability;
-import weka.core.Instance;
-import weka.core.Instances;
-import weka.core.Option;
-import weka.core.OptionHandler;
-import weka.core.RevisionUtils;
-import weka.core.TechnicalInformation;
 import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
-import weka.core.TechnicalInformationHandler;
-import weka.core.Utils;
-import weka.core.WeightedInstancesHandler;
 import weka.filters.Filter;
 import weka.filters.unsupervised.instance.Resample;
+
+import java.util.Enumeration;
+import java.util.Vector;
 
 /**
  * <!-- globalinfo-start --> Meta classifier that enhances the performance of a regression base classifier.
@@ -33,9 +23,9 @@ import weka.filters.unsupervised.instance.Resample;
  * J.H. Friedman (1999). Stochastic Gradient Boosting.
  * <p/>
  * <!-- globalinfo-end -->
- * 
+ * <p>
  * <!-- technical-bibtex-start --> BibTeX:
- * 
+ *
  * <pre>
  * &#64;techreport{Friedman1999,
  *    author = {J.H. Friedman},
@@ -47,52 +37,54 @@ import weka.filters.unsupervised.instance.Resample;
  * </pre>
  * <p/>
  * <!-- technical-bibtex-end -->
- * 
+ * <p>
  * <!-- options-start --> Valid options are:
  * <p/>
- * 
+ *
  * <pre>
  * -S
  *  Specify shrinkage rate. (default = 1.0, ie. no shrinkage)
  * </pre>
- * 
+ *
  * <pre>
  * -I &lt;num&gt;
  *  Number of iterations.
  *  (default 10)
  * </pre>
- * 
+ *
  * <pre>
  * -D
  *  If set, classifier is run in debug mode and
  *  may output additional info to the console
  * </pre>
- * 
+ *
  * <pre>
  * -W
  *  Full name of base classifier.
  *  (default: weka.classifiers.trees.DecisionStump)
  * </pre>
- * 
+ *
  * <pre>
  * Options specific to classifier weka.classifiers.trees.DecisionStump:
  * </pre>
- * 
+ *
  * <pre>
  * -D
  *  If set, classifier is run in debug mode and
  *  may output additional info to the console
  * </pre>
- * 
+ * <p>
  * <!-- options-end -->
- * 
+ *
  * @author Mark Hall (mhall@cs.waikato.ac.nz)
  * @version $Revision: 8034 $
  */
 public class StohasticGradientBoosting extends IteratedSingleClassifierEnhancer implements OptionHandler,
         AdditionalMeasureProducer, WeightedInstancesHandler, TechnicalInformationHandler {
 
-    /** for serialization */
+    /**
+     * for serialization
+     */
     static final long serialVersionUID = -2368937577670527151L;
 
     /**
@@ -100,20 +92,53 @@ public class StohasticGradientBoosting extends IteratedSingleClassifierEnhancer 
      */
     protected double m_shrinkage = 1.0;
 
-    /** The number of successfully generated base classifiers. */
+    /**
+     * The number of successfully generated base classifiers.
+     */
     protected int m_NumIterationsPerformed;
 
-    /** The model for the mean */
+    /**
+     * The model for the mean
+     */
     protected ZeroR m_zeroR;
 
-    /** whether we have suitable data or nor (if not, ZeroR model is used) */
+    /**
+     * whether we have suitable data or nor (if not, ZeroR model is used)
+     */
     protected boolean m_SuitableData = true;
 
     private double m_percentage = 50;
 
     /**
+     * Default constructor specifying DecisionStump as the classifier
+     */
+    public StohasticGradientBoosting() {
+
+        this(new weka.classifiers.trees.DecisionStump());
+    }
+
+    /**
+     * Constructor which takes base classifier as argument.
+     *
+     * @param classifier the base classifier to use
+     */
+    public StohasticGradientBoosting(Classifier classifier) {
+
+        m_Classifier = classifier;
+    }
+
+    /**
+     * Main method for testing this class.
+     *
+     * @param argv should contain the following arguments: -t training file [-T test file] [-c class index]
+     */
+    public static void main(String[] argv) {
+        runClassifier(new StohasticGradientBoosting(), argv);
+    }
+
+    /**
      * Returns a string describing this attribute evaluator
-     * 
+     *
      * @return a description of the evaluator suitable for displaying in the explorer/experimenter gui
      */
     public String globalInfo() {
@@ -129,7 +154,7 @@ public class StohasticGradientBoosting extends IteratedSingleClassifierEnhancer 
     /**
      * Returns an instance of a TechnicalInformation object, containing detailed information about the
      * technical background of this class, e.g., paper reference or book this class is based on.
-     * 
+     *
      * @return the technical information about this class
      */
     public TechnicalInformation getTechnicalInformation() {
@@ -146,26 +171,8 @@ public class StohasticGradientBoosting extends IteratedSingleClassifierEnhancer 
     }
 
     /**
-     * Default constructor specifying DecisionStump as the classifier
-     */
-    public StohasticGradientBoosting() {
-
-        this(new weka.classifiers.trees.DecisionStump());
-    }
-
-    /**
-     * Constructor which takes base classifier as argument.
-     * 
-     * @param classifier the base classifier to use
-     */
-    public StohasticGradientBoosting(Classifier classifier) {
-
-        m_Classifier = classifier;
-    }
-
-    /**
      * String describing default classifier.
-     * 
+     *
      * @return the default classifier classname
      */
     protected String defaultClassifierString() {
@@ -175,7 +182,7 @@ public class StohasticGradientBoosting extends IteratedSingleClassifierEnhancer 
 
     /**
      * Returns an enumeration describing the available options.
-     * 
+     *
      * @return an enumeration of all the available options.
      */
     public Enumeration listOptions() {
@@ -193,70 +200,8 @@ public class StohasticGradientBoosting extends IteratedSingleClassifierEnhancer 
     }
 
     /**
-     * Parses a given list of options.
-     * <p/>
-     * 
-     * <!-- options-start --> Valid options are:
-     * <p/>
-     * 
-     * <pre>
-     * -S
-     *  Specify shrinkage rate. (default = 1.0, ie. no shrinkage)
-     * </pre>
-     * 
-     * <pre>
-     * -I &lt;num&gt;
-     *  Number of iterations.
-     *  (default 10)
-     * </pre>
-     * 
-     * <pre>
-     * -D
-     *  If set, classifier is run in debug mode and
-     *  may output additional info to the console
-     * </pre>
-     * 
-     * <pre>
-     * -W
-     *  Full name of base classifier.
-     *  (default: weka.classifiers.trees.DecisionStump)
-     * </pre>
-     * 
-     * <pre>
-     * Options specific to classifier weka.classifiers.trees.DecisionStump:
-     * </pre>
-     * 
-     * <pre>
-     * -D
-     *  If set, classifier is run in debug mode and
-     *  may output additional info to the console
-     * </pre>
-     * 
-     * <!-- options-end -->
-     * 
-     * @param options the list of options as an array of strings
-     * @throws Exception if an option is not supported
-     */
-    public void setOptions(String[] options) throws Exception {
-
-        String optionString = Utils.getOption('S', options);
-        if (optionString.length() != 0) {
-            Double temp = Double.valueOf(optionString);
-            setShrinkage(temp.doubleValue());
-        }
-        // ++ LEF ++
-        optionString = Utils.getOption('P', options);
-        if (optionString.length() != 0) {
-            Double temp = Double.valueOf(optionString);
-            setPercentage(temp.doubleValue());
-        }
-
-        super.setOptions(options);
-    }
-
-    /**
      * Gets the current settings of the Classifier.
-     * 
+     *
      * @return an array of strings suitable for passing to setOptions
      */
     public String[] getOptions() {
@@ -289,8 +234,70 @@ public class StohasticGradientBoosting extends IteratedSingleClassifierEnhancer 
     }
 
     /**
+     * Parses a given list of options.
+     * <p/>
+     * <p>
+     * <!-- options-start --> Valid options are:
+     * <p/>
+     *
+     * <pre>
+     * -S
+     *  Specify shrinkage rate. (default = 1.0, ie. no shrinkage)
+     * </pre>
+     *
+     * <pre>
+     * -I &lt;num&gt;
+     *  Number of iterations.
+     *  (default 10)
+     * </pre>
+     *
+     * <pre>
+     * -D
+     *  If set, classifier is run in debug mode and
+     *  may output additional info to the console
+     * </pre>
+     *
+     * <pre>
+     * -W
+     *  Full name of base classifier.
+     *  (default: weka.classifiers.trees.DecisionStump)
+     * </pre>
+     *
+     * <pre>
+     * Options specific to classifier weka.classifiers.trees.DecisionStump:
+     * </pre>
+     *
+     * <pre>
+     * -D
+     *  If set, classifier is run in debug mode and
+     *  may output additional info to the console
+     * </pre>
+     * <p>
+     * <!-- options-end -->
+     *
+     * @param options the list of options as an array of strings
+     * @throws Exception if an option is not supported
+     */
+    public void setOptions(String[] options) throws Exception {
+
+        String optionString = Utils.getOption('S', options);
+        if (optionString.length() != 0) {
+            Double temp = Double.valueOf(optionString);
+            setShrinkage(temp.doubleValue());
+        }
+        // ++ LEF ++
+        optionString = Utils.getOption('P', options);
+        if (optionString.length() != 0) {
+            Double temp = Double.valueOf(optionString);
+            setPercentage(temp.doubleValue());
+        }
+
+        super.setOptions(options);
+    }
+
+    /**
      * Returns the tip text for this property
-     * 
+     *
      * @return tip text for this property suitable for displaying in the explorer/experimenter gui
      */
     public String shrinkageTipText() {
@@ -300,34 +307,34 @@ public class StohasticGradientBoosting extends IteratedSingleClassifierEnhancer 
     }
 
     /**
-     * Set the shrinkage parameter
-     * 
-     * @param l the shrinkage rate.
-     */
-    public void setShrinkage(double l) {
-        m_shrinkage = l;
-    }
-
-    /**
      * Get the shrinkage rate.
-     * 
+     *
      * @return the value of the learning rate
      */
     public double getShrinkage() {
         return m_shrinkage;
     }
 
-    public void setPercentage(double l) {
-        m_percentage = l;
+    /**
+     * Set the shrinkage parameter
+     *
+     * @param l the shrinkage rate.
+     */
+    public void setShrinkage(double l) {
+        m_shrinkage = l;
     }
 
     public double getPercentage() {
         return m_percentage;
     }
 
+    public void setPercentage(double l) {
+        m_percentage = l;
+    }
+
     /**
      * Returns default capabilities of the classifier.
-     * 
+     *
      * @return the capabilities of this classifier
      */
     public Capabilities getCapabilities() {
@@ -344,7 +351,7 @@ public class StohasticGradientBoosting extends IteratedSingleClassifierEnhancer 
 
     /**
      * Build the classifier on the supplied data
-     * 
+     *
      * @param data the training data
      * @throws Exception if the classifier could not be built successfully
      */
@@ -425,7 +432,7 @@ public class StohasticGradientBoosting extends IteratedSingleClassifierEnhancer 
 
     /**
      * Classify an instance.
-     * 
+     *
      * @param inst the instance to predict
      * @return a prediction for the instance
      * @throws Exception if an error occurs
@@ -451,9 +458,9 @@ public class StohasticGradientBoosting extends IteratedSingleClassifierEnhancer 
     /**
      * Replace the class values of the instances from the current iteration with residuals ater predicting
      * with the supplied classifier.
-     * 
-     * @param data the instances to predict
-     * @param c the classifier to use
+     *
+     * @param data         the instances to predict
+     * @param c            the classifier to use
      * @param useShrinkage whether shrinkage is to be applied to the model's output
      * @return a new set of instances with class values replaced by residuals
      * @throws Exception if something goes wrong
@@ -478,7 +485,7 @@ public class StohasticGradientBoosting extends IteratedSingleClassifierEnhancer 
 
     /**
      * Returns an enumeration of the additional measure names
-     * 
+     *
      * @return an enumeration of the measure names
      */
     public Enumeration enumerateMeasures() {
@@ -489,7 +496,7 @@ public class StohasticGradientBoosting extends IteratedSingleClassifierEnhancer 
 
     /**
      * Returns the value of the named measure
-     * 
+     *
      * @param additionalMeasureName the name of the measure to query for its value
      * @return the value of the named measure
      * @throws IllegalArgumentException if the named measure is not supported
@@ -504,7 +511,7 @@ public class StohasticGradientBoosting extends IteratedSingleClassifierEnhancer 
 
     /**
      * return the number of iterations (base classifiers) completed
-     * 
+     *
      * @return the number of iterations (same as number of base classifier models)
      */
     public double measureNumIterations() {
@@ -513,7 +520,7 @@ public class StohasticGradientBoosting extends IteratedSingleClassifierEnhancer 
 
     /**
      * Returns textual description of the classifier.
-     * 
+     *
      * @return a description of the classifier as a string
      */
     public String toString() {
@@ -549,19 +556,10 @@ public class StohasticGradientBoosting extends IteratedSingleClassifierEnhancer 
 
     /**
      * Returns the revision string.
-     * 
+     *
      * @return the revision
      */
     public String getRevision() {
         return RevisionUtils.extract("$Revision: 8034 $");
-    }
-
-    /**
-     * Main method for testing this class.
-     * 
-     * @param argv should contain the following arguments: -t training file [-T test file] [-c class index]
-     */
-    public static void main(String[] argv) {
-        runClassifier(new StohasticGradientBoosting(), argv);
     }
 }

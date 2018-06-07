@@ -28,6 +28,7 @@ public class MicroAUC extends LabelBasedAUC {
 
     /**
      * Creates a new instance of this class
+     *
      * @param numOfLabels the number of labels
      */
     public MicroAUC(int numOfLabels) {

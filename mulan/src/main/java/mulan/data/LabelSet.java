@@ -20,9 +20,10 @@
  */
 package mulan.data;
 
+import weka.core.Utils;
+
 import java.io.Serializable;
 import java.util.ArrayList;
-import weka.core.Utils;
 
 /**
  * Class that handles labelsets <p>
@@ -41,6 +42,11 @@ public class LabelSet implements Serializable, Comparable<LabelSet> {
      * once assigned by the constructor, no changes are possible.
      */
     protected int[] labelSet;
+    /**
+     * A cached count of the set size. Observe that the set
+     * size is not the same as the size of the double array.
+     */
+    private int size = -1;
 
     /**
      * Initializes an object based on an array of doubles containing 0/1
@@ -52,99 +58,6 @@ public class LabelSet implements Serializable, Comparable<LabelSet> {
         for (int i = 0; i < set.length; i++) {
             labelSet[i] = (int) set[i];
         }
-    }
-
-    /**
-     * A comma-separated list of label names enclosed in curlies.
-     */
-    @Override
-    public String toString() {
-        return toBitString();
-    }
-
-    @Override
-    public int hashCode() {
-        return toString().hashCode();
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof LabelSet) {
-            LabelSet other = (LabelSet) obj;
-            return other.labelSet.length == this.labelSet.length && hammingDifference(other) == 0;
-        } else {
-            return false; //could perhaps allow comparison with double array
-        }
-    }
-    /**
-     * A cached count of the set size. Observe that the set
-     * size is not the same as the size of the double array.
-     */
-    private int size = -1;
-
-    /**
-     * The number of set members. Calculated on first call and
-     * cached for subsequent calls.
-     * @return The number of set members
-     */
-    public int size() {
-        if (size == -1) {
-            size = Utils.sum(labelSet);
-        }
-
-        return size;
-    }
-
-    /**
-     * Get an array representation of this set.
-     * @return a copy of the underlying array.
-     */
-    public double[] toDoubleArray() {
-        double[] arr = new double[labelSet.length];
-        for (int i = 0; i < labelSet.length; i++) {
-            arr[i] = labelSet[i];
-        }
-        return arr;
-    }
-
-    /**
-     * Get an array representation of this set.
-     * @return a copy of the underlying array.
-     */
-    public boolean[] toBooleanArray() {
-        boolean[] arr = new boolean[labelSet.length];
-        for (int i = 0; i < labelSet.length; i++) {
-            arr[i] = (labelSet[i] == 1) ? true : false;
-        }
-        return arr;
-    }
-
-    /**
-     * Calculates the Hamming Distance between the current labelset and another labelset.
-     *
-     * @param other the other LabelSet object.
-     * @return the Hamming Distance.
-     */
-    public int hammingDifference(LabelSet other) {
-        int diff = 0;
-        for (int i = 0; i < labelSet.length; i++) {
-            if (labelSet[i] != other.labelSet[i]) {
-                diff++;
-            }
-        }
-        return diff;
-    }
-
-    /**
-     * Constructs a bitstring from the current labelset.
-     * @return the bitstring.
-     */
-    public String toBitString() {
-        StringBuilder sb = new StringBuilder(labelSet.length);
-        for (int i = 0; i < labelSet.length; i++) {
-            sb.append(Integer.toString(labelSet[i]));
-        }
-        return sb.toString();
     }
 
     /**
@@ -169,6 +82,123 @@ public class LabelSet implements Serializable, Comparable<LabelSet> {
             }
         }
         return result;
+    }
+
+    /**
+     * @param l1 a labelset
+     * @param l2 another labelset
+     * @return their interesection
+     */
+    public static LabelSet intersection(LabelSet l1, LabelSet l2) {
+        double[] arrayL1 = l1.toDoubleArray();
+        double[] arrayL2 = l2.toDoubleArray();
+
+        if (arrayL1.length != arrayL2.length) {
+            return null;
+        }
+
+        double[] intersection = new double[arrayL2.length];
+        for (int i = 0; i < arrayL2.length; i++) {
+            if (arrayL1[i] == 1 && arrayL2[i] == 1) {
+                intersection[i] = 1;
+            } else {
+                intersection[i] = 0;
+            }
+        }
+
+        return new LabelSet(intersection);
+    }
+
+    /**
+     * A comma-separated list of label names enclosed in curlies.
+     */
+    @Override
+    public String toString() {
+        return toBitString();
+    }
+
+    @Override
+    public int hashCode() {
+        return toString().hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof LabelSet) {
+            LabelSet other = (LabelSet) obj;
+            return other.labelSet.length == this.labelSet.length && hammingDifference(other) == 0;
+        } else {
+            return false; //could perhaps allow comparison with double array
+        }
+    }
+
+    /**
+     * The number of set members. Calculated on first call and
+     * cached for subsequent calls.
+     *
+     * @return The number of set members
+     */
+    public int size() {
+        if (size == -1) {
+            size = Utils.sum(labelSet);
+        }
+
+        return size;
+    }
+
+    /**
+     * Get an array representation of this set.
+     *
+     * @return a copy of the underlying array.
+     */
+    public double[] toDoubleArray() {
+        double[] arr = new double[labelSet.length];
+        for (int i = 0; i < labelSet.length; i++) {
+            arr[i] = labelSet[i];
+        }
+        return arr;
+    }
+
+    /**
+     * Get an array representation of this set.
+     *
+     * @return a copy of the underlying array.
+     */
+    public boolean[] toBooleanArray() {
+        boolean[] arr = new boolean[labelSet.length];
+        for (int i = 0; i < labelSet.length; i++) {
+            arr[i] = labelSet[i] == 1;
+        }
+        return arr;
+    }
+
+    /**
+     * Calculates the Hamming Distance between the current labelset and another labelset.
+     *
+     * @param other the other LabelSet object.
+     * @return the Hamming Distance.
+     */
+    public int hammingDifference(LabelSet other) {
+        int diff = 0;
+        for (int i = 0; i < labelSet.length; i++) {
+            if (labelSet[i] != other.labelSet[i]) {
+                diff++;
+            }
+        }
+        return diff;
+    }
+
+    /**
+     * Constructs a bitstring from the current labelset.
+     *
+     * @return the bitstring.
+     */
+    public String toBitString() {
+        StringBuilder sb = new StringBuilder(labelSet.length);
+        for (int i = 0; i < labelSet.length; i++) {
+            sb.append(Integer.toString(labelSet[i]));
+        }
+        return sb.toString();
     }
 
     /**
@@ -207,32 +237,6 @@ public class LabelSet implements Serializable, Comparable<LabelSet> {
             subsets.add(finalLabelSet);
         }
         return subsets;
-    }
-
-    /**
-     *
-     * @param l1 a labelset
-     * @param l2 another labelset
-     * @return their interesection
-     */
-    public static LabelSet intersection(LabelSet l1, LabelSet l2) {
-        double[] arrayL1 = l1.toDoubleArray();
-        double[] arrayL2 = l2.toDoubleArray();
-
-        if (arrayL1.length != arrayL2.length) {
-            return null;
-        }
-
-        double[] intersection = new double[arrayL2.length];
-        for (int i = 0; i < arrayL2.length; i++) {
-            if (arrayL1[i] == 1 && arrayL2[i] == 1) {
-                intersection[i] = 1;
-            } else {
-                intersection[i] = 0;
-            }
-        }
-
-        return new LabelSet(intersection);
     }
 
     /**

@@ -15,9 +15,6 @@
  */
 package mulan.experiments;
 
-import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import mulan.data.MultiLabelInstances;
 import mulan.dimensionalityReduction.BinaryRelevanceAttributeEvaluator;
 import mulan.dimensionalityReduction.LabelPowersetAttributeEvaluator;
@@ -30,6 +27,10 @@ import weka.core.Instances;
 import weka.core.Utils;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.Remove;
+
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * <p>Class replicating the experiment in <em>Newton Spolaôr, Everton Alvares
@@ -116,9 +117,9 @@ public class ENTCS13FeatureSelection {
      * {@link MultiLabelInstances}
      *
      * @param multiLabelFeatureSelectionMethod name of the multi-label feature
-     * selection method ("RF-BR", "RF-LP", "IG-BR", "IG-LP)
-     * @param dataSet original dataset with all features. This dataset should
-     * not have any feature/label named "class"
+     *                                         selection method ("RF-BR", "RF-LP", "IG-BR", "IG-LP)
+     * @param dataSet                          original dataset with all features. This dataset should
+     *                                         not have any feature/label named "class"
      * @return an initialized {@link weka.attributeSelection.ASEvaluation} to
      * perform multi-label feature selection
      */
@@ -143,7 +144,7 @@ public class ENTCS13FeatureSelection {
      * {@link weka.attributeSelection.Ranker} class
      *
      * @param featureIndices an array of feature indices
-     * @param attributeEval the attribute evaluator to guide the evaluation
+     * @param attributeEval  the attribute evaluator to guide the evaluation
      * @return a matrix of sorted attribute indices and evaluations
      */
     public static double[][] sortedEvaluatedAttributeList(int[] featureIndices, AttributeEvaluator attributeEval) {
@@ -165,8 +166,8 @@ public class ENTCS13FeatureSelection {
     /**
      * Weka attribute ranking sorting
      *
-     * @param ranking matrix to be sorted
-     * @param index ranking used as index for sorting
+     * @param ranking   matrix to be sorted
+     * @param index     ranking used as index for sorting
      * @param sortOrder sorting can be ASCENDING or DESCENDING
      */
     public static void sortAttributeRanking(double[][] ranking, int index, int sortOrder) {
@@ -214,9 +215,9 @@ public class ENTCS13FeatureSelection {
      * Selects all features from a sorted evaluated attribute list with
      * evaluation better than a threshold
      *
-     * @param threshold the threshold limiting the results
+     * @param threshold                    the threshold limiting the results
      * @param sortedEvaluatedAttributeList feature ranking returned from
-     * {@link Ranker}
+     *                                     {@link Ranker}
      * @return the indices of the selected features
      */
     public static int[] featureIndicesByThreshold(double threshold, double[][] sortedEvaluatedAttributeList) {
@@ -254,9 +255,9 @@ public class ENTCS13FeatureSelection {
     /**
      * Selects the k best features from a sorted evaluated attribute list
      *
-     * @param k value in (0,M]
+     * @param k                            value in (0,M]
      * @param sortedEvaluatedAttributeList feature ranking returned from
-     * {@link Ranker}
+     *                                     {@link Ranker}
      * @return the indices of the selected features
      */
     public static int[] featureIndicesByKBest(int k, double[][] sortedEvaluatedAttributeList) {
@@ -277,9 +278,9 @@ public class ENTCS13FeatureSelection {
     /**
      * Selects the t% best features from a sorted evaluated attribute list
      *
-     * @param t percentage of the number of features with value in (0,1)
+     * @param t                            percentage of the number of features with value in (0,1)
      * @param sortedEvaluatedAttributeList feature ranking returned from
-	 * {@link Ranker}
+     *                                     {@link Ranker}
      * @return the indices of the selected features
      */
     public static int[] featureIndicesbyTPercent(double t, double[][] sortedEvaluatedAttributeList) {
@@ -288,7 +289,7 @@ public class ENTCS13FeatureSelection {
             System.exit(1);
         }
 
-        int[] featureIndices = new int[(int) Math.round((double) t * sortedEvaluatedAttributeList.length)];
+        int[] featureIndices = new int[(int) Math.round(t * sortedEvaluatedAttributeList.length)];
 
         for (int i = 0; i < featureIndices.length; i++) {
             featureIndices[i] = ((int) sortedEvaluatedAttributeList[i][0]); //add the index of the ith best feature to the array
@@ -302,7 +303,7 @@ public class ENTCS13FeatureSelection {
      * selection
      *
      * @param featureIndices the indices of the selected features
-     * @param dataSet original dataset with all features
+     * @param dataSet        original dataset with all features
      */
     private static void buildReducedMultiLabelDataset(int[] featureIndices, MultiLabelInstances dataSet) {
         //System.out.println("\nBuilding the reduced dataset from the chosen features\n");

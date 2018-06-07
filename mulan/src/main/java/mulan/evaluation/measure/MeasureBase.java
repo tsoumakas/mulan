@@ -15,13 +15,13 @@
  */
 package mulan.evaluation.measure;
 
-import java.io.Serializable;
 import mulan.classifier.MultiLabelOutput;
 import mulan.core.ArgumentNullException;
 import weka.core.SerializedObject;
 
+import java.io.Serializable;
+
 /**
- * 
  * @author Grigorios Tsoumakas
  */
 public abstract class MeasureBase implements Measure, Serializable {
@@ -47,7 +47,7 @@ public abstract class MeasureBase implements Measure, Serializable {
         try {
             value = getValue();
         } catch (Exception ex) {
-        } 
+        }
         return getName() + ": " + String.format("%.4f", value);
     }
 
@@ -55,7 +55,7 @@ public abstract class MeasureBase implements Measure, Serializable {
      * Updates the measure based on an example
      *
      * @param prediction the output of the algorithm for the example
-     * @param truth the ground truth of the example
+     * @param truth      the ground truth of the example
      */
     protected abstract void updateInternal(MultiLabelOutput prediction, boolean[] truth);
 

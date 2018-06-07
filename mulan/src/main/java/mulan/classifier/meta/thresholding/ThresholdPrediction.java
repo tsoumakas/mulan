@@ -15,10 +15,6 @@
  */
 package mulan.classifier.meta.thresholding;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import mulan.classifier.MultiLabelLearner;
 import mulan.classifier.MultiLabelOutput;
 import mulan.classifier.transformation.BinaryRelevance;
@@ -33,15 +29,19 @@ import weka.core.TechnicalInformation;
 import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
- * <p> Class that learns to predict a different threshold per exampleFor more 
- * information, see <em> Elisseeff, Andre, Weston, Jason: A kernel method for 
+ * <p> Class that learns to predict a different threshold per exampleFor more
+ * information, see <em> Elisseeff, Andre, Weston, Jason: A kernel method for
  * multi-labelled classification. In: Proceedings of NIPS 14, 2002.</em></p>
  *
  * @author Marios Ioannou
  * @author George Sakkas
  * @author Grigorios Tsoumakas
- * 
  * @version 2014.1.18
  */
 public class ThresholdPrediction extends Meta {
@@ -52,14 +52,14 @@ public class ThresholdPrediction extends Meta {
     public ThresholdPrediction() {
         this(new BinaryRelevance(new J48()), new J48(), MetaData.SCORES, 3);
     }
-    
+
     /**
      * Constructor that initializes the learner
      *
-     * @param baseLearner the underlying multi-label learner
-     * @param classifier the binary classification
+     * @param baseLearner    the underlying multi-label learner
+     * @param classifier     the binary classification
      * @param metaDataChoice the type of meta-data
-     * @param folds the number of internal cv folds
+     * @param folds          the number of internal cv folds
      */
     public ThresholdPrediction(MultiLabelLearner baseLearner, Classifier classifier, MetaData metaDataChoice, int folds) {
         super(baseLearner, classifier, metaDataChoice);

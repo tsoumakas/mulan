@@ -15,12 +15,12 @@
  */
 package mulan.evaluation.measure;
 
-import java.io.Serializable;
-
 import mulan.classifier.MultiLabelOutput;
 import mulan.core.ArgumentNullException;
 import mulan.evaluation.GroundTruth;
 import weka.core.SerializedObject;
+
+import java.io.Serializable;
 
 /**
  * @author Eleftherios Spyromitros-Xioufis
@@ -44,7 +44,7 @@ public abstract class RegressionMeasureBase implements Measure, Serializable {
 
     /**
      * Returns a string with the value of a measure
-     * 
+     *
      * @return string representation of the value of a measure
      */
     @Override
@@ -59,9 +59,9 @@ public abstract class RegressionMeasureBase implements Measure, Serializable {
 
     /**
      * Updates the measure based on an example
-     * 
+     *
      * @param prediction the output of the algorithm for the example
-     * @param truth the ground truth of the example
+     * @param truth      the ground truth of the example
      */
     abstract void updateInternal(MultiLabelOutput prediction, double[] truth);
 

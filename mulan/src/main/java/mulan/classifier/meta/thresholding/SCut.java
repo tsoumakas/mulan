@@ -15,11 +15,6 @@
  */
 package mulan.classifier.meta.thresholding;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import mulan.classifier.MultiLabelLearner;
 import mulan.classifier.MultiLabelOutput;
 import mulan.classifier.meta.MultiLabelMetaLearner;
@@ -36,12 +31,18 @@ import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
 import weka.core.Utils;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
- * <p> Class that implements the SCut method (Score-based local optimization). 
- * It computes a separate threshold for each label based on improving a user 
- * defined performance measure.For more information, see <em> Yiming Yang: A 
- * study of thresholding strategies for text categorization. In: Proceedings of 
- * the 24th annual international ACM SIGIR conference on Research and 
+ * <p> Class that implements the SCut method (Score-based local optimization).
+ * It computes a separate threshold for each label based on improving a user
+ * defined performance measure.For more information, see <em> Yiming Yang: A
+ * study of thresholding strategies for text categorization. In: Proceedings of
+ * the 24th annual international ACM SIGIR conference on Research and
  * development in information retrieval, 137 - 145, 2001.</em></p>
  *
  * @author Marios Ioannou
@@ -76,8 +77,8 @@ public class SCut extends MultiLabelMetaLearner {
      * and num of folds
      *
      * @param baseLearner the underlying multi-label learner
-     * @param measure the measure for auto-tuning the threshold
-     * @param folds the number of folds to split the dataset
+     * @param measure     the measure for auto-tuning the threshold
+     * @param folds       the number of folds to split the dataset
      */
     public SCut(MultiLabelLearner baseLearner, BipartitionMeasureBase measure, int folds) {
         super(baseLearner);
@@ -89,7 +90,7 @@ public class SCut extends MultiLabelMetaLearner {
      * Creates a new instance of SCut
      *
      * @param baseLearner the underlying multi-label learner
-     * @param measure the measure for auto-tuning the threshold
+     * @param measure     the measure for auto-tuning the threshold
      */
     public SCut(MultiLabelLearner baseLearner, BipartitionMeasureBase measure) {
         super(baseLearner);
@@ -113,7 +114,7 @@ public class SCut extends MultiLabelMetaLearner {
      * Evaluates the performance of different threshold values for each label
      *
      * @param baseRegressor the underlying multi-label learner
-     * @param data the test data to evaluate different thresholds
+     * @param data          the test data to evaluate different thresholds
      * @return one threshold for each label
      * @throws Exception Potential exception thrown. To be handled in an upper level.
      */
@@ -262,11 +263,7 @@ public class SCut extends MultiLabelMetaLearner {
             arrayOfConfidences = m.getConfidences();
             for (int i = 0; i
                     < numLabels; i++) {
-                if (arrayOfConfidences[i] >= thresholds[i]) {
-                    predictedLabels[i] = true;
-                } else {
-                    predictedLabels[i] = false;
-                }
+                predictedLabels[i] = arrayOfConfidences[i] >= thresholds[i];
 
             }
         }

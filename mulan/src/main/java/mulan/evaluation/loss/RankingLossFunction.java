@@ -26,9 +26,9 @@ public interface RankingLossFunction extends MultiLabelLossFunction {
     /**
      * Computes the ranking loss function
      *
-     * @param ranking the ranking of the learner for an example
+     * @param ranking     the ranking of the learner for an example
      * @param groundTruth the ground truth of the example
      * @return the value of the loss function
      */
-    public double computeLoss(int[] ranking, boolean[] groundTruth);
+    double computeLoss(int[] ranking, boolean[] groundTruth);
 }

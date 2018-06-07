@@ -23,7 +23,7 @@ import java.util.List;
  * of whether the induced ranking is perfect or not. Speaking in terms of error
  * set, the loss is zero if the cardinality of the error-set is zero
  * and one if the cardinality of the error set is greather than zero.
- * 
+ *
  * @author Grigorios Tsoumakas
  * @version 2010.11.10
  */

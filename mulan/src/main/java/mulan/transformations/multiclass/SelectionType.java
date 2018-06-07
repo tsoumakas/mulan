@@ -21,7 +21,6 @@
 package mulan.transformations.multiclass;
 
 /**
- *
  * @author Grigorios Tsoumakas
  * @version 2012.02.02
  */
@@ -34,5 +33,5 @@ public enum SelectionType {
     /**
      * Select the most frequent label
      */
-    MAX;
+    MAX
 }

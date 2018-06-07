@@ -19,7 +19,7 @@ import mulan.core.MulanRuntimeException;
 
 /**
  * Represents a root base class for exceptions thrown by learners.
- * 
+ *
  * @author Jozef Vilcek
  */
 public class LearnerException extends MulanRuntimeException {
@@ -41,7 +41,7 @@ public class LearnerException extends MulanRuntimeException {
      * detail message and nested exception.
      *
      * @param message the detail message
-     * @param cause the nested exception
+     * @param cause   the nested exception
      */
     public LearnerException(String message, Throwable cause) {
         super(message, cause);

@@ -15,10 +15,6 @@
  */
 package mulan.classifier.meta.thresholding;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import mulan.classifier.InvalidDataException;
 import mulan.classifier.ModelInitializationException;
 import mulan.classifier.MultiLabelLearner;
@@ -32,6 +28,11 @@ import weka.core.Attribute;
 import weka.core.Instance;
 import weka.core.Instances;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  * <p>
  * Base class for instance-based prediction of a bipartition from the labels'
@@ -40,14 +41,9 @@ import weka.core.Instances;
  * @author Marios Ioannou
  * @author George Sakkas
  * @author Grigorios Tsoumakas
- * 
  * @version 2014.1.18
  */
 public abstract class Meta extends MultiLabelMetaLearner {
-
-    public enum MetaData {
-        CONTENT, SCORES, RANKS;
-    }
 
     /**
      * the classifier to learn the number of top labels or the threshold
@@ -73,11 +69,11 @@ public abstract class Meta extends MultiLabelMetaLearner {
     /**
      * Constructor that initializes the learner
      *
-     * @param baseLearner the MultiLabelLearner
-     * @param aClassifier the learner that will predict the number of relevant
-     * labels or a threshold
+     * @param baseLearner        the MultiLabelLearner
+     * @param aClassifier        the learner that will predict the number of relevant
+     *                           labels or a threshold
      * @param aMetaDatasetChoice what features to use for predicting the number
-     * of relevant labels or a threshold
+     *                           of relevant labels or a threshold
      */
     public Meta(MultiLabelLearner baseLearner, Classifier aClassifier, MetaData aMetaDatasetChoice) {
         super(baseLearner);
@@ -107,7 +103,7 @@ public abstract class Meta extends MultiLabelMetaLearner {
      * A method that modify an instance
      *
      * @param instance to modified
-     * @param xBased the type for constructing the meta dataset
+     * @param xBased   the type for constructing the meta dataset
      * @return a transformed instance for the predictor of labels/threshold
      */
     protected Instance modifiedInstanceX(Instance instance, MetaData xBased) {
@@ -186,10 +182,10 @@ public abstract class Meta extends MultiLabelMetaLearner {
     /**
      * A method that fill the array "newValues"
      *
-     * @param learner the multi-label learner
-     * @param instance the training instances
+     * @param learner   the multi-label learner
+     * @param instance  the training instances
      * @param newValues the array to fill
-     * @param xBased the type for constructing the meta dataset
+     * @param xBased    the type for constructing the meta dataset
      * @throws Exception Potential exception thrown. To be handled in an upper level.
      */
     protected void valuesX(MultiLabelLearner learner, Instance instance, double[] newValues, MetaData xBased) throws Exception {
@@ -230,5 +226,9 @@ public abstract class Meta extends MultiLabelMetaLearner {
         debug("building the multi-label classifier");
         baseLearner.setDebug(getDebug());
         baseLearner.build(trainingData);
+    }
+
+    public enum MetaData {
+        CONTENT, SCORES, RANKS
     }
 }

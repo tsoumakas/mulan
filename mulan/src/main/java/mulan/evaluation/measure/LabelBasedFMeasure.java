@@ -41,7 +41,7 @@ public abstract class LabelBasedFMeasure extends LabelBasedBipartitionMeasureBas
      * Constructs a new object with given number of labels and beta parameter
      *
      * @param numOfLabels the number of labels
-     * @param beta the beta parameter
+     * @param beta        the beta parameter
      */
     public LabelBasedFMeasure(int numOfLabels, double beta) {
         super(numOfLabels);

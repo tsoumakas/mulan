@@ -15,8 +15,6 @@
  */
 package mulan.classifier.transformation;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import mulan.classifier.MultiLabelOutput;
 import mulan.data.MultiLabelInstances;
 import mulan.transformations.RemoveAllLabels;
@@ -26,6 +24,9 @@ import weka.classifiers.trees.J48;
 import weka.core.*;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.Reorder;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * <p>Implementation of the Two Stage Pruned Classifier Chain Architecture

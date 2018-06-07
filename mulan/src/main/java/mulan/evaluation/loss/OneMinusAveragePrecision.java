@@ -20,7 +20,7 @@ import java.util.List;
 
 /**
  * Implementation of the average precision as loss function.
- * 
+ *
  * @author Grigorios Tsoumakas
  * @version 2010.12.14
  */

@@ -15,6 +15,24 @@
  */
 package mulan.classifier.transformation;
 
+import mulan.classifier.MultiLabelOutput;
+import mulan.data.DataUtils;
+import mulan.data.MultiLabelInstances;
+import mulan.data.Statistics;
+import mulan.transformations.BinaryRelevanceTransformation;
+import weka.attributeSelection.ASEvaluation;
+import weka.attributeSelection.AttributeSelection;
+import weka.attributeSelection.Ranker;
+import weka.classifiers.AbstractClassifier;
+import weka.classifiers.Classifier;
+import weka.classifiers.lazy.IBk;
+import weka.classifiers.meta.FilteredClassifier;
+import weka.classifiers.trees.J48;
+import weka.core.*;
+import weka.core.neighboursearch.LinearNNSearch;
+import weka.filters.Filter;
+import weka.filters.unsupervised.attribute.Remove;
+
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -24,24 +42,6 @@ import java.util.HashSet;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import mulan.classifier.MultiLabelOutput;
-import mulan.data.*;
-import mulan.data.Statistics;
-import mulan.transformations.BinaryRelevanceTransformation;
-import weka.attributeSelection.*;
-import weka.classifiers.AbstractClassifier;
-import weka.classifiers.Classifier;
-import weka.classifiers.lazy.IBk;
-import weka.classifiers.meta.FilteredClassifier;
-import weka.classifiers.trees.J48;
-import weka.core.Attribute;
-import weka.core.EuclideanDistance;
-import weka.core.Instance;
-import weka.core.Instances;
-import weka.core.Utils;
-import weka.core.neighboursearch.LinearNNSearch;
-import weka.filters.Filter;
-import weka.filters.unsupervised.attribute.Remove;
 
 /**
  * <p>Implementation of the (BR)^2 or Multi-Label stacking method.</p> <p>For
@@ -57,6 +57,10 @@ import weka.filters.unsupervised.attribute.Remove;
 public class MultiLabelStacking extends TransformationBasedMultiLabelLearner {
 
     private static final long serialVersionUID = 1L;
+    /**
+     * the training instances
+     */
+    protected Instances train;
     /**
      * the type of the classifier used in the meta-level
      */
@@ -85,10 +89,6 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner {
      * the number of folds used in the first level
      */
     private int numFolds;
-    /**
-     * the training instances
-     */
-    protected Instances train;
     /**
      * a table holding the predictions of the first level classifiers for each
      * class-label of every instance
@@ -119,7 +119,7 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner {
     /**
      * The number of labels that will be used for training the
      * meta-level classifiers. The value is derived by metaPercentage and used
-     * only internally 
+     * only internally
      */
     private int topkCorrelated;
     /**
@@ -195,7 +195,7 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner {
      * @throws Exception Potential exception thrown. To be handled in an upper level.
      */
     private void initializeMetaLevel(MultiLabelInstances dataSet, Classifier metaClassifier, double metaPercentage,
-            ASEvaluation eval) throws Exception {
+                                     ASEvaluation eval) throws Exception {
         this.metaClassifier = metaClassifier;
         metaLevelEnsemble = AbstractClassifier.makeCopies(metaClassifier, numLabels);
         metaLevelData = new Instances[numLabels];
@@ -562,7 +562,7 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner {
 
             // Ensure correct predictions both for class values {0,1} and {1,0}
             Attribute classAttribute = metaLevelData[labelIndex].classAttribute();
-            bipartition[labelIndex] = (classAttribute.value(maxIndex).equals("1")) ? true : false;
+            bipartition[labelIndex] = classAttribute.value(maxIndex).equals("1");
 
             // The confidence of the label being equal to 1
             metaconfidences[labelIndex] = distribution[classAttribute.indexOfValue("1")];
@@ -665,7 +665,7 @@ public class MultiLabelStacking extends TransformationBasedMultiLabelLearner {
      * Sets the attribute selection evaluation class
      *
      * @param eval The attribute selection evaluator used for pruning the meta-level
-     * attributes.
+     *             attributes.
      */
     public void setEval(ASEvaluation eval) {
         this.eval = eval;

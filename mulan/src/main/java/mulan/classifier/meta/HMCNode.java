@@ -15,14 +15,15 @@
  */
 package mulan.classifier.meta;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import mulan.classifier.MultiLabelLearner;
 import mulan.classifier.MultiLabelOutput;
 import mulan.data.MultiLabelInstances;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.TechnicalInformation;
+
+import java.util.ArrayList;
+import java.util.HashSet;
 
 /**
  * Class that implements a node for the {@link HMC}
@@ -35,10 +36,21 @@ public class HMCNode extends MultiLabelMetaLearner {
     private String nodeName;
     private HashSet<HMCNode> children = null;
     private Instances header;
-    
+
+    /**
+     * Creates a new instance with the given name and learner
+     *
+     * @param name name of the node
+     * @param mlc  learner
+     */
+    public HMCNode(String name, MultiLabelLearner mlc) {
+        super(mlc);
+        nodeName = name;
+    }
+
     /**
      * Returns the label indices
-     * 
+     *
      * @return label indices
      */
     public int[] getLabelIndices() {
@@ -46,20 +58,8 @@ public class HMCNode extends MultiLabelMetaLearner {
     }
 
     /**
-     * Creates a new instance with the given name and learner
-     * 
-     * @param name name of the node
-     * @param mlc learner
-     * @throws Exception Potential exception thrown. To be handled in an upper level.
-     */
-    public HMCNode(String name, MultiLabelLearner mlc) throws Exception {
-        super(mlc);
-        nodeName = name;
-    }
-
-    /**
      * Returns the header information
-     * 
+     *
      * @return header
      */
     public Instances getHeader() {
@@ -78,20 +78,16 @@ public class HMCNode extends MultiLabelMetaLearner {
 
     /**
      * Checks whether the node has children
-     * 
+     *
      * @return whether the node has children
      */
     public boolean hasChildren() {
-        if (children != null) {
-            return true;
-        } else {
-            return false;
-        }
+        return children != null;
     }
 
     /**
-     * Returns the number of children 
-     * 
+     * Returns the number of children
+     *
      * @return number of children
      */
     public int getNumChildren() {
@@ -100,7 +96,7 @@ public class HMCNode extends MultiLabelMetaLearner {
 
     /**
      * Returns the children of the current node
-     * 
+     *
      * @return a set of nodes
      */
     public HashSet<HMCNode> getChildren() {
@@ -109,7 +105,7 @@ public class HMCNode extends MultiLabelMetaLearner {
 
     /**
      * Returns a list of all children labels
-     * 
+     *
      * @return list of children labels
      */
     public ArrayList<String> getChildrenLabels() {
@@ -122,7 +118,7 @@ public class HMCNode extends MultiLabelMetaLearner {
 
     /**
      * Returns all descendant labels
-     * 
+     *
      * @return a list of descendant labels
      */
     public ArrayList<String> getDescendantLabels() {
@@ -150,7 +146,7 @@ public class HMCNode extends MultiLabelMetaLearner {
 
     /**
      * Returns the name of a node
-     * 
+     *
      * @return name of the node
      */
     public String getName() {
@@ -163,7 +159,7 @@ public class HMCNode extends MultiLabelMetaLearner {
 
     public String globalInfo() {
         return "Class implementing a node in the Hierarchy Of Multi-labEl " +
-               "leaRners algorithm. For more information, see\n\n"
+                "leaRners algorithm. For more information, see\n\n"
                 + getTechnicalInformation().toString();
     }
 }

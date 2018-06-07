@@ -6,7 +6,7 @@ import mulan.evaluation.measure.MacroAverageMeasure;
 /**
  * Implementation of the macro-averaged Root Maximum Squared Error (RMaxSE)
  * measure.
- * 
+ *
  * @author Eleftherios Spyromitros-Xioufis
  * @version 2014.11.07
  */

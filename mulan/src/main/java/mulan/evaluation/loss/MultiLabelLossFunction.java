@@ -30,14 +30,14 @@ public interface MultiLabelLossFunction {
      *
      * @return the name of the loss function
      */
-    public String getName();
+    String getName();
 
     /**
      * Computes the loss function
-     * 
-     * @param prediction the prediction of the learner for an example
+     *
+     * @param prediction  the prediction of the learner for an example
      * @param groundTruth the ground truth of the example
      * @return the value of the loss function
      */
-    public double computeLoss(MultiLabelOutput prediction, boolean[] groundTruth);
+    double computeLoss(MultiLabelOutput prediction, boolean[] groundTruth);
 }

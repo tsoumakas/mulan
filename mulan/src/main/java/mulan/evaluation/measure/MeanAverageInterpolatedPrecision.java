@@ -15,8 +15,9 @@
  */
 package mulan.evaluation.measure;
 
-import java.util.Collections;
 import weka.core.Utils;
+
+import java.util.Collections;
 
 /**
  * Implementation of MAiP (Mean Average Interpolated Precision)
@@ -37,9 +38,9 @@ public class MeanAverageInterpolatedPrecision extends LabelBasedAveragePrecision
     /**
      * Constructor
      *
-     * @param numOfLabels the number of labels
+     * @param numOfLabels     the number of labels
      * @param numRecallLevels the number of standard recall levels uniformly
-     * distributed in [0,1]
+     *                        distributed in [0,1]
      */
     public MeanAverageInterpolatedPrecision(int numOfLabels, int numRecallLevels) {
         super(numOfLabels);

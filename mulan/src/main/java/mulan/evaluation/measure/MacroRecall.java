@@ -17,7 +17,7 @@ package mulan.evaluation.measure;
 
 /**
  * Implementation of the macro-averaged recall measure.
- * 
+ *
  * @author Grigorios Tsoumakas
  * @version 2012.05.29
  */
@@ -25,7 +25,7 @@ public class MacroRecall extends LabelBasedRecall implements MacroAverageMeasure
 
     /**
      * Constructs a new object with given number of labels
-     * 
+     *
      * @param numOfLabels the number of labels
      */
     public MacroRecall(int numOfLabels) {
@@ -47,7 +47,7 @@ public class MacroRecall extends LabelBasedRecall implements MacroAverageMeasure
     public String getName() {
         return "Macro-averaged Recall";
     }
-    
+
     /**
      * Returns the recall for a label
      *
@@ -59,6 +59,6 @@ public class MacroRecall extends LabelBasedRecall implements MacroAverageMeasure
         return InformationRetrievalMeasures.recall(truePositives[labelIndex],
                 falsePositives[labelIndex],
                 falseNegatives[labelIndex]);
-    }    
-    
+    }
+
 }

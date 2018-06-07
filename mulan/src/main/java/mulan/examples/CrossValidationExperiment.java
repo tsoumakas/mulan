@@ -16,8 +16,6 @@
 package mulan.examples;
 
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import mulan.classifier.lazy.MLkNN;
 import mulan.classifier.meta.RAkEL;
 import mulan.classifier.transformation.LabelPowerset;
@@ -27,6 +25,9 @@ import mulan.evaluation.Evaluator;
 import mulan.evaluation.MultipleEvaluation;
 import weka.classifiers.trees.J48;
 import weka.core.Utils;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Class demonstrating a simple cross-validation experiment
@@ -45,7 +46,7 @@ public class CrossValidationExperiment {
 
         try {
             // e.g. -arff emotions.arff
-            String arffFilename = Utils.getOption("arff", args); 
+            String arffFilename = Utils.getOption("arff", args);
             // e.g. -xml emotions.xml
             String xmlFilename = Utils.getOption("xml", args);
 

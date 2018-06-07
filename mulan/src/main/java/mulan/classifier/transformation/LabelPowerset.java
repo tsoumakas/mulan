@@ -15,10 +15,6 @@
  */
 package mulan.classifier.transformation;
 
-import java.util.Arrays;
-import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import mulan.classifier.MultiLabelOutput;
 import mulan.core.Util;
 import mulan.data.LabelSet;
@@ -27,6 +23,11 @@ import mulan.transformations.LabelPowersetTransformation;
 import weka.classifiers.Classifier;
 import weka.core.Instance;
 import weka.core.Instances;
+
+import java.util.Arrays;
+import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * <p>Implementation of the label powerset (LP) algorithm.</p>
@@ -37,16 +38,6 @@ import weka.core.Instances;
  */
 public class LabelPowerset extends TransformationBasedMultiLabelLearner {
 
-    /**
-     * The confidence values for each label are calculated in the following ways
-     * 0: Confidence 0 1/0 for all labels, (1 if label true, 0 if label is
-     * false) 1: Confidence of x/(1-x) for all labels, where x is the
-     * probability of the winning class (x if label true, (1-x) if label is
-     * false) 2: Confidence calculated based on the distribution of
-     * probabilities obtained from the base classifier, as introduced by the PPT
-     * algorithm
-     */
-    private int confidenceCalculationMethod = 1;
     /**
      * Whether the method introduced by the PPT algorithm will be used to
      * actually get the 1/0 output bipartition based on the confidences
@@ -67,6 +58,16 @@ public class LabelPowerset extends TransformationBasedMultiLabelLearner {
      * Random number generator for randomly solving tied predictions
      */
     protected Random Rand;
+    /**
+     * The confidence values for each label are calculated in the following ways
+     * 0: Confidence 0 1/0 for all labels, (1 if label true, 0 if label is
+     * false) 1: Confidence of x/(1-x) for all labels, where x is the
+     * probability of the winning class (x if label true, (1-x) if label is
+     * false) 2: Confidence calculated based on the distribution of
+     * probabilities obtained from the base classifier, as introduced by the PPT
+     * algorithm
+     */
+    private int confidenceCalculationMethod = 1;
 
     /**
      * Conststructor that initializes the learner with a base classifier
@@ -202,11 +203,7 @@ public class LabelPowerset extends TransformationBasedMultiLabelLearner {
 
             if (makePredictionsBasedOnConfidences) {
                 for (int i = 0; i < confidences.length; i++) {
-                    if (confidences[i] > threshold) {
-                        bipartition[i] = true;
-                    } else {
-                        bipartition[i] = false;
-                    }
+                    bipartition[i] = confidences[i] > threshold;
                 }
             }
 

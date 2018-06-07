@@ -21,7 +21,8 @@ import mulan.transformations.PairwiseTransformation;
 import weka.classifiers.AbstractClassifier;
 import weka.classifiers.Classifier;
 import weka.classifiers.trees.J48;
-import weka.core.*;
+import weka.core.Instance;
+import weka.core.Instances;
 
 /**
  * <p>Class implementing the Ranking by Pairwise Comparisons (RPC) algorithm.
@@ -75,11 +76,11 @@ public class Pairwise extends TransformationBasedMultiLabelLearner {
     public Classifier getModel(int modelIndex) {
         return oneVsOneModels[modelIndex];
     }
-    
-    public boolean noData(int index) {        
+
+    public boolean noData(int index) {
         return nodata[index];
     }
-    
+
     public PairwiseTransformation getTransformation() {
         return pt;
     }
@@ -126,7 +127,7 @@ public class Pairwise extends TransformationBasedMultiLabelLearner {
      * pairwise models
      *
      * @param instance an instance who has passed through the pairwise
-     * transformation filter
+     *                 transformation filter
      * @return an array with the sum of scores/votes for the labels
      * @throws Exception Potential exception thrown. To be handled in an upper level.
      */

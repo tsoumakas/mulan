@@ -15,8 +15,8 @@
  */
 package mulan.examples;
 
-import mulan.data.Statistics;
 import mulan.data.MultiLabelInstances;
+import mulan.data.Statistics;
 import weka.core.Utils;
 
 /**
@@ -31,7 +31,7 @@ public class EstimationOfStatistics {
      * Executes this example
      *
      * @param args command-line arguments -path and -filestem, e.g.
-     * -path datasets/ -filestem emotions
+     *             -path datasets/ -filestem emotions
      * @throws Exception exceptions not caught
      */
     public static void main(String[] args) throws Exception {

@@ -15,7 +15,8 @@
  */
 package mulan.classifier.meta;
 
-import mulan.classifier.*;
+import mulan.classifier.MultiLabelLearner;
+import mulan.classifier.MultiLabelLearnerBase;
 import mulan.core.ArgumentNullException;
 import weka.core.TechnicalInformation;
 
@@ -37,7 +38,7 @@ public abstract class MultiLabelMetaLearner extends MultiLabelLearnerBase {
      * Creates a new instance.
      *
      * @param baseLearner the base multi-label learner which will be used
-     * internally to handle the data.
+     *                    internally to handle the data.
      */
     public MultiLabelMetaLearner(MultiLabelLearner baseLearner) {
         if (baseLearner == null) {

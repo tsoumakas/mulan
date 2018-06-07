@@ -15,8 +15,6 @@
  */
 package mulan.classifier.transformation;
 
-import java.util.Arrays;
-import java.util.Random;
 import mulan.classifier.InvalidDataException;
 import mulan.classifier.MultiLabelOutput;
 import mulan.data.MultiLabelInstances;
@@ -26,6 +24,9 @@ import weka.core.Instance;
 import weka.core.Instances;
 import weka.filters.Filter;
 import weka.filters.unsupervised.instance.RemovePercentage;
+
+import java.util.Arrays;
+import java.util.Random;
 
 /**
  * <p>Implementation of the Ensemble of Classifier Chains(ECC) algorithm.</p>
@@ -67,6 +68,36 @@ public class EnsembleOfClassifierChains extends TransformationBasedMultiLabelLea
      * when useSamplingWithReplacement is true
      */
     protected int BagSizePercent = 100;
+    /**
+     * The size of each sample, as a percentage of the training size Used when
+     * useSamplingWithReplacement is false
+     */
+    protected double samplingPercentage = 67;
+
+    /**
+     * Default constructor
+     */
+    public EnsembleOfClassifierChains() {
+        this(new J48(), 10, true, true);
+    }
+
+    /**
+     * Creates a new object
+     *
+     * @param classifier                   the base classifier for each ClassifierChain model
+     * @param aNumOfModels                 the number of models
+     * @param doUseConfidences             whether to use confidences or not
+     * @param doUseSamplingWithReplacement whether to use sampling with replacement or not
+     */
+    public EnsembleOfClassifierChains(Classifier classifier, int aNumOfModels,
+                                      boolean doUseConfidences, boolean doUseSamplingWithReplacement) {
+        super(classifier);
+        numOfModels = aNumOfModels;
+        useConfidences = doUseConfidences;
+        useSamplingWithReplacement = doUseSamplingWithReplacement;
+        ensemble = new ClassifierChain[aNumOfModels];
+        rand = new Random(1);
+    }
 
     /**
      * Returns the size of each bag sample, as a percentage of the training size
@@ -81,7 +112,7 @@ public class EnsembleOfClassifierChains extends TransformationBasedMultiLabelLea
      * Sets the size of each bag sample, as a percentage of the training size
      *
      * @param bagSizePercent the size of each bag sample, as a percentage of the
-     * training size
+     *                       training size
      */
     public void setBagSizePercent(int bagSizePercent) {
         BagSizePercent = bagSizePercent;
@@ -103,36 +134,6 @@ public class EnsembleOfClassifierChains extends TransformationBasedMultiLabelLea
      */
     public void setSamplingPercentage(double samplingPercentage) {
         this.samplingPercentage = samplingPercentage;
-    }
-    /**
-     * The size of each sample, as a percentage of the training size Used when
-     * useSamplingWithReplacement is false
-     */
-    protected double samplingPercentage = 67;
-
-    /**
-     * Default constructor
-     */
-    public EnsembleOfClassifierChains() {
-        this(new J48(), 10, true, true);
-    }
-
-    /**
-     * Creates a new object
-     *
-     * @param classifier the base classifier for each ClassifierChain model
-     * @param aNumOfModels the number of models
-     * @param doUseConfidences whether to use confidences or not
-     * @param doUseSamplingWithReplacement whether to use sampling with replacement or not 
-     */
-    public EnsembleOfClassifierChains(Classifier classifier, int aNumOfModels,
-            boolean doUseConfidences, boolean doUseSamplingWithReplacement) {
-        super(classifier);
-        numOfModels = aNumOfModels;
-        useConfidences = doUseConfidences;
-        useSamplingWithReplacement = doUseSamplingWithReplacement;
-        ensemble = new ClassifierChain[aNumOfModels];
-        rand = new Random(1);
     }
 
     @Override
@@ -184,8 +185,7 @@ public class EnsembleOfClassifierChains extends TransformationBasedMultiLabelLea
     }
 
     @Override
-    protected MultiLabelOutput makePredictionInternal(Instance instance) throws Exception,
-            InvalidDataException {
+    protected MultiLabelOutput makePredictionInternal(Instance instance) throws Exception {
 
         int[] sumVotes = new int[numLabels];
         double[] sumConf = new double[numLabels];

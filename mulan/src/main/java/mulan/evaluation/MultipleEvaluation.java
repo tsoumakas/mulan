@@ -20,19 +20,19 @@
  */
 package mulan.evaluation;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-
 import mulan.core.MulanException;
 import mulan.data.MultiLabelInstances;
 import mulan.evaluation.measure.MacroAverageMeasure;
 import mulan.evaluation.measure.Measure;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+
 /**
  * Simple class that includes an array, whose elements are lists of evaluation evaluations. Used to
  * compute means and standard deviations of multiple evaluations (e.g. cross-validation)
- * 
+ *
  * @author Grigorios Tsoumakas
  */
 public class MultipleEvaluation {
@@ -46,9 +46,9 @@ public class MultipleEvaluation {
 
     /**
      * Constructs a new object
-     * 
+     *
      * @param data the evaluation data used for obtaining label names for per outputting per label
-     *            values of macro average measures
+     *             values of macro average measures
      */
     public MultipleEvaluation(MultiLabelInstances data) {
         evaluations = new ArrayList<Evaluation>();
@@ -57,9 +57,9 @@ public class MultipleEvaluation {
 
     /**
      * Constructs a new object with given array of evaluations
-     * 
-     * @param data the evaluation data used for obtaining label names for per outputting per label
-     *            values of macro average measures
+     *
+     * @param data            the evaluation data used for obtaining label names for per outputting per label
+     *                        values of macro average measures
      * @param someEvaluations the array of evaluations
      */
     public MultipleEvaluation(Evaluation[] someEvaluations, MultiLabelInstances data) {
@@ -162,7 +162,7 @@ public class MultipleEvaluation {
 
     /**
      * Adds an evaluation results to the list of evaluations
-     * 
+     *
      * @param evaluation an evaluation result
      */
     public void addEvaluation(Evaluation evaluation) {
@@ -171,7 +171,7 @@ public class MultipleEvaluation {
 
     /**
      * Returns a string with the results of the evaluation
-     * 
+     *
      * @return a string with the results of the evaluation
      */
     @Override
@@ -204,7 +204,7 @@ public class MultipleEvaluation {
 
     /**
      * Returns the mean value of a measure
-     * 
+     *
      * @param measureName the name of the measure
      * @return the mean value of the measure
      */
@@ -214,9 +214,9 @@ public class MultipleEvaluation {
 
     /**
      * Returns the mean value of a specific label of a macro-averaged measure
-     * 
+     *
      * @param measureName the name of the measure
-     * @param labelIndex the label index
+     * @param labelIndex  the label index
      * @return the mean value of the measure for the given label index
      * @throws MulanException when the measure is not macro-averaged
      */
@@ -229,7 +229,7 @@ public class MultipleEvaluation {
 
     /**
      * Returns the standard deviation of a measure
-     * 
+     *
      * @param measureName the name of the measure
      * @return the standard deviation of the measure
      */
@@ -239,9 +239,9 @@ public class MultipleEvaluation {
 
     /**
      * Returns the standard deviation of a specific label of a macro-averaged measure
-     * 
+     *
      * @param measureName the name of the measure
-     * @param labelIndex the label index
+     * @param labelIndex  the label index
      * @return the standard deviation of the measure for the given label index
      * @throws MulanException when the measure is not macro-averaged
      */
@@ -254,7 +254,7 @@ public class MultipleEvaluation {
 
     /**
      * Returns a CSV string representation of the results
-     * 
+     *
      * @return a CSV string representation of the results
      */
     public String toCSV() {

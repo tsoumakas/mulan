@@ -1,10 +1,5 @@
 package mulan.regressor.transformation;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Random;
-
 import mulan.classifier.InvalidDataException;
 import mulan.classifier.MultiLabelOutput;
 import mulan.data.MultiLabelInstances;
@@ -16,12 +11,17 @@ import weka.core.Instances;
 import weka.filters.Filter;
 import weka.filters.unsupervised.instance.Resample;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Random;
+
 /**
  * This class implements the Ensemble of Regressor Chains (ERC) method.<br>
  * For more information, see:<br>
  * <em>E. Spyromitros-Xioufis, G. Tsoumakas, W. Groves, I. Vlahavas. 2014. Multi-label Classification Methods for
  * Multi-target Regression. <a href="http://arxiv.org/abs/1211.6581">arXiv e-prints</a></em>.
- * 
+ *
  * @author Eleftherios Spyromitros-Xioufis
  * @version 2014.04.01
  */
@@ -39,16 +39,10 @@ public class EnsembleOfRegressorChains extends TransformationBasedMultiTargetReg
      */
     private RegressorChain[] ensemble;
 
-    /** The seed to use in random number generators. Default = 1. **/
-    private int seed = 1;
-
     /**
-     * Three types of sampling.
-     */
-    public enum SamplingMethod {
-        None, WithReplacement, WithoutReplacement,
-    };
-
+     * The seed to use in random number generators. Default = 1.
+     **/
+    private int seed = 1;
     /**
      * The method used to obtain the values of the meta features. TRUE is used by default.
      */
@@ -58,19 +52,16 @@ public class EnsembleOfRegressorChains extends TransformationBasedMultiTargetReg
      * The type of sampling to be used. None is used by default.
      */
     private SamplingMethod sampling = SamplingMethod.None;
-
     /**
      * The size of each sample (as a percentage of the training set size) when sampling with replacement is
      * performed. Default is 100.
      */
     private double sampleWithReplacementPercent = 100;
-
     /**
      * The size of each sample (as a percentage of the training set size) when sampling without replacement is
      * performed. Default is 67.
      */
     private double sampleWithoutReplacementPercent = 67;
-
     /**
      * The number of folds to use in RegressorChainCorrected when CV is selected for obtaining the values of
      * the meta-features.
@@ -79,23 +70,21 @@ public class EnsembleOfRegressorChains extends TransformationBasedMultiTargetReg
 
     /**
      * Default constructor.
-     * 
-     * @throws Exception Potential exception thrown. To be handled in an upper level.
+     *
      */
-    public EnsembleOfRegressorChains() throws Exception {
+    public EnsembleOfRegressorChains() {
         this(new REPTree(), 10, SamplingMethod.WithReplacement);
     }
 
     /**
      * Constructor.
-     * 
+     *
      * @param baseRegressor the base regression algorithm that will be used
-     * @param numOfModels the number of models in the ensemble
-     * @param sampling the sampling method
-     * @throws Exception Potential exception thrown. To be handled in an upper level.
+     * @param numOfModels   the number of models in the ensemble
+     * @param sampling      the sampling method
      */
     public EnsembleOfRegressorChains(Classifier baseRegressor, int numOfModels,
-            SamplingMethod sampling) throws Exception {
+                                     SamplingMethod sampling) {
         super(baseRegressor);
         this.numOfModels = numOfModels;
         this.sampling = sampling;
@@ -177,8 +166,7 @@ public class EnsembleOfRegressorChains extends TransformationBasedMultiTargetReg
     }
 
     @Override
-    protected MultiLabelOutput makePredictionInternal(Instance instance) throws Exception,
-            InvalidDataException {
+    protected MultiLabelOutput makePredictionInternal(Instance instance) throws Exception {
         double[] scores = new double[numLabels];
 
         for (int i = 0; i < numOfModels; i++) {
@@ -225,6 +213,13 @@ public class EnsembleOfRegressorChains extends TransformationBasedMultiTargetReg
 
     public void setSeed(int seed) {
         this.seed = seed;
+    }
+
+    /**
+     * Three types of sampling.
+     */
+    public enum SamplingMethod {
+        None, WithReplacement, WithoutReplacement,
     }
 
 }
