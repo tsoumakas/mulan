@@ -32,6 +32,9 @@ import weka.filters.unsupervised.instance.RemovePercentage;
  * <p>For more information, see <em>Read, J.; Pfahringer, B.; Holmes, G., Frank,
  * E. (2011) Classifier Chains for Multi-label Classification. Machine Learning.
  * 85(3):335-359.</em></p>
+ * 
+ * Changes the strategy of generate random numbers: the random number generator is 
+ * Initialised in the buildInternal function instead of the constructor (2018.12.19)
  *
  * @author Eleftherios Spyromitros-Xioufis
  * @author Konstantinos Sechidis
@@ -48,10 +51,6 @@ public class EnsembleOfClassifierChains extends TransformationBasedMultiLabelLea
      * An array of ClassifierChain models
      */
     protected ClassifierChain[] ensemble;
-    /**
-     * Random number generator
-     */
-    protected Random rand;
     /**
      * Whether the output is computed based on the average votes or on the
      * average confidences
@@ -110,6 +109,8 @@ public class EnsembleOfClassifierChains extends TransformationBasedMultiLabelLea
      */
     protected double samplingPercentage = 67;
 
+    protected int seed=1;
+    
     /**
      * Default constructor
      */
@@ -132,14 +133,13 @@ public class EnsembleOfClassifierChains extends TransformationBasedMultiLabelLea
         useConfidences = doUseConfidences;
         useSamplingWithReplacement = doUseSamplingWithReplacement;
         ensemble = new ClassifierChain[aNumOfModels];
-        rand = new Random(1);
     }
 
     @Override
     protected void buildInternal(MultiLabelInstances trainingSet) throws Exception {
 
         Instances dataSet = new Instances(trainingSet.getDataSet());
-
+        Random rand=new Random(seed);
         for (int i = 0; i < numOfModels; i++) {
             debug("ECC Building Model:" + (i + 1) + "/" + numOfModels);
             Instances sampledDataSet;

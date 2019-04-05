@@ -8,6 +8,7 @@ import java.util.Random;
 import mulan.classifier.InvalidDataException;
 import mulan.classifier.ModelInitializationException;
 import mulan.classifier.MultiLabelOutput;
+import mulan.classifier.transformation.ECCRU.thresholdOptimizationMeasures;
 import mulan.data.MultiLabelInstances;
 import mulan.evaluation.measure.InformationRetrievalMeasures;
 import mulan.transformations.COCOATripleClassTransformation;
@@ -23,8 +24,10 @@ import weka.filters.supervised.instance.SpreadSubsampleWithMissClassValues;
  * more information, see <em> Zhang, Min-Ling, Yu-Kun Li, and Xu-Ying Liu. 
  * "Towards Class-Imbalance Aware Multi-Label Learning." IJCAI. 2015.</em></p>
  *
+ * Extends the COCOA via using different metrics (F-measure, G-mean and Balanced Accuracy)
+ *  to decide the threshold
  * @author Bin Liu
- * @version 2017.12.19
+ * @version 2018.3.19
  */
 
 
@@ -43,8 +46,10 @@ public class COCOA extends TransformationBasedMultiLabelLearner{
 	 */
     protected double underSamplingPercent=1.0;
 	protected int seed=1;
-    
+	protected thresholdOptimizationMeasures measure=thresholdOptimizationMeasures.Fmeasure;
 
+
+	
 
 	public COCOA(){
     	super();
@@ -86,6 +91,19 @@ public class COCOA extends TransformationBasedMultiLabelLearner{
 		this.seed = seed;
 	}	
 
+	/**
+	 * @return the measure
+	 */
+	public thresholdOptimizationMeasures getMeasure() {
+		return measure;
+	}
+
+	/**
+	 * @param measure the measure to set
+	 */
+	public void setMeasure(thresholdOptimizationMeasures measure) {
+		this.measure = measure;
+	}
 	
 	
 	//select numCouples label indices from list
@@ -184,6 +202,9 @@ public class COCOA extends TransformationBasedMultiLabelLearner{
     
     //calculate the thresholds to distinguish the relative and irrelative instances of each label based on optimizing the Macro F-measure
     protected void calculateThresholds(MultiLabelInstances trainingSet) throws Exception{    	
+    	if(measure==thresholdOptimizationMeasures.None){
+    		Arrays.fill(thresholds, 0.5);
+    	}
     	double predictConfidences[][]=new double [trainingSet.getNumInstances()][trainingSet.getNumLabels()];
    	    
     	for(int i=0;i<trainingSet.getNumInstances();i++){
@@ -192,13 +213,13 @@ public class COCOA extends TransformationBasedMultiLabelLearner{
     	}
     	
     	for(int j=0;j<numLabels;j++){	
-    		double maxF=Double.MIN_VALUE;
+    		double max=Double.MIN_VALUE;
     		boolean truelabels[]=new boolean[trainingSet.getNumInstances()];
     		for(int i=0;i<trainingSet.getNumInstances();i++){
         		truelabels[i]=trainingSet.getDataSet().get(i).stringValue(labelIndices[j]).equals("1");
         	}
-        	for(double d=0.05D;d<0.951D;d+=0.05D){
-        		int tp=0,fp=0,fn=0;
+    		for(double d=0.05D;d<1.0D;d+=0.05D){
+        		int tp=0,tn=0,fp=0,fn=0;
         		for(int i=0;i<trainingSet.getNumInstances();i++){
         			boolean preidctLabel=predictConfidences[i][j]>=d;
         			if(preidctLabel){
@@ -211,19 +232,29 @@ public class COCOA extends TransformationBasedMultiLabelLearner{
         				if(truelabels[i]){
         					fn++;
         				}
+        				else{
+        					tn++;
+        				}
         			}
         		}				 
-        		double f=InformationRetrievalMeasures.fMeasure(tp,fp,fn,1.0);
-        		if(f>maxF){
-        			maxF=f;
+        		double value=0;
+        		switch (measure){
+        			case Fmeasure:
+        				value=InformationRetrievalMeasures.fMeasure(tp,fp,fn,1.0); break;
+        			case Gmean:
+        				value=InformationRetrievalMeasures.gMean(tp, tn, fp, fn); break;
+        			case BalancedAcuraccy:
+        				value=InformationRetrievalMeasures.balancedAccuracy(tp, tn, fp, fn); break;
+        		}
+        			
+        		if(value>max){
+        			max=value;
         			thresholds[j]=d;
         		}
-        		
         	}
     	}
     }
-    
-    
+      
     
 	@Override
 	protected void buildInternal(MultiLabelInstances trainingSet) throws Exception {
@@ -257,7 +288,6 @@ public class COCOA extends TransformationBasedMultiLabelLearner{
 			Collections.shuffle(labelIndexList, rnd);
 			triLabelIndices[j]=selectedLabelIndices(labelIndexList,labelIndices[j]);
 			for(int k=0;k<numCouples;k++){
-				
 				Instances triClassIns=trt.transformInstances(labelIndices[j], triLabelIndices[j][k]);
 				Instances usTriClassIns=TrirandomUnderSampling(triClassIns);
 				triClassifiers[j][k].buildClassifier(usTriClassIns);
@@ -268,8 +298,7 @@ public class COCOA extends TransformationBasedMultiLabelLearner{
 		
 	}
 	
-	//only use triClassifiers to predict training set or not
-	private  double[] makePredictionforThreshold(Instance instance) throws InvalidDataException, ModelInitializationException, Exception{	
+	protected  double[] makePredictionforThreshold(Instance instance) throws InvalidDataException, ModelInitializationException, Exception{	
 		double[] confidences = new double[numLabels];
 		Arrays.fill(confidences,0);
 		
@@ -294,8 +323,6 @@ public class COCOA extends TransformationBasedMultiLabelLearner{
 	protected MultiLabelOutput makePredictionInternal(Instance instance) throws Exception, InvalidDataException {
 		double confidences[]=makePredictionforThreshold(instance);
 		boolean bipartition[]=new boolean[numLabels];
-				
-		
 		for(int j=0;j<numLabels;j++){
 			if(confidences[j]>thresholds[j]){
 				bipartition[j]=true;

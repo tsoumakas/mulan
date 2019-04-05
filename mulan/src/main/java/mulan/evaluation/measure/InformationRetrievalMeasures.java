@@ -20,6 +20,9 @@ package mulan.evaluation.measure;
  *
  * @author Grigorios Tsoumakas
  * @version 2012.05.29
+ * 
+ * Add two new functions: gMean and balancedAccuracy (2010.12.12) 
+ * 
  */
 public class InformationRetrievalMeasures {
 
@@ -116,4 +119,33 @@ public class InformationRetrievalMeasures {
         }
         return tn / (tn + fp);
     }
+    
+    /**
+     * Computation of G-mean based on tp, tn, fp and fn. 
+     *
+     * @param tn true negatives
+     * @param fp false positives
+     * @param fn false negatives
+     * @param tp true positive
+     * @return the value of g-mean
+     */
+    public static double gMean(double tp,double tn, double fp, double fn){
+         return Math.sqrt(recall(tp,fp,fn)*specificity(tn,fp,fn));
+    }
+    
+    
+    /**
+     * Computation of balanced accuracy based on tp, tn, fp and fn. 
+     *
+     * @param tn true negatives
+     * @param fp false positives
+     * @param fn false negatives
+     * @param tp true positive
+     * @return the value of balanced accuracy
+     */
+    public static double balancedAccuracy(double tp,double tn, double fp, double fn){
+    	return (recall(tp,fp,fn)+specificity(tn,fp,fn))/2;
+    }
+    
+    
 }

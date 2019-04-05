@@ -16,6 +16,7 @@ import java.util.Random;
 
 import mulan.classifier.MultiLabelLearner;
 import mulan.data.MultiLabelInstances;
+import mulan.sampling.MultiLabelSampling;
 import weka.classifiers.Classifier;
 import weka.clusterers.RandomizableClusterer;
 import weka.core.Instances;
@@ -69,6 +70,20 @@ public class BaseFunction {
 		int Ei = s.length();
 		return s.substring(Si, Ei); // classifierName="MLkNN" 
 	}
+	
+	/**
+	 * Returns the name of a sampling method
+	 * 
+	 * @param  classifier a multiLabel learner
+	 * @return the name of the multiLabel learner
+	 **/
+	public static String Get_Sampling_name(MultiLabelSampling sampling) {
+		String s = sampling.getClass().toString(); // s="class mulan.classifier.lazy.MLkNN"
+		int Si = s.lastIndexOf(".") + 1;
+		int Ei = s.length();
+		return s.substring(Si, Ei); // classifierName="MLkNN" 
+	}
+	
 
 	/**
 	 * Return a rounded double value with certain number of decimals
@@ -192,6 +207,20 @@ public class BaseFunction {
 	
 	public static void Out_file(String fileallname,String out,boolean Is_add){
 		try{
+			//fileallname.replace("\\", "//");
+			String []filePaths=fileallname.split("//");
+			String filePath="";
+			for(int i=0;i<filePaths.length-1;i++){
+				filePath+=filePaths[i]+"//";
+				File file=new File(filePath);
+		        if  (!file .exists()  && !file .isDirectory())      
+		        {       
+		            System.out.println("//Do not exsit"+filePath+"Need to bulid");  
+		            file .mkdir();    
+		        }
+			}
+			
+			
 			FileWriter fout=new FileWriter(fileallname,Is_add);
 			fout.write(out);
 			fout.close();
@@ -199,6 +228,8 @@ public class BaseFunction {
 		catch (Exception e){
 			e.printStackTrace();
 		}
+
+
 	}
 	
 	/**

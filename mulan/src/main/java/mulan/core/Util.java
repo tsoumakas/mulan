@@ -71,4 +71,24 @@ public class Util {
     public static String getNewLineSeparator() {
         return NEW_LINE;
     }
+
+    /**
+     * Returns a rand number from [min, max]
+	 * @param min: minimal number in the range
+	 * @param max: maximal number in the range
+	 * @param rand: a Random object to generate random number 
+	 * @return a random int number in the range of [min, max]
+	 */
+	public static int randomInt(int min, int max,Random rand) {
+		if(min>max){
+			return -1;
+		}
+		else if(min==max){
+			return min;
+		}
+		else{
+			return Math.abs(rand.nextInt())%(max-min+1)+min;
+		}
+	}
+    
 }
