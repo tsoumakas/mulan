@@ -55,13 +55,9 @@ import weka.filters.unsupervised.attribute.Remove;
 public class ECMLPKDDSubmission2019EMLSOSL {
 
 	public static void main(String[] args) {
-		f2();
-
-	}
-		
-	public static void f2(){
 		try{
-			boolean isHyperion=false;
+			
+			String filePath="//data//mlkd//BinLiu//MultiLabelDataSet//";    
 			
 			Classifier cla =new J48();
 			BinaryRelevance br1=new BinaryRelevance(cla);
@@ -82,10 +78,8 @@ public class ECMLPKDDSubmission2019EMLSOSL {
 			HashSet<String> dataName0_1Set=new HashSet<>(); dataName0_1Set.addAll(Arrays.asList(dataName0_1));
 			HashSet<String> dataName0_01Set=new HashSet<>(); dataName0_01Set.addAll(Arrays.asList(dataName0_01));
 
-			String fileName="SubmitResults2";
-			for(String dataName:dataNames){
-				String filePath=isHyperion?"//data//mlkd//BinLiu//MultiLabelDataSet//" : "F://Mulan Codes for Pull//mulan//data//multi-label//";
-				String outFilePath=isHyperion?"//data//mlkd//BinLiu//MultiLabelDataSet//RESULT//"+fileName+"//" : "F://刘彬学校电脑资料//希腊//experiment result//ecc"+"5"+"//";
+			
+			for(String dataName:dataNames){ 
 				String arrfFile=filePath+dataName+"//"+dataName+".arff";
 				String xmlFile=filePath+dataName+"//"+dataName+".xml";
 				
@@ -113,8 +107,7 @@ public class ECMLPKDDSubmission2019EMLSOSL {
 	            }
 	            System.out.println();
 				
-				String outFileResult=outFilePath+dataName+"Result.txt";
-				BaseFunction.Out_file(outFileResult, "", false);
+				
 				
 				for(MultiLabelLearner base:baseLearners){
 					
@@ -185,7 +178,6 @@ public class ECMLPKDDSubmission2019EMLSOSL {
 							sb.append(BaseFunction.Round(results.getMean(m.getName()), 4)+"\t");
 						}
 						sb.append("\n");
-						BaseFunction.Out_file(outFileResult, sb.toString(), true);
 						System.out.print(sb.toString());
 						
 					}
@@ -195,7 +187,10 @@ public class ECMLPKDDSubmission2019EMLSOSL {
 		catch (Exception e){
 			e.printStackTrace();
 		}
+
 	}
+		
+
 
 	//remove features with fewer non-zero values
 	public static MultiLabelInstances removeFeatures(MultiLabelInstances mlData,double percentRetainFeatures) throws Exception{
