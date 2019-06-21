@@ -16,34 +16,34 @@ import weka.core.neighboursearch.LinearNNSearch2;
 /**
  * 
  *
- * Implementation of MLSOL.</p> 
+ * Implementation of MLSOL.  
  * 
- *
+ * 
  * @author Bin Liu
- * @version 2019.3.21
+ * @version 2019.6.10
  *
  */
 
 
 public class MLSOL extends MultiLabelSampling {
-	private double weights[];
-	private int numMajorityKnn [][];
-	private InstanceType insTypes[][];
-	private int knnIndeices[][];
-	private String minLabels[];
-	private int labelIndices[];
-	private int featureIndices[];
+	protected double weights[];
+	protected Double C [][];   //the C_ij for majority class is null
+	protected InstanceType insTypes[][];
+	protected int knnIndices[][];
+	protected String minLabels[];
+	protected int labelIndices[];
+	protected int featureIndices[];
 	
-	private double sumW;
-	private int numOfNeighbors=5;
-	private LinearNNSearch2 lnn = new LinearNNSearch2();
-	private DistanceFunction dfunc = new EuclideanDistance();;  /*??how to calculate the Value Difference Metric (VDM) of the multi-label dataset??*/
+	protected double sumW;
+	protected int numOfNeighbors=5;
+	protected LinearNNSearch2 lnn = new LinearNNSearch2();
+	protected DistanceFunction dfunc = new EuclideanDistance();
 	
 	public InstanceType[][] getInsType(){
 		return insTypes;
 	}
-	public int[][] getNumMajorityKnn(){
-		return numMajorityKnn;
+	public Double[][] getC(){
+		return C;
 	}
 	/** 
 	 * @return the numOfNeighbors
@@ -58,8 +58,6 @@ public class MLSOL extends MultiLabelSampling {
 		this.numOfNeighbors = numOfNeighbors;
 	}
 			
-	
-	
 	@Override
 	public MultiLabelInstances build(MultiLabelInstances mlDataset) throws Exception {
 		Random rnd=new Random(seed);
@@ -71,11 +69,8 @@ public class MLSOL extends MultiLabelSampling {
 		weights=new double[oriNumIns];
 		minLabels=new String[numLabels];
 		
-		numMajorityKnn=new int[oriNumIns][numLabels];
-		for(int i=0;i<oriNumIns;i++)
-			Arrays.fill(numMajorityKnn[i], 0);
-		knnIndeices=new int[oriNumIns][numOfNeighbors];
-		
+		C=new Double[oriNumIns][numLabels];
+		knnIndices=new int[oriNumIns][numOfNeighbors];
 		
 		ImbalancedStatistics is=new ImbalancedStatistics();
 		is.calculateC0C1(mlDataset);		
@@ -89,14 +84,12 @@ public class MLSOL extends MultiLabelSampling {
 				minLabels[j]="1";
 			}
 		}
-			
-		
+
 		Instances ins=mlDataset.getDataSet();
 		calculateWeight(ins);
 		initilizeInsTypes(ins);
 		Instances insNew=new Instances(ins);
-        
-		
+        		
 		for(int i=0;i<generatingNumIns;i++){
 			double d=rnd.nextDouble()*sumW;
 			int centralIndex=-1;
@@ -108,7 +101,7 @@ public class MLSOL extends MultiLabelSampling {
 					break;
 				}
 			}
-			int referenceIndex=knnIndeices[centralIndex][rnd.nextInt(numOfNeighbors)];
+			int referenceIndex=knnIndices[centralIndex][rnd.nextInt(numOfNeighbors)];
 			Instance newData=generateSyntheticInstance(ins.get(centralIndex), ins.get(referenceIndex), centralIndex, referenceIndex, rnd);
 			insNew.add(newData);
 		}
@@ -117,13 +110,9 @@ public class MLSOL extends MultiLabelSampling {
 		return new MultiLabelInstances(insNew, mlDataset.getLabelsMetaData());
 	}
 	
-	private void calculateWeight(Instances ins) throws Exception{
+	protected void calculateWeight(Instances ins) throws Exception{
 		int numIns=ins.numInstances();
 		int numLabels=labelIndices.length;
-		Double scores[][]=new Double[numIns][numLabels];
-		for(int i=0;i<scores.length;i++){
-			Arrays.fill(scores[i],0.0);
-		}
 		
 		String labelIndicesString = "";
         for (int i = 0; i < numLabels-1; i++) {
@@ -141,43 +130,41 @@ public class MLSOL extends MultiLabelSampling {
 			Instance data=ins.get(i);
 			KnnResult result=lnn.kNearestNeighbours2(data, numOfNeighbors); // the number of instance in knn may larger than numOfNeighbors
 			for(int k=0;k<numOfNeighbors;k++){
-				knnIndeices[i][k]=result.indices[k];
+				knnIndices[i][k]=result.indices[k];
 			}			
 			
 			for(int j=0;j<numLabels;j++){
+				int numMaj=0;
 				if(data.stringValue(labelIndices[j]).equals(minLabels[j])){
 					for(int k=0;k<numOfNeighbors;k++){
 						if(!data.stringValue(labelIndices[j]).equals(result.knn.get(k).stringValue(labelIndices[j]))){
-							numMajorityKnn[i][j]++;
+							numMaj++;
 						}
 					}
-					if(numMajorityKnn[i][j]==numOfNeighbors){
-						scores[i][j]=0.0; //OUTLIER (Noisy) instance
-					}
-					else{
-						scores[i][j]=(numMajorityKnn[i][j]+1.0)/(numOfNeighbors+1.0);
-					}
+					C[i][j]=numMaj*1.0/numOfNeighbors;  //Eqation (1)
 				}
 				else{ //majority class
-					scores[i][j]=null; 
+					C[i][j]=null; 
 				}
 			}
 		}
         
-        //Transform the scores
+                
+        //Transform the C to scores
+		Double scores[][]=new Double[numIns][numLabels];
         for(int j=0;j<numLabels;j++){
         	double sum=0;
         	int c=0;
         	for(int i=0;i<numIns;i++){
-        		if(scores[i][j]!=null){
-        			sum+=scores[i][j];
+        		if(C[i][j]!=null && C[i][j]<1){
+        			sum+=C[i][j];
         			c++;
         		}
         	}
         	if(c!=0 && sum!=0.0){ // add condition sum!=0.0
         		for(int i=0;i<numIns;i++){
-        			if(scores[i][j]!=null){
-        				scores[i][j]/=sum;
+        			if(C[i][j]!=null && C[i][j]<1){
+        				scores[i][j]=C[i][j]/sum;
         			}
         		}
         	}
@@ -195,7 +182,7 @@ public class MLSOL extends MultiLabelSampling {
         }
 	}
 
-	private void initilizeInsTypes(Instances ins){
+	protected void initilizeInsTypes(Instances ins){
 		int numIns=ins.numInstances();
 		insTypes=new InstanceType[numIns][labelIndices.length];
 		
@@ -203,14 +190,13 @@ public class MLSOL extends MultiLabelSampling {
 			Instance data=ins.get(i);
 			for(int j=0;j<labelIndices.length;j++){
 				if(data.stringValue(labelIndices[j]).equals(minLabels[j])){
-					double x=(numOfNeighbors-numMajorityKnn[i][j])*1.0/numOfNeighbors;
-					if(x>0.7){
+					if(C[i][j]<0.3){
 						insTypes[i][j]=InstanceType.SAFE;
 					}
-					else if(x>0.3){
+					else if(C[i][j]<0.7){
 						insTypes[i][j]=InstanceType.BORDERLINE;
 					}
-					else if(x>0.1 ){  //numMajorityKnn[i][j]<numOfNeighbors //0+1e-5  //0.1 
+					else if(C[i][j]<1 ){   
 						insTypes[i][j]=InstanceType.RARE;
 					}
 					else{
@@ -229,7 +215,7 @@ public class MLSOL extends MultiLabelSampling {
         	for(int i=0;i<numIns;i++){
              	for(int j=0;j<labelIndices.length;j++){
              		if(insTypes[i][j]==InstanceType.RARE){
-             			for(int k:knnIndeices[i]){
+             			for(int k:knnIndices[i]){
              				if(insTypes[k][j]==InstanceType.SAFE ||insTypes[i][j]==InstanceType.BORDERLINE){
              					insTypes[i][j]=InstanceType.BORDERLINE;
              					flag=true;
