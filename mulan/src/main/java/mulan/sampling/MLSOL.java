@@ -118,7 +118,7 @@ public class MLSOL extends MultiLabelSampling {
         for (int i = 0; i < numLabels-1; i++) {
             labelIndicesString += (labelIndices[i] + 1) + ",";
         }
-        labelIndicesString += labelIndices[numLabels-1]; 
+        labelIndicesString += (labelIndices[numLabels-1]+1); 
         dfunc.setAttributeIndices(labelIndicesString);
         dfunc.setInvertSelection(true);
 		
