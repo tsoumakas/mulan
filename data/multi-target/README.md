@@ -21,7 +21,7 @@ Mulan was extended for multi-target regression (MTR). Below you can find a list 
 | [slump](https://github.com/tsoumakas/mulan/tree/master/data/multi-target/slump.arff) | 103 | 7 | 3 | [7], [1] |
 | [andro](https://github.com/tsoumakas/mulan/tree/master/data/multi-target/andro.arff)	| 49 | 30 | 6 | [8], [1] |
 | [osales](https://github.com/tsoumakas/mulan/tree/master/data/multi-target/osales.arff) | 639 | 413 | 12 | [9], [1] |
-| [scfp](https://github.com/tsoumakas/mulan/tree/master/data/multi-target/scfp.arff) | 1137 | 23 | 3 | [10], [1] |
+| [scpf](https://github.com/tsoumakas/mulan/tree/master/data/multi-target/scpf.arff) | 1137 | 23 | 3 | [10], [1] |
 
 ## Sources / Citations
 1. E. Spyromitros-Xioufis, G. Tsoumakas, W. Groves, I. Vlahavas, "Multi-Target Regression via Input Space Expansion: Treating Targets as Inputs", Machine Learning, 2016. [paper](http://link.springer.com/article/10.1007%2Fs10994-016-5546-z)[bibtex](http://users.auth.gr/espyromi/publications/bibtex/spyromitros2016mlj.bib)
