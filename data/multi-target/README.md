@@ -1,7 +1,7 @@
 # Datasets
 Mulan was extended for multi-target regression (MTR). Below you can find a list of benchmark MTR datasets that we have collected along with the corresponding sources and citations. For more details on each dataset see the corresponding paper(s). All datasets can be downloaded from here!
 
-## Statistics
+## Statistics 
 | name | examples | features | targets | Source/Citation | 
 | ---- | -------- | -------- | ------- | --------------- |
 | [atp1d](https://github.com/tsoumakas/mulan/tree/master/data/multi-target/atp1d.arff) | 337 | 411 | 6 | [1] |
